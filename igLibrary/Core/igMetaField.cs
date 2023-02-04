@@ -1,0 +1,59 @@
+using System.Reflection;
+
+namespace igLibrary.Core
+{
+	public class igMetaField : igObject
+	{
+		public string? _name;
+		public ushort _offset;
+
+		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)
+		{
+			uint templateParameterCount = GetTemplateParameterCount();
+			sh.WriteUInt32(templateParameterCount);
+			for(uint i = 0; i < templateParameterCount; i++)
+			{
+				igMetaField? templateParam = GetTemplateParameter(i);
+				if(templateParam != null)
+				{
+					templateParam.DumpArkData(saver, sh);
+				}
+			}
+			saver.SaveString(sh, _name);
+
+			FieldInfo? numField = GetType().GetField("_num");
+			if(numField != null)
+			{
+				short num = (short)numField.GetValue(this);
+				sh.WriteInt16(num);
+			}
+			else
+			{
+				sh.WriteInt16((short)-1);
+			}
+			sh.WriteUInt16(_offset);
+		}
+		public virtual void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
+		{
+			uint templateArgCount = sh.ReadUInt32();
+			SetTemplateParameterCount(templateArgCount);
+			for(uint i = 0; i < templateArgCount; i++)
+			{
+				SetTemplateParameter(loader.ReadMetaField(sh));
+			}
+			_name = loader.ReadString(sh);
+			short num = sh.ReadInt16();
+			_offset = sh.ReadUInt16();
+			FieldInfo? numField = GetType().GetField("_num");
+			if(numField != null)
+			{
+				numField.SetValue(this, num);
+			}
+		}
+
+		public virtual void SetTemplateParameter(igMetaField meta){}
+		public virtual void SetTemplateParameterCount(uint count){}
+		public virtual igMetaField? GetTemplateParameter(uint index) => null;
+		public virtual uint GetTemplateParameterCount() => 0;
+	}
+}
