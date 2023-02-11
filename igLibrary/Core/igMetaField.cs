@@ -51,6 +51,10 @@ namespace igLibrary.Core
 			}
 		}
 
+		public virtual object? ReadIGZField(igIGZLoader loader) => null;
+		public virtual Type GetOutputType() => null;
+		public virtual uint GetSize(IG_CORE_PLATFORM platform) => 0;
+
 		public virtual void SetTemplateParameter(igMetaField meta){}
 		public virtual void SetTemplateParameterCount(uint count){}
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;

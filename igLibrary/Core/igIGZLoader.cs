@@ -2,32 +2,260 @@
 {
 	public class igIGZLoader
 	{
+		public const uint _bigMagicCookie = 0x015A4749;
+		public const uint _littleMagicCookie = 0x49475A01;
 		public List<string> _stringList = new List<string>();
-		public List<Type> _vtableList = new List<Type>();
+		public List<igMetaObject> _vtableList = new List<igMetaObject>();
 		public Dictionary<ulong, igObject> _offsetObjectList = new Dictionary<ulong, igObject>();
 		public List<ushort> _metaSizes = new List<ushort>();
-		public List<string> _vtableNameList = new List<string>();
 		//public List<igHandle> _externalList = new List<igHandle>();
 		//public List<igHandle> _namedHandleList = new List<igHandle>();
 		//public List<igHandle> _unresolvedNames = new List<igHandle>();
 		//public igObjectList _namedExternalList = new igObjectList();
 		//public List<igMemory> _thumbnails = new List<igMemory>();
-		//public igRuntimeFields _runtimeFields = new igRuntimeFields();
+		public igRuntimeFields _runtimeFields = new igRuntimeFields();
 		public uint _version;
 		public uint _metaObjectVersion;
 		public IG_CORE_PLATFORM _platform;
-		public uint _numFixups;
 		//public igFileDescriptor _file;
 		public StreamHelper _stream;
-		//public igObjectDirectory _dir;
+		public igObjectDirectory _dir;
 		public uint _fixups;
 		public uint[] _loadedPointers = new uint[0x1F];
+		public igMemoryPool[] _loadedPools = new igMemoryPool[0x1F];
 		public ulong nameListOffset;
 		private bool _readDependancies;
 
 		public igIGZLoader(igObjectDirectory dir, Stream stream, bool readDependancies)
 		{
-			
+			_stream = new StreamHelper(stream);
+		}
+
+		public void Read(igObjectDirectory dir, bool readDependancies)
+		{
+			_dir = dir;
+			_stream.Seek(0);
+			_readDependancies = readDependancies;
+
+			uint magicCookie = _stream.ReadUInt32();
+			     if(magicCookie == _bigMagicCookie)    _stream._endianness = StreamHelper.Endianness.Big;
+			else if(magicCookie == _littleMagicCookie) _stream._endianness = StreamHelper.Endianness.Little;
+			else                                       throw new InvalidDataException("IGZ Magic Cookie didn't match, the file could be corrupt or wasn't loaded correctly, either way, Quigley is coming to break your kneecaps, run.");
+
+			_version = _stream.ReadUInt32();
+			_metaObjectVersion = _stream.ReadUInt32();
+			_platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_PS3; _stream.ReadUInt32();	//_platform
+			uint numFixups = _stream.ReadUInt32();
+
+			ParseSections();
+			ProcessFixupSections(dir, numFixups);
+			return;
+		}
+		public void ReadObjects()
+		{
+			_stream.Seek(_runtimeFields._objectLists[0]);
+			igObjectList objList = (igObjectList)_offsetObjectList[_runtimeFields._objectLists[0]];
+			objList.ReadIGZFields(this);
+		}
+
+		public void ParseSections()
+		{
+			int sectionCount = 0;
+			for(int i = 0; i < 0x20; i++)
+			{
+				_stream.Seek(0x14 + 0x10 * i);
+				uint unk = _stream.ReadUInt32();
+				uint offset = _stream.ReadUInt32();
+				uint length = _stream.ReadUInt32();
+				uint alignment = _stream.ReadUInt32();
+
+				if(offset == 0)
+				{
+					sectionCount = i;
+					break;
+				}
+
+				if(i > 0) _loadedPointers[i - 1] = offset;
+				else      _fixups = offset;
+			}
+			_stream.Seek(0x224);
+			for(int i = 0; i < sectionCount; i++)
+			{
+				string memoryPoolName = _stream.ReadString();
+				_loadedPools[i] = igMemoryContext.Singleton.GetMemoryPoolByName(memoryPoolName);
+			}
+		}
+
+		public void ProcessFixupSections(igObjectDirectory dir, uint numFixups)
+		{
+			uint bytesProcessed = 0;
+			for(int i = 0; i < numFixups; i++)
+			{
+				_stream.Seek(_fixups + bytesProcessed);
+				uint magic = _stream.ReadUInt32();
+				uint count = _stream.ReadUInt32();
+				uint length = _stream.ReadUInt32();
+				uint start = _stream.ReadUInt32();
+				_stream.Seek(_fixups + bytesProcessed + start);
+
+				switch(magic)
+				{
+					case 0x54454D54:							//TMET
+						_vtableList.Capacity = (int)count;
+						for(uint j = 0; j < count; j++)
+						{
+							long basePos = _stream.BaseStream.Position;
+							string vtableName = _stream.ReadString();
+
+							igMetaObject vtable = igArkCore.GetObjectMeta(vtableName);
+							if(vtable != null) _vtableList.Add(vtable);
+							else               throw new TypeLoadException("Failed to find type \"" + vtableName + "\". This type may be platform specific or loaded from a game script, please contact NefariousTechSupport.");
+
+							int bits = (_version > 7) ? 2 : 1;
+							_stream.Seek(basePos + bits + (vtableName.Length & (uint)(-bits)));
+						}
+						break;
+					case 0x52545354:							//TSTR
+						_vtableList.Capacity = (int)count;
+						for(uint j = 0; j < count; j++)
+						{
+							long basePos = _stream.BaseStream.Position;
+							string data = _stream.ReadString();
+
+							_stringList.Add(data);
+
+							int bits = (_version > 7) ? 2 : 1;
+							_stream.Seek(basePos + bits + (data.Length & (uint)(-bits)));
+						}
+						break;
+					case 0x42545652:							//RVTB
+						UnpackCompressedInts(_runtimeFields._vtables, _stream.ReadBytes(length - start), count);
+						InstantiateAndAppendObjects();
+						break;
+					case 0x544F4F52:							//ROOT
+						UnpackCompressedInts(_runtimeFields._objectLists, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x53464F52:							//ROFS
+						UnpackCompressedInts(_runtimeFields._offsets, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x54545352:							//RSTT
+						UnpackCompressedInts(_runtimeFields._stringTables, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x52545352:							//RSTR
+						UnpackCompressedInts(_runtimeFields._stringRefs, _stream.ReadBytes(length - start), count);
+						break;
+				}
+
+				bytesProcessed += length;
+			}
+		}
+		public void UnpackCompressedInts(List<ulong> list, byte[] bytes, uint count)
+		{
+			list.Capacity = (int)count;
+			uint previousInt = 0;
+
+			bool shiftMoveOrMask = false;
+
+			unsafe
+			{
+				fixed(byte *fixedData = bytes)
+				{
+					byte* data = fixedData;
+					for (int i = 0; i < count; i++)
+					{
+						uint currentByte;
+
+						if (!shiftMoveOrMask)
+						{
+							currentByte = (uint)*data & 0xf;
+							shiftMoveOrMask = true;
+						}
+						else
+						{
+							currentByte = (uint)(*data >> 4);
+							data++;
+							shiftMoveOrMask = false;
+						}
+						byte shiftAmount = 3;
+						uint unpackedInt = currentByte & 7;
+						while ((currentByte & 8) != 0)
+						{
+							if (!shiftMoveOrMask)
+							{
+								currentByte = (uint)*data & 0xf;
+								shiftMoveOrMask = true;
+							}
+							else
+							{
+								currentByte = (uint)(*data >> 4);
+								data++;
+								shiftMoveOrMask = false;
+							}
+							unpackedInt = unpackedInt | (currentByte & 7) << (byte)(shiftAmount & 0x1f);
+							shiftAmount += 3;
+						}
+
+						previousInt = (uint)(previousInt + (unpackedInt * 4) + (_version < 9 ? 4 : 0));
+						list.Add(DeserializeOffset(previousInt));
+					}
+				}
+			}
+		}
+
+		public ulong DeserializeOffset(ulong offset)
+		{
+			if(_version <= 0x06) return (_loadedPointers[(offset >> 0x18)] + (offset & 0x00FFFFFF));
+			else                 return (_loadedPointers[(offset >> 0x1B)] + (offset & 0x00FFFFFF));
+		}
+		public igMemoryPool GetMemoryPoolFromSerializedOffset(ulong offset)
+		{
+			if(_version <= 0x06) return _loadedPools[(offset >> 0x18)];
+			else                 return _loadedPools[(offset >> 0x1B)];
+
+		}
+		public igMemoryPool GetMemoryPoolFromDeserializedOffset(ulong offset)
+		{
+			//This is a hack, should come up with a better way, only used in RVTB, so perhaps should move instantiating objects to processing of that fixup
+			return GetMemoryPoolFromSerializedOffset(SerializeOffset(offset));
+		}
+		private ulong SerializeOffset(ulong offset)
+		{
+			uint poolIndex = (uint)Array.FindIndex<uint>(_loadedPointers, x => x > offset) - 1;
+			ulong offsetInPool = offset - _loadedPointers[poolIndex];
+
+			if(_version <= 0x06) return ((poolIndex << 0x18) + (offsetInPool & 0x00FFFFFF));
+			else                 return ((poolIndex << 0x1B) + (offsetInPool & 0x07FFFFFF));
+		}
+
+		public ulong ReadRawOffset()
+		{
+			//Should be replaced with igSizeTypeMetaField
+			//if(igCore.IsPlatform64Bit(_platform)) return _stream.ReadUInt64();
+			                                      return _stream.ReadUInt32();
+		}
+
+		public void InstantiateAndAppendObjects()
+		{
+			for(int i = 0; i < _runtimeFields._vtables.Count; i++)
+			{
+				_offsetObjectList.Add(_runtimeFields._vtables[i], InstantiateObject(_runtimeFields._vtables[i]));
+			}
+		}
+
+		public igObject InstantiateObject(ulong offset)
+		{
+			_stream.Seek(offset);
+			int index = (int)ReadRawOffset();
+			Type t = _vtableList[index]._vTablePointer;
+			igObject obj = (igObject)Activator.CreateInstance(t);
+			obj.internalMemoryPool = GetMemoryPoolFromSerializedOffset(offset);
+
+			if(obj is igBlindObject blindObj)
+			{
+				blindObj.Initialize(_vtableList[index]);
+			}
+
+			return obj;
 		}
 	}
 }

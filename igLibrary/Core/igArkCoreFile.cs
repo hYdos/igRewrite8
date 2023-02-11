@@ -150,6 +150,7 @@ namespace igLibrary.Core
 				{
 					metaObject._metaFields.Add(ReadMetaField(_shs[Section.ObjectInfo]));
 				}
+				metaObject.PostUndump();
 			}
 		}
 		public void SaveMetaEnum(igMetaEnum metaEnum)

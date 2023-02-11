@@ -11,7 +11,12 @@ namespace igRewrite8
 			List<igMetaObject> metaObjects = igArkCore._metaObjects;
 			List<igMetaEnum> metaEnums = igArkCore._metaEnums;
 
-			igMetaObject hashTable = igArkCore.GetObjectMeta("igHashTable");
+			igObjectDirectory directory = new igObjectDirectory();
+			FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read);
+			igIGZLoader igzLoader = new igIGZLoader(directory, fs, false);
+
+			igzLoader.Read(directory, false);	
+			igzLoader.ReadObjects();		
 			return;
 		}
 	}

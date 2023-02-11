@@ -16,7 +16,7 @@ namespace igLibrary.Core
 			_vTablePointer = igArkCore.GetObjectDotNetType(_name);
 			if(_vTablePointer == null)
 			{
-				_vTablePointer = typeof(igObject);	//Should be changed to some blind igObject
+				_vTablePointer = typeof(igBlindObject);
 			}
 		}
 		public bool CanBeAssignedTo(igMetaObject other)

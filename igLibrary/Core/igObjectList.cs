@@ -1,7 +1,6 @@
 namespace igLibrary.Core
 {
-	public class igObjectList : igDataList
+	public class igObjectList : igTDataList<igObject>
 	{
-		
 	}
 }
