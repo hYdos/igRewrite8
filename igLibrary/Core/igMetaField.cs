@@ -6,6 +6,7 @@ namespace igLibrary.Core
 	{
 		public string? _name;
 		public ushort _offset;
+		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 
 		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{
@@ -39,7 +40,7 @@ namespace igLibrary.Core
 			SetTemplateParameterCount(templateArgCount);
 			for(uint i = 0; i < templateArgCount; i++)
 			{
-				SetTemplateParameter(loader.ReadMetaField(sh));
+				SetTemplateParameter(i, loader.ReadMetaField(sh));
 			}
 			_name = loader.ReadString(sh);
 			short num = sh.ReadInt16();
@@ -54,8 +55,9 @@ namespace igLibrary.Core
 		public virtual object? ReadIGZField(igIGZLoader loader) => null;
 		public virtual Type GetOutputType() => null;
 		public virtual uint GetSize(IG_CORE_PLATFORM platform) => 0;
+		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 
-		public virtual void SetTemplateParameter(igMetaField meta){}
+		public virtual void SetTemplateParameter(uint index, igMetaField meta){}
 		public virtual void SetTemplateParameterCount(uint count){}
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;
 		public virtual uint GetTemplateParameterCount() => 0;

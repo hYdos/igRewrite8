@@ -230,7 +230,7 @@
 		public ulong ReadRawOffset()
 		{
 			//Should be replaced with igSizeTypeMetaField
-			//if(igCore.IsPlatform64Bit(_platform)) return _stream.ReadUInt64();
+			if(igAlchemyCore.isPlatform64Bit(_platform)) return _stream.ReadUInt64();
 			                                      return _stream.ReadUInt32();
 		}
 

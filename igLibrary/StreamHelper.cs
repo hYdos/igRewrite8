@@ -64,6 +64,26 @@ namespace igLibrary
 		}
 		public string ReadLine() => ReadStringUntil('\n');
 
+		public char ReadUnicodeChar()
+		{
+			byte newByte = 0;
+			byte newByte2 = 0;
+			try
+			{
+				newByte = ReadByte();
+				newByte2 = ReadByte();
+			}
+			catch (EndOfStreamException)
+			{
+				return (char)0x00;
+			}
+			if (newByte == 0 && newByte2 == 0) return (char)0x00;
+			string convertedChar;
+
+			if (_endianness == Endianness.Big) convertedChar = Encoding.Unicode.GetString(new byte[] { newByte2, newByte });
+			else convertedChar = Encoding.Unicode.GetString(new byte[] { newByte, newByte2 });
+			return convertedChar[0];
+		}
 		public string ReadUnicodeString()
 		{
 			var sb = new StringBuilder();

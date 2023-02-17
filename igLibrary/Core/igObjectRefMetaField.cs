@@ -10,11 +10,17 @@ namespace igLibrary.Core
 		{
 			base.DumpArkData(saver, sh);
 
+			if(_name == "_traversal")
+				sh = sh;
+
 			saver.SaveString(sh, _metaObject._name);
 		}
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
 			base.UndumpArkData(loader, sh);
+
+			if(_name == "_traversal")
+				sh = sh;
 
 			_metaObject = igArkCore.GetObjectMeta(loader.ReadString(sh));
 		}
@@ -61,11 +67,26 @@ namespace igLibrary.Core
 			if(_metaObject._vTablePointer == typeof(igBlindObject)) return typeof(igObject);
 			return _metaObject._vTablePointer;
 		}
-
-		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField
 	{
 		short _num;
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			Array data = Array.CreateInstance(base.GetOutputType(), _num);
+			for(int i = 0; i < _num; i++)
+			{
+				data.SetValue(base.ReadIGZField(loader), i);
+			}
+			return data;
+		}
+		public override uint GetSize(IG_CORE_PLATFORM platform)
+		{
+			return base.GetSize(platform) * (uint)_num;
+		}
+		public override Type GetOutputType()
+		{
+			return base.GetOutputType().MakeArrayType();
+		}
 	}
 }

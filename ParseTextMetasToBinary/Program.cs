@@ -6,8 +6,8 @@ namespace PTMTB
 	{
 		public static void Main(string[] args)
 		{
-			UndumpFromArkFile(args);
-			//UndumpFromTemporaryFile(args);
+			//UndumpFromArkFile(args);
+			UndumpFromTemporaryFile(args);
 		}
 		private static void UndumpFromArkFile(string[] args)
 		{
@@ -23,6 +23,24 @@ namespace PTMTB
 		{
 			StreamHelper objSh = new StreamHelper(new FileStream(args[0], FileMode.Open, FileAccess.Read));
 			StreamHelper enumSh = new StreamHelper(new FileStream(args[1], FileMode.Open, FileAccess.Read));
+
+			while(true)
+			{
+				igMetaEnum metaEnum = new igMetaEnum();
+				string metaEnumLine = enumSh.ReadLine();
+				if(metaEnumLine.Length == 0) break;
+				metaEnum._name = metaEnumLine.Split(' ')[1];
+				enumSh.ReadLine();
+				while(true)
+				{
+					string memberLine = enumSh.ReadLine();
+					if(memberLine[0] == '}') break;
+					string[] memberInfo = memberLine.Substring(1).Split(' ');
+					metaEnum._names.Add(memberInfo[0]);
+					metaEnum._values.Add(int.Parse(memberInfo[2].TrimEnd(',')));
+				}
+				igArkCore._metaEnums.Add(metaEnum);
+			}
 
 			while(true)
 			{
@@ -74,24 +92,6 @@ namespace PTMTB
 				}
 				
 				igArkCore._metaObjects.Add(meta);
-			}
-
-			while(true)
-			{
-				igMetaEnum metaEnum = new igMetaEnum();
-				string metaEnumLine = enumSh.ReadLine();
-				if(metaEnumLine.Length == 0) break;
-				metaEnum._name = metaEnumLine.Split(' ')[1];
-				enumSh.ReadLine();
-				while(true)
-				{
-					string memberLine = enumSh.ReadLine();
-					if(memberLine[0] == '}') break;
-					string[] memberInfo = memberLine.Substring(1).Split(' ');
-					metaEnum._names.Add(memberInfo[0]);
-					metaEnum._values.Add(int.Parse(memberInfo[2].TrimEnd(',')));
-				}
-				igArkCore._metaEnums.Add(metaEnum);
 			}
 
 			igArkCore.WriteToFile2(igArkCore.EGame.EV_SkylandersSuperchargers);

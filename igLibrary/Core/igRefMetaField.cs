@@ -10,5 +10,8 @@ namespace igLibrary.Core
 		public bool _refCounted;
 
 		//TODO: Add ark data for this
+
+		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 	}
 }

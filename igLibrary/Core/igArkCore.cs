@@ -86,6 +86,7 @@ namespace igLibrary.Core
 		public static List<igMetaEnum> _metaEnums = new List<igMetaEnum>();
 		public static List<igMetaObject> _metaObjects = new List<igMetaObject>();
 		public static List<igCompoundMetaFieldInfo> _compoundFieldInfos = new List<igCompoundMetaFieldInfo>();
+		public static List<igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new List<igMetaFieldPlatformInfo>();
 
 		private static Dictionary<string, Type>? _vTableCache = null;
 
@@ -105,6 +106,10 @@ namespace igLibrary.Core
 			{
 				saver.SaveCompoundInfo(_compoundFieldInfos[i]);
 			}
+			for(int i = 0; i < _metaFieldPlatformInfos.Count; i++)
+			{
+				saver.SaveMetaFieldPlatformInfo(_metaFieldPlatformInfos[i]);
+			}
 			saver.FinishSave();
 		}
 		public static void Reset()
@@ -118,6 +123,7 @@ namespace igLibrary.Core
 			_metaObjects.AddRange(loader._metaObjectsInFile);
 			_metaEnums.AddRange(loader._metaEnumsInFile);
 			_compoundFieldInfos.AddRange(loader._compoundsInFile);
+			//_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
 			return;
 		}
 		public static igMetaObject? GetObjectMeta(string name)

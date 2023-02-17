@@ -7,6 +7,7 @@ namespace igLibrary.Core
 		public List<igMetaObject> _metaObjectsInFile;
 		public List<igCompoundMetaFieldInfo> _compoundsInFile;
 		public List<igMetaEnum> _metaEnumsInFile;
+		public List<igMetaFieldPlatformInfo> _metaFieldPlatformInfosInFile;
 		private Dictionary<Section, StreamHelper> _shs;
 		private Dictionary<Section, uint> _offsets;
 
@@ -18,6 +19,7 @@ namespace igLibrary.Core
 			CompoundInfo,
 			ObjectInfo,
 			EnumInfo,
+			PlatformInfo,
 		}
 
 		public igArkCoreFile()
@@ -34,6 +36,7 @@ namespace igLibrary.Core
 			_shs.Add(Section.CompoundInfo, null);
 			_shs.Add(Section.ObjectInfo, null);
 			_shs.Add(Section.EnumInfo, null);
+			_shs.Add(Section.PlatformInfo, null);
 		}
 
 		uint GetOffset(Section section)
@@ -49,6 +52,7 @@ namespace igLibrary.Core
 			_shs[Section.CompoundInfo] = new StreamHelper(new MemoryStream());
 			_shs[Section.ObjectInfo] = new StreamHelper(new MemoryStream());
 			_shs[Section.EnumInfo] = new StreamHelper(new MemoryStream());
+			_shs[Section.PlatformInfo] = new StreamHelper(new MemoryStream());
 		}
 
 		public void ReadFile(string filePath)
@@ -63,6 +67,7 @@ namespace igLibrary.Core
 			int compoundCount = _sh.ReadInt32();
 			int metaObjectCount = _sh.ReadInt32();
 			int metaEnumCount = _sh.ReadInt32();
+			//int metaFieldPlatformCount = _sh.ReadInt32();
 
 			Section[] sections = typeof(Section).GetEnumValues().Cast<Section>().ToArray();
 			for(int i = 0; i < sections.Length; i++)
@@ -87,6 +92,7 @@ namespace igLibrary.Core
 				igArkCore._metaEnums.Add(metaEnum);
 				_metaEnumsInFile.Add(metaEnum);
 			}
+			//ReadPlatformInfos(metaFieldPlatformCount);
 			ReadCompounds();
 			ReadMetaObject();
 		}
@@ -133,11 +139,51 @@ namespace igLibrary.Core
 
 			_metaObjectsInFile.Add(metaObject);
 		}
+		private void ReadPlatformInfos(int platformInfoCount)
+		{
+			_shs[Section.PlatformInfo].Seek(0);
+			for(int i = 0; i < platformInfoCount; i++)
+			{
+				igMetaFieldPlatformInfo metaFieldPlatformInfo = new igMetaFieldPlatformInfo();
+				metaFieldPlatformInfo._name = ReadString(_shs[Section.PlatformInfo]);
+				uint platformCount = _shs[Section.PlatformInfo].ReadUInt32();
+				for(int j = 0; j < platformCount; j++)
+				{
+					string platformName = ReadString(_shs[Section.PlatformInfo]);
+					ushort size = _shs[Section.PlatformInfo].ReadUInt16();
+					ushort align = _shs[Section.PlatformInfo].ReadUInt16();
+					IG_CORE_PLATFORM platformValue = Enum.Parse<IG_CORE_PLATFORM>(platformName);
+					metaFieldPlatformInfo._sizes.Add(platformValue, size);
+					metaFieldPlatformInfo._alignments.Add(platformValue, align);
+				}
+				_metaFieldPlatformInfosInFile.Add(metaFieldPlatformInfo);
+				igArkCore._metaFieldPlatformInfos.Add(metaFieldPlatformInfo);
+			}
+		}
+		public void SaveMetaFieldPlatformInfo(igMetaFieldPlatformInfo metaFieldPlatformInfo)
+		{
+			SaveString(_shs[Section.PlatformInfo], metaFieldPlatformInfo._name);
+			_shs[Section.PlatformInfo].WriteInt32(metaFieldPlatformInfo._sizes.Count);
+			for(int j = 0; j < metaFieldPlatformInfo._sizes.Count; j++)
+			{
+				string platformName = metaFieldPlatformInfo._sizes.ElementAt(j).Key.ToString();
+				SaveString(_shs[Section.PlatformInfo], platformName);
+
+				ushort size = metaFieldPlatformInfo._sizes.ElementAt(j).Value;
+				_shs[Section.PlatformInfo].WriteUInt16(size);
+
+				ushort align = metaFieldPlatformInfo._alignments.ElementAt(j).Value;
+				_shs[Section.PlatformInfo].WriteUInt16(align);
+			}
+			_metaFieldPlatformInfosInFile.Add(metaFieldPlatformInfo);
+		}
 		private void ReadMetaObject()
 		{
 			_shs[Section.ObjectInfo].Seek(0);
 			for(int i = 0; i < _metaObjectsInFile.Count; i++)
 			{
+				if(_metaObjectsInFile[i]._name == "igTraversalInstance") 
+					_shs = _shs;
 				igMetaObject metaObject = _metaObjectsInFile[i];
 				string? parentName = ReadString(_shs[Section.ObjectInfo]);
 				if(parentName != null)

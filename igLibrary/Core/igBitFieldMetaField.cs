@@ -24,5 +24,8 @@ namespace igLibrary.Core
 			_bits = sh.ReadUInt32();
 			_assignmentMetaField = loader.ReadMetaField(sh);
 		}
+		//Look into this
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
+		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
 	}
 }
