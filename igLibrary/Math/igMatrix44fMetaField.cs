@@ -31,7 +31,7 @@ namespace igLibrary.Math
 	}
 	public class igMatrix44fArrayMetaField : igMatrix44fMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

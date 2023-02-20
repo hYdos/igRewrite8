@@ -20,12 +20,12 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			igSizeTypeMetaField metaField = new igSizeTypeMetaField();	//Should implement that static _MetaField field
-			ulong size = (ulong)metaField.ReadIGZField(loader) & 0x07FFFFFF;
-			ulong offset = (ulong)metaField.ReadIGZField(loader);
+			ulong size = loader.ReadRawOffset() & 0x07FFFFFF;
+			ulong raw = loader.ReadRawOffset();
 			ulong end = loader._stream.Tell64();
-			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(offset);
-			offset = loader.DeserializeOffset(offset);
+
+			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(raw);
+			ulong offset = loader.DeserializeOffset(raw);
 			Type memoryType = GetOutputType();
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
@@ -45,10 +45,11 @@ namespace igLibrary.Core
 			return typeof(igMemory<>).MakeGenericType(_memType.GetOutputType());
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform) * 2;
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 	}
 	public class igMemoryRefArrayMetaField : igMemoryRefMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

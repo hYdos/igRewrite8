@@ -89,6 +89,7 @@ namespace igLibrary.Core
 		public static List<igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new List<igMetaFieldPlatformInfo>();
 
 		private static Dictionary<string, Type>? _vTableCache = null;
+		private static Dictionary<string, Type>? _enumCache = null;
 
 		public static void WriteToFile(EGame game)
 		{
@@ -104,6 +105,8 @@ namespace igLibrary.Core
 			}
 			for(int i = 0; i < _compoundFieldInfos.Count; i++)
 			{
+				if(i == 183)
+					i = i;
 				saver.SaveCompoundInfo(_compoundFieldInfos[i]);
 			}
 			for(int i = 0; i < _metaFieldPlatformInfos.Count; i++)
@@ -111,6 +114,7 @@ namespace igLibrary.Core
 				saver.SaveMetaFieldPlatformInfo(_metaFieldPlatformInfos[i]);
 			}
 			saver.FinishSave();
+			saver.Dispose();
 		}
 		public static void Reset()
 		{
@@ -123,7 +127,8 @@ namespace igLibrary.Core
 			_metaObjects.AddRange(loader._metaObjectsInFile);
 			_metaEnums.AddRange(loader._metaEnumsInFile);
 			_compoundFieldInfos.AddRange(loader._compoundsInFile);
-			//_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
+			_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
+			loader.Dispose();
 			return;
 		}
 		public static igMetaObject? GetObjectMeta(string name)
@@ -150,6 +155,28 @@ namespace igLibrary.Core
 			if(_vTableCache.ContainsKey(name))
 			{
 				return _vTableCache[name];
+			}
+			else
+			{
+				return null;
+			}
+		}
+		public static Type? GetEnumDotNetType(string name)
+		{
+			if(_enumCache == null)
+			{
+				Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+				Type[] types = assemblies.SelectMany(x => x.GetTypes()).Where(x => x.IsEnum && x.Namespace != null && x.Namespace.StartsWith("ig")).ToArray();
+				_enumCache = new Dictionary<string, Type>();
+				for(uint i = 0; i < types.Length; i++)
+				{
+					_enumCache.Add(types[i].Name, types[i]);
+				}
+			}
+
+			if(_enumCache.ContainsKey(name))
+			{
+				return _enumCache[name];
 			}
 			else
 			{

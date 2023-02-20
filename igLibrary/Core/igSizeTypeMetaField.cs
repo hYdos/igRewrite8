@@ -13,7 +13,7 @@ namespace igLibrary.Core
 	}
 	public class igSizeTypeArrayMetaField : igSizeTypeMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

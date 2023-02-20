@@ -12,7 +12,8 @@ namespace igLibrary.Core
 
 			for(int i = 0; i < _metaFields.Count; i++)
 			{
-				loader._stream.Seek(objectOffset + _metaFields[i]._offset);
+				loader._stream.Seek(objectOffset + _metaFields[i]._offsets[loader._platform]);
+
 				object? data = _metaFields[i].ReadIGZField(loader);
 
 				FieldInfo? field = GetType().GetField(_metaFields[i]._name);

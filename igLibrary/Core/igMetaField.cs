@@ -10,15 +10,20 @@ namespace igLibrary.Core
 
 		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{
+			if(this is igPlaceHolderMetaField placeholder)
+			{
+				saver.SaveString(sh, placeholder._typeName);
+			}
+			else
+			{
+				saver.SaveString(sh, GetType().Name);
+			}
 			uint templateParameterCount = GetTemplateParameterCount();
 			sh.WriteUInt32(templateParameterCount);
 			for(uint i = 0; i < templateParameterCount; i++)
 			{
 				igMetaField? templateParam = GetTemplateParameter(i);
-				if(templateParam != null)
-				{
-					templateParam.DumpArkData(saver, sh);
-				}
+				saver.SaveMetaField(sh, templateParam);
 			}
 			saver.SaveString(sh, _name);
 
@@ -52,10 +57,10 @@ namespace igLibrary.Core
 			}
 		}
 
-		public virtual object? ReadIGZField(igIGZLoader loader) => null;
-		public virtual Type GetOutputType() => null;
-		public virtual uint GetSize(IG_CORE_PLATFORM platform) => 0;
-		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
+		public virtual object? ReadIGZField(igIGZLoader loader) => throw new NotImplementedException();
+		public virtual Type GetOutputType() => throw new NotImplementedException();
+		public virtual uint GetSize(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
+		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 
 		public virtual void SetTemplateParameter(uint index, igMetaField meta){}
 		public virtual void SetTemplateParameterCount(uint count){}

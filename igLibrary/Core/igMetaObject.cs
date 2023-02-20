@@ -57,7 +57,7 @@ namespace igLibrary.Core
 		}
 		private void Align(ref ushort offset, uint alignment)
 		{
-			offset = (ushort)(offset + (((alignment - 1) / alignment) * alignment));
+			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
 	}
 }

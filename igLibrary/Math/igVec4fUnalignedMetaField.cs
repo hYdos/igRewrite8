@@ -19,7 +19,7 @@ namespace igLibrary.Math
 	}
 	public class igVec4fUnalignedArrayMetaField : igVec4fUnalignedMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

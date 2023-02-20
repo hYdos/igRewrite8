@@ -28,6 +28,7 @@ namespace igLibrary.Core
 			_metaObjectsInFile = new List<igMetaObject>();
 			_compoundsInFile = new List<igCompoundMetaFieldInfo>();
 			_metaEnumsInFile = new List<igMetaEnum>();
+			_metaFieldPlatformInfosInFile = new List<igMetaFieldPlatformInfo>();
 			_shs = new Dictionary<Section, StreamHelper>(6);
 			_offsets = new Dictionary<Section, uint>(6);
 			_shs.Add(Section.Strings, null);
@@ -67,12 +68,12 @@ namespace igLibrary.Core
 			int compoundCount = _sh.ReadInt32();
 			int metaObjectCount = _sh.ReadInt32();
 			int metaEnumCount = _sh.ReadInt32();
-			//int metaFieldPlatformCount = _sh.ReadInt32();
+			int metaFieldPlatformCount = _sh.ReadInt32();
 
 			Section[] sections = typeof(Section).GetEnumValues().Cast<Section>().ToArray();
 			for(int i = 0; i < sections.Length; i++)
 			{
-				_sh.Seek(0x20 + i * 8);
+				_sh.Seek(0x40 + i * 8);
 
 				uint offset = _sh.ReadUInt32();
 				uint length = _sh.ReadUInt32();
@@ -92,7 +93,7 @@ namespace igLibrary.Core
 				igArkCore._metaEnums.Add(metaEnum);
 				_metaEnumsInFile.Add(metaEnum);
 			}
-			//ReadPlatformInfos(metaFieldPlatformCount);
+			ReadPlatformInfos(metaFieldPlatformCount);
 			ReadCompounds();
 			ReadMetaObject();
 		}
@@ -157,7 +158,6 @@ namespace igLibrary.Core
 					metaFieldPlatformInfo._alignments.Add(platformValue, align);
 				}
 				_metaFieldPlatformInfosInFile.Add(metaFieldPlatformInfo);
-				igArkCore._metaFieldPlatformInfos.Add(metaFieldPlatformInfo);
 			}
 		}
 		public void SaveMetaFieldPlatformInfo(igMetaFieldPlatformInfo metaFieldPlatformInfo)
@@ -222,6 +222,7 @@ namespace igLibrary.Core
 				metaEnum._names.Add(ReadString(_shs[Section.EnumInfo]));
 				metaEnum._values.Add(_shs[Section.EnumInfo].ReadInt32());
 			}
+			metaEnum.PostUndump();
 			return metaEnum;
 		}
 		public void SaveMetaField(StreamHelper sh, igMetaField? metaField)
@@ -284,11 +285,12 @@ namespace igLibrary.Core
 			_sh.WriteInt32(_compoundsInFile.Count);
 			_sh.WriteInt32(_metaObjectsInFile.Count);
 			_sh.WriteInt32(_metaEnumsInFile.Count);
+			_sh.WriteInt32(_metaFieldPlatformInfosInFile.Count);
 
 			Section[] sections = typeof(Section).GetEnumValues().Cast<Section>().ToArray();
 			for(int i = 0; i < sections.Length; i++)
 			{
-				_sh.Seek(0x20 + i * 8);
+				_sh.Seek(0x40 + i * 8);
 
 				_shs[sections[i]].BaseStream.Flush();
 
@@ -327,7 +329,20 @@ namespace igLibrary.Core
 		{
 			int index = sh.ReadInt32();
 			if(index < 0) return null;
+			if(index == 7599)
+				index = index;
 			return _stringTable[index];
+		}
+		public void Dispose()
+		{
+			Section[] sections = typeof(Section).GetEnumValues().Cast<Section>().ToArray();
+			for(int i = 0; i < sections.Length; i++)
+			{
+				_shs[sections[i]].Close();
+				_shs[sections[i]].Dispose();
+			}
+			_sh.Close();
+			_sh.Dispose();
 		}
 	}
 }

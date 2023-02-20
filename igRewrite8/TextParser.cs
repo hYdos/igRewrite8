@@ -1,0 +1,270 @@
+using igLibrary;
+using igLibrary.Core;
+using System.Reflection;
+
+namespace igRewrite8.Devel
+{
+	//A lot of this is very poorly designed since it's meant to handle a temporary file format, perhaps i should make it a better format first lol
+
+	public class TextParser
+	{
+		public Dictionary<string, igMetaObject> metaObjectLookup = new Dictionary<string, igMetaObject>();
+		public Dictionary<string, igCompoundMetaFieldInfo> compoundInfoLookup = new Dictionary<string, igCompoundMetaFieldInfo>();
+
+		public void ReadMetaEnumFile(string filePath)
+		{
+			StreamHelper sh = new StreamHelper(File.Open(filePath, FileMode.Open));
+
+			while(true)
+			{
+				igMetaEnum metaEnum = new igMetaEnum();
+				string metaEnumLine = sh.ReadLine();
+				if(metaEnumLine.Length == 0) break;
+				metaEnum._name = metaEnumLine.Split(' ')[1];
+				sh.ReadLine();
+				while(true)
+				{
+					string memberLine = sh.ReadLine();
+					if(memberLine[0] == '}') break;
+					string[] memberInfo = memberLine.Substring(1).Split(' ');
+					metaEnum._names.Add(memberInfo[0]);
+					metaEnum._values.Add(int.Parse(memberInfo[2].TrimEnd(',')));
+				}
+				igArkCore._metaEnums.Add(metaEnum);
+			}
+		}
+		public void ReadMetaFieldFile(string filePath)
+		{
+			StreamHelper fieldSh = new StreamHelper(new FileStream(filePath, FileMode.Open, FileAccess.Read));
+
+			List<IG_CORE_PLATFORM> platformLookup = new List<IG_CORE_PLATFORM>();
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_WIN32);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_WII);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DURANGO);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_XENON);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_PS3);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_OSX);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_WIN64);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_CAFE);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_RASPI);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ANDROID);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_LGTV);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_PS4);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_WP8);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_LINUX);
+			platformLookup.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_MAX);
+
+			while(true)
+			{
+				string metaFieldLine = fieldSh.ReadLine();
+				if(metaFieldLine.Length == 0) break;
+
+				string[] members = metaFieldLine.Split(' ');
+
+
+				int index = 0;
+				igMetaFieldPlatformInfo platformInfo = new igMetaFieldPlatformInfo();
+				platformInfo._name = members[index++];
+				while(true)
+				{
+					index++;	//Skip "psa"
+					if(index > members.Length) break;
+					IG_CORE_PLATFORM platform = platformLookup[int.Parse(members[index++], System.Globalization.NumberStyles.HexNumber)];
+					ushort size = ushort.Parse(members[index++], System.Globalization.NumberStyles.HexNumber);
+					ushort alignment = ushort.Parse(members[index++], System.Globalization.NumberStyles.HexNumber);
+
+					platformInfo._sizes.Add(platform, size);
+					platformInfo._alignments.Add(platform, alignment);
+				}
+
+				igArkCore._metaFieldPlatformInfos.Add(platformInfo);
+			}
+		}
+		public void ReadMetaObjectFile(string filePath)
+		{
+			StreamHelper sh = new StreamHelper(File.Open(filePath, FileMode.Open));
+
+			//First pass, instantiate metaobjects
+
+			while(true)
+			{
+				string line = sh.ReadLine();
+
+				if(line.Length == 0) break;
+
+				string[] members = line.Split(' ');
+				if(members[0] == "igMetaObject")
+				{
+					igMetaObject metaObject = new igMetaObject();
+					metaObject._name = members[1];
+
+					metaObjectLookup.Add(metaObject._name, metaObject);
+				}
+				else if(members[0] == "igCompoundField")
+				{
+					igCompoundMetaFieldInfo compoundInfo = new igCompoundMetaFieldInfo();
+					compoundInfo._name = metaObjectLookup.Last().Key;
+					compoundInfoLookup.Add(compoundInfo._name, compoundInfo);
+				}
+			}
+
+			//Second pass, read metaobject information
+			sh.Seek(0);
+			string previousMeta = null;
+
+			for(int i = 0; i < metaObjectLookup.Count + compoundInfoLookup.Count; i++)
+			{
+				string metaObjectLine = sh.ReadLine();
+
+				if(metaObjectLine.Length == 0) break;
+
+				string[] members = metaObjectLine.Split(' ');
+
+				if(members[0] == "igMetaObject")
+				{
+					igMetaObject metaObject = metaObjectLookup[members[1]];
+					if(members.Length > 2)
+					{
+						metaObject._parent = metaObjectLookup[members[2]];
+					}
+					while(true)
+					{
+						string memberLine = sh.ReadLine();
+						string[] memberInfo = memberLine.Split(' ');
+
+						if(memberInfo[0] == "igMetaEndObject") break;
+						
+						int dataIndex = 0;
+						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex);
+						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+						metaField._name = memberInfo[dataIndex++];
+						metaObject._metaFields.Add(metaField);
+					}
+					previousMeta = metaObject._name;
+				}
+				else if(members[0] == "igCompoundField")
+				{
+					igCompoundMetaFieldInfo compoundInfo = compoundInfoLookup[previousMeta];
+					if(compoundInfo._name == "CStaticOrderMetaField")
+						;
+					while(true)
+					{
+						string memberLine = sh.ReadLine();
+						string[] memberInfo = memberLine.Split(' ');
+
+						if(memberInfo[0] == "igEndCompoundField") break;
+						
+						int dataIndex = 0;
+						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex);
+						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+						metaField._name = memberInfo[dataIndex++];
+						compoundInfo._fieldList.Add(metaField);
+					}
+				}
+				else break;
+			}
+
+			sh.Close();
+			sh.Dispose();
+
+			igArkCore._metaObjects.AddRange(metaObjectLookup.Values);
+			igArkCore._compoundFieldInfos.AddRange(compoundInfoLookup.Values);
+		}
+
+		private igMetaField ReadFieldType(string[] data, ref int index)
+		{
+			List<igMetaField> templateArgs = new List<igMetaField>();
+			igMetaField? metaField = null;
+
+			string typeName = data[index++];
+			int templateCount = int.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+
+			for(int i = 0; i < templateCount; i++)
+			{
+				if(data[index] == "0")
+				{
+					index++;
+					templateArgs.Add(null);
+				}
+				else
+				{
+					templateArgs.Add(ReadFieldType(data, ref index));
+				}
+			}
+
+			Type? t = igArkCore.GetObjectDotNetType(typeName);
+			if(t == null)
+			{
+				t = typeof(igPlaceHolderMetaField);
+			}
+			metaField = (igMetaField)Activator.CreateInstance(t);
+
+			if(typeName.StartsWith("igMemoryRefHandle"))
+			{
+				(metaField as igMemoryRefHandleMetaField)._memType = ReadFieldType(data, ref index);
+			}
+			else if(typeName.StartsWith("igMemoryRef"))
+			{
+				(metaField as igMemoryRefMetaField)._memType = ReadFieldType(data, ref index);
+			}
+			else if(typeName.StartsWith("igObjectRef"))
+			{
+				(metaField as igObjectRefMetaField)._metaObject = metaObjectLookup[data[index++]];
+			}
+			else if(typeName.StartsWith("igHandle") && !typeName.StartsWith("igHandleName"))
+			{
+				(metaField as igHandleMetaField)._metaObject = metaObjectLookup[data[index++]];
+			}
+			else if(typeName.StartsWith("igEnum"))
+			{
+				string enumName = data[index++];
+				//metaField = new igEnumMetaField() { _metaEnumName = (enumName == "0" ? null : enumName) };
+				(metaField as igEnumMetaField)._metaEnum = (enumName == "0" ? null : igArkCore.GetMetaEnum(enumName));
+			}
+			else if(typeName.StartsWith("igStatic"))
+			{
+				(metaField as igStaticMetaField)._storageMetaField = ReadFieldType(data, ref index);
+			}
+			else if(typeName.StartsWith("igPropertyField"))
+			{
+				(metaField as igPropertyFieldMetaField)._innerMetaField = ReadFieldType(data, ref index);
+			}
+			else if(typeName.StartsWith("igBitField"))
+			{
+				igMetaField assignmentMetaField = ReadFieldType(data, ref index);
+				uint shift = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+				uint bits = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+				igBitFieldMetaField bfMetaField = metaField as igBitFieldMetaField;
+				bfMetaField._assignmentMetaField = assignmentMetaField;
+				bfMetaField._shift = shift;
+				bfMetaField._bits = bits;
+			}
+
+			if(metaField is igPlaceHolderMetaField placeholder)
+			{
+				placeholder._typeName = typeName;
+			}
+
+			metaField.SetTemplateParameterCount((uint)templateCount);
+			for(int i= 0; i < templateCount; i++)
+			{
+				metaField.SetTemplateParameter((uint)i, templateArgs[i]);
+			}
+
+			if(typeName.EndsWith("ArrayMetaField"))
+			{
+				string possibleArray = data[index];
+				if(possibleArray.StartsWith("["))
+				{
+					FieldInfo? num = metaField.GetType().GetField("_num");
+					num.SetValue(metaField, short.Parse(data[index++].Substring(3, 8), System.Globalization.NumberStyles.HexNumber));
+				}
+			}
+
+			return metaField;
+		}
+	}
+}

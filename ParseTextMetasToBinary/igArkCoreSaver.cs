@@ -52,6 +52,7 @@ namespace PTMTB
 			CompoundInfo,
 			ObjectInfo,
 			EnumInfo,
+			PlatformInfo,
 		}
 
 		public igArkCoreSaver2()
@@ -68,6 +69,7 @@ namespace PTMTB
 			_shs.Add(Section.CompoundInfo, null);
 			_shs.Add(Section.ObjectInfo, null);
 			_shs.Add(Section.EnumInfo, null);
+			_shs.Add(Section.PlatformInfo, null);
 		}
 
 		uint GetOffset(Section section)
@@ -83,6 +85,7 @@ namespace PTMTB
 			_shs[Section.CompoundInfo] = new StreamHelper(new MemoryStream());
 			_shs[Section.ObjectInfo] = new StreamHelper(new MemoryStream());
 			_shs[Section.EnumInfo] = new StreamHelper(new MemoryStream());
+			_shs[Section.PlatformInfo] = new StreamHelper(new MemoryStream());
 		}
 
 		public void ReadFile(string filePath)

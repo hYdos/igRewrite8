@@ -23,7 +23,7 @@ namespace igLibrary.Core
 	}
 	public class igHandleArrayMetaField : igHandleMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

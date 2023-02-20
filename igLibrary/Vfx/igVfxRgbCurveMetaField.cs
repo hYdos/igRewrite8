@@ -15,7 +15,7 @@ namespace igLibrary.Vfx
 	}
 	public class igVfxRgbCurveArrayMetaField : igVfxRgbCurveMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

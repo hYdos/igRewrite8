@@ -44,7 +44,9 @@
 
 			_version = _stream.ReadUInt32();
 			_metaObjectVersion = _stream.ReadUInt32();
-			_platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_PS3; _stream.ReadUInt32();	//_platform
+			
+			igMetaEnum platformEnum = igArkCore.GetMetaEnum("IG_CORE_PLATFORM");
+			_platform = (IG_CORE_PLATFORM)platformEnum.GetEnumFromValue(_stream.ReadInt32());	//_platform
 			uint numFixups = _stream.ReadUInt32();
 
 			ParseSections();

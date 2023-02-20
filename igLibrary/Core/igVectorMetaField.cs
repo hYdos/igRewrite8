@@ -55,7 +55,7 @@ namespace igLibrary.Core
 	}
 	public class igVectorArrayMetaField : igVectorMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);

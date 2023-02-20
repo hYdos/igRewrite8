@@ -19,7 +19,7 @@ namespace igLibrary.Math
 	}
 	public class igVec4ucArrayMetaField : igVec4ucMetaField
 	{
-		short _num;
+		public short _num;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			Array data = Array.CreateInstance(base.GetOutputType(), _num);
