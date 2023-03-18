@@ -150,13 +150,14 @@ namespace igLibrary.Core
 			_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
 			loader.Dispose();
 
-			for(int i = 0; i < _compoundFieldInfos.Count; i++) _compoundFieldInfos[i].TypeBuildBegin();
-			for(int i = 0; i < _metaObjects.Count; i++) _metaObjects[i].TypeBuildBegin();
-			for(int i = 0; i < _compoundFieldInfos.Count; i++) _compoundFieldInfos[i].TypeBuildAddFields();
-			for(int i = 0; i < _metaObjects.Count; i++) _metaObjects[i].TypeBuildAddFields();
-			for(int i = 0; i < _compoundFieldInfos.Count; i++) _compoundFieldInfos[i].TypeBuildFinalize();
+			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildBegin());
+			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildBegin());
+
+			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildAddFields());
+			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildAddFields());
+
+			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildFinalize());
 			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildFinalize());
-			//for(int i = 0; i < _metaObjects.Count; i++) _metaObjects[i].TypeBuildFinalize();
 
 			stopwatch.Stop();
 
@@ -171,6 +172,14 @@ namespace igLibrary.Core
 			int index = _metaObjects.FindIndex(x => x._name == name);
 			if(index < 0) return null;
 			else return _metaObjects[index];
+		}
+		public static igMetaFieldPlatformInfo? GetMetaFieldPlatformInfo(string name)
+		{
+			if(name == null) return null;
+			
+			int index = _metaFieldPlatformInfos.FindIndex(x => x._name == name);
+			if(index < 0) return null;
+			else return _metaFieldPlatformInfos[index];
 		}
 		public static Type? GetStructDotNetType(string name)
 		{

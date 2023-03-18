@@ -14,16 +14,25 @@ namespace igLibrary.Core
 			//_compoundFieldInfo = igArkCore.GetCompoundFieldInfo(typeName);
 		}
 		public override Type GetOutputType() => _compoundFieldInfo._vTablePointer;
+
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._alignments[platform];
+		public override uint GetSize(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._sizes[platform];
 	}
 
 	public class igCompoundMetaFieldInfo : igBaseMeta
 	{
 		public List<igMetaField> _fieldList = new List<igMetaField>();
+		public igMetaFieldPlatformInfo _platformInfo;
 		public Type _vTablePointer;
+		private bool _beganTypeDeclaration = false;
+		private bool _beganTypeDefiniton = false;
+		private bool _beganTypeFinalization = false;
+		private bool _finishedTypeFinalization = false;
 
 		public override void PostUndump()
 		{
 			_vTablePointer = igArkCore.GetStructDotNetType(_name.Substring(0, _name.Length-9));
+			_platformInfo = igArkCore.GetMetaFieldPlatformInfo(_name);
 
 			//Sometimes is null, in those cases, a dynamic type will be created
 		}
@@ -64,18 +73,30 @@ namespace igLibrary.Core
 		}
 		public void TypeBuildBegin()
 		{
-			if(_vTablePointer != null) return;
+			if(_beganTypeDeclaration) return;
+			if(_vTablePointer != null)
+			{
+				_beganTypeDeclaration = true;
+				return;
+			}
+			_beganTypeDeclaration = true;
 
 			TypeBuilder tb = igArkCore.GetNewStructTypeBuilder(_name.Substring(0, _name.Length - 9));		//Trim off the "MetaField"
 			_vTablePointer = tb;
 		}
 		public void TypeBuildAddFields()
 		{
-			if(_vTablePointer.GetType() != typeof(TypeBuilder)) return;
+			if(_beganTypeDefiniton) return;
+			if(!(_vTablePointer is TypeBuilder))
+			{
+				_beganTypeDefiniton = true;
+				return;
+			}
+			_beganTypeDefiniton = true;
 
 			TypeBuilder tb = (TypeBuilder)_vTablePointer;
 
-			if(_name == "igOrderedMapMetaField") return;	//This one's generic!
+			if(igHash.Hash(_name) == 0x48D79D7B) return;	//if _name is "igOrderedMapMetaField" as that one's generic!
 
 			for(int i = 0; i < _fieldList.Count; i++)
 			{
@@ -89,23 +110,41 @@ namespace igLibrary.Core
 		}
 		public void TypeBuildFinalize()
 		{
-			if(_vTablePointer.GetType() != typeof(TypeBuilder)) return;
+			if(_beganTypeFinalization) return;
+			else if(!(_vTablePointer is TypeBuilder))
+			{
+				_beganTypeFinalization = true;
+				_finishedTypeFinalization = true;
+				return;
+			}
+
+			_beganTypeFinalization = true;
 
 			for(int i = 0; i < _fieldList.Count; i++)
 			{
 				if(_fieldList[i] is igCompoundMetaField compoundMetaField)
 				{
-					Type outputType = compoundMetaField.GetOutputType();
-					if(outputType is TypeBuilder)
-					{
-						compoundMetaField._compoundFieldInfo.TypeBuildFinalize();
-					}
+					ReadyDependancyAndBlock(compoundMetaField._compoundFieldInfo);
 				}
 			}
 
 			Type testType = ((TypeBuilder)_vTablePointer).CreateType();
 			//igArkCore.AddDynamicTypeToCache(testType);
 			_vTablePointer = testType;
+			_finishedTypeFinalization = true;
+		}
+		private void ReadyDependancyAndBlock(igCompoundMetaFieldInfo dependancy)
+		{
+			if(dependancy._beganTypeFinalization == false)
+			{
+				dependancy.TypeBuildFinalize();
+				return;
+			}			
+
+			while(!dependancy._finishedTypeFinalization)
+			{
+				Thread.Sleep(10);
+			}
 		}
 	}
 

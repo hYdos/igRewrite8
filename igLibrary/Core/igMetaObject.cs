@@ -9,8 +9,13 @@ namespace igLibrary.Core
 		public List<igMetaField> _metaFields;
 		public Type _vTablePointer;
 
-		private bool _beganTypeBuilding = false;
-		private bool _finishedTypeBuilding = false;
+		private bool _beganTypeDeclaration = false;
+		private bool _beganTypeDefiniton = false;
+		private bool _beganTypeFinalization = false;
+		private bool _finishedTypeFinalization = false;
+		private static MethodInfo GetCompoundFieldInfoMethodInfo = typeof(igArkCore).GetMethod("GetCompoundFieldInfo");
+		private static FieldInfo CompoundFieldInfoFieldInfo = typeof(igCompoundMetaField).GetField("_compoundFieldInfo");
+		private static ConstructorInfo CompoundFieldConstructor = typeof(igCompoundMetaField).GetConstructor(BindingFlags.Instance | BindingFlags.Public, Type.EmptyTypes);
 
 		public igMetaObject()
 		{
@@ -74,15 +79,26 @@ namespace igLibrary.Core
 		}
 		public void TypeBuildBegin()
 		{
-			if(_vTablePointer != null) return;
+			if(_beganTypeDeclaration) return;
+			if(_vTablePointer != null)
+			{
+				_beganTypeDeclaration = true;
+				return;
+			}
+			_beganTypeDeclaration = true;
 
-			TypeBuilder tb = igArkCore.GetNewTypeBuilder(_name);
-			_vTablePointer = tb;
+			_vTablePointer = igArkCore.GetNewTypeBuilder(_name);
 		}
 		//It'll probably be a good idea to add safety checks for the parent class, but __internalObjectBase doesn't every deal with this so yeah
 		public void TypeBuildAddFields()
 		{
-			if(_vTablePointer.GetType() != typeof(TypeBuilder)) return;
+			if(_beganTypeDefiniton) return;
+			if(!(_vTablePointer is TypeBuilder))
+			{
+				_beganTypeDefiniton = true;
+				return;
+			}
+			_beganTypeDefiniton = true;
 
 			TypeBuilder tb = (TypeBuilder)_vTablePointer;
 
@@ -115,21 +131,23 @@ namespace igLibrary.Core
 		}
 		public void TypeBuildFinalize()
 		{
-			if(!(_vTablePointer is TypeBuilder))
+			if(_beganTypeFinalization) return;
+			else if(!(_vTablePointer is TypeBuilder))
 			{
-				_beganTypeBuilding = true;
-				_finishedTypeBuilding = true;
+				_beganTypeFinalization = true;
+				_finishedTypeFinalization = true;
 				return;
 			}
-			else if(_beganTypeBuilding) return;
 
-			_beganTypeBuilding = true;
+			_beganTypeFinalization = true;
 
 			ReadyDependancyAndBlock(_parent);
 
+			uint parentNameHash = igHash.Hash(_parent._name);
 			if(_vTablePointer.BaseType.IsGenericType)
 			{
-				if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
+				//If _parent._name is "igObjectList" or "igNonRefCountedObjectList"
+				if((_parent._name.Length == 12 && parentNameHash == 0x84D79B42) || (_parent._name.Length == 25 && parentNameHash == 0xD3BD6FDE))
 				{
 					ReadyDependancyAndBlock(((igObjectRefMetaField)((igMemoryRefMetaField)_metaFields[2])._memType)._metaObject);
 				}
@@ -137,19 +155,20 @@ namespace igLibrary.Core
 
 			TypeBuilder tb = (TypeBuilder)_vTablePointer;
 
-			if(_parent._name == "igCompoundMetaField")
+			//if _parent._name is "igCompoundMetaField"
+			if(_parent._name.Length == 19 && parentNameHash == 0x9AEC2E67)
 			{
 				ConstructorBuilder cb = tb.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, null);
 				ILGenerator ilGen = cb.GetILGenerator();
 				ilGen.Emit(OpCodes.Ldarg_0);																			//Load "this"
-				ilGen.Emit(OpCodes.Call, typeof(igCompoundMetaField).GetConstructor(BindingFlags.Instance | BindingFlags.Public, Type.EmptyTypes));	//Call the base constructor
+				ilGen.Emit(OpCodes.Call, CompoundFieldConstructor);				//Call the base constructor
 				ilGen.Emit(OpCodes.Nop);
 				ilGen.Emit(OpCodes.Nop);
-				ilGen.Emit(OpCodes.Ldarg_0);																			//Load "this"
-				ilGen.Emit(OpCodes.Ldstr, _name);																		//Load the name of this class as a string
-				ilGen.Emit(OpCodes.Call, typeof(igArkCore).GetMethod("GetCompoundFieldInfo"));							//Get the igCompoundFieldInfo
-				ilGen.Emit(OpCodes.Stfld, typeof(igCompoundMetaField).GetField("_compoundFieldInfo"));					//Assign the value
-				ilGen.Emit(OpCodes.Ret);																				//Return
+				ilGen.Emit(OpCodes.Ldarg_0);									//Load "this"
+				ilGen.Emit(OpCodes.Ldstr, _name);								//Load the name of this class as a string
+				ilGen.Emit(OpCodes.Call, GetCompoundFieldInfoMethodInfo);		//Get the igCompoundFieldInfo
+				ilGen.Emit(OpCodes.Stfld, CompoundFieldInfoFieldInfo);			//Assign the value
+				ilGen.Emit(OpCodes.Ret);										//Return
 			}
 			else
 			{
@@ -159,17 +178,17 @@ namespace igLibrary.Core
 			Type testType = ((TypeBuilder)_vTablePointer).CreateType();
 			igArkCore.AddDynamicTypeToCache(testType);
 			_vTablePointer = testType;
-			_finishedTypeBuilding = true;
+			_finishedTypeFinalization = true;
 		}
 		private void ReadyDependancyAndBlock(igMetaObject dependancy)
 		{
-			if(dependancy._beganTypeBuilding == false)
+			if(dependancy._beganTypeFinalization == false)
 			{
 				dependancy.TypeBuildFinalize();
 				return;
 			}			
 
-			while(!dependancy._finishedTypeBuilding)
+			while(!dependancy._finishedTypeFinalization)
 			{
 				Thread.Sleep(10);
 			}
