@@ -85,11 +85,13 @@ namespace igLibrary.Core
 			}
 
 			ReadStringTable(stringCount);
-			InstantiateMetas(compoundCount, metaObjectCount);
+			InstantiateCompounds(compoundCount);
+			InstantiateObjectMetas(metaObjectCount);
 			_metaEnumsInFile.Capacity = metaEnumCount;
 			for(int i = 0; i < metaEnumCount; i++)
 			{
 				igMetaEnum metaEnum = ReadMetaEnum();
+				if(metaEnum == null) continue;
 				igArkCore._metaEnums.Add(metaEnum);
 				_metaEnumsInFile.Add(metaEnum);
 			}
@@ -107,7 +109,7 @@ namespace igLibrary.Core
 			}
 		}
 
-		private void InstantiateMetas(int compoundCount, int metaObjectCount)
+		private void InstantiateCompounds(int compoundCount)
 		{
 			_shs[Section.CompoundInst].Seek(0);
 			for(int i = 0; i < compoundCount; i++)
@@ -117,7 +119,10 @@ namespace igLibrary.Core
 				_compoundsInFile.Add(compoundInfo);
 				igArkCore._compoundFieldInfos.Add(compoundInfo);
 			}
+		}
 
+		private void InstantiateObjectMetas(int metaObjectCount)
+		{
 			_shs[Section.ObjectInst].Seek(0);
 			for(int i = 0; i < metaObjectCount; i++)
 			{
@@ -131,9 +136,35 @@ namespace igLibrary.Core
 		{
 			SaveString(_shs[Section.ObjectInst], metaObject._name);
 			SaveString(_shs[Section.ObjectInfo], metaObject._parent != null ? metaObject._parent._name : null);
-			_shs[Section.ObjectInfo].WriteInt32(metaObject._metaFields.Count);
+			
+			int fieldCount = metaObject._metaFields.Count;
+			int firstField = 0;
+			if(metaObject._parent != null)
+			{
+				if(metaObject._parent._name == "igDataList")
+				{
+					igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2];
+					SaveMetaField(_shs[Section.ObjectInfo], _data._memType);
+				}
+				else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+				{
+					igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2];
+					igMetaObject _metaObject  = ((igObjectRefMetaField)_data._memType)._metaObject;
+					SaveString(_shs[Section.ObjectInfo], _metaObject._name);
+				}
+				else if(metaObject._parent._name == "igHashTable")
+				{
+					igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0];
+					igMemoryRefMetaField _keys = (igMemoryRefMetaField)metaObject._metaFields[1];
+					SaveMetaField(_shs[Section.ObjectInfo], _values._memType);
+					SaveMetaField(_shs[Section.ObjectInfo], _keys._memType);
+				}
+				firstField = metaObject._parent._metaFields.Count;
+			}
 
-			for(int i = 0; i < metaObject._metaFields.Count; i++)
+			_shs[Section.ObjectInfo].WriteInt32(fieldCount - firstField);
+
+			for(int i = firstField; i < fieldCount; i++)
 			{
 				SaveMetaField(_shs[Section.ObjectInfo], metaObject._metaFields[i]);
 			}
@@ -189,9 +220,32 @@ namespace igLibrary.Core
 				if(parentName != null)
 				{
 					metaObject._parent = igArkCore.GetObjectMeta(parentName);
+					metaObject.InheritFields();
+					if(metaObject._parent._name == "igDataList")
+					{
+						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
+						_data._memType = ReadMetaField(_shs[Section.ObjectInfo]);
+						metaObject._metaFields[2] = _data;
+					}
+					else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+					{
+						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
+						Console.WriteLine($"igObjectList child at {GetOffset(Section.ObjectInfo).ToString("X08")}");
+						((igObjectRefMetaField)_data._memType)._metaObject = igArkCore.GetObjectMeta(ReadString(_shs[Section.ObjectInfo]));
+						metaObject._metaFields[2] = _data;
+					}
+					else if(metaObject._parent._name == "igHashTable")
+					{
+						igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0].CreateFieldCopy();
+						igMemoryRefMetaField _keys   = (igMemoryRefMetaField)metaObject._metaFields[1].CreateFieldCopy();
+						_values._memType = ReadMetaField(_shs[Section.ObjectInfo]);
+						  _keys._memType = ReadMetaField(_shs[Section.ObjectInfo]);
+						metaObject._metaFields[0] = _values;
+						metaObject._metaFields[1] = _keys;
+					}
 				}
 				int fieldCount = _shs[Section.ObjectInfo].ReadInt32();
-				metaObject._metaFields.Capacity = fieldCount;
+				metaObject._metaFields.Capacity += fieldCount;
 				for(int j = 0; j < fieldCount; j++)
 				{
 					metaObject._metaFields.Add(ReadMetaField(_shs[Section.ObjectInfo]));
@@ -222,6 +276,8 @@ namespace igLibrary.Core
 				metaEnum._names.Add(ReadString(_shs[Section.EnumInfo]));
 				metaEnum._values.Add(_shs[Section.EnumInfo].ReadInt32());
 			}
+			if(metaEnum._name == null || metaEnum._name.Length == 0)
+				return null;
 			metaEnum.PostUndump();
 			return metaEnum;
 		}
@@ -235,14 +291,27 @@ namespace igLibrary.Core
 			string? typeName = ReadString(sh);
 			if(typeName == null) return null;
 			Type? t = igArkCore.GetObjectDotNetType(typeName);
+			igCompoundMetaFieldInfo? compoundFieldInfo = null;
 			if(t == null)
 			{
-				t = typeof(igPlaceHolderMetaField);
+				compoundFieldInfo = igArkCore.GetCompoundFieldInfo(typeName);
+				if(compoundFieldInfo != null)
+				{
+					t = typeof(igCompoundMetaField);
+				}
+				else
+				{
+					t = typeof(igPlaceHolderMetaField);
+				}
 			}
 			igMetaField metaField = (igMetaField)Activator.CreateInstance(t);
 			if(metaField is igPlaceHolderMetaField placeHolder)
 			{
 				placeHolder._typeName = typeName;
+			}
+			else if(metaField is igCompoundMetaField compoundField)
+			{
+				compoundField._compoundFieldInfo = compoundFieldInfo;
 			}
 			metaField.UndumpArkData(this, sh);
 			return metaField;
@@ -270,9 +339,10 @@ namespace igLibrary.Core
 
 				for(int j = 0; j < fieldCount; j++)
 				{
-					Console.WriteLine($"Compound {i}, metafield {j} @ {GetOffset(Section.CompoundInfo).ToString("X08")}");
+					//Console.WriteLine($"Compound {i}, metafield {j} @ {GetOffset(Section.CompoundInfo).ToString("X08")}");
 					compoundInfo._fieldList.Add(ReadMetaField(_shs[Section.CompoundInfo]));
 				}
+				compoundInfo.PostUndump();
 			}
 		}
 		public void FinishSave()

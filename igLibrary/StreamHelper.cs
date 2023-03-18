@@ -144,11 +144,11 @@ namespace igLibrary
 			BaseStream.Read(buffer, 0x00, 0x01);
 			return buffer[0];
 		}
-		public void WriteByte() => WriteByte((uint)BaseStream.Position);
-		public void WriteByte(uint offset)
+		public void WriteByte(byte data) => WriteByte(data, (uint)BaseStream.Position);
+		public void WriteByte(byte data, uint offset)
 		{
 			BaseStream.Seek(offset, SeekOrigin.Begin);
-			byte[] buffer = new byte[1];
+			byte[] buffer = new byte[1]{data};
 			BaseStream.Write(buffer, 0x00, 0x01);
 		}
 

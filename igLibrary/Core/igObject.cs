@@ -8,15 +8,18 @@ namespace igLibrary.Core
 		{
 			uint objectOffset = loader._stream.Tell();
 
-			List<igMetaField> _metaFields = GetMeta()._metaFields;
+			List<igMetaField> metaFields = GetMeta()._metaFields;
 
-			for(int i = 0; i < _metaFields.Count; i++)
+			for(int i = 0; i < metaFields.Count; i++)
 			{
-				loader._stream.Seek(objectOffset + _metaFields[i]._offsets[loader._platform]);
+				if(metaFields[i] is igStaticMetaField) continue;
+				if(metaFields[i] is igPropertyFieldMetaField) continue;
 
-				object? data = _metaFields[i].ReadIGZField(loader);
+				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 
-				FieldInfo? field = GetType().GetField(_metaFields[i]._name);
+				object? data = metaFields[i].ReadIGZField(loader);
+
+				FieldInfo? field = GetType().GetField(metaFields[i]._name);
 				if(field != null)
 				{
 					field.SetValue(this, data);

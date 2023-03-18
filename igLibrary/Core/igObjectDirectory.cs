@@ -5,7 +5,7 @@ namespace igLibrary.Core
 		public string _path;
 		public igName _name;
 		public List<igObjectDirectory> _dependancies = new List<igObjectDirectory>();
-		//public igObjectList _objectList = new igObjectList();
+		public igObjectList _objectList = new igObjectList();
 		public bool _useNameList = false;
 		//public igNameList? _nameList = null;
 		public igIGZLoader _loader;

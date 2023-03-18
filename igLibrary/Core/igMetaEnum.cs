@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace igLibrary.Core
@@ -10,7 +12,20 @@ namespace igLibrary.Core
 		public override void PostUndump()
 		{
 			Type? t = igArkCore.GetEnumDotNetType(_name);
-			if(t != null)
+
+			if(t == null)
+			{
+				EnumBuilder eb = igArkCore.GetNewEnumBuilder(_name);
+
+				for(int i = 0; i < _names.Count; i++)
+				{
+					eb.DefineLiteral(_names[i], _values[i]);
+				}
+
+				_internalType = eb.CreateType();
+				return;
+			}
+			else
 			{
 				_internalType = t;
 			}

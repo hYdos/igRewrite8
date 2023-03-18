@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace igLibrary.Core
 {
-	public class igMemoryRefHandleMetaField : igMetaField
+	public class igMemoryRefHandleMetaField : igRefMetaField
 	{
 		public igMetaField _memType;
 
@@ -17,6 +17,23 @@ namespace igLibrary.Core
 			base.UndumpArkData(loader, sh);
 
 			_memType = loader.ReadMetaField(sh);
+		}
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			return null;
+		}
+
+		public override Type GetOutputType()
+		{
+			return typeof(igMemory<>).MakeGenericType(_memType.GetOutputType());
+		}
+		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
+		public override igMetaField CreateFieldCopy()
+		{
+			igMemoryRefMetaField field = (igMemoryRefMetaField)base.CreateFieldCopy();
+			field._memType = field._memType.CreateFieldCopy();
+			return field;
 		}
 	}
 	public class igMemoryRefHandleArrayMetaField : igMemoryRefHandleMetaField

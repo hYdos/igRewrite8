@@ -2,23 +2,35 @@
 using igLibrary;
 using igRewrite8.Devel;
 
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
+
 namespace igRewrite8
 {
 	public static class Program
 	{
 		public static void Main(string[] args)
 		{
-			/*igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
+			//ReadFromTextFile(args);
 
-			List<igMetaObject> metaObjects = igArkCore._metaObjects;
-			List<igMetaEnum> metaEnums = igArkCore._metaEnums;
+			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
-			ReadMetaFieldList();
+			igArkCore.GetObjectMeta("igObjectList").CalculateOffsets();
+			igArkCore.GetObjectMeta("igImage2").CalculateOffsets();
+			igArkCore.GetObjectMeta("igNameList").CalculateOffsets();
 
+			igObjectDirectory directory = new igObjectDirectory();
+			FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read);
+			igIGZLoader igzLoader = new igIGZLoader(directory, fs, false);
 
-			igArkCore.WriteToFile(igArkCore.EGame.EV_SkylandersSuperchargers);*/
-
-			/*TextParser parser = new TextParser();
+			igzLoader.Read(directory, false);
+			igzLoader.ReadObjects();
+			return;
+		}
+		private static void ReadFromTextFile(string[] args)
+		{
+			TextParser parser = new TextParser();
 			parser.ReadMetaEnumFile(args[0]);
 			parser.ReadMetaFieldFile(args[1]);
 			parser.ReadMetaObjectFile(args[2]);
@@ -29,21 +41,7 @@ namespace igRewrite8
 
 			igArkCore.WriteToFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 			
-			igArkCore.Reset();*/
-
-			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
-
-			igArkCore.GetObjectMeta("igObjectList").CalculateOffsets();
-			igArkCore.GetObjectMeta("igStringRefList").CalculateOffsets();
-			igArkCore.GetObjectMeta("igNameList").CalculateOffsets();
-			
-			igObjectDirectory directory = new igObjectDirectory();
-			FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read);
-			igIGZLoader igzLoader = new igIGZLoader(directory, fs, false);
-
-			igzLoader.Read(directory, false);	
-			igzLoader.ReadObjects();
-			return;
+			igArkCore.Reset();
 		}
 	}
 }

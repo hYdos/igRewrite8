@@ -19,6 +19,16 @@ namespace igLibrary.Core
 
 			_metaEnum = igArkCore.GetMetaEnum(loader.ReadString(sh));
 		}
+
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			int raw = loader._stream.ReadInt32();
+			if(_metaEnum != null) return Enum.ToObject(_metaEnum._internalType, raw);
+			else                  return raw;
+		}
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;
+		public override uint GetSize(IG_CORE_PLATFORM platform) => 4;
+		public override Type GetOutputType() => _metaEnum == null ? typeof(int) : _metaEnum._internalType;
 	}
 	public class igEnumArrayMetaField : igEnumMetaField
 	{

@@ -1,5 +1,6 @@
 namespace igLibrary.Core
 {
+	[igStruct]
 	public struct igName
 	{
 		public string _string = string.Empty;

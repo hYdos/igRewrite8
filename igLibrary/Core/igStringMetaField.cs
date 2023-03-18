@@ -1,6 +1,6 @@
 namespace igLibrary.Core
 {
-	public class igStringMetaField : igMetaField
+	public class igStringMetaField : igRefMetaField
 	{
 		public override object? ReadIGZField(igIGZLoader loader)
 		{

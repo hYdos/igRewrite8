@@ -126,9 +126,33 @@ namespace igRewrite8.Devel
 				if(members[0] == "igMetaObject")
 				{
 					igMetaObject metaObject = metaObjectLookup[members[1]];
+
 					if(members.Length > 2)
 					{
 						metaObject._parent = metaObjectLookup[members[2]];
+						metaObject.InheritFields();
+						int parentMetaIndex = 3;
+						if(metaObject._parent._name == "igDataList")
+						{
+							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
+							_data._memType = ReadFieldType(members, ref parentMetaIndex);
+							metaObject._metaFields[2] = _data;
+						}
+						else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+						{
+							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
+							((igObjectRefMetaField)_data._memType)._metaObject = metaObjectLookup[members[parentMetaIndex]];
+							metaObject._metaFields[2] = _data;
+						}
+						else if(metaObject._parent._name == "igHashTable")
+						{
+							igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0].CreateFieldCopy();
+							igMemoryRefMetaField _keys   = (igMemoryRefMetaField)metaObject._metaFields[1].CreateFieldCopy();
+							_values._memType = ReadFieldType(members, ref parentMetaIndex);
+							  _keys._memType = ReadFieldType(members, ref parentMetaIndex);
+							metaObject._metaFields[0] = _values;
+							metaObject._metaFields[1] = _keys;
+						}
 					}
 					while(true)
 					{
@@ -138,6 +162,8 @@ namespace igRewrite8.Devel
 						if(memberInfo[0] == "igMetaEndObject") break;
 						
 						int dataIndex = 0;
+						if(metaObject._name == "CZoneInfoSystem")
+							;
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
@@ -148,8 +174,6 @@ namespace igRewrite8.Devel
 				else if(members[0] == "igCompoundField")
 				{
 					igCompoundMetaFieldInfo compoundInfo = compoundInfoLookup[previousMeta];
-					if(compoundInfo._name == "CStaticOrderMetaField")
-						;
 					while(true)
 					{
 						string memberLine = sh.ReadLine();
@@ -201,6 +225,15 @@ namespace igRewrite8.Devel
 				t = typeof(igPlaceHolderMetaField);
 			}
 			metaField = (igMetaField)Activator.CreateInstance(t);
+
+			if(metaField is igRefMetaField refMetaField)
+			{
+				string refData = data[index++];
+				refMetaField._construct = refData[0] == '1';
+				refMetaField._destruct = refData[0] == '1';
+				refMetaField._reconstruct = refData[0] == '1';
+				refMetaField._refCounted = refData[0] == '1';
+			}
 
 			if(typeName.StartsWith("igMemoryRefHandle"))
 			{

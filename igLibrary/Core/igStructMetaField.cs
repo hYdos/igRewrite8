@@ -4,6 +4,11 @@ namespace igLibrary.Core
 	{
 		public Dictionary<IG_CORE_PLATFORM, uint> _sizes;
 		public Dictionary<IG_CORE_PLATFORM, uint> _alignements;
+
+		public override object? ReadIGZField(igIGZLoader loader) => null;
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _alignements[platform];
+		public override uint GetSize(IG_CORE_PLATFORM platform) => _sizes[platform];
+		public override Type GetOutputType() => typeof(int);
 	}
 	public class igStructArrayMetaField : igStructMetaField
 	{

@@ -55,9 +55,11 @@
 		}
 		public void ReadObjects()
 		{
-			_stream.Seek(_runtimeFields._objectLists[0]);
-			igObjectList objList = (igObjectList)_offsetObjectList[_runtimeFields._objectLists[0]];
-			objList.ReadIGZFields(this);
+			foreach(KeyValuePair<ulong, igObject> offsetObject in _offsetObjectList)
+			{
+				_stream.Seek(offsetObject.Key);
+				offsetObject.Value.ReadIGZFields(this);
+			}
 		}
 
 		public void ParseSections()
@@ -136,6 +138,7 @@
 						break;
 					case 0x544F4F52:							//ROOT
 						UnpackCompressedInts(_runtimeFields._objectLists, _stream.ReadBytes(length - start), count);
+						_dir._objectList = (igObjectList)_offsetObjectList[_runtimeFields._objectLists[0]];
 						break;
 					case 0x53464F52:							//ROFS
 						UnpackCompressedInts(_runtimeFields._offsets, _stream.ReadBytes(length - start), count);

@@ -58,7 +58,7 @@ namespace igLibrary.Core
 		}
 
 		public virtual object? ReadIGZField(igIGZLoader loader) => throw new NotImplementedException();
-		public virtual Type GetOutputType() => throw new NotImplementedException();
+		public virtual Type GetOutputType() => typeof(object);
 		public virtual uint GetSize(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 
@@ -66,5 +66,7 @@ namespace igLibrary.Core
 		public virtual void SetTemplateParameterCount(uint count){}
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;
 		public virtual uint GetTemplateParameterCount() => 0;
+
+		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
 	}
 }

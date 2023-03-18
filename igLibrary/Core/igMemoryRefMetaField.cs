@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace igLibrary.Core
 {
-	public class igMemoryRefMetaField : igMetaField
+	public class igMemoryRefMetaField : igRefMetaField
 	{
 		public igMetaField _memType;
 
@@ -26,7 +26,15 @@ namespace igLibrary.Core
 
 			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(raw);
 			ulong offset = loader.DeserializeOffset(raw);
-			Type memoryType = GetOutputType();
+			Type memoryType;
+			try
+			{
+				memoryType = GetOutputType();
+			}
+			catch(NotImplementedException)
+			{
+				return null;
+			}
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
 			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(size / _memType.GetSize(loader._platform)));
@@ -46,6 +54,13 @@ namespace igLibrary.Core
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform) * 2;
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
+
+		public override igMetaField CreateFieldCopy()
+		{
+			igMemoryRefMetaField field = (igMemoryRefMetaField)base.CreateFieldCopy();
+			field._memType = field._memType.CreateFieldCopy();
+			return field;
+		}
 	}
 	public class igMemoryRefArrayMetaField : igMemoryRefMetaField
 	{
