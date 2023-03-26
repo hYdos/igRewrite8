@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Linq;
 using System.Reflection.Emit;
 
 namespace igLibrary.Core
@@ -38,6 +39,12 @@ namespace igLibrary.Core
 			if(index < 0) throw new KeyNotFoundException($"Value {value} not found in enum {_name}");
 
 			return Enum.Parse(_internalType, _names[index]);
+		}
+		public object GetEnumFromName(string name)
+		{
+			if(_internalType == null) throw new NotImplementedException("this enum is not connected to any type. This feature will be implemented in the future");
+
+			return Enum.Parse(_internalType, name);
 		}
 	}
 }

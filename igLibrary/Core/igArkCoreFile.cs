@@ -189,6 +189,7 @@ namespace igLibrary.Core
 					metaFieldPlatformInfo._alignments.Add(platformValue, align);
 				}
 				_metaFieldPlatformInfosInFile.Add(metaFieldPlatformInfo);
+				igArkCore._metaFieldPlatformInfos.Add(metaFieldPlatformInfo);
 			}
 		}
 		public void SaveMetaFieldPlatformInfo(igMetaFieldPlatformInfo metaFieldPlatformInfo)
@@ -307,7 +308,7 @@ namespace igLibrary.Core
 			igMetaField metaField = (igMetaField)Activator.CreateInstance(t);
 			if(metaField is igPlaceHolderMetaField placeHolder)
 			{
-				placeHolder._typeName = typeName;
+				placeHolder._platformInfo = igArkCore.GetMetaFieldPlatformInfo(typeName);
 			}
 			else if(metaField is igCompoundMetaField compoundField)
 			{

@@ -7,7 +7,7 @@ namespace igLibrary.Core
 		public List<igObjectDirectory> _dependancies = new List<igObjectDirectory>();
 		public igObjectList _objectList = new igObjectList();
 		public bool _useNameList = false;
-		//public igNameList? _nameList = null;
+		public igNameList? _nameList = null;
 		public igIGZLoader _loader;
 
 		public enum FileType : uint

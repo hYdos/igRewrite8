@@ -149,6 +149,10 @@
 					case 0x52545352:							//RSTR
 						UnpackCompressedInts(_runtimeFields._stringRefs, _stream.ReadBytes(length - start), count);
 						break;
+					case 0x4D414E4F:							//ONAM
+						_dir._useNameList = true;
+						_dir._nameList = (igNameList)_offsetObjectList[DeserializeOffset(_stream.ReadUInt32())];
+						break;
 				}
 
 				bytesProcessed += length;

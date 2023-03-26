@@ -6,8 +6,8 @@ namespace igLibrary.Core
 		public Dictionary<IG_CORE_PLATFORM, uint> _alignements;
 
 		public override object? ReadIGZField(igIGZLoader loader) => null;
-		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _alignements[platform];
-		public override uint GetSize(IG_CORE_PLATFORM platform) => _sizes[platform];
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 1;
+		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
 		public override Type GetOutputType() => typeof(int);
 	}
 	public class igStructArrayMetaField : igStructMetaField

@@ -67,6 +67,10 @@ namespace igLibrary.Core
 			if(_metaObject._vTablePointer == typeof(igBlindObject)) return typeof(igObject);
 			return _metaObject._vTablePointer;
 		}
+		public override void ReadyOutputType()
+		{
+			if(_metaObject != null) _metaObject.TypeBuild();
+		}
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField
 	{

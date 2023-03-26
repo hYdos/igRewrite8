@@ -45,9 +45,13 @@ namespace igLibrary.Core
 		}
 		public void CalculateOffsets()
 		{
-			IG_CORE_PLATFORM[] platforms = Enum.GetValues<IG_CORE_PLATFORM>();
+			igMetaEnum platformEnum = igArkCore.GetMetaEnum("IG_CORE_PLATFORM");
+			IG_CORE_PLATFORM[] platforms = new IG_CORE_PLATFORM[platformEnum._names.Count];
+			
 			for(int i = 0; i < platforms.Length; i++)
 			{
+				platforms[i] = (IG_CORE_PLATFORM)platformEnum.GetEnumFromName(platformEnum._names[i]);
+
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT) continue;
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEPRECATED) continue;
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_MAX) continue;
@@ -77,6 +81,37 @@ namespace igLibrary.Core
 		{
 			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
+
+		protected override void TypeBuildDeclare()
+		{
+			if(_beganTypeDeclaration) return;
+			if(_vTablePointer != null)
+			{
+				_beganTypeDeclaration = true;
+				return;
+			}
+			_beganTypeDeclaration = true;
+
+			igArkCore._pendingTypes.Push(this);
+		}
+		protected override void TypeBuildDefine()
+		{
+			if(_beganTypeDefiniton) return;
+			if(!(_vTablePointer is TypeBuilder))
+			{
+				_beganTypeDefiniton = true;
+				return;
+			}
+			_beganTypeDefiniton = true;
+
+			this._parent.TypeBuild();
+
+			for(int i = 0; i < _metaFields.Count; i++)
+			{
+				_metaFields[i].ReadyOutputType();
+			}
+		}
+
 		public void TypeBuildBegin()
 		{
 			if(_beganTypeDeclaration) return;

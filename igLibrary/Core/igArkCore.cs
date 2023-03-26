@@ -102,6 +102,8 @@ namespace igLibrary.Core
 		private static Dictionary<string, TypeBuilder>? _dynamicTypes = new Dictionary<string, TypeBuilder>();
 		private static Dictionary<string, Type>? _dynamicStructs = new Dictionary<string, Type>();
 
+		public static Stack<igMetaObject> _pendingTypes = new Stack<igMetaObject>();
+
 		public static void WriteToFile(EGame game)
 		{
 			igArkCoreFile saver = new igArkCoreFile();
@@ -156,7 +158,7 @@ namespace igLibrary.Core
 			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildAddFields());
 			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildAddFields());
 
-			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildFinalize());
+			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => { _compoundFieldInfos[i].TypeBuildFinalize(); _compoundFieldInfos[i].CalculateOffsets(); } );
 			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildFinalize());
 
 			stopwatch.Stop();

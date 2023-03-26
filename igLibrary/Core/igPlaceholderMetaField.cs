@@ -2,7 +2,7 @@ namespace igLibrary.Core
 {
 	public class igPlaceHolderMetaField : igMetaField
 	{
-		public string _typeName;
+		public igMetaFieldPlatformInfo _platformInfo;
 		public short _num;
 		public List<igMetaField> _templateArgs = new List<igMetaField>();
 
@@ -35,5 +35,8 @@ namespace igLibrary.Core
 		{
 			return _templateArgs[(int)index];
 		}
+
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _platformInfo._alignments[platform];
+		public override uint GetSize(IG_CORE_PLATFORM platform) => _platformInfo._sizes[platform];
 	}
 }

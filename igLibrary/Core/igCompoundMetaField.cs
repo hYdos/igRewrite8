@@ -7,12 +7,33 @@ namespace igLibrary.Core
 	{
 		public igCompoundMetaFieldInfo _compoundFieldInfo;
 
-		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
+		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			base.UndumpArkData(loader, sh);
-			//string typeName = loader.ReadString(sh);
-			//_compoundFieldInfo = igArkCore.GetCompoundFieldInfo(typeName);
+			uint objectOffset = loader._stream.Tell();
+
+			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
+
+			object compoundData = Activator.CreateInstance(_compoundFieldInfo._vTablePointer);
+
+			for(int i = 0; i < metaFields.Count; i++)
+			{
+				if(metaFields[i] is igStaticMetaField) continue;
+				if(metaFields[i] is igPropertyFieldMetaField) continue;
+
+				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
+
+				object? data = metaFields[i].ReadIGZField(loader);
+
+				FieldInfo? field = _compoundFieldInfo._vTablePointer.GetField(metaFields[i]._name);
+				if(field != null)
+				{
+					field.SetValue(compoundData, data);
+				}
+			}
+
+			return compoundData;
 		}
+
 		public override Type GetOutputType() => _compoundFieldInfo._vTablePointer;
 
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._alignments[platform];
@@ -39,9 +60,13 @@ namespace igLibrary.Core
 
 		public void CalculateOffsets()
 		{
-			IG_CORE_PLATFORM[] platforms = Enum.GetValues<IG_CORE_PLATFORM>();
+			igMetaEnum platformEnum = igArkCore.GetMetaEnum("IG_CORE_PLATFORM");
+			IG_CORE_PLATFORM[] platforms = new IG_CORE_PLATFORM[platformEnum._names.Count];
+			
 			for(int i = 0; i < platforms.Length; i++)
 			{
+				platforms[i] = (IG_CORE_PLATFORM)platformEnum.GetEnumFromName(platformEnum._names[i]);
+
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT) continue;
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEPRECATED) continue;
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_MAX) continue;
@@ -52,7 +77,7 @@ namespace igLibrary.Core
 		public void CalculateOffsetForPlatform(IG_CORE_PLATFORM platform)
 		{
 			igMetaField[] metaFieldsByOffset = _fieldList.OrderBy(x => x._offset).ToArray();
-			ushort currentOffset = (ushort)(4u + igAlchemyCore.GetPointerSize(platform));
+			ushort currentOffset = 0;
 			for(int i = 0; i < metaFieldsByOffset.Length; i++)
 			{
 				if(metaFieldsByOffset[i] is igStaticMetaField) continue;

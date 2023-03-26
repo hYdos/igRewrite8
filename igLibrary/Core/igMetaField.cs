@@ -12,7 +12,7 @@ namespace igLibrary.Core
 		{
 			if(this is igPlaceHolderMetaField placeholder)
 			{
-				saver.SaveString(sh, placeholder._typeName);
+				saver.SaveString(sh, placeholder._platformInfo._name);
 			}
 			else
 			{
@@ -68,5 +68,13 @@ namespace igLibrary.Core
 		public virtual uint GetTemplateParameterCount() => 0;
 
 		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
+		public virtual void ReadyOutputType()
+		{
+			uint templateParamCount = GetTemplateParameterCount();
+			for(int i = 0; i < templateParamCount; i++)
+			{
+				GetTemplateParameter(templateParamCount).ReadyOutputType();
+			}
+		}
 	}
 }

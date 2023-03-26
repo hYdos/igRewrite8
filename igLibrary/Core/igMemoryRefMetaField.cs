@@ -61,7 +61,13 @@ namespace igLibrary.Core
 			field._memType = field._memType.CreateFieldCopy();
 			return field;
 		}
-	}
+		public override void ReadyOutputType()
+		{
+			if(_memType != null)
+			{
+				_memType.ReadyOutputType();
+			}
+		}	}
 	public class igMemoryRefArrayMetaField : igMemoryRefMetaField
 	{
 		public short _num;

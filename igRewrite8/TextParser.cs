@@ -278,7 +278,7 @@ namespace igRewrite8.Devel
 
 			if(metaField is igPlaceHolderMetaField placeholder)
 			{
-				placeholder._typeName = typeName;
+				placeholder._platformInfo = igArkCore.GetMetaFieldPlatformInfo(typeName);
 			}
 
 			metaField.SetTemplateParameterCount((uint)templateCount);
