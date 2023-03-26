@@ -2,6 +2,7 @@ namespace igLibrary.Core
 {
 	public class igArchiveManager : igSingleton<igArchiveManager>
 	{
+		public Dictionary<string, igArchive> _patchArchives = new Dictionary<string, igArchive>();
 		public Dictionary<string, igArchive> archives = new Dictionary<string, igArchive>();
 
 		public bool ExistsInOpenArchives(string path)

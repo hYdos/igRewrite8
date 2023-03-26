@@ -102,7 +102,7 @@ namespace igLibrary.Core
 		private static Dictionary<string, TypeBuilder>? _dynamicTypes = new Dictionary<string, TypeBuilder>();
 		private static Dictionary<string, Type>? _dynamicStructs = new Dictionary<string, Type>();
 
-		public static Stack<igMetaObject> _pendingTypes = new Stack<igMetaObject>();
+		public static List<igMetaObject> _pendingTypes = new List<igMetaObject>();
 
 		public static void WriteToFile(EGame game)
 		{
@@ -151,15 +151,6 @@ namespace igLibrary.Core
 			_compoundFieldInfos.AddRange(loader._compoundsInFile);
 			_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
 			loader.Dispose();
-
-			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildBegin());
-			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildBegin());
-
-			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => _compoundFieldInfos[i].TypeBuildAddFields());
-			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildAddFields());
-
-			Parallel.For(0, _compoundFieldInfos.Count, (i, p) => { _compoundFieldInfos[i].TypeBuildFinalize(); _compoundFieldInfos[i].CalculateOffsets(); } );
-			Parallel.For(0, _metaObjects.Count, (i, p) => _metaObjects[i].TypeBuildFinalize());
 
 			stopwatch.Stop();
 
@@ -323,6 +314,18 @@ namespace igLibrary.Core
 			_dynamicTypes.Remove(type.Name);
 
 			_vTableCache.Add(type.Name, type);
+		}
+		public static void GeneratePendingTypes()
+		{
+			for(int i = _pendingTypes.Count - 1; i >= 0; i--)
+			{
+				_pendingTypes[i].DefineType();
+			}
+			for(int i = _pendingTypes.Count - 1; i >= 0; i--)
+			{
+				_pendingTypes[i].FinalizeType();
+			}
+			_pendingTypes.Clear();
 		}
 	}
 }

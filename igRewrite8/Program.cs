@@ -16,9 +16,7 @@ namespace igRewrite8
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
-			igArkCore.GetObjectMeta("igObjectList").CalculateOffsets();
-			igArkCore.GetObjectMeta("igImage2").CalculateOffsets();
-			igArkCore.GetObjectMeta("igNameList").CalculateOffsets();
+			List<igMetaObject> pendingTypes = igArkCore._pendingTypes;
 
 			igObjectDirectory directory = new igObjectDirectory();
 			FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read);
@@ -26,6 +24,7 @@ namespace igRewrite8
 
 			igzLoader.Read(directory, false);
 			igzLoader.ReadObjects();
+
 			return;
 		}
 		private static void ReadFromTextFile(string[] args)

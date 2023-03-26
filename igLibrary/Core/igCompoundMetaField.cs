@@ -15,6 +15,8 @@ namespace igLibrary.Core
 
 			object compoundData = Activator.CreateInstance(_compoundFieldInfo._vTablePointer);
 
+			_compoundFieldInfo.CalculateOffsetForPlatform(loader._platform);
+
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;

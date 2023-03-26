@@ -20,7 +20,34 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			return null;
+			if(!loader._runtimeFields._memoryHandles.Contains(loader._stream.Tell())) return null;
+
+			ulong thumbnailIndex = loader.ReadRawOffset();
+			Tuple<uint, uint> thumbnail = loader._thumbnails[(int)thumbnailIndex];
+
+			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(thumbnail.Item2);
+			ulong offset = loader.DeserializeOffset(thumbnail.Item2);
+			Type memoryType;
+			try
+			{
+				memoryType = GetOutputType();
+			}
+			catch(NotImplementedException)
+			{
+				return null;
+			}
+			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
+			memory.SetMemoryPool(pool);
+			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(thumbnail.Item1 / _memType.GetSize(loader._platform)));
+
+			for(int i = 0; i < objects.Length; i++)
+			{
+				objects.SetValue(_memType.ReadIGZField(loader), i);
+			}
+
+			memory.SetData(objects);
+			
+			return memory;
 		}
 
 		public override Type GetOutputType()

@@ -12,7 +12,7 @@
 		//public List<igHandle> _namedHandleList = new List<igHandle>();
 		//public List<igHandle> _unresolvedNames = new List<igHandle>();
 		//public igObjectList _namedExternalList = new igObjectList();
-		//public List<igMemory> _thumbnails = new List<igMemory>();
+		public List<Tuple<uint, uint>> _thumbnails = new List<Tuple<uint, uint>>();
 		public igRuntimeFields _runtimeFields = new igRuntimeFields();
 		public uint _version;
 		public uint _metaObjectVersion;
@@ -115,6 +115,9 @@
 							if(vtable != null) _vtableList.Add(vtable);
 							else               throw new TypeLoadException("Failed to find type \"" + vtableName + "\". This type may be platform specific or loaded from a game script, please contact NefariousTechSupport.");
 
+							vtable.GenerateType();
+							vtable.CalculateOffsetForPlatform(_platform);
+
 							int bits = (_version > 7) ? 2 : 1;
 							_stream.Seek(basePos + bits + (vtableName.Length & (uint)(-bits)));
 						}
@@ -130,6 +133,15 @@
 
 							int bits = (_version > 7) ? 2 : 1;
 							_stream.Seek(basePos + bits + (data.Length & (uint)(-bits)));
+						}
+						break;
+					case 0x4E484D54:							//TMHN
+						_thumbnails.Capacity = (int)count;
+						for(uint j = 0; j < count; j++)
+						{
+							ulong size = ReadRawOffset() & 0x07FFFFFF;
+							ulong raw = ReadRawOffset();
+							_thumbnails.Add(new Tuple<uint, uint>((uint)size, (uint)raw));
 						}
 						break;
 					case 0x42545652:							//RVTB
@@ -148,6 +160,9 @@
 						break;
 					case 0x52545352:							//RSTR
 						UnpackCompressedInts(_runtimeFields._stringRefs, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x4E484D52:							//RMHN
+						UnpackCompressedInts(_runtimeFields._memoryHandles, _stream.ReadBytes(length - start), count);
 						break;
 					case 0x4D414E4F:							//ONAM
 						_dir._useNameList = true;
