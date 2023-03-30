@@ -16,14 +16,15 @@ namespace igRewrite8
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
+			igFileContext.Singleton.Initialize(args[0]);
+
 			List<igMetaObject> pendingTypes = igArkCore._pendingTypes;
 
-			igObjectDirectory directory = new igObjectDirectory();
-			FileStream fs = new FileStream(args[0], FileMode.Open, FileAccess.Read);
-			igIGZLoader igzLoader = new igIGZLoader(directory, fs, false);
+			//igObjectDirectory directory = igObjectStreamManager.Singleton.Load(args[1], false);
 
-			igzLoader.Read(directory, false);
-			igzLoader.ReadObjects();
+			igArchive arc = new igArchive(File.Open("F:/GAMES/BLES02172-[Skylanders SuperChargers]/PS3_GAME/USRDIR/archives/permanent_ps3.pak", FileMode.Open));
+
+			igFileContext.Singleton.Open(args[1], 0, out igFileDescriptor fd, igBlockingType.kBlocking, igFileWorkItem.Priority.kPriorityNormal);
 
 			return;
 		}

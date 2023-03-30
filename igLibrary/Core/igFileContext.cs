@@ -2,8 +2,13 @@ namespace igLibrary.Core
 {
 	public class igFileContext : igSingleton<igFileContext>
 	{
-		List<igFileDescriptor> _fileDescriptorPool = new List<igFileDescriptor>();
-		
+		private List<igFileDescriptor> _fileDescriptorPool = new List<igFileDescriptor>();
+		public List<igFileWorkItem> _fileWorkItemPool = new List<igFileWorkItem>();		//TODO: Make this an igObjectPool
+		private List<igStorageDevice> _devices = new List<igStorageDevice>();
+		private igFileWorkItemProcessor _processorStack;
+		public igArchiveMountManager _archiveMountManager = new igArchiveMountManager();
+		public igArchiveManager _archiveManager = new igArchiveManager();
+
 		Dictionary<string, string> _virtualDevices = new Dictionary<string, string>()
 		{
 			{"actors", "actors"},
@@ -39,8 +44,12 @@ namespace igLibrary.Core
 		public igFileContext()
 		{
 			_root = string.Empty;
+			_processorStack = _archiveMountManager;
+			_archiveMountManager._nextProcessor = _archiveManager;
+			_archiveManager._nextProcessor = null;
 		}
 
+		//Rename to GetVirtualStorageDevicePath
 		public string GetMediaDirectory(string media)
 		{
 			string lower = media.ToLower();
@@ -50,66 +59,99 @@ namespace igLibrary.Core
 			}
 			else return media;
 		}
+		private void CreateWorkItem(igFileDescriptor fd, igFileWorkItem.WorkType workType, object buffer, ulong offset, ulong size, uint flags, string path, igBlockingType blockingType, igFileWorkItem.Priority priority, Action callback, object[] callbackData)
+		{
+			igFileWorkItem workItem = AllocateWorkItem();
+
+			workItem._file = fd;
+			workItem._buffer = buffer;
+			workItem._offset = offset;
+			workItem._size = (uint)size;
+			workItem._flags = flags;
+			workItem._path = path;
+			workItem._type = workType;
+			workItem._blocking = blockingType;
+			workItem._priority = priority;
+
+			_processorStack.Process(workItem);
+		}
+
+		public igFileWorkItem AllocateWorkItem()
+		{
+			igFileWorkItem workItem;
+			//int index = _fileWorkItemPool.FindIndex(x => x._status != igFileWorkItem.Status.kStatusActive);
+			int index = -1;
+			if(index < 0)
+			{
+				workItem = new igFileWorkItem();
+				_fileWorkItemPool.Add(workItem);
+			}
+			else
+			{
+				workItem = _fileWorkItemPool[index];
+			}
+			return workItem;
+		}
 
 		public void Initialize(string root)
 		{
-			//igGfx.Initialize();
 			_root = root.TrimEnd('/');
 			_root = _root.TrimEnd('\\');
-			/*IG_CORE_PLATFORM[] platforms = Enum.GetValues<IG_CORE_PLATFORM>();
-			foreach(IG_CORE_PLATFORM platform in platforms)
-			{
-				string platformName = igCore.GetPlatformString(platform);
+		}
 
-				if(File.Exists($"{_root}/archives/permanent_{platformName}.pak"))
-				{
-					igArchiveManager.Singleton.AddArchiveToPool("permanent.pak");
-					igArchiveManager.Singleton.AddArchiveToPool("permanentdeveloper.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"permanent_{platformName}.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"shaders_{platformName}.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"loosefiles.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"CollectibleTrackerIcons.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"skystonesSmashPortraits.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"ToyCollectionMaterials.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"LevelIcons.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"Minimaps.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"TrophyBlueprints.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"soundbankdata.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"zoneinfos.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"juicedomain_story.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"QuestIcons.pak");
-					igArchiveManager.Singleton.AddArchiveToPool($"PortalMasterPerkIcons.pak");
-				}
-			}*/
+		public void AddStorageDevice(igStorageDevice device)
+		{
+			_devices.Add(device);
 		}
 
 		public igFileDescriptor Open(string path)
 		{
 			igFilePath fp = new igFilePath();
 			fp.Set(path);
-			int fdIndex = _fileDescriptorPool.FindIndex(x => x._path._path == fp._path);
+			int fdIndex = _fileDescriptorPool.FindIndex(x => x._path == fp._path);
 
 			if(fdIndex >= 0) return _fileDescriptorPool[fdIndex];
 			else
 			{
-				Stream ms;
-				if(igArchiveManager.Singleton.ExistsInOpenArchives(path))
+				Stream? ms = null;
+				if(File.Exists($"{_root}/{fp._path}"))
 				{
-					ms = new MemoryStream();
-					igArchiveManager.Singleton.GetFile(path, ms);
+					ms = File.Open(_root + "/" + fp._path, FileMode.Open);
 				}
 				else
 				{
-					if(File.Exists($"{_root}/{fp._path}"))
+					uint hash = igHash.Hash(fp._path);
+					for(int i = 0; i < _devices.Count; i++)
 					{
-						ms = File.Open(_root + "/" + fp._path, FileMode.Open);
+						if(_devices[i] is igArchive iga)
+						{
+							if(iga.HasFile(hash))
+							{
+								ms = new MemoryStream();
+								iga.ExtractFile(hash, ms);
+							}
+						}
 					}
-					else throw new FileNotFoundException($"Did not find {fp._path}");
+					if(ms == null) throw new FileNotFoundException($"Failed to find file {fp._path}");
 				}
 				_fileDescriptorPool.Add(new igFileDescriptor(ms, fp._path));
 				return _fileDescriptorPool.Last();
 			}
 		}
-		public bool Exists(string path) => _fileDescriptorPool.Any(x => x._path._path == path);
+		private igFileDescriptor Prepare(string path, uint flags)
+		{
+			igFileDescriptor fd = new igFileDescriptor();
+			_fileDescriptorPool.Add(fd);
+			igFilePath fp = new igFilePath();
+			fp.Set(path);
+			fd._path = fp._path;
+			return fd;
+		}
+		public void Open(string path, uint flags, out igFileDescriptor fd, igBlockingType blockingType, igFileWorkItem.Priority priority)
+		{
+			fd = Prepare(path, flags);
+			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, flags, fd._path, blockingType, priority, null, null);
+		}
+		public bool Exists(string path) => _fileDescriptorPool.Any(x => x._path == path);
 	}
 }

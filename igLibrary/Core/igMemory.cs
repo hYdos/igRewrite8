@@ -5,7 +5,13 @@ namespace igLibrary.Core
 	public struct igMemory<T> : IEnumerable<T>, IigMemory
 	{
 		public igMemoryPool _memoryPool;
-		public T[] _data;
+		private T[] _data;
+
+		public T this[int index]
+		{
+			get => _data[index];
+			set => _data[index] = value;
+		}
 
 		public IEnumerator<T> GetEnumerator()
 		{
@@ -25,6 +31,10 @@ namespace igLibrary.Core
 			{
 				_data = data.Cast<T>().ToArray();
 			}
+		}
+		public void Realloc(int itemCount)
+		{
+			Array.Resize<T>(ref _data, itemCount);
 		}
 	}
 	public interface IigMemory

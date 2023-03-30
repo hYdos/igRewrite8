@@ -5,7 +5,7 @@ using SevenZip.Compression.LZMA;
 
 namespace igLibrary.Core
 {
-	public class igArchive
+	public class igArchive : igStorageDevice
 	{
 		//This is a wishlist, not an indicator of current support, although the ones marked with an asterisk (*) aren't supported
 		public enum IG_CORE_ARCHIVE_VERSION : uint
@@ -46,6 +46,9 @@ namespace igLibrary.Core
 
 		public uint flags;
 
+		public string _nativeMedia;
+		public string _nativePath;
+
 		public igArchive(string path)
 		{
 			sh = igFileContext.Singleton.Open(path)._stream;
@@ -55,6 +58,8 @@ namespace igLibrary.Core
 			else if(magicNumber == 0x4947411A) sh._endianness = StreamHelper.Endianness.Big;
 
 			ReadHeader();
+
+			igFileContext.Singleton._archiveManager._archiveList.Append(this);
 		}
 
 		//Bypasses igFileContext, useful when not reading an archive from _root
@@ -67,6 +72,8 @@ namespace igLibrary.Core
 			else if(magicNumber == 0x4947411A) sh._endianness = StreamHelper.Endianness.Big;
 
 			ReadHeader();
+
+			igFileContext.Singleton._archiveManager._archiveList.Append(this);
 		}
 
 		public IG_CORE_ARCHIVE_VERSION PredictVersion()
@@ -286,6 +293,7 @@ namespace igLibrary.Core
 			pathToHash = pathToHash.TrimStart('/', '\\');
 			return FindFile(igHash.Hash(pathToHash));
 		}
+
 		public int FindFile(uint hash) => Array.FindIndex<IG_CORE_ARCHIVE_FILE_HEADER>(fileHeaders, x => x.hash == hash);
 		public bool HasFile(string path) => FindFile(path) >= 0;
 		public bool HasFile(uint hash) => FindFile(hash) >= 0;
@@ -296,5 +304,152 @@ namespace igLibrary.Core
 			string volumeName = Path.GetFileName((sh.BaseStream as FileStream).Name);
 			return $"{volumeName}:/{fileHeaders[i].name}";
 		}
+
+		public override void Process(igFileWorkItem workItem)
+		{
+			switch(workItem._type)
+			{
+				case igFileWorkItem.WorkType.kTypeExists:
+					Exists(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeOpen:
+					Open(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeClose:
+					Close(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRead:
+					Read(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeWrite:
+					//Write(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeTruncate:
+					Truncate(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeMkdir:
+					Mkdir(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRmdir:
+					Rmdir(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeFileList:
+					GetFileList(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeFileListWithSizes:
+					GetFileListWithSizes(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeUnlink:
+					Unlink(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRename:
+					Rename(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypePrefetch:
+					workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
+					break;
+				case igFileWorkItem.WorkType.kTypeFormat:
+					Format(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeCommit:
+					Commit(workItem);
+					break;
+			}
+		}
+
+		public override void Exists(igFileWorkItem workItem)
+		{
+			if(HasFile(workItem._path))
+			{
+				workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
+			}
+			else
+			{
+				workItem.SetStatus(igFileWorkItem.Status.kStatusInvalidPath);
+			}
+		}
+
+		public override void Open(igFileWorkItem workItem)
+		{
+			int fileId = FindFile(workItem._path);
+			workItem._file._path = workItem._path;
+			workItem._file._size = fileHeaders[fileId].length;
+			workItem._file._position = 0;
+			workItem._file._handle = new MemoryStream((int)workItem._file._size);
+			workItem._file._device = this;
+			ExtractFile(fileId, (MemoryStream)workItem._file._handle);
+			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
+		}
+		public override void Close(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Read(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Write(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Truncate(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Mkdir(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Rmdir(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void GetFileList(igFileWorkItem workItem)
+		{
+			igStringRefList nameList = (igStringRefList)workItem._buffer;
+			nameList.SetCapacity(fileHeaders.Length);
+			for(int i = 0; i < fileHeaders.Length; i++)
+			{
+				nameList.Append(fileHeaders[i].name);
+			}
+			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
+		}
+
+		public override void GetFileListWithSizes(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Unlink(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Rename(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Prefetch(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Format(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void Commit(igFileWorkItem workItem)
+		{
+			throw new NotImplementedException();
+		}
 	}
+	public class igArchiveList : igTObjectList<igArchive>{}
 }

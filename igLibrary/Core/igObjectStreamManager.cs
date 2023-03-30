@@ -38,7 +38,7 @@ namespace igLibrary.Core
 				{
 					try
 					{
-						igArchiveManager.Singleton.AddArchiveToPool($"{fp._file}.pak");
+						//igArchiveManager.Singleton.AddArchiveToPool($"{fp._file}.pak");
 					}
 					catch(Exception){}
 				}

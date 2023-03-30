@@ -2,14 +2,22 @@ namespace igLibrary.Core
 {
 	public class igFileDescriptor
 	{
-		public igFilePath _path;
-		public StreamHelper _stream;
+		public string _path;
+		public ulong _position;
+		public ulong _size;
+		public igStorageDevice _device;
+		public Stream _handle;
+		//public igSignal _signal;
+		public uint _flags;
+		public int _workItemActiveCount;
+		public static int _counter;
+		public StreamHelper _stream;	//Should work on deprecating this, _handle is now a Stream
 
+		public igFileDescriptor(){}
 		public igFileDescriptor(Stream data, string path, StreamHelper.Endianness endianness = StreamHelper.Endianness.Little)
 		{
 			_stream = new StreamHelper(data, endianness);
-			_path = new igFilePath();
-			_path.Set(path);
+			_path = path;
 		}
 	}
 }

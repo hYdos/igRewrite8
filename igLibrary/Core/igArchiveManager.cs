@@ -1,9 +1,9 @@
 namespace igLibrary.Core
 {
-	public class igArchiveManager : igSingleton<igArchiveManager>
+	public class igArchiveManager : igFileWorkItemProcessor
 	{
-		public Dictionary<string, igArchive> _patchArchives = new Dictionary<string, igArchive>();
 		public Dictionary<string, igArchive> archives = new Dictionary<string, igArchive>();
+		public igArchiveList _archiveList = new igArchiveList();
 
 		public bool ExistsInOpenArchives(string path)
 		{
@@ -62,6 +62,39 @@ namespace igLibrary.Core
 			if(!fileFound) throw new FileNotFoundException($"COULD NOT FIND {filePath}");
 
 			output.Flush();
+		}
+
+		public override void Process(igFileWorkItem workItem)
+		{
+			if(workItem._type == igFileWorkItem.WorkType.kTypeFileList)
+			{
+				for(int i = 0; i < _archiveList._count; i++)
+				{
+					igArchive archive = (igArchive)_archiveList[i];
+					if(archive._nativePath == workItem._file._path)
+					{
+						archive.Process(workItem);
+						return;
+					}
+				}
+			}
+			else
+			{
+				if(workItem._type == igFileWorkItem.WorkType.kTypeInvalid) goto giveUp;
+
+				for(int i = 0; i < _archiveList._count; i++)
+				{
+					igArchive archive = (igArchive)_archiveList[i];
+					if(archive.HasFile(workItem._path))
+					{
+						archive.Process(workItem);
+						return;
+					}
+				}
+			}
+
+		giveUp:
+			SendToNextProcessor(workItem);
 		}
 	}
 }
