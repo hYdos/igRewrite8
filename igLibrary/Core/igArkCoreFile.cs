@@ -214,8 +214,6 @@ namespace igLibrary.Core
 			_shs[Section.ObjectInfo].Seek(0);
 			for(int i = 0; i < _metaObjectsInFile.Count; i++)
 			{
-				if(_metaObjectsInFile[i]._name == "igTraversalInstance") 
-					_shs = _shs;
 				igMetaObject metaObject = _metaObjectsInFile[i];
 				string? parentName = ReadString(_shs[Section.ObjectInfo]);
 				if(parentName != null)
@@ -231,7 +229,6 @@ namespace igLibrary.Core
 					else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
 					{
 						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-						Console.WriteLine($"igObjectList child at {GetOffset(Section.ObjectInfo).ToString("X08")}");
 						((igObjectRefMetaField)_data._memType)._metaObject = igArkCore.GetObjectMeta(ReadString(_shs[Section.ObjectInfo]));
 						metaObject._metaFields[2] = _data;
 					}

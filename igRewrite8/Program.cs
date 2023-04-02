@@ -22,9 +22,9 @@ namespace igRewrite8
 
 			//igObjectDirectory directory = igObjectStreamManager.Singleton.Load(args[1], false);
 
-			igArchive arc = new igArchive(File.Open("F:/GAMES/BLES02172-[Skylanders SuperChargers]/PS3_GAME/USRDIR/archives/permanent_ps3.pak", FileMode.Open));
+			igArchive arc = new igArchive("archives/permanent_ps3.pak");
 
-			igFileContext.Singleton.Open(args[1], 0, out igFileDescriptor fd, igBlockingType.kBlocking, igFileWorkItem.Priority.kPriorityNormal);
+			igFileContext.Singleton.Open(args[1], igFileContext.GetOpenFlags(FileAccess.Read, FileMode.Open), out igFileDescriptor fd, igBlockingType.kBlocking, igFileWorkItem.Priority.kPriorityNormal);
 
 			return;
 		}

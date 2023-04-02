@@ -48,10 +48,13 @@ namespace igLibrary.Core
 
 		public string _nativeMedia;
 		public string _nativePath;
+		public igFile _file;
 
 		public igArchive(string path)
 		{
-			sh = igFileContext.Singleton.Open(path)._stream;
+			_file = new igFile();
+			_file.Open(path);
+			sh = new StreamHelper(_file._file._handle);
 			uint magicNumber = sh.ReadUInt32();
 
 			if(magicNumber == 0x1A414749) sh._endianness = StreamHelper.Endianness.Little;

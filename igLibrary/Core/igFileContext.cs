@@ -44,7 +44,14 @@ namespace igLibrary.Core
 		public igFileContext()
 		{
 			_root = string.Empty;
-			_processorStack = _archiveMountManager;
+
+			//Not Accurate
+			_processorStack = new igWin32StorageDevice();
+			_processorStack._nextProcessor = _archiveMountManager;
+
+			//Accurate
+			//_processorStack = _archiveMountManager;
+
 			_archiveMountManager._nextProcessor = _archiveManager;
 			_archiveManager._nextProcessor = null;
 		}
@@ -72,6 +79,9 @@ namespace igLibrary.Core
 			workItem._type = workType;
 			workItem._blocking = blockingType;
 			workItem._priority = priority;
+
+			//Didn't see this happening but it felt right
+			workItem._status = igFileWorkItem.Status.kStatusActive;
 
 			_processorStack.Process(workItem);
 		}
@@ -137,6 +147,10 @@ namespace igLibrary.Core
 				_fileDescriptorPool.Add(new igFileDescriptor(ms, fp._path));
 				return _fileDescriptorPool.Last();
 			}
+		}
+		public static uint GetOpenFlags(FileAccess access, FileMode mode)
+		{
+			return ((uint)mode << 8) | (uint)access;
 		}
 		private igFileDescriptor Prepare(string path, uint flags)
 		{

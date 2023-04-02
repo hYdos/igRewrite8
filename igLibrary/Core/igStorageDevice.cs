@@ -27,5 +27,60 @@ namespace igLibrary.Core
 		public abstract void Prefetch(igFileWorkItem workItem);
 		public abstract void Format(igFileWorkItem workItem);
 		public abstract void Commit(igFileWorkItem workItem);
+		public override void Process(igFileWorkItem workItem)
+		{
+			switch(workItem._type)
+			{
+				case igFileWorkItem.WorkType.kTypeExists:
+					Exists(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeOpen:
+					Open(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeClose:
+					Close(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRead:
+					Read(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeWrite:
+					Write(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeTruncate:
+					Truncate(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeMkdir:
+					Mkdir(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRmdir:
+					Rmdir(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeFileList:
+					GetFileList(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeFileListWithSizes:
+					GetFileListWithSizes(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeUnlink:
+					Unlink(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeRename:
+					Rename(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypePrefetch:
+					Prefetch(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeFormat:
+					Format(workItem);
+					break;
+				case igFileWorkItem.WorkType.kTypeCommit:
+					Commit(workItem);
+					break;
+				default:
+					throw new ArgumentException("Work type " + workItem._type.ToString() + " does not exist.");
+			}
+
+			SendToNextProcessor(workItem);
+		}
 	}
 }
