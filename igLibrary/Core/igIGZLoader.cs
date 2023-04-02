@@ -31,6 +31,13 @@
 			_stream = new StreamHelper(stream);
 		}
 
+		public igIGZLoader(igObjectDirectory dir, string path, bool readDependancies)
+		{
+			igFile file = new igFile();
+			file.Open(path);
+			_stream = new StreamHelper(file._file._handle);
+		}
+
 		public void Read(igObjectDirectory dir, bool readDependancies)
 		{
 			_dir = dir;
@@ -51,6 +58,7 @@
 
 			ParseSections();
 			ProcessFixupSections(dir, numFixups);
+			ReadObjects();
 			return;
 		}
 		public void ReadObjects()

@@ -53,7 +53,8 @@ namespace igLibrary.Core
 			switch(type)
 			{
 				case FileType.kIGZ:
-					//_loader = new igIGZLoader(this, igFileContext.Singleton.Open(_path), readDependancies);
+					_loader = new igIGZLoader(this, _path, readDependancies);
+					_loader.Read(this, readDependancies);
 					break;
 				default:
 					Console.WriteLine($"WARNING: {_path} IS NOT AN IGOBJECT STREAM, SKIPPING...");
