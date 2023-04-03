@@ -1,5 +1,6 @@
 using System.Drawing;
 using igLibrary.Core;
+using igCauldron2.FieldEditors;
 
 namespace igCauldron2
 {
@@ -18,7 +19,7 @@ namespace igCauldron2
                 ofd.Filter = "Supported game files|*.igz;*.lng|All Files (*.*)|*.*";
                 if(ofd.ShowDialog() == DialogResult.OK)
                 {
-                    _dir = igObjectStreamManager.Singleton.Load("textures:/ColorMap,textures@!default_c`png,111.igz");
+                    _dir = igObjectStreamManager.Singleton.Load("maps:/ActionPacks/APL4/APL4_zoneInfo_en.lng");
                     RepopulateTree();
                 }
             }
@@ -35,8 +36,27 @@ namespace igCauldron2
         }
         private void PopulateObjectNode(TreeNode parent, ref long objIndex, igObject obj)
         {
-            Console.WriteLine($"Adding object of type {obj.GetMeta()._name}...");
+            igMetaObject meta = obj.GetMeta();
+            Console.WriteLine($"Adding object of type {meta._name}...");
             parent.Nodes.Add((objIndex++).ToString(), obj.GetMeta()._name);
+            for(int i = 0; i < meta._metaFields.Count; i++)
+            {
+                FieldEditor? fe = null;
+                if(meta._metaFields[i] is igStringMetaField strmf)
+                {
+                    fe = new StringFieldEditor(obj, strmf, obj.GetType().GetField(meta._metaFields[i]._name));
+                }
+                if(meta._metaFields[i] is igUnsignedShortMetaField usmf)
+                {
+                    fe = new UnsignedShortFieldEditor(obj, usmf, obj.GetType().GetField(meta._metaFields[i]._name));
+                }
+
+                if(fe != null)
+                {
+                    fe.Finalize();
+                    _panelInspector.Controls.Add(fe);
+                }
+            }
         }
         private void OnResize(object sender, EventArgs e)
         {

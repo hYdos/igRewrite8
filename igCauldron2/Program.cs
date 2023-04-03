@@ -17,7 +17,7 @@ namespace igCauldron2
             igFileContext.Singleton.Initialize(args[0]);
             igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
-            igArchive arc = new igArchive("archives/permanent_ps3.pak");
+            igArchive arc = new igArchive("archives/zoneInfos.pak");
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.

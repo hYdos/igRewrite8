@@ -33,7 +33,7 @@
             this._tmsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this._tmsiOpenFile = new System.Windows.Forms.ToolStripMenuItem();
             this._treeObjects = new System.Windows.Forms.TreeView();
-            this._panelInspector = new System.Windows.Forms.Panel();
+            this._panelInspector = new System.Windows.Forms.FlowLayoutPanel();
             this._menuStrip.SuspendLayout();
             this.SuspendLayout();
             //
@@ -79,6 +79,7 @@
             this._panelInspector.Size = new System.Drawing.Size(400, 400);
             this._panelInspector.Text = "_panelInspector";
 			this._panelInspector.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this._panelInspector.FlowDirection = FlowDirection.TopDown;
             //
             // Form1
             //
@@ -102,7 +103,7 @@
         private System.Windows.Forms.ToolStripMenuItem _tmsiFile;
         private System.Windows.Forms.ToolStripMenuItem _tmsiOpenFile;
         private System.Windows.Forms.TreeView _treeObjects;
-        private System.Windows.Forms.Panel _panelInspector;
+        private System.Windows.Forms.FlowLayoutPanel _panelInspector;
     }
 }
 

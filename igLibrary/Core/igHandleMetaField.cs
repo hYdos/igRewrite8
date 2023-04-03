@@ -18,6 +18,10 @@ namespace igLibrary.Core
 
 			_metaObject = igArkCore.GetObjectMeta(loader.ReadString(sh));
 		}
+		public override object ReadIGZField(igIGZLoader loader)
+		{
+			return null;	//Placeholder
+		}
 
 		public override Type GetOutputType() => typeof(igHandle);
 		public override void ReadyOutputType()
