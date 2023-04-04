@@ -9,6 +9,8 @@ namespace igLibrary.Core
 
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
+			if(_compoundFieldInfo._vTablePointer == null) return null;
+
 			uint objectOffset = loader._stream.Tell();
 
 			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
@@ -36,7 +38,11 @@ namespace igLibrary.Core
 			return compoundData;
 		}
 
-		public override Type GetOutputType() => _compoundFieldInfo._vTablePointer;
+		public override Type GetOutputType()
+		{
+			if(_compoundFieldInfo._vTablePointer == null) return typeof(object);
+			else return _compoundFieldInfo._vTablePointer;
+		}
 
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._alignments[platform];
 		public override uint GetSize(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._sizes[platform];
@@ -93,6 +99,12 @@ namespace igLibrary.Core
 
 				currentOffset += (ushort)metaFieldsByOffset[i].GetSize(platform);
 			}
+		}
+		public override igMetaField? GetFieldByName(string name)
+		{
+			int index = _fieldList.FindIndex(x => x._name == name);
+			if(index < 0) return null;
+			return _fieldList[index];
 		}
 		private void Align(ref ushort offset, uint alignment)
 		{

@@ -12,7 +12,7 @@ namespace igRewrite8
 	{
 		public static void Main(string[] args)
 		{
-			//ReadFromTextFile(args);
+			ReadFromTextFile(args); return;
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 

@@ -35,12 +35,14 @@ namespace igLibrary.Core
 			{
 				return null;
 			}
+			uint memSize = _memType.GetSize(loader._platform);
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
-			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(size / _memType.GetSize(loader._platform)));
+			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(size / memSize));
 
 			for(int i = 0; i < objects.Length; i++)
 			{
+				loader._stream.Seek((long)offset + memSize * i);
 				objects.SetValue(_memType.ReadIGZField(loader), i);
 			}
 

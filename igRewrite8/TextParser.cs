@@ -162,9 +162,7 @@ namespace igRewrite8.Devel
 						if(memberInfo[0] == "igMetaEndObject") break;
 						
 						int dataIndex = 0;
-						if(metaObject._name == "CZoneInfoSystem")
-							;
-						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex);
+						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, metaObject);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
 						metaObject._metaFields.Add(metaField);
@@ -182,7 +180,7 @@ namespace igRewrite8.Devel
 						if(memberInfo[0] == "igEndCompoundField") break;
 						
 						int dataIndex = 0;
-						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex);
+						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, compoundInfo);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
 						compoundInfo._fieldList.Add(metaField);
@@ -198,7 +196,7 @@ namespace igRewrite8.Devel
 			igArkCore._compoundFieldInfos.AddRange(compoundInfoLookup.Values);
 		}
 
-		private igMetaField ReadFieldType(string[] data, ref int index)
+		private igMetaField ReadFieldType(string[] data, ref int index, igBaseMeta? meta = null)
 		{
 			List<igMetaField> templateArgs = new List<igMetaField>();
 			igMetaField? metaField = null;
@@ -225,6 +223,7 @@ namespace igRewrite8.Devel
 				t = typeof(igPlaceHolderMetaField);
 			}
 			metaField = (igMetaField)Activator.CreateInstance(t);
+			metaField._parentMeta = meta;
 
 			if(metaField is igRefMetaField refMetaField)
 			{
@@ -267,10 +266,11 @@ namespace igRewrite8.Devel
 			}
 			else if(typeName.StartsWith("igBitField"))
 			{
+				igBitFieldMetaField bfMetaField = metaField as igBitFieldMetaField;
+				bfMetaField._storageMetaField = bfMetaField._parentMeta.GetFieldByName(data[index++]);
 				igMetaField assignmentMetaField = ReadFieldType(data, ref index);
 				uint shift = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 				uint bits = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
-				igBitFieldMetaField bfMetaField = metaField as igBitFieldMetaField;
 				bfMetaField._assignmentMetaField = assignmentMetaField;
 				bfMetaField._shift = shift;
 				bfMetaField._bits = bits;

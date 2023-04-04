@@ -9,7 +9,7 @@ namespace igLibrary.Core
 			return 8;
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 8;
-		public override Type GetOutputType() => typeof(long);
+		public override Type GetOutputType() => typeof(ulong);
 	}
 	public class igUnsignedLongArrayMetaField : igUnsignedLongMetaField
 	{

@@ -311,9 +311,16 @@ namespace igLibrary.Core
 		{
 			CheckAndInitializeCaches();
 
-			_dynamicTypes.Remove(type.Name);
 
-			_vTableCache.Add(type.Name, type);
+			if(_dynamicTypes.ContainsKey(type.Name))
+			{
+				_dynamicTypes.Remove(type.Name);
+			}
+
+			if(!_vTableCache.ContainsKey(type.Name))
+			{
+				_vTableCache.Add(type.Name, type);
+			}
 		}
 		public static void GeneratePendingTypes()
 		{

@@ -223,7 +223,7 @@ namespace igLibrary.Core
 					if(metaObject._parent._name == "igDataList")
 					{
 						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-						_data._memType = ReadMetaField(_shs[Section.ObjectInfo]);
+						_data._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
 						metaObject._metaFields[2] = _data;
 					}
 					else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
@@ -236,8 +236,8 @@ namespace igLibrary.Core
 					{
 						igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0].CreateFieldCopy();
 						igMemoryRefMetaField _keys   = (igMemoryRefMetaField)metaObject._metaFields[1].CreateFieldCopy();
-						_values._memType = ReadMetaField(_shs[Section.ObjectInfo]);
-						  _keys._memType = ReadMetaField(_shs[Section.ObjectInfo]);
+						_values._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
+						  _keys._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
 						metaObject._metaFields[0] = _values;
 						metaObject._metaFields[1] = _keys;
 					}
@@ -246,7 +246,7 @@ namespace igLibrary.Core
 				metaObject._metaFields.Capacity += fieldCount;
 				for(int j = 0; j < fieldCount; j++)
 				{
-					metaObject._metaFields.Add(ReadMetaField(_shs[Section.ObjectInfo]));
+					metaObject._metaFields.Add(ReadMetaField(_shs[Section.ObjectInfo], metaObject));
 				}
 				metaObject.PostUndump();
 			}
@@ -284,7 +284,7 @@ namespace igLibrary.Core
 			if(metaField == null) sh.WriteInt32(-1);
 			else                  metaField.DumpArkData(this, sh);
 		}
-		public igMetaField? ReadMetaField(StreamHelper sh)
+		public igMetaField? ReadMetaField(StreamHelper sh, igBaseMeta? meta = null)
 		{
 			string? typeName = ReadString(sh);
 			if(typeName == null) return null;
@@ -303,6 +303,7 @@ namespace igLibrary.Core
 				}
 			}
 			igMetaField metaField = (igMetaField)Activator.CreateInstance(t);
+			metaField._parentMeta = meta;
 			if(metaField is igPlaceHolderMetaField placeHolder)
 			{
 				placeHolder._platformInfo = igArkCore.GetMetaFieldPlatformInfo(typeName);
@@ -338,7 +339,7 @@ namespace igLibrary.Core
 				for(int j = 0; j < fieldCount; j++)
 				{
 					//Console.WriteLine($"Compound {i}, metafield {j} @ {GetOffset(Section.CompoundInfo).ToString("X08")}");
-					compoundInfo._fieldList.Add(ReadMetaField(_shs[Section.CompoundInfo]));
+					compoundInfo._fieldList.Add(ReadMetaField(_shs[Section.CompoundInfo], compoundInfo));
 				}
 				compoundInfo.PostUndump();
 			}

@@ -20,7 +20,7 @@ namespace igLibrary.Core
 			igArkCore.GeneratePendingTypes();
 		}
 
-		private void DeclareType()
+		public void DeclareType()
 		{
 			if(_vTablePointer != null) return;
 
@@ -28,12 +28,13 @@ namespace igLibrary.Core
 
 			igArkCore._pendingTypes.Add(this);
 
-			_parent.DeclareType();
-
 			for(int i = 0; i < _metaFields.Count; i++)
 			{
-				ReadyFieldDependancy(_metaFields[i]);
+				if(_parent._metaFields.Count <= i)                ReadyFieldDependancy(_metaFields[i]);
+				else if(_metaFields[i] != _parent._metaFields[i]) ReadyFieldDependancy(_metaFields[i]);
 			}
+
+			_parent.DeclareType();
 		}
 		private void ReadyFieldDependancy(igMetaField field)
 		{
@@ -84,9 +85,13 @@ namespace igLibrary.Core
 
 		public void FinalizeType()
 		{
-			Type testType = ((TypeBuilder)_vTablePointer).CreateType();
-			igArkCore.AddDynamicTypeToCache(testType);
-			_vTablePointer = testType;
+			if(_vTablePointer is TypeBuilder)
+			{
+				_parent.FinalizeType();
+				Type testType = ((TypeBuilder)_vTablePointer).CreateType();
+				igArkCore.AddDynamicTypeToCache(testType);
+				_vTablePointer = testType;
+			}
 		}
 
 		public override void PostUndump()
@@ -104,6 +109,12 @@ namespace igLibrary.Core
 				tester = tester._parent;
 			}
 			return false;
+		}
+		public override igMetaField? GetFieldByName(string name)
+		{
+			int index = _metaFields.FindIndex(x => x._name == name);
+			if(index < 0) return null;
+			return _metaFields[index];
 		}
 		public void InheritFields()
 		{
@@ -134,7 +145,11 @@ namespace igLibrary.Core
 			{
 				if(metaFieldsByOffset[i] is igStaticMetaField) continue;
 				if(metaFieldsByOffset[i] is igPropertyFieldMetaField) continue;
-				if(metaFieldsByOffset[i] is igBitFieldMetaField) continue;
+				if(metaFieldsByOffset[i] is igBitFieldMetaField bfMf)
+				{
+					bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
+					continue;
+				}
 				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform)) continue;
 
 				Align(ref currentOffset, metaFieldsByOffset[i].GetAlignment(platform));
