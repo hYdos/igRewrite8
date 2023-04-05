@@ -59,6 +59,7 @@ namespace igLibrary.Core
 		}
 
 		public virtual object? ReadIGZField(igIGZLoader loader) => throw new NotImplementedException();
+		public virtual void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value) => throw new NotImplementedException();
 		public virtual Type GetOutputType() => typeof(object);
 		public virtual uint GetSize(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => throw new NotImplementedException();

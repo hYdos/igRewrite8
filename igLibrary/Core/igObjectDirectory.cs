@@ -66,7 +66,7 @@ namespace igLibrary.Core
 			if(type == FileType.kIGZ)
 			{
 				igIGZSaver saver = new igIGZSaver();
-				
+				saver.WriteFile(this, path);
 			}
 		}
 		public static igObjectDirectory? LoadDependancyDefault(string filePath, igName nameSpace)

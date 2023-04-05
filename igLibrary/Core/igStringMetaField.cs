@@ -26,6 +26,22 @@ namespace igLibrary.Core
 
 			return data;
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			uint basePos = section._sh.Tell();
+			
+			if(value == null)
+			{
+				saver.WriteRawOffset(0, section);
+			}
+			else
+			{
+				//why use string refs when you can use the string table
+				saver.WriteRawOffset((ulong)saver._stringList.Count, section);
+				saver._stringList.Add((string)value);
+				section._runtimeFields._stringTables.Add(basePos);
+			}
+		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 		public override Type GetOutputType() => typeof(string);

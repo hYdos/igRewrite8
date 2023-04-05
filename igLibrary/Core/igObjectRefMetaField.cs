@@ -62,6 +62,20 @@ namespace igLibrary.Core
 			//if(ret is T t) return t;
 			//else return null;
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			ulong baseOffset = section._sh.Tell64();
+			igObject? obj = (igObject?)value;
+
+			if(obj == null) saver.WriteRawOffset(0, section);
+			
+			//Should add stuff to check for externals
+
+			ulong objectOffset = saver.SaveObject(obj);
+			section._sh.Seek(baseOffset);
+			saver.WriteRawOffset(objectOffset, section);
+			section._runtimeFields._offsets.Add(baseOffset);
+		}
 		public override Type GetOutputType()
 		{
 			//if(_metaObject._vTablePointer == typeof(igBlindObject)) return typeof(igObject);

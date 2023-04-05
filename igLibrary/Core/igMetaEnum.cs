@@ -40,6 +40,15 @@ namespace igLibrary.Core
 
 			return Enum.Parse(_internalType, _names[index]);
 		}
+		public int GetValueFromEnum(object enumValue)
+		{
+			if(_internalType == null) throw new NotImplementedException("this enum is not connected to any type. This feature will be implemented in the future");
+
+			int index = _names.IndexOf(enumValue.ToString());
+			if(index < 0) throw new KeyNotFoundException($"Value {enumValue.ToString()} not found in enum {_name}");
+
+			return _values[index];
+		}
 		public object GetEnumFromName(string name)
 		{
 			if(_internalType == null) throw new NotImplementedException("this enum is not connected to any type. This feature will be implemented in the future");

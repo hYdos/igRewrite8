@@ -50,6 +50,27 @@ namespace igLibrary.Core
 			
 			return memory;
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			IigMemory memory = (IigMemory)value;
+			igIGZSaver.SaverSection memorySection = saver.GetSaverSection(memory.GetMemoryPool());
+			Array objects = memory.GetData();
+			ulong start = section._sh.Tell64();
+			uint memSize = _memType.GetSize(saver._platform);
+			ulong size = (ulong)(memSize * objects.Length);
+			ulong memOffset = memorySection.Malloc((uint)size);
+
+			for(int i = 0; i < objects.Length; i++)
+			{
+				memorySection._sh.Seek((long)memOffset + memSize * i);
+				_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+			}
+
+			section._sh.Seek(start);
+			saver.WriteRawOffset(size, section);
+			saver.WriteRawOffset(memOffset, section);
+			section._runtimeFields._offsets.Add(start);
+		}
 		public override Type GetOutputType()
 		{
 			return typeof(igMemory<>).MakeGenericType(_memType.GetOutputType());

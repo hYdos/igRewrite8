@@ -7,6 +7,7 @@ namespace igLibrary.Core
 	{
 		public igMetaObject? _parent;
 		public List<igMetaField> _metaFields;
+		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Type _vTablePointer;
 
 		public igMetaObject()
@@ -192,6 +193,8 @@ namespace igLibrary.Core
 			addOffsetAndContinue:
 				currentOffset += (ushort)metaFieldsByOffset[i].GetSize(platform);
 			}
+
+			_sizes.Add(platform, currentOffset);
 		}
 		private void Align(ref ushort offset, uint alignment)
 		{
