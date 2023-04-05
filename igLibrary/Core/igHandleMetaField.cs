@@ -24,10 +24,6 @@ namespace igLibrary.Core
 		}
 
 		public override Type GetOutputType() => typeof(igHandle);
-		public override void ReadyOutputType()
-		{
-			if(_metaObject != null) _metaObject.TypeBuild();
-		}
 	}
 	public class igHandleArrayMetaField : igHandleMetaField
 	{

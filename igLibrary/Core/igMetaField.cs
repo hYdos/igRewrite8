@@ -69,13 +69,5 @@ namespace igLibrary.Core
 		public virtual uint GetTemplateParameterCount() => 0;
 
 		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
-		public virtual void ReadyOutputType()
-		{
-			uint templateParamCount = GetTemplateParameterCount();
-			for(int i = 0; i < templateParamCount; i++)
-			{
-				GetTemplateParameter(templateParamCount).ReadyOutputType();
-			}
-		}
 	}
 }

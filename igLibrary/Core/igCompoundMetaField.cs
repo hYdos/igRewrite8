@@ -66,6 +66,76 @@ namespace igLibrary.Core
 			//Sometimes is null, in those cases, a dynamic type will be created
 		}
 
+		public override void DeclareType()
+		{
+			if(_vTablePointer != null) return;
+
+			_vTablePointer = igArkCore.GetNewStructTypeBuilder(_name.Substring(0, _name.Length - 9));
+			igArkCore._pendingTypes.Add(this);
+
+			for(int i = 0; i < _fieldList.Count; i++)
+			{
+				ReadyFieldDependancy(_fieldList[i]);
+			}
+		}
+		public override void DefineType()
+		{
+			if(!(_vTablePointer is TypeBuilder)) return;
+
+			TypeBuilder tb = (TypeBuilder)_vTablePointer;
+
+			tb.SetParent(typeof(ValueType));
+
+			for(int i = 0; i < _fieldList.Count; i++)
+			{
+				if(_fieldList[i] is igPropertyFieldMetaField) continue;
+
+				FieldAttributes attrs = FieldAttributes.Public;
+				if(_fieldList[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
+
+				FieldBuilder fb = tb.DefineField(_fieldList[i]._name, _fieldList[i].GetOutputType(), attrs);
+			}
+		}
+		public override void FinalizeType()
+		{
+			if(!_beganFinalizationPrep)
+			{
+				_beganFinalizationPrep = true;
+
+				if(_vTablePointer is TypeBuilder tb)
+				{
+					Console.WriteLine($"Prepping {_name}");
+
+					for(int i = 0; i < _fieldList.Count; i++)
+					{
+						FinalizeFieldDependancy(_fieldList[i]);
+					}
+
+					Console.WriteLine($"Prepped {_name}");
+				}
+
+				_finishedFinalizationPrep = true;
+			}
+
+			if(!_beganFinalization && _finishedFinalizationPrep)
+			{
+				_beganFinalization = true;
+
+				if(_vTablePointer is TypeBuilder tb)
+				{
+					Console.WriteLine($"Finalizing {_name}");
+					
+					Type testType = tb.CreateType();
+					//igArkCore.AddDynamicTypeToCache(testType);
+					_vTablePointer = testType;
+
+					Console.WriteLine($"Finalized {_name}");
+				}
+
+				_finishedFinalization = true;
+			}
+		}
+
 		public void CalculateOffsets()
 		{
 			igMetaEnum platformEnum = igArkCore.GetMetaEnum("IG_CORE_PLATFORM");

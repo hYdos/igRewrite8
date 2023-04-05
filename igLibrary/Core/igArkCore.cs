@@ -102,7 +102,7 @@ namespace igLibrary.Core
 		private static Dictionary<string, TypeBuilder>? _dynamicTypes = new Dictionary<string, TypeBuilder>();
 		private static Dictionary<string, Type>? _dynamicStructs = new Dictionary<string, Type>();
 
-		public static List<igMetaObject> _pendingTypes = new List<igMetaObject>();
+		public static List<igBaseMeta> _pendingTypes = new List<igBaseMeta>();
 
 		public static void WriteToFile(EGame game)
 		{

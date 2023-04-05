@@ -13,6 +13,7 @@ namespace igCauldron3
 		ImGuiController controller;
 		List<Frame> frames = new List<Frame>();
 		string[] args;
+		public static igObjectDirectory directory = null;
 
 		public Window(GameWindowSettings gws, NativeWindowSettings nws, string[] args) : base(gws, nws)
 		{
@@ -26,9 +27,12 @@ namespace igCauldron3
 
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
+			igArchive arc = new igArchive(args[1]);
+			directory = igObjectStreamManager.Singleton.Load(args[2]);
+
 			frames.Add(new ObjectManagerFrame());
-			((ObjectManagerFrame)frames[0]).Initialize(args);
 			frames.Add(new InspectorFrame());
+			frames.Add(new MenuBarFrame());
 		}
 		protected override void OnResize(ResizeEventArgs e)
 		{

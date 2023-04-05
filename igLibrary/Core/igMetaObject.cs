@@ -20,7 +20,7 @@ namespace igLibrary.Core
 			igArkCore.GeneratePendingTypes();
 		}
 
-		public void DeclareType()
+		public override void DeclareType()
 		{
 			if(_vTablePointer != null) return;
 
@@ -36,33 +36,7 @@ namespace igLibrary.Core
 
 			_parent.DeclareType();
 		}
-		private void ReadyFieldDependancy(igMetaField field)
-		{
-			if(field is igObjectRefMetaField objField) objField._metaObject.DeclareType();
-			else if(field is igHandleMetaField hndField) hndField._metaObject.DeclareType();
-			else if(field is igMemoryRefMetaField memField) ReadyFieldDependancy(memField._memType);
-			else if(field is igMemoryRefHandleMetaField memHndField) ReadyFieldDependancy(memHndField._memType);
-			else if(field is igStaticMetaField staticField) ReadyFieldDependancy(staticField._storageMetaField);
-
-			for(uint i = 0; i < field.GetTemplateParameterCount(); i++)
-			{
-				ReadyFieldDependancy(field.GetTemplateParameter(i));
-			}
-		}
-		private void FinalizeFieldDependancy(igMetaField field)
-		{
-			if(field is igObjectRefMetaField objField) objField._metaObject.FinalizeType();
-			else if(field is igHandleMetaField hndField) hndField._metaObject.FinalizeType();
-			else if(field is igMemoryRefMetaField memField) FinalizeFieldDependancy(memField._memType);
-			else if(field is igMemoryRefHandleMetaField memHndField) FinalizeFieldDependancy(memHndField._memType);
-			else if(field is igStaticMetaField staticField) FinalizeFieldDependancy(staticField._storageMetaField);
-
-			for(uint i = 0; i < field.GetTemplateParameterCount(); i++)
-			{
-				FinalizeFieldDependancy(field.GetTemplateParameter(i));
-			}
-		}
-		public void DefineType()
+		public override void DefineType()
 		{
 			if(!(_vTablePointer is TypeBuilder)) return;
 
@@ -81,6 +55,13 @@ namespace igLibrary.Core
 
 				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
 			}
+			else if(_parent._name == "igHashTable")
+			{
+				igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
+				igMemoryRefMetaField keysField = (igMemoryRefMetaField)_metaFields[1];
+
+				parentType = typeof(igTUHashTable<,>).MakeGenericType(valuesField._memType.GetOutputType(), keysField._memType.GetOutputType());
+			}
 
 			tb.SetParent(parentType);
 
@@ -95,7 +76,7 @@ namespace igLibrary.Core
 			}
 		}
 
-		public void FinalizeType()
+		public override void FinalizeType()
 		{
 			if(!_beganFinalizationPrep)
 			{
@@ -202,12 +183,13 @@ namespace igLibrary.Core
 					bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
 					continue;
 				}
-				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform)) continue;
+				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform)) goto addOffsetAndContinue;
 
 				Align(ref currentOffset, metaFieldsByOffset[i].GetAlignment(platform));
 
 				metaFieldsByOffset[i]._offsets.Add(platform, currentOffset);
 
+			addOffsetAndContinue:
 				currentOffset += (ushort)metaFieldsByOffset[i].GetSize(platform);
 			}
 		}

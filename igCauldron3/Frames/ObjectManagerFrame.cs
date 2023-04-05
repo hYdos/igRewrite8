@@ -2,12 +2,13 @@ using System.Reflection;
 using igLibrary.Core;
 using ImGuiNET;
 
+using static igCauldron3.Window;
+
 namespace igCauldron3
 {
 	public class ObjectManagerFrame : Frame
 	{
 		private static List<InspectorDrawOverride> overrides = new List<InspectorDrawOverride>();
-		public igObjectDirectory directory;
 
 		public ObjectManagerFrame() : base()
 		{
@@ -22,12 +23,6 @@ namespace igCauldron3
 				}
 			}
 
-		}
-
-		public void Initialize(string[] args)
-		{
-			igArchive arc = new igArchive(args[1]);
-			directory = igObjectStreamManager.Singleton.Load(args[2]);
 		}
 
 		public override void Render()
@@ -79,7 +74,7 @@ namespace igCauldron3
 				RenderFieldWithName(obj, meta._metaFields[i]);
 			}
 		}
-		private void RenderFieldWithName(igObject obj, igMetaField field)
+		private void RenderFieldWithName(object obj, igMetaField field)
 		{
 			Type t = obj.GetType();
 			FieldInfo? fi = t.GetField(field._name);
@@ -88,9 +83,29 @@ namespace igCauldron3
 			if(canRender)
 			{
 				object? value = fi.GetValue(obj);
-				RenderField(field._name, ref value, field);
+				RenderArrayField(field._name, ref value, field);
 				fi.SetValue(obj, value);
 			}
+		}
+		public void RenderArrayField(string label, ref object? value, igMetaField field)
+		{
+			FieldInfo? fi = field.GetType().GetField("_num");
+			if(fi != null)
+			{
+				short num = (short)fi.GetValue(field);
+				Array values = (Array)value;
+				for(int i = 0; i < num; i++)
+				{
+					object? currValue = values.GetValue(i);
+					RenderField($"{i}_{label}", ref currValue, field);
+					values.SetValue(currValue, i);
+				}
+			}
+			else
+			{
+				RenderField(label, ref value, field);
+			}
+
 		}
 		public void RenderField(string label, ref object? value, igMetaField field)
 		{
@@ -161,7 +176,7 @@ namespace igCauldron3
 					for(int i = 0; i < data.Length; i++)
 					{
 						object? arrValue = data.GetValue(i);
-						RenderField($"Element {i}", ref arrValue, memType);
+						RenderArrayField($"Element {i}", ref arrValue, memType);
 						data.SetValue(arrValue, i);
 					}
 					ImGui.TreePop();
@@ -178,6 +193,18 @@ namespace igCauldron3
 			else if(field is igEnumMetaField enumMetaField)
 			{
 				ImGui.Text($"{label}: {value.ToString()}");
+			}
+			else if(field is igCompoundMetaField compoundMetaField)
+			{
+				if(ImGui.TreeNode(label))
+				{
+					List<igMetaField> fieldList = compoundMetaField._compoundFieldInfo._fieldList;
+					for(int i = 0; i < fieldList.Count; i++)
+					{
+						RenderFieldWithName(value, fieldList[i]);
+					}
+					ImGui.TreePop();
+				}
 			}
 		}
 	}

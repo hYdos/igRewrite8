@@ -68,10 +68,6 @@ namespace igLibrary.Core
 			if(_metaObject._vTablePointer == null) _metaObject.DeclareType();
 			return _metaObject._vTablePointer;
 		}
-		public override void ReadyOutputType()
-		{
-			if(_metaObject != null) _metaObject.TypeBuild();
-		}
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField
 	{

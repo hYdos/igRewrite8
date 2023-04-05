@@ -61,6 +61,14 @@ namespace igLibrary.Core
 					break;
 			}
 		}
+		public void WriteFile(string path)
+		{
+			if(type == FileType.kIGZ)
+			{
+				igIGZSaver saver = new igIGZSaver();
+				
+			}
+		}
 		public static igObjectDirectory? LoadDependancyDefault(string filePath, igName nameSpace)
 		{
 			return igObjectStreamManager.Singleton.Load(filePath, nameSpace);

@@ -18,7 +18,7 @@ namespace igRewrite8
 
 			igFileContext.Singleton.Initialize(args[0]);
 
-			List<igMetaObject> pendingTypes = igArkCore._pendingTypes;
+			List<igBaseMeta> pendingTypes = igArkCore._pendingTypes;
 
 			//igObjectDirectory directory = igObjectStreamManager.Singleton.Load(args[1], false);
 
