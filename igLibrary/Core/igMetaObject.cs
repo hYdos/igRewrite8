@@ -49,7 +49,19 @@ namespace igLibrary.Core
 				ReadyFieldDependancy(field.GetTemplateParameter(i));
 			}
 		}
+		private void FinalizeFieldDependancy(igMetaField field)
+		{
+			if(field is igObjectRefMetaField objField) objField._metaObject.FinalizeType();
+			else if(field is igHandleMetaField hndField) hndField._metaObject.FinalizeType();
+			else if(field is igMemoryRefMetaField memField) FinalizeFieldDependancy(memField._memType);
+			else if(field is igMemoryRefHandleMetaField memHndField) FinalizeFieldDependancy(memHndField._memType);
+			else if(field is igStaticMetaField staticField) FinalizeFieldDependancy(staticField._storageMetaField);
 
+			for(uint i = 0; i < field.GetTemplateParameterCount(); i++)
+			{
+				FinalizeFieldDependancy(field.GetTemplateParameter(i));
+			}
+		}
 		public void DefineType()
 		{
 			if(!(_vTablePointer is TypeBuilder)) return;
@@ -85,12 +97,44 @@ namespace igLibrary.Core
 
 		public void FinalizeType()
 		{
-			if(_vTablePointer is TypeBuilder)
+			if(!_beganFinalizationPrep)
 			{
-				_parent.FinalizeType();
-				Type testType = ((TypeBuilder)_vTablePointer).CreateType();
-				igArkCore.AddDynamicTypeToCache(testType);
-				_vTablePointer = testType;
+				_beganFinalizationPrep = true;
+
+				if(_vTablePointer is TypeBuilder tb)
+				{
+					Console.WriteLine($"Prepping {_name}");
+
+					_parent.FinalizeType();
+
+					for(int i = 0; i < _metaFields.Count; i++)
+					{
+						if(_parent._metaFields.Count <= i)                FinalizeFieldDependancy(_metaFields[i]);
+						else if(_metaFields[i] != _parent._metaFields[i]) FinalizeFieldDependancy(_metaFields[i]);
+					}
+
+					Console.WriteLine($"Prepped {_name}");
+				}
+
+				_finishedFinalizationPrep = true;
+			}
+
+			if(!_beganFinalization && _finishedFinalizationPrep && _parent._finishedFinalization)
+			{
+				_beganFinalization = true;
+
+				if(_vTablePointer is TypeBuilder tb)
+				{
+					Console.WriteLine($"Finalizing {_name}");
+					
+					Type testType = tb.CreateType();
+					igArkCore.AddDynamicTypeToCache(testType);
+					_vTablePointer = testType;
+
+					Console.WriteLine($"Finalized {_name}");
+				}
+
+				_finishedFinalization = true;
 			}
 		}
 
@@ -99,6 +143,14 @@ namespace igLibrary.Core
 			_vTablePointer = igArkCore.GetObjectDotNetType(_name);
 
 			//Sometimes is null, in those cases, a dynamic type will be created
+
+			if(_vTablePointer != null)
+			{
+				_beganFinalizationPrep = true;
+				_finishedFinalizationPrep = true;
+				_beganFinalization = true;
+				_finishedFinalization = true;
+			}
 		}
 		public bool CanBeAssignedTo(igMetaObject other)
 		{

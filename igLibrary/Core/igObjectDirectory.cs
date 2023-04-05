@@ -1,6 +1,6 @@
 namespace igLibrary.Core
 {
-	public class igObjectDirectory
+	public class igObjectDirectory : igObject
 	{
 		public string _path;
 		public igName _name;

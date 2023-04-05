@@ -4,6 +4,10 @@ namespace igLibrary.Core
 	{
 		public string? _name;
 		internal Type _internalType;
+		protected bool _beganFinalization = false;
+		protected bool _beganFinalizationPrep = false;
+		protected bool _finishedFinalization = false;
+		protected bool _finishedFinalizationPrep = false;
 
 		public virtual void PostUndump(){}
 
