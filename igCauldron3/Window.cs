@@ -19,6 +19,7 @@ namespace igCauldron3
 		{
 			this.args = args;
 			igFileContext.Singleton.Initialize(args[0]);
+			igLibrary.Gfx.igGfx.Initialize();
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 		}
 		protected override void OnLoad()
@@ -27,6 +28,9 @@ namespace igCauldron3
 
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
+			igArchive permanentArc = new igArchive("archives/permanent.pak");
+			          permanentArc = new igArchive("archives/shaders_ps3.pak");
+			          permanentArc = new igArchive("archives/permanent_ps3.pak");
 			igArchive arc = new igArchive(args[1]);
 			directory = igObjectStreamManager.Singleton.Load(args[2]);
 
@@ -49,6 +53,11 @@ namespace igCauldron3
 			}
 
 			base.OnUpdateFrame(e);
+		}
+		protected override void OnTextInput(TextInputEventArgs e)
+		{
+			base.OnTextInput(e);
+			controller.PressChar((char)e.Unicode);
 		}
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{

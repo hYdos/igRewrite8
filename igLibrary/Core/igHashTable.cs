@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace igLibrary.Core
 {
-	public class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>
+	public abstract class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>
 	{
 		public igMemory<T> _values;
 		public igMemory<U> _keys;
@@ -53,6 +53,22 @@ namespace igLibrary.Core
 				}
 			}
 			return (IEnumerator<KeyValuePair<U, T>>)kvps.GetEnumerator();
+		}
+
+		public virtual void KeyTraitsInvalidate(int keyIndex)
+		{
+			     if(!typeof(U).IsValueType)                                    _keys[keyIndex] = default(U);
+			else if(typeof(U) == typeof(int)   || typeof(U) == typeof(uint))   _keys[keyIndex] = (U)(object)0xFAFAFAFA;
+			else if(typeof(U) == typeof(long)  || typeof(U) == typeof(ulong))  _keys[keyIndex] = (U)(object)0xFAFAFAFAFAFAFAFA;
+			else if(typeof(U) == typeof(short))                                _keys[keyIndex] = (U)(object)0x7FFF;
+		}
+		public virtual bool KeyTraitsInvalid(int keyIndex)
+		{
+			return false;
+			//     if(!typeof(U).IsValueType)                                    return _keys[keyIndex] == default(U);
+			//else if(typeof(U) == typeof(int)   || typeof(U) == typeof(uint))   return _keys[keyIndex] == 0xFAFAFAFA;
+			//else if(typeof(U) == typeof(long)  || typeof(U) == typeof(ulong))  return _keys[keyIndex] == 0xFAFAFAFAFAFAFAFA;
+			//else if(typeof(U) == typeof(short))                                return _keys[keyIndex] == 0x7FFF;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

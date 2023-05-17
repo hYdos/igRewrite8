@@ -5,12 +5,17 @@ namespace igLibrary.Core
 		//public Dictionary<igObject, ulong> _objectOffsetList = new Dictionary<igObject, ulong>();
 		public List<igMetaObject> _vTableList = new List<igMetaObject>();
 		public List<string> _stringList = new List<string>();
+		public Dictionary<string, uint> _stringRefList = new Dictionary<string, uint>();
+		public List<Tuple<ulong, ulong>> _thumbnails = new List<Tuple<ulong, ulong>>();
 		private List<SaverSection> _sections = new List<SaverSection>();
+		public List<igHandle> _namedHandleList = new List<igHandle>();
+		public List<igHandle> _externalList = new List<igHandle>();
 		public IG_CORE_PLATFORM _platform;
 		private StreamHelper _stream;
-		private uint _version;
+		public uint _version;
 		private uint _fixupCount;
 		private uint _fixupSize;
+		private ulong _nameListOffset = 0;
 
 		public class SaverSection
 		{
@@ -20,20 +25,26 @@ namespace igLibrary.Core
 			public Dictionary<igObject, ulong> _objectOffsetList;
 			public uint _fileOffset;
 			public uint _fileSize;
+			public uint _index;
+			public uint _alignment;
+			private IG_CORE_PLATFORM _platform;
 			public SaverSection(igMemoryPool pool, IG_CORE_PLATFORM platform)
 			{
 				_sh = new StreamHelper(new MemoryStream(), igAlchemyCore.isPlatformBigEndian(platform) ? StreamHelper.Endianness.Big: StreamHelper.Endianness.Little);
 				_pool = pool;
+				_platform = platform;
 				_runtimeFields = new igRuntimeFields();
 				_objectOffsetList = new Dictionary<igObject, ulong>();
 			}
-			public ulong FindFreeMemory(byte alignment)
+			public ulong FindFreeMemory(ushort alignment) => Align((uint)_sh.BaseStream.Length, alignment);
+			public ulong Align(ulong input, uint alignment)
 			{
-				return (ulong)(_sh.BaseStream.Length & ~0b111) + 8;
+				return (ulong)(((input + (alignment - 1)) / alignment) * alignment);
 			}
-			public ulong Malloc(uint size)
+			public ulong Malloc(uint size) => MallocAligned(size, 1);
+			public ulong MallocAligned(uint size, ushort alignment)
 			{
-				ulong offset = FindFreeMemory(8);
+				ulong offset = FindFreeMemory(alignment);
 				_sh.Seek(offset);
 				for(int i = 0; i < size; i++)
 				{
@@ -41,15 +52,23 @@ namespace igLibrary.Core
 				}
 				return offset;
 			}
+			public void PushAlignment(uint alignment)
+			{
+				if(_alignment < alignment) _alignment = alignment;
+			}
 		}
-		public void WriteFile(igObjectDirectory dir, string path)
+		public void WriteFile(igObjectDirectory dir, string path, IG_CORE_PLATFORM platform)
 		{
-			_platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_PS3;
+			_platform = platform;
 			_version = 0x09;
-			_stream = new StreamHelper(File.Create(path), StreamHelper.Endianness.Big);
+			_stream = new StreamHelper(File.Create(path), igAlchemyCore.isPlatformBigEndian(platform) ? StreamHelper.Endianness.Big : StreamHelper.Endianness.Little);
 
 			SaverSection rootSection = GetSaverSection(dir._objectList.internalMemoryPool);
 			rootSection._runtimeFields._objectLists.Add(SaveObject(dir._objectList));
+			if(dir._useNameList)
+			{
+				_nameListOffset = SaveObject(dir._nameList);
+			}
 
 			WriteFixupSections(dir);
 			WriteHeader();
@@ -70,17 +89,27 @@ namespace igLibrary.Core
 
 			igMetaObject meta = obj.GetMeta();
 
-			offset = section.Malloc(meta._sizes[_platform]);
+			offset = section.MallocAligned(meta._sizes[_platform], meta._alignments[_platform]);
 			section._sh.Seek(offset);
 
+			section._objectOffsetList.Add(obj, offset);
 			WriteVTable(meta, section);
-			section._sh.WriteUInt32(obj.refCount);
+			section._sh.WriteUInt32(0);
 
 			section._sh.Seek(offset);
 
 			obj.WriteIGZFields(this, section);
 
-			return offset;
+			return offset | (section._index << (_version >= 7 ? 0x1B : 0x18));
+		}
+		public void RefObject(igObject? obj)
+		{
+			SaverSection section = GetSaverSection(obj.internalMemoryPool);
+			ulong offset = section._objectOffsetList[obj];
+			section._sh.Seek(offset + igAlchemyCore.GetPointerSize(_platform));
+			uint refCount = section._sh.ReadUInt32();
+			section._sh.Seek(offset + igAlchemyCore.GetPointerSize(_platform));
+			section._sh.WriteUInt32(refCount + 1);
 		}
 
 		private void WriteHeader()
@@ -110,14 +139,17 @@ namespace igLibrary.Core
 				uint unknown = 0;
 				_stream.WriteUInt32((uint)(memPoolNameOffset & 0xFFFF) | ((unknown << 16) & 0xFFFF));
 				_stream.WriteUInt32(memoryOffset);
+				uint sectionSize = (uint)Align((uint)_sections[i]._sh.BaseStream.Length, _sections[i]._alignment);
+				_stream.WriteUInt32(sectionSize);
+				_stream.WriteUInt32(_sections[i]._alignment);
 
 				_stream.Seek(memoryOffset);
 				_sections[i]._sh.BaseStream.Flush();
 				_sections[i]._sh.Seek(0);
 				_sections[i]._sh.BaseStream.CopyTo(_stream.BaseStream);
 
-				memPoolNameOffset += _sections[i]._pool._name.Length;
-				memoryOffset += (uint)_sections[i]._sh.BaseStream.Length;
+				memPoolNameOffset += _sections[i]._pool._name.Length + 1;	//Don't forget the null byte!
+				memoryOffset += sectionSize;
 
 				_sections[i]._sh.BaseStream.Close();
 			}
@@ -130,6 +162,7 @@ namespace igLibrary.Core
 		}
 		private void WriteVTable(igMetaObject meta, SaverSection section)
 		{
+			section.PushAlignment(igAlchemyCore.GetPointerSize(_platform));
 			int index = _vTableList.FindIndex(x => x == meta);
 			if(index < 0)
 			{
@@ -147,6 +180,7 @@ namespace igLibrary.Core
 			if(index < 0)
 			{
 				ret = new SaverSection(pool, _platform);
+				ret._index = (uint)_sections.Count;
 				_sections.Add(ret);
 			}
 			else
@@ -155,33 +189,50 @@ namespace igLibrary.Core
 			}
 			return ret;
 		}
+		public uint SerializeOffset(uint offset, SaverSection section) => SerializeOffset(offset, section._index);
+		public uint SerializeOffset(uint offset, uint index)
+		{
+			if(_version <= 0x06) return offset | (index << 0x18);
+			else                 return offset | (index << 0x1B);
+		}
 		public void WriteFixupSections(igObjectDirectory dir)
 		{
 			ulong endOffset = 0x800;
 			ulong startOffset = 0x800;
 			_stream.Seek(startOffset);
 
-			//TSTR
-			if(_stringList.Count > 0)
+			ulong dependancyStartOffset = 0x800;
+
+			if(_namedHandleList.Count > 0)
 			{
+				dir._dependancies.Clear();
+				for(int i = 0; i < _namedHandleList.Count; i++)
+				{
+					if(igObjectHandleManager.Singleton.IsSystemObject(_namedHandleList[i]))
+					{
+						continue;
+					}
+					igObjectDirectory dependantDir = igObjectStreamManager.Singleton._directories[_namedHandleList[i]._namespace._hash];
+					dir._dependancies.Add(dependantDir);
+				}
+
 				startOffset = endOffset;
-				_stream.WriteUInt32(0x52545354);
-				_stream.WriteInt32(_stringList.Count);
+				_stream.WriteUInt32(0x50454454);
+				_stream.WriteInt32(dir._dependancies.Count);
 				_stream.WriteInt32(0);
 				_stream.WriteInt32(0x10);
-				for(int j = 0; j < _stringList.Count; j++)
-				{
-					long basePos = _stream.BaseStream.Position;
-					_stream.WriteString(_stringList[j]);
 
-					int bits = (_version > 7) ? 2 : 1;
-					_stream.Seek(basePos + bits + (_stringList[j].Length & (uint)(-bits)));
+				for(int j = 0; j < dir._dependancies.Count; j++)
+				{
+					_stream.WriteString(dir._dependancies[j]._name._string);
+					_stream.WriteString(dir._dependancies[j]._path);
 				}
+
 				endOffset = Align(_stream.Tell(), 4);
 				_stream.Seek(startOffset + 8);
 				_stream.WriteUInt32((uint)(endOffset - startOffset));
 				_stream.Seek(endOffset);
-				_fixupCount++;
+				dependancyStartOffset = endOffset;
 			}
 
 			//TMET
@@ -219,13 +270,140 @@ namespace igLibrary.Core
 				_fixupCount += 2;
 			}
 
-			WriteRuntimeFixup(0x42545652, ref startOffset, ref endOffset, x => x._runtimeFields._vtables);
-			WriteRuntimeFixup(0x544F4F52, ref startOffset, ref endOffset, x => x._runtimeFields._objectLists);
-			WriteRuntimeFixup(0x52545352, ref startOffset, ref endOffset, x => x._runtimeFields._stringRefs);
-			WriteRuntimeFixup(0x54545352, ref startOffset, ref endOffset, x => x._runtimeFields._stringTables);
-			WriteRuntimeFixup(0x53464F52, ref startOffset, ref endOffset, x => x._runtimeFields._offsets);
+			if(_externalList.Count > 0)
+			{
+				startOffset = endOffset;
+				_stream.WriteUInt32(0x44495845);
+				_stream.WriteInt32(_externalList.Count);
+				_stream.WriteUInt32((uint)_externalList.Count * 8 + 0x10);
+				_stream.WriteUInt32(0x10);
+				for(int j = 0; j < _externalList.Count; j++)
+				{
+					_stream.WriteUInt32(_externalList[j]._alias._hash);
+					_stream.WriteUInt32(_externalList[j]._namespace._hash);
+				}
+				endOffset = startOffset + 0x10u + (uint)_externalList.Count * 8u;
+				_stream.Seek(endOffset);
+				_fixupCount += 1;
+			}
+
+			if(_namedHandleList.Count > 0)
+			{
+				startOffset = endOffset;
+				_stream.WriteUInt32(0x4D4E5845);
+				_stream.WriteInt32(_namedHandleList.Count);
+				uint alignedDataStart = (uint)Align(_stream.Tell()+8 - (uint)startOffset, igAlchemyCore.GetPointerSize(_platform));
+				_stream.WriteUInt32((uint)_namedHandleList.Count * igAlchemyCore.GetPointerSize(_platform) * 2u + alignedDataStart);
+				_stream.WriteUInt32(alignedDataStart);
+				for(int j = 0; j < _namedHandleList.Count; j++)
+				{
+					int index = _stringList.FindIndex(x => x == _namedHandleList[j]._namespace._string);
+					if(index < 0)
+					{
+						index = _stringList.Count;
+						_stringList.Add(_namedHandleList[j]._namespace._string);
+					}
+					_stream.WriteUInt32((uint)index | 0x80000000);
+					index = _stringList.FindIndex(x => x == _namedHandleList[j]._alias._string);
+					if(index < 0)
+					{
+						index = _stringList.Count;
+						_stringList.Add(_namedHandleList[j]._alias._string);
+					}
+					_stream.WriteInt32(index);
+				}
+				endOffset = _stream.Tell();
+				_stream.Seek(endOffset);
+				_fixupCount += 1;
+			}
+
+			//TSTR
+			if(_stringList.Count > 0)
+			{
+				startOffset = dependancyStartOffset;
+				_stream.Seek(startOffset);
+				byte[] otherFixups = new byte[endOffset - startOffset];
+				_stream.Read(otherFixups);
+				_stream.Seek(startOffset);
+				for(int i = 0; i < otherFixups.Length; i++)
+				{
+					_stream.WriteByte(0);
+				}
+				_stream.Seek(startOffset);
+
+				_stream.WriteUInt32(0x52545354);
+				_stream.WriteInt32(_stringList.Count);
+				_stream.WriteInt32(0);
+				_stream.WriteInt32(0x10);
+				for(int j = 0; j < _stringList.Count; j++)
+				{
+					long basePos = _stream.BaseStream.Position;
+					_stream.WriteString(_stringList[j]);
+
+					int bits = (_version > 7) ? 2 : 1;
+					_stream.Seek(basePos + bits + (_stringList[j].Length & (uint)(-bits)));
+				}
+				ulong tempEndOffset = Align(_stream.Tell(), 4);
+				_stream.Seek(startOffset + 8);
+				_stream.WriteUInt32((uint)(tempEndOffset - startOffset));
+				_stream.Seek(tempEndOffset);
+				_stream.BaseStream.Write(otherFixups);				
+				endOffset = _stream.Tell64();
+				//_stream.Seek(endOffset + tempEndOffset - 0x800);
+				_fixupCount++;
+			}
+
+			if(_thumbnails.Count > 0)
+			{
+				startOffset = endOffset;
+				_stream.WriteUInt32(0x4E484D54);
+				_stream.WriteInt32(_thumbnails.Count);
+				uint alignedDataStart = (uint)Align(_stream.Tell()+8 - (uint)startOffset, igAlchemyCore.GetPointerSize(_platform));
+				_stream.WriteUInt32((uint)_thumbnails.Count * igAlchemyCore.GetPointerSize(_platform) * 2u + alignedDataStart);
+				_stream.WriteUInt32(alignedDataStart);
+				for(int j = 0; j < _thumbnails.Count; j++)
+				{
+					if(igAlchemyCore.isPlatform64Bit(_platform))
+					{
+						_stream.WriteUInt64(_thumbnails[j].Item1);
+						_stream.WriteUInt64(_thumbnails[j].Item2);
+					}
+					else
+					{
+						_stream.WriteUInt32((uint)_thumbnails[j].Item1);
+						_stream.WriteUInt32((uint)_thumbnails[j].Item2);
+					}
+				}
+				endOffset = _stream.Tell();
+				_stream.Seek(endOffset);
+				_fixupCount += 1;
+			}
+
+			WriteRuntimeFixup(0x42545652, ref startOffset, ref endOffset, x => x._runtimeFields._vtables);			//RVTB
+			WriteRuntimeFixup(0x52545352, ref startOffset, ref endOffset, x => x._runtimeFields._stringRefs);		//RSTR
+			WriteRuntimeFixup(0x54545352, ref startOffset, ref endOffset, x => x._runtimeFields._stringTables);		//RSTT
+			WriteRuntimeFixup(0x53464F52, ref startOffset, ref endOffset, x => x._runtimeFields._offsets);			//ROFS
+			WriteRuntimeFixup(0x54584552, ref startOffset, ref endOffset, x => x._runtimeFields._externals);		//REXT
+			WriteRuntimeFixup(0x444E4852, ref startOffset, ref endOffset, x => x._runtimeFields._handles);			//RHND
+			WriteRuntimeFixup(0x4E484D52, ref startOffset, ref endOffset, x => x._runtimeFields._memoryHandles);	//RMHN
+			WriteRuntimeFixup(0x544F4F52, ref startOffset, ref endOffset, x => x._runtimeFields._objectLists);		//ROOT
 
 			_stream.Seek(endOffset);
+
+			if(_nameListOffset > 0)
+			{
+				startOffset = endOffset;
+				_stream.WriteUInt32(0x4D414E4F);
+				_stream.WriteInt32(1);
+				_stream.WriteInt32(0x14);
+				_stream.WriteInt32(0x10);
+				_stream.WriteUInt32((uint)_nameListOffset);
+	
+				endOffset = startOffset + 0x14u;
+				_stream.Seek(endOffset);
+				_fixupCount += 1;
+			}
+
 			_fixupSize = (uint)endOffset - 0x800u;
 		}
 		private void WriteRuntimeFixup(uint magic, ref ulong startOffset, ref ulong endOffset, Func<SaverSection, List<ulong>> getRuntimeFunc)
@@ -240,8 +418,8 @@ namespace igLibrary.Core
 			_stream.BaseStream.Write(compressedData);
 			_stream.Seek(startOffset + 4);
 			_stream.WriteUInt32(count);
-			_stream.WriteUInt32(size + 0x10);
 			endOffset = Align(startOffset + 0x10 + size, 4);
+			_stream.WriteUInt32((uint)(endOffset - startOffset));
 			_stream.Seek(endOffset);
 			_fixupCount++;
 		}

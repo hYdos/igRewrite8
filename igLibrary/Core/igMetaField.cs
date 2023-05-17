@@ -4,10 +4,22 @@ namespace igLibrary.Core
 {
 	public class igMetaField : igObject
 	{
+		public struct Properties
+		{
+			//Others will be added as i figure out their structures
+			public uint _storage;
+			public bool _persistent
+			{
+				get => ((_storage >> 13) & 1) != 0;
+				set => _storage = (uint)(_storage & ~0x2000) | (uint)((value ? 1 : 0) << 13);
+			}
+		}
 		public string? _name;
 		public ushort _offset;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public igBaseMeta _parentMeta;
+		public Properties _properties;
+		public object? _default;
 
 		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{
@@ -19,6 +31,7 @@ namespace igLibrary.Core
 			{
 				saver.SaveString(sh, GetType().Name);
 			}
+			sh.WriteUInt32(_properties._storage);
 			uint templateParameterCount = GetTemplateParameterCount();
 			sh.WriteUInt32(templateParameterCount);
 			for(uint i = 0; i < templateParameterCount; i++)
@@ -42,6 +55,7 @@ namespace igLibrary.Core
 		}
 		public virtual void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
+			_properties._storage = sh.ReadUInt32();
 			uint templateArgCount = sh.ReadUInt32();
 			SetTemplateParameterCount(templateArgCount);
 			for(uint i = 0; i < templateArgCount; i++)

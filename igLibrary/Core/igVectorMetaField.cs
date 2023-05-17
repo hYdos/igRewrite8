@@ -23,7 +23,6 @@ namespace igLibrary.Core
 			return _memType;
 		}
 		public override uint GetTemplateParameterCount() => 1;
-
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			uint count = 0;
@@ -46,6 +45,23 @@ namespace igLibrary.Core
 			vector.SetCount(count);
 
 			return vector;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			igVectorCommon vector = (igVectorCommon)value;
+
+			if(saver._version == 0x09 && igAlchemyCore.isPlatform64Bit(saver._platform))
+			{
+				section._sh.WriteUInt64(vector.GetCount());
+			}
+			else
+			{
+				section._sh.WriteUInt32(vector.GetCount());
+			}
+
+			igMemoryRefMetaField memoryRefMetaField = new igMemoryRefMetaField();
+			memoryRefMetaField._memType = _memType;
+			memoryRefMetaField.WriteIGZField(saver, section, vector.GetData());
 		}
 		public override Type GetOutputType()
 		{

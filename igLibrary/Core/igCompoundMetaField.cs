@@ -24,6 +24,8 @@ namespace igLibrary.Core
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
 
+				if(!metaFields[i]._properties._persistent) continue;
+
 				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 
 				object? data = metaFields[i].ReadIGZField(loader);
@@ -37,7 +39,29 @@ namespace igLibrary.Core
 
 			return compoundData;
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			if(_compoundFieldInfo._vTablePointer == null) return;
 
+			uint objectOffset = section._sh.Tell();
+
+			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
+
+			_compoundFieldInfo.CalculateOffsetForPlatform(saver._platform);
+
+			for(int i = 0; i < metaFields.Count; i++)
+			{
+				if(metaFields[i] is igStaticMetaField) continue;
+				if(metaFields[i] is igPropertyFieldMetaField) continue;
+
+				if(!metaFields[i]._properties._persistent) continue;
+
+				section._sh.Seek(objectOffset + metaFields[i]._offsets[saver._platform]);
+
+				FieldInfo? fi = _compoundFieldInfo._vTablePointer.GetField(metaFields[i]._name);
+				metaFields[i].WriteIGZField(saver, section, fi.GetValue(value));
+			}
+		}
 		public override Type GetOutputType()
 		{
 			if(_compoundFieldInfo._vTablePointer == null) return typeof(object);

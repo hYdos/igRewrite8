@@ -20,7 +20,7 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			ulong size = loader.ReadRawOffset() & 0x07FFFFFF;
+			ulong flags = loader.ReadRawOffset();
 			ulong raw = loader.ReadRawOffset();
 			ulong end = loader._stream.Tell64();
 
@@ -38,7 +38,8 @@ namespace igLibrary.Core
 			uint memSize = _memType.GetSize(loader._platform);
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
-			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(size / memSize));
+			memory.SetFlags(flags, this, loader._platform);
+			Array objects = memory.GetData();
 
 			for(int i = 0; i < objects.Length; i++)
 			{
@@ -57,8 +58,11 @@ namespace igLibrary.Core
 			Array objects = memory.GetData();
 			ulong start = section._sh.Tell64();
 			uint memSize = _memType.GetSize(saver._platform);
-			ulong size = (ulong)(memSize * objects.Length);
+			ulong flags = memory.GetFlags(this, saver._platform);
+			ulong size = flags & 0x07FFFFFF;
 			ulong memOffset = memorySection.Malloc((uint)size);
+
+			memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
 
 			for(int i = 0; i < objects.Length; i++)
 			{
@@ -67,9 +71,9 @@ namespace igLibrary.Core
 			}
 
 			section._sh.Seek(start);
-			saver.WriteRawOffset(size, section);
+			saver.WriteRawOffset(memory.GetFlags(this, saver._platform), section);
 			saver.WriteRawOffset(memOffset, section);
-			section._runtimeFields._offsets.Add(start);
+			section._runtimeFields._offsets.Add(start + igAlchemyCore.GetPointerSize(saver._platform));
 		}
 		public override Type GetOutputType()
 		{

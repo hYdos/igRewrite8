@@ -34,6 +34,12 @@ namespace igLibrary.Core
 		{
 			path.Replace('\\', '/');
 			int mediaIndex = path.IndexOf(':');
+			if(mediaIndex == 1)
+			{
+				_path = path;
+				_extension = _fileExtension = Path.GetExtension(path);
+				return;
+			}
 			if(mediaIndex >= 0)
 			{
 				_media = path.Substring(0, mediaIndex);

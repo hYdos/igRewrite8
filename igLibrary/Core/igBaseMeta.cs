@@ -8,7 +8,13 @@ namespace igLibrary.Core
 		protected bool _beganFinalizationPrep = false;
 		protected bool _finishedFinalization = false;
 		protected bool _finishedFinalizationPrep = false;
-
+		public BuildPriority _priority = BuildPriority.Normal;
+		public enum BuildPriority
+		{
+			Low,
+			Normal,
+			High
+		}
 		public virtual void PostUndump(){}
 
 		public virtual igMetaField? GetFieldByName(string name) => null;
@@ -33,8 +39,8 @@ namespace igLibrary.Core
 		}
 		protected void FinalizeFieldDependancy(igMetaField field)
 		{
-			if(field is igObjectRefMetaField objField) objField._metaObject.FinalizeType();
-			else if(field is igHandleMetaField hndField) hndField._metaObject.FinalizeType();
+			if(field is igObjectRefMetaField objField && !IsAssignableToGenericType(objField._metaObject._vTablePointer, typeof(igTObjectList<>))) objField._metaObject.FinalizeType();
+			//else if(field is igHandleMetaField hndField) hndField._metaObject.FinalizeType();		//Not needed since the field is igHandle
 			else if(field is igMemoryRefMetaField memField) FinalizeFieldDependancy(memField._memType);
 			else if(field is igCompoundMetaField compoundField) compoundField._compoundFieldInfo.FinalizeType();
 			else if(field is igMemoryRefHandleMetaField memHndField) FinalizeFieldDependancy(memHndField._memType);
@@ -45,5 +51,11 @@ namespace igLibrary.Core
 				FinalizeFieldDependancy(field.GetTemplateParameter(i));
 			}
 		}
-	}
+		//https://stackoverflow.com/questions/74616/how-to-detect-if-type-is-another-generic-type/1075059#1075059
+		public static bool IsAssignableToGenericType(Type type, Type genericType)
+		{
+			return (type.IsGenericType && type.GetGenericTypeDefinition() == genericType)
+				||  (type.BaseType != null && IsAssignableToGenericType(type.BaseType, genericType));
+		}
+ 	}
 }

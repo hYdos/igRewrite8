@@ -2,6 +2,7 @@ using HashDepot;
 using System.Text;
 using System.IO.Compression;
 using SevenZip.Compression.LZMA;
+using K4os.Compression.LZ4;
 
 namespace igLibrary.Core
 {
@@ -12,8 +13,7 @@ namespace igLibrary.Core
 		{
 			ssa_wii_or_all_citrus_or_sg_alpha = 0x04,			//Skylanders Spyro's Adventure on Wii, or all the alchemy 3DS games, or the Skylanders Giants Alpha*
 			giants_not_citrus_or_ssa_cafe_or_ssf_alpha = 0x08,	//All versions of Skylanders Giants except 3DS, or Skylanders Spyro's Adventure on Wii U, or the Skylanders Swap Force Alpha*
-			sli_all = 0x0A,										//All versions of Skylanders Lost Islands*
-			ssf_not_citrus = 0x1000000A,						//All versions of Skylanders Swap Force except 3DS*
+			sli_ssf_not_citrus = 0x0A,							//All versions of Skylanders Lost Islands and Skylanders Swap Force except 3DS
 			stt_not_citrus = 0x0B,								//All versions of Skylanders Trap Team except 3DS*
 			ssc_all_or_si_ps3_xenon_cafe = 0x1000000B,			//All alchemy-based versions of Skylanders Superchargers or Skylanders Imaginators on PS3, Xbox 360, or WiiU*
 			si_ps4_durango = 0x2000000B,						//Skylanders Imaginators on PS4 or Xbox One*
@@ -82,12 +82,8 @@ namespace igLibrary.Core
 		public IG_CORE_ARCHIVE_VERSION PredictVersion()
 		{
 			uint rawVersion = sh.ReadUInt32(0x04);
-			if(rawVersion == 0x0A)
-			{
-				if(sh.ReadUInt32(0x28) == 0) return IG_CORE_ARCHIVE_VERSION.ssf_not_citrus;
-				//							 return IG_CORE_ARCHIVE_VERSION.sli_all;
-			}
-			if(rawVersion == 0x0B)
+			if(rawVersion == 0x0A)      return IG_CORE_ARCHIVE_VERSION.sli_ssf_not_citrus;
+			else if(rawVersion == 0x0B)
 			{
 				     if(sh.ReadUInt32(0x2C) == 0) return IG_CORE_ARCHIVE_VERSION.stt_not_citrus;
 				else if(sh.ReadUInt32(0x28) == 0) return IG_CORE_ARCHIVE_VERSION.ssc_all_or_si_ps3_xenon_cafe;
@@ -149,7 +145,14 @@ namespace igLibrary.Core
 				
 				sh.Seek(headerLength + numFiles * 4 + i * fileHeaderLength);
 
-				if(version == IG_CORE_ARCHIVE_VERSION.ssf_not_citrus || version == IG_CORE_ARCHIVE_VERSION.ssc_all_or_si_ps3_xenon_cafe)
+				if(version == IG_CORE_ARCHIVE_VERSION.sli_ssf_not_citrus)
+				{
+					fileHeaders[i].offset = sh.ReadUInt32();
+					fileHeaders[i].ordinal = sh.ReadUInt32();
+					fileHeaders[i].length = sh.ReadUInt32();
+					fileHeaders[i].mode = sh.ReadUInt32();
+				}
+				else if(version == IG_CORE_ARCHIVE_VERSION.ssc_all_or_si_ps3_xenon_cafe)
 				{
 					fileHeaders[i].ordinal = sh.ReadUInt32();
 					fileHeaders[i].offset = sh.ReadUInt32();
@@ -268,6 +271,11 @@ namespace igLibrary.Core
 						SevenZip.Compression.LZMA.Decoder dec = new SevenZip.Compression.LZMA.Decoder();
 						dec.SetDecoderProperties(properties);
 						dec.Code(new MemoryStream(chunk), dst, compressedSize, decompressedSize, null);
+						break;
+					case 0x3:
+						byte[] dest = new byte[decompressedSize];
+						LZ4Codec.Decode(sh.ReadBytes((int)compressedSize), 0, (int)compressedSize, dest, 0, dest.Length);
+						dst.Write(dest);
 						break;
 					default:
 						throw new NotImplementedException($"Compression type 0x{compressionType.ToString("X")} is unsupported");

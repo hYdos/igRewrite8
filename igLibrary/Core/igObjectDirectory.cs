@@ -9,6 +9,7 @@ namespace igLibrary.Core
 		public bool _useNameList = false;
 		public igNameList? _nameList = null;
 		public igIGZLoader _loader;
+		public static Func<string, igName, igBlockingType, igObjectDirectory?> _loadDependancyFunction = igObjectDirectory.LoadDependancyDefault;
 
 		public enum FileType : uint
 		{
@@ -61,13 +62,24 @@ namespace igLibrary.Core
 					break;
 			}
 		}
-		public void WriteFile(string path)
+		public void WriteFile(string path, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 		{
 			if(type == FileType.kIGZ)
 			{
 				igIGZSaver saver = new igIGZSaver();
-				saver.WriteFile(this, path);
+				if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
+				{
+					saver.WriteFile(this, path, _loader._platform);
+				}
+				else
+				{
+					saver.WriteFile(this, path, platform);
+				}
 			}
+		}
+		public static igObjectDirectory? LoadDependancyDefault(string path, igName name, igBlockingType idk)
+		{
+			return igObjectStreamManager.Singleton.Load(path, name);
 		}
 		public static igObjectDirectory? LoadDependancyDefault(string filePath, igName nameSpace)
 		{

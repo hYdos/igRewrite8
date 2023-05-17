@@ -1,14 +1,18 @@
 using System.Reflection;
+using System.Linq;
 using igLibrary.Core;
 using ImGuiNET;
 
 using static igCauldron3.Window;
+
+using igLibrary.Math;
 
 namespace igCauldron3
 {
 	public class ObjectManagerFrame : Frame
 	{
 		private static List<InspectorDrawOverride> overrides = new List<InspectorDrawOverride>();
+		private bool renderChangeReference = false;
 
 		public ObjectManagerFrame() : base()
 		{
@@ -22,12 +26,19 @@ namespace igCauldron3
 					overrides.Add(drawOverride);
 				}
 			}
-
 		}
 
 		public override void Render()
 		{
 			ImGui.Begin("Object Manager");
+			if(ImGui.TreeNode("Dependancies"))
+			{
+				for(int i = 0; i < directory._dependancies.Count; i++)
+				{
+					ImGui.Text(directory._dependancies[i]._path);					
+				}
+				ImGui.TreePop();
+			}
 			if(ImGui.TreeNode("Objects"))
 			{
 				for(int i = 0; i < directory._objectList._count; i++)
@@ -41,6 +52,11 @@ namespace igCauldron3
 				ImGui.TreePop();
 			}
 			ImGui.End();
+
+			if(renderChangeReference)
+			{
+				RenderObjectReferenceWindow();
+			}
 		}
 		private void RenderObject(string label, igObject? obj)
 		{
@@ -50,11 +66,12 @@ namespace igCauldron3
 				return;
 			}
 			igMetaObject meta = obj.GetMeta();
-			if(ImGui.TreeNode(obj.GetHashCode().ToString("X08"), $"{label}: {meta._name}"))
+			string objKey = obj.GetHashCode().ToString("X08");
+			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
 			{
 				int i = 0;
 
-				int overrideIndex = overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(typeof(IigDataList)));
+				int overrideIndex = overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(x._t));
 				if(overrideIndex < 0)
 				{
 					RenderObjectFields(obj, meta, i);
@@ -66,15 +83,32 @@ namespace igCauldron3
 				
 				ImGui.TreePop();
 			}
+			if(ImGui.BeginPopupContextItem(objKey))
+			{
+				if(ImGui.Selectable("Change Reference"))
+				{
+					renderChangeReference = true;
+				}
+				ImGui.EndPopup();
+			}
+		}
+		private void RenderObjectReferenceWindow()
+		{
+			ImGui.BeginMenu("Change Object Reference");
+			ImGui.Text("UwU");
+			ImGui.EndMenu();
 		}
 		public void RenderObjectFields(igObject obj, igMetaObject meta, int i = 0)
 		{
 			for(; i < meta._metaFields.Count; i++)
 			{
-				RenderFieldWithName(obj, meta._metaFields[i]);
+				//if(meta._metaFields[i]._properties._persistent)
+				{
+					RenderFieldWithName(obj, meta._metaFields[i]);
+				}
 			}
 		}
-		private void RenderFieldWithName(object obj, igMetaField field)
+		public void RenderFieldWithName(object obj, igMetaField field)
 		{
 			Type t = obj.GetType();
 			FieldInfo? fi = t.GetField(field._name);
@@ -112,26 +146,71 @@ namespace igCauldron3
 			if(field is igIntMetaField)
 			{
 				int intValue = (int)value;
-				ImGui.InputInt(label, ref intValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputInt(string.Empty, ref intValue);
+				ImGui.PopID();
 				value = (int)Math.Clamp(intValue, int.MinValue, int.MaxValue);
 			}
 			else if(field is igUnsignedShortMetaField)
 			{
 				int intValue = (ushort)value;
-				ImGui.InputInt(label, ref intValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputInt(string.Empty, ref intValue);
+				ImGui.PopID();
 				value = (ushort)Math.Clamp(intValue, ushort.MinValue, ushort.MaxValue);
 			}
 			else if(field is igShortMetaField)
 			{
 				int intValue = (short)value;
-				ImGui.InputInt(label, ref intValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputInt(string.Empty, ref intValue);
+				ImGui.PopID();
 				value = (short)Math.Clamp(intValue, short.MinValue, short.MaxValue);
+			}
+			else if(field is igUnsignedLongMetaField || field is igSizeTypeMetaField)
+			{
+				ulong ulongValue = (ulong)value;
+				string strValue = ulongValue.ToString();
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputText(string.Empty, ref strValue, (uint)short.MaxValue);
+				ImGui.PopID();
+				if(ulong.TryParse(strValue, out ulong temp))
+				{
+					value = temp;
+				}
+
+			}
+			else if(field is igLongMetaField)
+			{
+				long longValue = (long)value;
+				string strValue = longValue.ToString();
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputText(string.Empty, ref strValue, (uint)short.MaxValue);
+				ImGui.PopID();
+				if(long.TryParse(strValue, out long temp))
+				{
+					value = temp;
+				}
 			}
 			else if(field is igStringMetaField)
 			{
 				string strValue = (string)value;
 				if(strValue == null) strValue = "";
-				ImGui.InputText(label, ref strValue, (uint)short.MaxValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputText(string.Empty, ref strValue, (uint)short.MaxValue);
+				ImGui.PopID();
 				if(value != null || strValue.Length > 1)
 				{
 					value = strValue;
@@ -140,14 +219,32 @@ namespace igCauldron3
 			else if(field is igUnsignedCharMetaField)
 			{
 				int byteValue = (byte)value;
-				ImGui.InputInt(label, ref byteValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputInt(string.Empty, ref byteValue);
+				ImGui.PopID();
 				value = (byte)Math.Clamp(byteValue, byte.MinValue, byte.MaxValue);
 			}
 			else if(field is igCharMetaField)
 			{
 				int byteValue = (sbyte)value;
-				ImGui.InputInt(label, ref byteValue);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputInt(string.Empty, ref byteValue);
+				ImGui.PopID();
 				value = (sbyte)Math.Clamp(byteValue, sbyte.MinValue, sbyte.MaxValue);
+			}
+			else if(field is igBoolMetaField)
+			{
+				bool boolValue = (bool)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.Checkbox(string.Empty, ref boolValue);
+				ImGui.PopID();
+				value = boolValue;
 			}
 			else if(field is igMemoryRefMetaField || field is igMemoryRefHandleMetaField || field is igVectorMetaField)
 			{
@@ -186,13 +283,62 @@ namespace igCauldron3
 			{
 				RenderObject(label, (igObject?)value);
 			}
+			else if(field is igHandleMetaField hndMetaField)
+			{
+				igHandle hnd = (igHandle)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.Text(hnd.ToString());
+				/*int selectedNs = directory._dependancies.FindIndex(x => x._name._hash == hnd._namespace._hash);
+				int selectedName = -1;
+
+				string[] dependancyNames = new string[directory._dependancies.Count];
+				for(int i = 0; i < directory._dependancies.Count; i++)
+				{
+					dependancyNames[i] = directory._dependancies[i]._name._string;
+				}
+				
+				string[] objectNames = new string[directory._dependancies[selectedNs]._objectList._count];
+				for(int i = 0; i < directory._dependancies[selectedNs]._nameList._count; i++)
+				{
+					objectNames[i] = directory._nameList[i]._string;
+					if(directory._dependancies[selectedNs]._nameList[i]._hash == hnd._alias._hash)
+					{
+						selectedName = i;
+					}
+				}
+
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID($"1_{label}");
+				bool NSChanged = ImGui.Combo(string.Empty, ref selectedNs, dependancyNames, dependancyNames.Length);
+				ImGui.PopID();
+				ImGui.SameLine();
+				ImGui.PushID($"2_{label}");
+				bool NameChanged = ImGui.Combo(string.Empty, ref selectedName, objectNames, objectNames.Length);
+				ImGui.PopID();
+				if(NSChanged || NameChanged)
+				{
+					value = new igHandle(new igHandleName(){ _name = new igName(objectNames[selectedName]), _ns = new igName(dependancyNames[selectedNs]) });
+				}*/
+			}
 			else if(field is igBitFieldMetaField bitFieldMetaField)
 			{
 				RenderField(label, ref value, bitFieldMetaField._assignmentMetaField);
 			}
 			else if(field is igEnumMetaField enumMetaField)
 			{
-				ImGui.Text($"{label}: {value.ToString()}");
+				string valueName = value.ToString();
+				int selectedItem = enumMetaField._metaEnum._names.FindIndex(x => x == valueName);
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				bool changed = ImGui.Combo(string.Empty, ref selectedItem, enumMetaField._metaEnum._names.ToArray(), enumMetaField._metaEnum._names.Count);
+				ImGui.PopID();
+				if(changed)
+				{
+					value = enumMetaField._metaEnum.GetEnumFromName(enumMetaField._metaEnum._names[selectedItem]);
+				}
 			}
 			else if(field is igCompoundMetaField compoundMetaField)
 			{
@@ -205,6 +351,36 @@ namespace igCauldron3
 					}
 					ImGui.TreePop();
 				}
+			}
+			else if(field is igVec2fMetaField vec2fmf)
+			{
+				System.Numerics.Vector2 vec2fValue = (igVec2f)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputFloat2(string.Empty, ref vec2fValue);
+				ImGui.PopID();
+				value = (igVec2f)vec2fValue;
+			}
+			else if(field is igVec3fMetaField)
+			{
+				System.Numerics.Vector3 vec3fValue = (igVec3f)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputFloat3(string.Empty, ref vec3fValue);
+				ImGui.PopID();
+				value = (igVec3f)vec3fValue;
+			}
+			else if(field is igVec4fMetaField)
+			{
+				System.Numerics.Vector4 vec4fValue = (igVec4f)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputFloat4(string.Empty, ref vec4fValue);
+				ImGui.PopID();
+				value = (igVec4f)vec4fValue;
 			}
 		}
 	}

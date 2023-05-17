@@ -8,7 +8,9 @@ namespace igLibrary.Core
 		public igMetaObject? _parent;
 		public List<igMetaField> _metaFields;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
+		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Type _vTablePointer;
+
 
 		public igMetaObject()
 		{
@@ -55,6 +57,7 @@ namespace igLibrary.Core
 				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
 
 				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
+				_priority = BuildPriority.Low;
 			}
 			else if(_parent._name == "igHashTable")
 			{
@@ -62,6 +65,7 @@ namespace igLibrary.Core
 				igMemoryRefMetaField keysField = (igMemoryRefMetaField)_metaFields[1];
 
 				parentType = typeof(igTUHashTable<,>).MakeGenericType(valuesField._memType.GetOutputType(), keysField._memType.GetOutputType());
+				_priority = BuildPriority.Low;
 			}
 
 			tb.SetParent(parentType);
@@ -79,6 +83,8 @@ namespace igLibrary.Core
 
 		public override void FinalizeType()
 		{
+			if(_name == "igComponentList")
+			;
 			if(!_beganFinalizationPrep)
 			{
 				_beganFinalizationPrep = true;
@@ -173,6 +179,7 @@ namespace igLibrary.Core
 		}
 		public void CalculateOffsetForPlatform(IG_CORE_PLATFORM platform)
 		{
+			ushort alignment = 0;
 			igMetaField[] metaFieldsByOffset = _metaFields.OrderBy(x => x._offset).ToArray();
 			ushort currentOffset = (ushort)(4u + igAlchemyCore.GetPointerSize(platform));
 			for(int i = 0; i < metaFieldsByOffset.Length; i++)
@@ -181,12 +188,19 @@ namespace igLibrary.Core
 				if(metaFieldsByOffset[i] is igPropertyFieldMetaField) continue;
 				if(metaFieldsByOffset[i] is igBitFieldMetaField bfMf)
 				{
-					bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
+					if(!bfMf._offsets.ContainsKey(platform))
+					{
+						bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
+					}
 					continue;
 				}
-				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform)) goto addOffsetAndContinue;
+
+				alignment = (ushort)System.Math.Max(alignment, metaFieldsByOffset[i].GetAlignment(platform));
 
 				Align(ref currentOffset, metaFieldsByOffset[i].GetAlignment(platform));
+
+				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform))
+					goto addOffsetAndContinue;
 
 				metaFieldsByOffset[i]._offsets.Add(platform, currentOffset);
 
@@ -194,7 +208,15 @@ namespace igLibrary.Core
 				currentOffset += (ushort)metaFieldsByOffset[i].GetSize(platform);
 			}
 
-			_sizes.Add(platform, currentOffset);
+			if(!_alignments.ContainsKey(platform))
+			{
+				_alignments.Add(platform, alignment);
+			}
+			if(!_sizes.ContainsKey(platform))
+			{
+				Align(ref currentOffset, alignment);
+				_sizes.Add(platform, currentOffset);
+			}
 		}
 		private void Align(ref ushort offset, uint alignment)
 		{

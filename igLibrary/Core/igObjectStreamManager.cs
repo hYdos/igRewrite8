@@ -7,6 +7,7 @@ namespace igLibrary.Core
 		public void AddObjectDirectory(igObjectDirectory dir)
 		{
 			_directories.Add(dir._name._hash, dir);
+			igObjectHandleManager.Singleton.AddDirectory(dir);
 		}
 		public igObjectDirectory Load(string path, bool readDependancies = true)
 		{

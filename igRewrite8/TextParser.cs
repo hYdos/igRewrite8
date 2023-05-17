@@ -202,6 +202,7 @@ namespace igRewrite8.Devel
 			igMetaField? metaField = null;
 
 			string typeName = data[index++];
+			uint properties = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 			int templateCount = int.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 
 			for(int i = 0; i < templateCount; i++)
@@ -229,9 +230,9 @@ namespace igRewrite8.Devel
 			{
 				string refData = data[index++];
 				refMetaField._construct = refData[0] == '1';
-				refMetaField._destruct = refData[0] == '1';
-				refMetaField._reconstruct = refData[0] == '1';
-				refMetaField._refCounted = refData[0] == '1';
+				refMetaField._destruct = refData[1] == '1';
+				refMetaField._reconstruct = refData[2] == '1';
+				refMetaField._refCounted = refData[3] == '1';
 			}
 
 			if(typeName.StartsWith("igMemoryRefHandle"))
@@ -280,6 +281,8 @@ namespace igRewrite8.Devel
 			{
 				placeholder._platformInfo = igArkCore.GetMetaFieldPlatformInfo(typeName);
 			}
+
+			metaField._properties._storage = properties;
 
 			metaField.SetTemplateParameterCount((uint)templateCount);
 			for(int i= 0; i < templateCount; i++)

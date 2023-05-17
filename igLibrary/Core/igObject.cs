@@ -15,6 +15,8 @@ namespace igLibrary.Core
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
 
+				//if(!metaFields[i]._properties._persistent) continue;
+
 				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 
 				object? data = metaFields[i].ReadIGZField(loader);
@@ -36,6 +38,10 @@ namespace igLibrary.Core
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
+
+				section.PushAlignment(metaFields[i].GetAlignment(saver._platform));
+
+				//if(!metaFields[i]._properties._persistent) continue;
 
 				FieldInfo? field = GetType().GetField(metaFields[i]._name);
 

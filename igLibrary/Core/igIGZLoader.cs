@@ -8,11 +8,11 @@
 		public List<igMetaObject> _vtableList = new List<igMetaObject>();
 		public Dictionary<ulong, igObject> _offsetObjectList = new Dictionary<ulong, igObject>();
 		public List<ushort> _metaSizes = new List<ushort>();
-		//public List<igHandle> _externalList = new List<igHandle>();
-		//public List<igHandle> _namedHandleList = new List<igHandle>();
-		//public List<igHandle> _unresolvedNames = new List<igHandle>();
-		//public igObjectList _namedExternalList = new igObjectList();
-		public List<Tuple<uint, uint>> _thumbnails = new List<Tuple<uint, uint>>();
+		public List<igHandle> _externalList = new List<igHandle>();
+		public List<igHandle> _namedHandleList = new List<igHandle>();
+		public List<igHandle> _unresolvedNames = new List<igHandle>();
+		public igObjectList _namedExternalList = new igObjectList();
+		public List<Tuple<ulong, ulong>> _thumbnails = new List<Tuple<ulong, ulong>>();
 		public igRuntimeFields _runtimeFields = new igRuntimeFields();
 		public uint _version;
 		public uint _metaObjectVersion;
@@ -65,7 +65,7 @@
 		{
 			foreach(KeyValuePair<ulong, igObject> offsetObject in _offsetObjectList)
 			{
-				_stream.Seek(offsetObject.Key);
+				_stream.Seek(DeserializeOffset(offsetObject.Key));
 				offsetObject.Value.ReadIGZFields(this);
 			}
 		}
@@ -112,6 +112,21 @@
 
 				switch(magic)
 				{
+					case 0x50454454:							//TDEP
+						if(!_readDependancies) break;
+						_dir._dependancies.Capacity = (int)count;
+						for(uint j = 0; j < count; j++)
+						{
+							string nameStr = _stream.ReadString();
+							string pathStr = _stream.ReadString();
+							if(pathStr.StartsWith("<build>")) continue;
+							igName name = new igName(nameStr);
+							igObjectDirectory? dependantDir = igObjectDirectory.LoadDependancyDefault(pathStr, name, igBlockingType.kBlocking);
+							if(dependantDir == null) throw new FileNotFoundException($"Failed to find dependancy {pathStr}");
+
+							dir._dependancies.Add(dependantDir);
+						}
+						break;
 					case 0x54454D54:							//TMET
 						_vtableList.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
@@ -143,21 +158,119 @@
 							_stream.Seek(basePos + bits + (data.Length & (uint)(-bits)));
 						}
 						break;
+					case 0x44495845:							//EXID
+						_externalList.Capacity = (int)count;
+						for(uint j = 0; j < count; j++)
+						{
+							igHandleName depName = new igHandleName();
+							uint rawDepNameHash = _stream.ReadUInt32();
+							uint rawDepNSHash = _stream.ReadUInt32();
+							depName._name._hash = rawDepNameHash;
+							depName._ns._hash = rawDepNSHash;
+
+							igObject? obj = null;
+							if(!igObjectStreamManager.Singleton._directories.Any(x => x.Value._name._hash == depName._ns._hash))
+							{
+								Console.WriteLine($"igIGZ EXID load: Failed to find {depName._ns._hash.ToString("X08")}, referenced in {_dir._path}");
+								goto finish;
+							}
+							//Console.WriteLine($"igIGZ EXID load: Successfully found {depName._ns._hash.ToString("X08")}, referenced in {_file._path._path}");
+							igObjectDirectory dependantDir = igObjectStreamManager.Singleton._directories.First(x => x.Value._name._hash == depName._ns._hash).Value;
+							if(dependantDir._useNameList)
+							{
+								for(int k = 0; k < dependantDir._nameList._count; k++)
+								{
+									if(dependantDir._nameList[k]._hash == depName._name._hash)
+									{
+										obj = dependantDir._objectList[k];
+										break;
+									}
+								}
+							}
+							finish:
+								_externalList.Add(new igHandle(depName));
+						}
+						break;
+					case 0x4D4E5845:							//EXNM
+						for(uint j = 0; j < count; j++)
+						{
+							igHandleName depHandleName = new igHandleName();
+							uint rawDepHNameName = 0;
+							uint rawDepHNameNS = 0;
+							uint h1 = _stream.ReadUInt32();
+							uint h2 = _stream.ReadUInt32();
+							if((h2 & 0x80000000) != 0)
+							{
+								rawDepHNameName = h1;
+								rawDepHNameNS = h2;
+							}
+							else
+							{
+								rawDepHNameNS = h1;
+								rawDepHNameName = h2;
+							}
+							depHandleName._name.SetString(_stringList[(int)(rawDepHNameName & 0x7FFFFFFF)]);
+							depHandleName._ns.SetString(_stringList[(int)(rawDepHNameNS & 0x7FFFFFFF)]);
+
+							igObject? obj = null;
+							if(!dir._dependancies.Any(x => x._name._hash == depHandleName._ns._hash))
+							{
+								Console.WriteLine($"igIGZ EXNM load: Failed to find namespace {depHandleName._ns._string}, referenced in {_dir._path}");
+							}
+							else
+							{
+								Console.WriteLine($"igIGZ EXNM load: Successfully found namespace {depHandleName._ns._string}, referenced in {_dir._path}");
+								igObjectDirectory dependantDir = dir._dependancies.First(x => x._name._hash == depHandleName._ns._hash);
+								if(dependantDir._useNameList)
+								{
+									for(int k = 0; k < dependantDir._nameList._count; k++)
+									{
+										if(dependantDir._nameList[k]._hash == depHandleName._name._hash)
+										{
+											obj = dependantDir._objectList[k];
+											break;
+										}
+									}
+								}
+							}
+
+							if((rawDepHNameNS & 0x80000000) != 0)
+							{
+								igHandle hnd = new igHandle(depHandleName);
+								_namedHandleList.Add(hnd);
+								_namedExternalList.Append(obj);
+							}
+							else
+							{
+								if(obj == null)
+								{
+									_unresolvedNames.Add(new igHandle(depHandleName));
+									Console.WriteLine($"{depHandleName._ns._string}:/{depHandleName._name._string} is unresolved");
+								}
+								else
+								{
+									igHandle hnd = new igHandle(depHandleName);
+									_namedHandleList.Add(hnd);
+									_namedExternalList.Append(obj);
+								}
+							}
+						}
+						break;
 					case 0x4E484D54:							//TMHN
 						_thumbnails.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
-							ulong size = ReadRawOffset() & 0x07FFFFFF;
+							ulong size = ReadRawOffset();
 							ulong raw = ReadRawOffset();
-							_thumbnails.Add(new Tuple<uint, uint>((uint)size, (uint)raw));
+							_thumbnails.Add(new Tuple<ulong, ulong>(size, raw));
 						}
 						break;
 					case 0x42545652:							//RVTB
-						UnpackCompressedInts(_runtimeFields._vtables, _stream.ReadBytes(length - start), count);
+						UnpackCompressedInts(_runtimeFields._vtables, _stream.ReadBytes(length - start), count, false);
 						InstantiateAndAppendObjects();
 						break;
 					case 0x544F4F52:							//ROOT
-						UnpackCompressedInts(_runtimeFields._objectLists, _stream.ReadBytes(length - start), count);
+						UnpackCompressedInts(_runtimeFields._objectLists, _stream.ReadBytes(length - start), count, false);
 						_dir._objectList = (igObjectList)_offsetObjectList[_runtimeFields._objectLists[0]];
 						break;
 					case 0x53464F52:							//ROFS
@@ -172,16 +285,22 @@
 					case 0x4E484D52:							//RMHN
 						UnpackCompressedInts(_runtimeFields._memoryHandles, _stream.ReadBytes(length - start), count);
 						break;
+					case 0x54584552:							//REXT
+						UnpackCompressedInts(_runtimeFields._externals, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x444E4852:							//RHND
+						UnpackCompressedInts(_runtimeFields._handles, _stream.ReadBytes(length - start), count);
+						break;
 					case 0x4D414E4F:							//ONAM
 						_dir._useNameList = true;
-						_dir._nameList = (igNameList)_offsetObjectList[DeserializeOffset(_stream.ReadUInt32())];
+						_dir._nameList = (igNameList)_offsetObjectList[_stream.ReadUInt32()];
 						break;
 				}
 
 				bytesProcessed += length;
 			}
 		}
-		public void UnpackCompressedInts(List<ulong> list, byte[] bytes, uint count)
+		public void UnpackCompressedInts(List<ulong> list, byte[] bytes, uint count, bool deserialize = true)
 		{
 			list.Capacity = (int)count;
 			uint previousInt = 0;
@@ -228,7 +347,14 @@
 						}
 
 						previousInt = (uint)(previousInt + (unpackedInt * 4) + (_version < 9 ? 4 : 0));
-						list.Add(DeserializeOffset(previousInt));
+						if(deserialize)
+						{
+							list.Add(DeserializeOffset(previousInt));
+						}
+						else
+						{
+							list.Add(previousInt);
+						}
 					}
 				}
 			}
@@ -276,7 +402,7 @@
 
 		public igObject InstantiateObject(ulong offset)
 		{
-			_stream.Seek(offset);
+			_stream.Seek(DeserializeOffset(offset));
 			int index = (int)ReadRawOffset();
 			Type t = _vtableList[index]._vTablePointer;
 			igObject obj = (igObject)Activator.CreateInstance(t);

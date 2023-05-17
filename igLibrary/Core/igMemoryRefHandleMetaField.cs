@@ -23,10 +23,10 @@ namespace igLibrary.Core
 			if(!loader._runtimeFields._memoryHandles.Contains(loader._stream.Tell())) return null;
 
 			ulong thumbnailIndex = loader.ReadRawOffset();
-			Tuple<uint, uint> thumbnail = loader._thumbnails[(int)thumbnailIndex];
+			Tuple<ulong, ulong> thumbnail = loader._thumbnails[(int)thumbnailIndex];
 
 			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(thumbnail.Item2);
-			ulong offset = loader.DeserializeOffset(thumbnail.Item2);
+			uint offset = (uint)loader.DeserializeOffset(thumbnail.Item2);
 			Type memoryType;
 			try
 			{
@@ -38,16 +38,45 @@ namespace igLibrary.Core
 			}
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
-			Array objects = Array.CreateInstance(_memType.GetOutputType(), (int)(thumbnail.Item1 / _memType.GetSize(loader._platform)));
+			memory.SetFlags(thumbnail.Item1, this, loader._platform);
+			Array objects = memory.GetData();
+			uint memSize = _memType.GetSize(loader._platform);
 
 			for(int i = 0; i < objects.Length; i++)
 			{
+				loader._stream.Seek(offset + i * memSize);
 				objects.SetValue(_memType.ReadIGZField(loader), i);
 			}
 
 			memory.SetData(objects);
 			
 			return memory;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			IigMemory memory = (IigMemory)value;
+			igIGZSaver.SaverSection memorySection = saver.GetSaverSection(memory.GetMemoryPool());
+			Array objects = memory.GetData();
+			ulong start = section._sh.Tell64();
+			uint memSize = _memType.GetSize(saver._platform);
+			ulong flags = memory.GetFlags(this, saver._platform);
+			ulong size = flags & 0x07FFFFFF;
+			ulong memOffset = memorySection.Malloc((uint)size);
+
+			memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
+
+			for(int i = 0; i < objects.Length; i++)
+			{
+				memorySection._sh.Seek((long)memOffset + memSize * i);
+				_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+			}
+
+			section._sh.Seek(start);
+
+			saver._thumbnails.Add(new Tuple<ulong, ulong>(memory.GetFlags(this, saver._platform), (memOffset | (memorySection._index << (saver._version >= 7 ? 0x1B : 0x18)))));
+			//saver.WriteRawOffset(size, section);
+			//saver.WriteRawOffset(memOffset, section);
+			section._runtimeFields._memoryHandles.Add(start);
 		}
 
 		public override Type GetOutputType()

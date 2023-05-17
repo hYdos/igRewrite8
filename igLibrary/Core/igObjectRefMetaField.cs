@@ -10,17 +10,11 @@ namespace igLibrary.Core
 		{
 			base.DumpArkData(saver, sh);
 
-			if(_name == "_traversal")
-				sh = sh;
-
 			saver.SaveString(sh, _metaObject._name);
 		}
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
 			base.UndumpArkData(loader, sh);
-
-			if(_name == "_traversal")
-				sh = sh;
 
 			_metaObject = igArkCore.GetObjectMeta(loader.ReadString(sh));
 		}
@@ -47,12 +41,11 @@ namespace igLibrary.Core
 			}
 			else if(isOffset)
 			{
-				ret = loader._offsetObjectList[loader.DeserializeOffset(raw)];
-				loader._stream.Seek(loader.DeserializeOffset(raw));
+				ret = loader._offsetObjectList[raw];
 			}
 			else if(isExid)
 			{
-				//ret = igz._externalList[(int)(raw & 0x7FFFFFFF)].GetObject<T>();
+				ret = loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();
 			}
 			else
 			{
@@ -67,14 +60,41 @@ namespace igLibrary.Core
 			ulong baseOffset = section._sh.Tell64();
 			igObject? obj = (igObject?)value;
 
-			if(obj == null) saver.WriteRawOffset(0, section);
+			if(obj == null)
+			{
+				saver.WriteRawOffset(0, section);
+				return;
+			}
 			
+			igHandle hnd = igObjectHandleManager.Singleton.GetHandle(obj);
+			if(hnd != null)
+			{
+				if(igObjectHandleManager.Singleton.IsSystemObject(hnd))
+				{
+					Console.WriteLine("EXID object found, reference to " + hnd.ToString());
+					section._runtimeFields._externals.Add(section._sh.Tell64());
+					section._sh.WriteUInt32((uint)saver._externalList.Count | 0x80000000);
+					saver._externalList.Add(hnd);
+					return;
+				}
+				else
+				{
+					Console.WriteLine("EXNM object found, reference to " + hnd.ToString());
+					section._runtimeFields._externals.Add(section._sh.Tell64());
+					section._sh.WriteUInt32((uint)saver._externalList.Count | 0x80000000);
+					saver._externalList.Add(hnd);
+				}
+			}
 			//Should add stuff to check for externals
 
 			ulong objectOffset = saver.SaveObject(obj);
 			section._sh.Seek(baseOffset);
 			saver.WriteRawOffset(objectOffset, section);
 			section._runtimeFields._offsets.Add(baseOffset);
+			if(_refCounted && obj != null)
+			{
+				saver.RefObject(obj);
+			}
 		}
 		public override Type GetOutputType()
 		{

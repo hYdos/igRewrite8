@@ -20,9 +20,32 @@ namespace igLibrary.Core
 		}
 		public override object ReadIGZField(igIGZLoader loader)
 		{
-			return null;	//Placeholder
+			if(!loader._runtimeFields._handles.Contains(loader._stream.Tell64())) return igHandle.NullHandle;
+
+			uint raw = loader._stream.ReadUInt32();
+			if((raw & 0x80000000) != 0)
+			{
+				return loader._namedHandleList[(int)(raw & 0x3FFFFFFF)];
+			}
+			else
+			{
+				return loader._externalList[(int)(raw & 0x3FFFFFFF)];
+			}
 		}
 
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			if(value == igHandle.NullHandle) return;
+
+			int handleIndex = saver._namedHandleList.FindIndex(x => x == value);
+			if(handleIndex < 0)
+			{
+				handleIndex = saver._namedHandleList.Count;
+				saver._namedHandleList.Add((igHandle)value);
+			}
+			section._runtimeFields._handles.Add(section._sh.Tell64());
+			section._sh.WriteUInt32(0x80000000u | (uint)handleIndex);
+		}
 		public override Type GetOutputType() => typeof(igHandle);
 	}
 	public class igHandleArrayMetaField : igHandleMetaField

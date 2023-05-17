@@ -46,14 +46,14 @@ namespace igLibrary.Core
 			_root = string.Empty;
 
 			//Not Accurate
-			_processorStack = new igWin32StorageDevice();
-			_processorStack._nextProcessor = _archiveMountManager;
+			//_processorStack = new igWin32StorageDevice();
+			//_processorStack._nextProcessor = _archiveMountManager;
 
 			//Accurate
-			//_processorStack = _archiveMountManager;
+			_processorStack = _archiveMountManager;
 
 			_archiveMountManager._nextProcessor = _archiveManager;
-			_archiveManager._nextProcessor = null;
+			_archiveManager._nextProcessor = new igWin32StorageDevice();
 		}
 
 		//Rename to GetVirtualStorageDevicePath

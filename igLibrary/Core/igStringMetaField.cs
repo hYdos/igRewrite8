@@ -37,9 +37,36 @@ namespace igLibrary.Core
 			else
 			{
 				//why use string refs when you can use the string table
-				saver.WriteRawOffset((ulong)saver._stringList.Count, section);
-				saver._stringList.Add((string)value);
-				section._runtimeFields._stringTables.Add(basePos);
+				//Because alchemy sucks
+				if(igAlchemyCore.isPlatform64Bit(saver._platform))
+				{
+					int index = saver._stringList.FindIndex(x => x == (string)value);
+					if(index < 0)
+					{
+						index = saver._stringList.Count;
+						saver._stringList.Add((string)value);
+					}
+					saver.WriteRawOffset((ulong)index, section);
+					section._runtimeFields._stringTables.Add(basePos);
+				}
+				else
+				{
+					if(saver._stringRefList.TryGetValue((string)value, out uint offset))
+					{
+
+					}
+					else
+					{
+						igIGZSaver.SaverSection stringSection = saver.GetSaverSection(igMemoryContext.Singleton.GetMemoryPoolByName("String"));
+						stringSection._sh.Seek(stringSection.FindFreeMemory((byte)((saver._version < 7) ? 1u : 2u)));
+						offset = saver.SerializeOffset(stringSection._sh.Tell(), stringSection);
+						saver._stringRefList.Add((string)value, offset);
+						stringSection._sh.WriteString((string)value);
+						stringSection.PushAlignment((saver._version < 7) ? 1u : 2u);
+					}
+					section._runtimeFields._stringRefs.Add(basePos);
+					section._sh.WriteUInt32(offset);
+				}
 			}
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);

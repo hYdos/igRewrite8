@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
+using igLibrary.Core;
 
 namespace igCauldron3
 {
@@ -23,6 +24,20 @@ namespace igCauldron3
 			);
 
 			wnd.Run();
+		}
+
+		private static void ExtractSLIArchive(string[] args)
+		{
+			igFileContext.Singleton.Initialize(args[0]);
+			igArchive arc = new igArchive(args[1]);
+			for(int i = 0; i < arc.fileHeaders.Length; i++)
+			{
+				string path = Path.Combine("F:/SLI", arc.fileHeaders[i].fullName);
+				Directory.CreateDirectory(Path.GetDirectoryName(path));
+				FileStream fs = File.Create(path);
+				arc.ExtractFile(i, fs);
+				fs.Close();
+			}
 		}
 	}
 }

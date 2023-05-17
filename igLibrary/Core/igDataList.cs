@@ -6,7 +6,7 @@ namespace igLibrary.Core
 	{
 		public int _count;
 		public int _capacity;
-		public igMemory<T> _data;
+		public igMemory<T> _data = new igMemory<T>();
 
 		public T this[int index]
 		{

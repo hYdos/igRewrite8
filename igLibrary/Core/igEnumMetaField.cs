@@ -26,6 +26,13 @@ namespace igLibrary.Core
 			if(_metaEnum != null) return Enum.ToObject(_metaEnum._internalType, raw);
 			else                  return raw;
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			if(_metaEnum == null) section._sh.WriteInt32((int)value);
+
+			int raw = _metaEnum.GetValueFromEnum(value);
+			section._sh.WriteInt32(raw);
+		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 4;
 		public override Type GetOutputType() => _metaEnum == null ? typeof(int) : _metaEnum._internalType;

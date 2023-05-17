@@ -238,6 +238,8 @@ namespace igLibrary
 		}
 		public override float ReadSingle() => ReadSingle(_endianness);
 		public float ReadSingle(Endianness endianness) => BitConverter.ToSingle(ReadForEndianness(sizeof(float), endianness), 0);
+		public void WriteSingle(float data) => WriteSingle(data, _endianness);
+		public void WriteSingle(float data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
 		public override Half ReadHalf() => ReadHalf(_endianness);
 		public Half ReadHalf(Endianness endianness) => BitConverter.ToHalf(ReadForEndianness(2, endianness), 0);
 

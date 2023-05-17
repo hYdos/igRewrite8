@@ -324,11 +324,12 @@ namespace igLibrary.Core
 		}
 		public static void GeneratePendingTypes()
 		{
-			for(int i = _pendingTypes.Count - 1; i >= 0; i--)
+			for(int i = 0; i < _pendingTypes.Count; i++)
 			{
 				_pendingTypes[i].DefineType();
 			}
-			for(int i = _pendingTypes.Count - 1; i >= 0; i--)
+			_pendingTypes = _pendingTypes.OrderByDescending(x => (int)x._priority).ToList();
+			for(int i = 0; i < _pendingTypes.Count; i++)
 			{
 				_pendingTypes[i].FinalizeType();
 			}

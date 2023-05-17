@@ -44,6 +44,10 @@ namespace igLibrary.Core
 
 			throw new NotImplementedException($"_assignmentMetaField for {_assignmentMetaField.GetType().Name} is not implemented, contact a developer.");
 		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			return;
+		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
 		public override Type GetOutputType() => _assignmentMetaField.GetOutputType();
