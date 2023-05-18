@@ -12,7 +12,7 @@ namespace igRewrite8
 	{
 		public static void Main(string[] args)
 		{
-			//DumpToyDataToRunes(args); return;
+			DumpToyDataToRunes(args); return;
 			//DumpAllArchives(args); return;
 			//ReadFromTextFile(args); return;
 
@@ -53,6 +53,8 @@ namespace igRewrite8
 			List<igObject> toydata = new List<igObject>();
 
 			igMetaObject toydataType = igArkCore.GetObjectMeta("CToyData");
+			igMetaObject vidListType = igArkCore.GetObjectMeta("CVariantIdentifierList");
+			igMetaObject vidType = igArkCore.GetObjectMeta("CVariantIdentifier");
 
 			igStringRefList list = (igStringRefList)dir._objectList[0];
 
@@ -71,19 +73,55 @@ namespace igRewrite8
 								toydata.Add(toydataDir._objectList[j]);
 							}
 						}
+
+						string langFilePath = list[i+1].Remove(list[i+1].Length - 4) + "_en.lng";
+
+						try
+						{
+							igObjectDirectory toydataLangDir = igObjectStreamManager.Singleton.Load(langFilePath);
+							for(int j = 0; j < toydataLangDir._objectList._count; j++)
+							{
+								if(toydataLangDir._objectList[j] is igLocalizedStringDataList localData)
+								{
+									for(int l = 0; l < localData._count; l++)
+									{
+										igObject target = localData[l]._object.GetObjectAlias<igObject>();
+										Type? t = target.GetType();
+										FieldInfo? stringField = t.GetField(localData[l]._field._name);
+										stringField.SetValue(target, localData[l]._string);
+									}
+								}
+							}
+						}
+						catch(IOException){}
 					}
 				}
 			}
 
 			FieldInfo? ttField = toydataType._vTablePointer.GetField("_toyId");
 			FieldInfo? tnField = toydataType._vTablePointer.GetField("_toyName");
+			FieldInfo? varField = toydataType._vTablePointer.GetField("_variants");
+
+			FieldInfo? decoField = vidType._vTablePointer.GetField("_decoId");
+			FieldInfo? ycField = vidType._vTablePointer.GetField("_yearCode");
+			FieldInfo? lcField = vidType._vTablePointer.GetField("_lightCoreFlag");
+			FieldInfo? fadField = vidType._vTablePointer.GetField("_fullAltDecoFlag");
+			FieldInfo? wowField = vidType._vTablePointer.GetField("_wowPowFlag");
+			FieldInfo? varTxtField = vidType._vTablePointer.GetField("_variantText");
+			FieldInfo? varTnField = vidType._vTablePointer.GetField("_toyName");
+
 			for(int i = 0; i < toydata.Count; i++)
 			{
-				f.WriteLine($"{tnField.GetValue(toydata[i])},{(int)ttField.GetValue(toydata[i])}");
+				IigDataList? variants = (IigDataList)varField.GetValue(toydata[i]);
+				f.WriteLine($"{(int)ttField.GetValue(toydata[i])},{(variants == null ? 0 : variants.GetCount())},{tnField.GetValue(toydata[i])}");
+				for(int j = 0; j < (variants == null ? 0 : variants.GetCount()); j++)
+				{
+					object variant = variants.GetObject(j);
+					f.WriteLine($"{(int)decoField.GetValue(variant)},{(int)ycField.GetValue(variant)},{(bool)lcField.GetValue(variant)},{(bool)fadField.GetValue(variant)},{(bool)wowField.GetValue(variant)},{varTxtField.GetValue(variant)},{varTnField.GetValue(variant)}");
+				}
 			}
 			f.Close();
 			return;
-			//igFileContext.Singleton.Open()
 		}
 		private static void DumpAllArchives(string[] args)
 		{

@@ -29,15 +29,7 @@ namespace igLibrary.Core
 			if(raw == 0) return null;
 			if(isNamedExternal)
 			{
-				try
-				{
-					//ret = loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
-				}
-				catch(Exception e)
-				{
-					//Console.WriteLine($"NamedExternal Error: {e.Message} @ {igz._stream.BaseStream.Position - igCore.GetSizeOfPointer(igz._platform)}");
-					ret = null;
-				}
+				ret = loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
 			}
 			else if(isOffset)
 			{

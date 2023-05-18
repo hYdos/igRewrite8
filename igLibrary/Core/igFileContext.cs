@@ -166,6 +166,5 @@ namespace igLibrary.Core
 			fd = Prepare(path, flags);
 			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, flags, fd._path, blockingType, priority, null, null);
 		}
-		public bool Exists(string path) => _fileDescriptorPool.Any(x => x._path == path);
 	}
 }

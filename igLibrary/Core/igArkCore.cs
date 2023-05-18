@@ -265,6 +265,13 @@ namespace igLibrary.Core
 			if(index < 0) return null;
 			else return _compoundFieldInfos[index];			
 		}
+		public static igMetaField? GetFieldMetaForObject(string handle)
+		{
+			string[] args = handle.Split("::");
+			igMetaObject? targetMeta = GetObjectMeta(args[0]);
+			if(targetMeta == null) return null;
+			return targetMeta.GetFieldByName(args[1]);
+		}
 		private static void CreateDynamicModule()
 		{
 			AssemblyName dynamicAssemblyName = new AssemblyName("ArkGeneratedTypes");

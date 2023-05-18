@@ -195,22 +195,11 @@
 						for(uint j = 0; j < count; j++)
 						{
 							igHandleName depHandleName = new igHandleName();
-							uint rawDepHNameName = 0;
-							uint rawDepHNameNS = 0;
-							uint h1 = _stream.ReadUInt32();
-							uint h2 = _stream.ReadUInt32();
-							if((h2 & 0x80000000) != 0)
-							{
-								rawDepHNameName = h1;
-								rawDepHNameNS = h2;
-							}
-							else
-							{
-								rawDepHNameNS = h1;
-								rawDepHNameName = h2;
-							}
-							depHandleName._name.SetString(_stringList[(int)(rawDepHNameName & 0x7FFFFFFF)]);
-							depHandleName._ns.SetString(_stringList[(int)(rawDepHNameNS & 0x7FFFFFFF)]);
+							ulong rawHandle = _stream.ReadUInt64();
+							uint nsStrIndex = (uint)(rawHandle >> 32);
+							uint nameStrIndex = unchecked((uint)rawHandle);
+							depHandleName._ns.SetString(_stringList[(int)(nsStrIndex & 0x7FFFFFFF)]);
+							depHandleName._name.SetString(_stringList[(int)(nameStrIndex & 0x7FFFFFFF)]);
 
 							igObject? obj = null;
 							if(!dir._dependancies.Any(x => x._name._hash == depHandleName._ns._hash))
@@ -234,25 +223,14 @@
 								}
 							}
 
-							if((rawDepHNameNS & 0x80000000) != 0)
+							igHandle hnd = new igHandle(depHandleName);
+							if((nsStrIndex & 0x80000000) != 0)
 							{
-								igHandle hnd = new igHandle(depHandleName);
 								_namedHandleList.Add(hnd);
-								_namedExternalList.Append(obj);
 							}
 							else
 							{
-								if(obj == null)
-								{
-									_unresolvedNames.Add(new igHandle(depHandleName));
-									Console.WriteLine($"{depHandleName._ns._string}:/{depHandleName._name._string} is unresolved");
-								}
-								else
-								{
-									igHandle hnd = new igHandle(depHandleName);
-									_namedHandleList.Add(hnd);
-									_namedExternalList.Append(obj);
-								}
+								_namedExternalList.Append(hnd.GetObjectAlias<igObject>());
 							}
 						}
 						break;
@@ -287,6 +265,9 @@
 						break;
 					case 0x54584552:							//REXT
 						UnpackCompressedInts(_runtimeFields._externals, _stream.ReadBytes(length - start), count);
+						break;
+					case 0x58454E52:							//RNEX
+						UnpackCompressedInts(_runtimeFields._namedExternals, _stream.ReadBytes(length - start), count);
 						break;
 					case 0x444E4852:							//RHND
 						UnpackCompressedInts(_runtimeFields._handles, _stream.ReadBytes(length - start), count);
