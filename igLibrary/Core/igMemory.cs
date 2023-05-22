@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Numerics;
 
 namespace igLibrary.Core
 {
@@ -21,7 +22,7 @@ namespace igLibrary.Core
 		public igMemory()
 		{
 			_memoryPool = igMemoryContext.Singleton.GetMemoryPoolByName("Default");
- 			_data = new T[0];
+ 			_data = null;
 			_implicitMemoryPool = true;
 			_optimalCPUReadWrite = false;
 			_optimalGPURead = false;
@@ -30,12 +31,14 @@ namespace igLibrary.Core
 
 		public IEnumerator<T> GetEnumerator()
 		{
-			return ((IEnumerable<T>)this._data).GetEnumerator();
+			if(_data == null) return Enumerable.Empty<T>().GetEnumerator();
+			else return ((IEnumerable<T>)this._data).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable)this._data).GetEnumerator();
+			if(_data == null) return Enumerable.Empty<T>().GetEnumerator();
+			else return ((IEnumerable<T>)this._data).GetEnumerator();
 		}
 		igMemoryPool IigMemory.GetMemoryPool() => _memoryPool;
 		void IigMemory.SetMemoryPool(igMemoryPool pool) => _memoryPool = pool;
@@ -55,10 +58,22 @@ namespace igLibrary.Core
 		public ulong GetFlags(igMemoryRefHandleMetaField ioField, IG_CORE_PLATFORM platform) => GetFlagsInternal(ioField._memType, platform);
 		private ulong GetFlagsInternal(igMetaField memType, IG_CORE_PLATFORM platform)
 		{
-			ulong flags = (uint)_data.Length * memType.GetSize(platform);
+			ulong flags = (uint)(_data == null ? 0 : _data.Length) * memType.GetSize(platform);
 			uint codedAlignment = memType.GetAlignment(platform) * _alignmentMultiple;
+			
 			if(codedAlignment < 4) codedAlignment = 4;
-			codedAlignment = ((codedAlignment >> 1) - 2);
+
+			for(int i = 0; i < 32; i++)
+			{
+				if((1u << i) == codedAlignment)
+				{
+					codedAlignment = (uint)i;
+					break;
+				}
+			}
+
+
+			codedAlignment = (codedAlignment - 2u);
 			//The following isn't valid on crash nst/ctrnf
 			if(igAlchemyCore.isPlatform64Bit(platform))
 			{

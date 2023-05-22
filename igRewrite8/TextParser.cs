@@ -165,6 +165,7 @@ namespace igRewrite8.Devel
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, metaObject);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
+						ReadFieldDefault(metaField, ref dataIndex, memberInfo);
 						metaObject._metaFields.Add(metaField);
 					}
 					previousMeta = metaObject._name;
@@ -301,6 +302,43 @@ namespace igRewrite8.Devel
 			}
 
 			return metaField;
+		}
+		private void ReadFieldDefault(igMetaField field, ref int dataIndex, string[] memberInfo)
+		{
+			if(memberInfo.Length <= dataIndex) return;
+
+			string typeName = field.GetType().Name;
+			string[] defaultInfo = memberInfo[dataIndex].Split(',');
+
+			     if(typeName.StartsWith("igIntPtr"))			field._default = long.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igInt"))				field._default = int.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igUnsignedIntPtr"))	field._default = ulong.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igUnsignedInt"))		field._default = uint.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igLong"))				field._default = long.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igUnsignedLong"))		field._default = ulong.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igShort"))				field._default = short.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igUnsignedShort"))		field._default = ushort.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igSizeType"))			field._default = ulong.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igBool"))				field._default = byte.Parse(memberInfo[dataIndex]) == 1;
+			else if(typeName.StartsWith("igChar"))				field._default = unchecked((sbyte)byte.Parse(memberInfo[dataIndex]));
+			else if(typeName.StartsWith("igUnsignedChar"))		field._default = byte.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igFloat"))				field._default = float.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igVec2f"))				field._default = new igLibrary.Math.igVec2f(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]));
+			else if(typeName.StartsWith("igVec2uc"))			field._default = new igLibrary.Math.igVec2uc(byte.Parse(defaultInfo[0]), byte.Parse(defaultInfo[1]));
+			else if(typeName.StartsWith("igVec3fAligned"))		field._default = new igLibrary.Math.igVec3fAligned(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]));
+			else if(typeName.StartsWith("igVec3f"))				field._default = new igLibrary.Math.igVec3f(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]));
+			else if(typeName.StartsWith("igVec3d"))				field._default = new igLibrary.Math.igVec3d(double.Parse(defaultInfo[0]), double.Parse(defaultInfo[1]), double.Parse(defaultInfo[2]));
+			else if(typeName.StartsWith("igVec4fUnaligned"))	field._default = new igLibrary.Math.igVec4fUnaligned(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]), float.Parse(defaultInfo[3]));
+			else if(typeName.StartsWith("igVec4f"))				field._default = new igLibrary.Math.igVec4f(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]), float.Parse(defaultInfo[3]));
+			else if(typeName.StartsWith("igQuaternionf"))		field._default = new igLibrary.Math.igQuaternionf(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]), float.Parse(defaultInfo[3]));
+			else if(typeName.StartsWith("igVec4uc"))			field._default = new igLibrary.Math.igVec4uc(byte.Parse(defaultInfo[0]), byte.Parse(defaultInfo[1]), byte.Parse(defaultInfo[2]), byte.Parse(defaultInfo[3]));
+			else if(typeName.StartsWith("igVec4i"))				field._default = new igLibrary.Math.igVec4i(int.Parse(defaultInfo[0]), int.Parse(defaultInfo[1]), int.Parse(defaultInfo[2]), int.Parse(defaultInfo[3]));
+			else if(typeName.StartsWith("igMatrix44f"))			field._default = new igLibrary.Math.igMatrix44f(new float[16] {float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]), float.Parse(defaultInfo[3]), float.Parse(defaultInfo[4]), float.Parse(defaultInfo[5]), float.Parse(defaultInfo[6]), float.Parse(defaultInfo[7]), float.Parse(defaultInfo[8]), float.Parse(defaultInfo[9]), float.Parse(defaultInfo[10]), float.Parse(defaultInfo[11]), float.Parse(defaultInfo[12]), float.Parse(defaultInfo[13]), float.Parse(defaultInfo[14]), float.Parse(defaultInfo[15])});
+			else if(typeName.StartsWith("igString"))
+			{
+				string hexString = memberInfo[dataIndex];
+				string data = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(hexString));
+			}
 		}
 	}
 }

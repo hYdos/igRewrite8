@@ -254,6 +254,9 @@
 					case 0x53464F52:							//ROFS
 						UnpackCompressedInts(_runtimeFields._offsets, _stream.ReadBytes(length - start), count);
 						break;
+					case 0x44495052:							//RPID
+						UnpackCompressedInts(_runtimeFields._poolIds, _stream.ReadBytes(length - start), count);
+						break;
 					case 0x54545352:							//RSTT
 						UnpackCompressedInts(_runtimeFields._stringTables, _stream.ReadBytes(length - start), count);
 						break;

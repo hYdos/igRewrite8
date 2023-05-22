@@ -34,6 +34,9 @@ namespace igLibrary.Core
 
 			List<igMetaField> metaFields = GetMeta()._metaFields;
 
+			if(this is Gfx.igImage2)
+			;
+
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
@@ -41,17 +44,41 @@ namespace igLibrary.Core
 
 				section.PushAlignment(metaFields[i].GetAlignment(saver._platform));
 
-				//if(!metaFields[i]._properties._persistent) continue;
+				object? data = null;
 
-				FieldInfo? field = GetType().GetField(metaFields[i]._name);
+				if(metaFields[i]._properties._persistent)
+				{
+					FieldInfo? field = GetType().GetField(metaFields[i]._name);
 
-				if(field == null) continue;
+					if(field == null) continue;
 
-				object? data = field.GetValue(this);
+					data = field.GetValue(this);
+				}
+				else
+				{
+					data = metaFields[i].GetDefault(this);
+					if(metaFields[i].GetOutputType().IsValueType && data == null) continue;
+				}
 				
 				section._sh.Seek(objectOffset + metaFields[i]._offsets[saver._platform]);
 
 				metaFields[i].WriteIGZField(saver, section, data);
+			}
+		}
+		public virtual void ResetFields()
+		{
+			igMetaObject meta = GetMeta();
+			for(int i = 0; i < meta._metaFields.Count; i++)
+			{
+				if(meta._metaFields[i] is igStaticMetaField || meta._metaFields[i] is igPropertyFieldMetaField || meta._metaFields[i] is igBitFieldMetaField) continue;
+
+				FieldInfo? field = meta._vTablePointer.GetField(meta._metaFields[i]._name);
+
+				object? data = meta._metaFields[i].GetDefault(this);
+
+				if(meta._metaFields[i].GetOutputType().IsValueType && data == null) continue;
+
+				field.SetValue(this, data);
 			}
 		}
 	}

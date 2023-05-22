@@ -20,11 +20,11 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
+			ulong start = loader._stream.Tell64();
 			ulong flags = loader.ReadRawOffset();
 			ulong raw = loader.ReadRawOffset();
 			ulong end = loader._stream.Tell64();
 
-			igMemoryPool pool = loader.GetMemoryPoolFromSerializedOffset(raw);
 			ulong offset = loader.DeserializeOffset(raw);
 			Type memoryType;
 			try
@@ -35,20 +35,35 @@ namespace igLibrary.Core
 			{
 				return null;
 			}
-			uint memSize = _memType.GetSize(loader._platform);
-			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
-			memory.SetMemoryPool(pool);
-			memory.SetFlags(flags, this, loader._platform);
-			Array objects = memory.GetData();
 
-			for(int i = 0; i < objects.Length; i++)
+			igMemoryPool pool;
+			uint memSize;
+			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
+
+			if(loader._runtimeFields._poolIds.Any(x => x == start))
 			{
-				loader._stream.Seek((long)offset + memSize * i);
-				objects.SetValue(_memType.ReadIGZField(loader), i);
+				pool = loader._loadedPools[flags];
+				memSize = 0;
+			}
+			else
+			{
+				memory.SetFlags(flags, this, loader._platform);
+
+				pool = loader.GetMemoryPoolFromSerializedOffset(raw);
+				memSize = _memType.GetSize(loader._platform);
+				Array objects = memory.GetData();
+
+				for(int i = 0; i < objects.Length; i++)
+				{
+					loader._stream.Seek((long)offset + memSize * i);
+					objects.SetValue(_memType.ReadIGZField(loader), i);
+				}
+
+				memory.SetData(objects);
 			}
 
-			memory.SetData(objects);
-			
+			memory.SetMemoryPool(pool);
+
 			return memory;
 		}
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
@@ -60,20 +75,32 @@ namespace igLibrary.Core
 			uint memSize = _memType.GetSize(saver._platform);
 			ulong flags = memory.GetFlags(this, saver._platform);
 			ulong size = flags & 0x07FFFFFF;
-			ulong memOffset = memorySection.Malloc((uint)size);
 
-			memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
 
-			for(int i = 0; i < objects.Length; i++)
+			if(objects != null && objects.Length > 0)
 			{
-				memorySection._sh.Seek((long)memOffset + memSize * i);
-				_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+				ulong memOffset = memorySection.MallocAligned((uint)size, (ushort)memory.GetPlatformAlignment(this, saver._platform));
+				memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
+				for(int i = 0; i < objects.Length; i++)
+				{
+					memorySection._sh.Seek((long)memOffset + memSize * i);
+					_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+				}
+
+				section._sh.Seek(start);
+				saver.WriteRawOffset(memory.GetFlags(this, saver._platform), section);
+				saver.WriteRawOffset(saver.SerializeOffset((uint)memOffset, memorySection), section);
+				section._runtimeFields._offsets.Add(start + igAlchemyCore.GetPointerSize(saver._platform));
+			}
+			else
+			{
+				section._sh.Seek(start);
+				section._sh.WriteUInt32(memorySection._index);
+				if(igAlchemyCore.isPlatform64Bit(saver._platform)) section._sh.WriteUInt32(0);
+				saver.WriteRawOffset(0, section);
+				section._runtimeFields._poolIds.Add(start);
 			}
 
-			section._sh.Seek(start);
-			saver.WriteRawOffset(memory.GetFlags(this, saver._platform), section);
-			saver.WriteRawOffset(memOffset, section);
-			section._runtimeFields._offsets.Add(start + igAlchemyCore.GetPointerSize(saver._platform));
 		}
 		public override Type GetOutputType()
 		{
@@ -88,6 +115,12 @@ namespace igLibrary.Core
 			field._memType = field._memType.CreateFieldCopy();
 			return field;
 		}
+		public override object? GetDefault(igObject target)
+		{
+			IigMemory mem = (IigMemory)Activator.CreateInstance(GetOutputType());
+			mem.SetMemoryPool(target.internalMemoryPool);
+			return mem;
+		}
 	}
 	public class igMemoryRefArrayMetaField : igMemoryRefMetaField
 	{
@@ -100,6 +133,14 @@ namespace igLibrary.Core
 				data.SetValue(base.ReadIGZField(loader), i);
 			}
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform)
 		{

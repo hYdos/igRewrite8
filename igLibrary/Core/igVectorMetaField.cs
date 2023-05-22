@@ -5,6 +5,7 @@ namespace igLibrary.Core
 	public class igVectorMetaField : igRefMetaField
 	{
 		public igMetaField _memType;
+		public int _initialCapacity;		//Todo: Dump this from the game
 
 		public override void SetTemplateParameter(uint index, igMetaField meta)
 		{
@@ -67,6 +68,15 @@ namespace igLibrary.Core
 		{
 			return typeof(igVector<>).MakeGenericType(_memType.GetOutputType());
 		}
+		public override object? GetDefault(igObject target)
+		{
+			igVectorCommon vector = (igVectorCommon)Activator.CreateInstance(GetOutputType());
+			vector.SetCapacity(_initialCapacity);
+			IigMemory memory = vector.GetData();
+			memory.SetMemoryPool(target.internalMemoryPool);
+			vector.SetData(memory);
+			return vector;
+		}
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform) * 3;	//May cause issues for 64 bit platforms
 	}
 	public class igVectorArrayMetaField : igVectorMetaField
@@ -80,6 +90,14 @@ namespace igLibrary.Core
 				data.SetValue(base.ReadIGZField(loader), i);
 			}
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform)
 		{

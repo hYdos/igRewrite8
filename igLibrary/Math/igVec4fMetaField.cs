@@ -24,6 +24,24 @@ namespace igLibrary.Math
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x10;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x10;
 		public override Type GetOutputType() => typeof(igVec4f);
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			sh.WriteInt32(0x10);
+			igVec4f data = (igVec4f)_default;
+			sh.WriteSingle(data._x);
+			sh.WriteSingle(data._y);
+			sh.WriteSingle(data._z);
+			sh.WriteSingle(data._w);
+		}
+		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			igVec4f data = new igVec4f();
+			data._x = sh.ReadSingle();
+			data._y = sh.ReadSingle();
+			data._z = sh.ReadSingle();
+			data._w = sh.ReadSingle();
+			_default = data;
+		}
 	}
 	public class igVec4fArrayMetaField : igVec4fMetaField
 	{
@@ -36,6 +54,14 @@ namespace igLibrary.Math
 				data.SetValue(base.ReadIGZField(loader), i);
 			}
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform)
 		{

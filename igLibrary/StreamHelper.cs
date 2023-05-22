@@ -240,6 +240,10 @@ namespace igLibrary
 		public float ReadSingle(Endianness endianness) => BitConverter.ToSingle(ReadForEndianness(sizeof(float), endianness), 0);
 		public void WriteSingle(float data) => WriteSingle(data, _endianness);
 		public void WriteSingle(float data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
+		public override double ReadDouble() => ReadDouble(_endianness);
+		public double ReadDouble(Endianness endianness) => BitConverter.ToSingle(ReadForEndianness(sizeof(float), endianness), 0);
+		public void WriteDouble(double data) => WriteDouble(data, _endianness);
+		public void WriteDouble(double data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
 		public override Half ReadHalf() => ReadHalf(_endianness);
 		public Half ReadHalf(Endianness endianness) => BitConverter.ToHalf(ReadForEndianness(2, endianness), 0);
 
@@ -343,6 +347,8 @@ namespace igLibrary
 		public void WriteInt32(int data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
 		public void WriteUInt64(ulong data) => WriteUInt64(data, _endianness);
 		public void WriteUInt64(ulong data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
+		public void WriteInt64(long data) => WriteInt64(data, _endianness);
+		public void WriteInt64(long data, Endianness endianness) => WriteForEndianness(BitConverter.GetBytes(data), endianness);
 
 		public byte[] ReadForEndianness(int bytesToRead, Endianness endianness)
 		{

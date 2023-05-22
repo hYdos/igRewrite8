@@ -6,12 +6,17 @@ namespace igLibrary.Core
 	{
 		public struct Properties
 		{
-			//Others will be added as i figure out their structures
+			//Others will be added as I figure out their structures
 			public uint _storage;
 			public bool _persistent
 			{
 				get => ((_storage >> 13) & 1) != 0;
 				set => _storage = (uint)(_storage & ~0x2000) | (uint)((value ? 1 : 0) << 13);
+			}
+			public bool _writeOut
+			{
+				get => ((_storage >> 18) & 1) != 0;
+				set => _storage = (uint)(_storage & ~0x40000) | (uint)((value ? 1 : 0) << 18);
 			}
 		}
 		public string? _name;
@@ -52,7 +57,11 @@ namespace igLibrary.Core
 				sh.WriteInt16((short)-1);
 			}
 			sh.WriteUInt16(_offset);
+
+			if(_default == null) sh.WriteInt32(-1);
+			else DumpDefault(saver, sh);
 		}
+		public virtual void DumpDefault(igArkCoreFile saver, StreamHelper sh){}
 		public virtual void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
 			_properties._storage = sh.ReadUInt32();
@@ -70,6 +79,14 @@ namespace igLibrary.Core
 			{
 				numField.SetValue(this, num);
 			}
+			int size = sh.ReadInt32();
+			if(size > 0) UndumpDefault(loader, sh);
+		}
+		public virtual void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			sh.BaseStream.Position -= 4;
+			int size = sh.ReadInt32();
+			sh.BaseStream.Position += size;
 		}
 
 		public virtual object? ReadIGZField(igIGZLoader loader) => throw new NotImplementedException();
@@ -78,10 +95,13 @@ namespace igLibrary.Core
 		public virtual uint GetSize(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
 
+		public virtual void Commission(ref object target){}
 		public virtual void SetTemplateParameter(uint index, igMetaField meta){}
 		public virtual void SetTemplateParameterCount(uint count){}
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;
 		public virtual uint GetTemplateParameterCount() => 0;
+
+		public virtual object? GetDefault(igObject target) => _default;
 
 		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
 	}

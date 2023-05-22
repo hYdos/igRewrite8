@@ -222,5 +222,12 @@ namespace igLibrary.Core
 		{
 			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
+		public igObject ConstructInstance(igMemoryPool memPool)
+		{
+			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
+			obj.internalMemoryPool = memPool;
+			obj.ResetFields();
+			return obj;
+		}
 	}
 }

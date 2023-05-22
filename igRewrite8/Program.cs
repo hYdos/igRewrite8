@@ -12,7 +12,7 @@ namespace igRewrite8
 	{
 		public static void Main(string[] args)
 		{
-			DumpToyDataToRunes(args); return;
+			//DumpToyDataToRunes(args); return;
 			//DumpAllArchives(args); return;
 			//ReadFromTextFile(args); return;
 

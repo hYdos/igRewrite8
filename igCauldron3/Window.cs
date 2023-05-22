@@ -29,8 +29,8 @@ namespace igCauldron3
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
 			igArchive permanentArc = new igArchive("archives/permanent.pak");
-			          permanentArc = new igArchive("archives/shaders_aspenHigh.pak");
-			          permanentArc = new igArchive("archives/permanent_aspenHigh.pak");
+			          permanentArc = new igArchive("archives/shaders_ps3.pak");
+			          permanentArc = new igArchive("archives/permanent_ps3.pak");
 			igArchive arc = new igArchive(args[1]);
 			directory = igObjectStreamManager.Singleton.Load(args[2]);
 

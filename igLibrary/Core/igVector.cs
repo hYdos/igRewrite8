@@ -14,6 +14,11 @@ namespace igLibrary.Core
 		{
 			_data = (igMemory<T>)data;
 		}
+		public void SetCapacity(int capacity)
+		{
+			_data.Realloc(capacity);
+			_count = (_count < capacity) ? _count : capacity;
+		}
 		public IigMemory GetData() => _data;
 	}
 	public interface igVectorCommon
@@ -21,6 +26,7 @@ namespace igLibrary.Core
 		public void SetCount(uint count);
 		public void SetData(IigMemory data);
 		public uint GetCount();
+		public void SetCapacity(int capacity);
 		public IigMemory GetData();
 	}
 }

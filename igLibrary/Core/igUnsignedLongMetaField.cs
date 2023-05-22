@@ -11,6 +11,15 @@ namespace igLibrary.Core
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 8;
 		public override Type GetOutputType() => typeof(ulong);
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			sh.WriteUInt32(8);
+			sh.WriteUInt64((ulong)_default);
+		}
+		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			_default = sh.ReadUInt64();
+		}
 	}
 	public class igUnsignedLongArrayMetaField : igUnsignedLongMetaField
 	{
@@ -23,6 +32,14 @@ namespace igLibrary.Core
 				data.SetValue(base.ReadIGZField(loader), i);
 			}
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform)
 		{

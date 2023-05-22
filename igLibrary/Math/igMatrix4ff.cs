@@ -18,5 +18,26 @@ namespace igLibrary.Math
 		public float _m42;
 		public float _m43;
 		public float _m44;
+		public unsafe igMatrix44f(float[] mat)
+		{
+			if(mat.Length != 16) throw new ArgumentException("4x4 Matrix array must be of length 16");
+
+			_m11 = mat[00];
+			_m12 = mat[01];
+			_m13 = mat[02];
+			_m14 = mat[03];
+			_m21 = mat[04];
+			_m22 = mat[05];
+			_m23 = mat[06];
+			_m24 = mat[07];
+			_m31 = mat[08];
+			_m32 = mat[09];
+			_m33 = mat[10];
+			_m34 = mat[11];
+			_m41 = mat[12];
+			_m42 = mat[13];
+			_m43 = mat[14];
+			_m44 = mat[15];
+		}
 	}
 }

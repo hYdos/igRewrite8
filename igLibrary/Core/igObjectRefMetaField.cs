@@ -72,9 +72,9 @@ namespace igLibrary.Core
 				else
 				{
 					Console.WriteLine("EXNM object found, reference to " + hnd.ToString());
-					section._runtimeFields._externals.Add(section._sh.Tell64());
-					section._sh.WriteUInt32((uint)saver._externalList.Count | 0x80000000);
-					saver._externalList.Add(hnd);
+					section._runtimeFields._namedExternals.Add(section._sh.Tell64());
+					section._sh.WriteUInt32((uint)saver._namedExternalList.Count | 0x80000000);
+					saver._namedExternalList.Add(hnd);
 				}
 			}
 			//Should add stuff to check for externals
@@ -94,6 +94,11 @@ namespace igLibrary.Core
 			if(_metaObject._vTablePointer == null) _metaObject.DeclareType();
 			return _metaObject._vTablePointer;
 		}
+		public override object? GetDefault(igObject target)
+		{
+			if(_construct) return _metaObject.ConstructInstance(target.internalMemoryPool);
+			else return null;
+		}
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField
 	{
@@ -106,6 +111,14 @@ namespace igLibrary.Core
 				data.SetValue(base.ReadIGZField(loader), i);
 			}
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
 		}
 		public override uint GetSize(IG_CORE_PLATFORM platform)
 		{
