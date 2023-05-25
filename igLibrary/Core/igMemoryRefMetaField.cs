@@ -42,7 +42,7 @@ namespace igLibrary.Core
 
 			if(loader._runtimeFields._poolIds.Any(x => x == start))
 			{
-				pool = loader._loadedPools[flags];
+				pool = loader._loadedPools[flags & 0xFFFFFF];
 				memSize = 0;
 			}
 			else

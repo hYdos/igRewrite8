@@ -19,6 +19,15 @@ namespace igLibrary.Core
 			_data.Realloc(capacity);
 			_count = (_count < capacity) ? _count : capacity;
 		}
+		public void Append(T data)
+		{
+			if(_count == _data.Length)
+			{
+				_data.Realloc((int)_count + 1);
+			}
+			_data[(int)_count] = data;
+			_count++;
+		}
 		public IigMemory GetData() => _data;
 	}
 	public interface igVectorCommon

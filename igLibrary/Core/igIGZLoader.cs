@@ -76,7 +76,7 @@
 			for(int i = 0; i < 0x20; i++)
 			{
 				_stream.Seek(0x14 + 0x10 * i);
-				uint unk = _stream.ReadUInt32();
+				uint memPoolName = _stream.ReadUInt32();
 				uint offset = _stream.ReadUInt32();
 				uint length = _stream.ReadUInt32();
 				uint alignment = _stream.ReadUInt32();
@@ -87,14 +87,12 @@
 					break;
 				}
 
+				_stream.Seek(0x224 + memPoolName);
+				string memoryPoolName = _stream.ReadString();
+				_loadedPools[i] = igMemoryContext.Singleton.GetMemoryPoolByName(memoryPoolName);				
+
 				if(i > 0) _loadedPointers[i - 1] = offset;
 				else      _fixups = offset;
-			}
-			_stream.Seek(0x224);
-			for(int i = 0; i < sectionCount; i++)
-			{
-				string memoryPoolName = _stream.ReadString();
-				_loadedPools[i] = igMemoryContext.Singleton.GetMemoryPoolByName(memoryPoolName);
 			}
 		}
 
