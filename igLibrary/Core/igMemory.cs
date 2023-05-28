@@ -13,7 +13,7 @@ namespace igLibrary.Core
 			get => _data[index];
 			set => _data[index] = value;
 		}
-		public int Length => _data.Length;
+		public int Length => _data == null ? 0 : _data.Length;
 		public bool _implicitMemoryPool;
 		public bool _optimalCPUReadWrite;
 		public bool _optimalGPURead;

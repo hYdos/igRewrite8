@@ -146,10 +146,6 @@ namespace igLibrary.Core
 
 			igArkCoreFile loader = new igArkCoreFile();
 			loader.ReadFile($"{ArkCoreFolder}/{game.ToString()}.ark");
-			_metaObjects.AddRange(loader._metaObjectsInFile);
-			_metaEnums.AddRange(loader._metaEnumsInFile);
-			_compoundFieldInfos.AddRange(loader._compoundsInFile);
-			_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
 			loader.Dispose();
 
 			stopwatch.Stop();

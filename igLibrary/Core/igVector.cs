@@ -5,6 +5,15 @@ namespace igLibrary.Core
 		public long _count;
 		public igMemory<T> _data;
 
+		public igVector()
+		{
+			_data = new igMemory<T>();
+		}
+		public T this[int index]
+		{
+			get => _data[index];
+			set => _data[index] = value;
+		}
 		public void SetCount(uint count)
 		{
 			_count = count;

@@ -58,4 +58,5 @@ namespace igLibrary.Core
 				||  (type.BaseType != null && IsAssignableToGenericType(type.BaseType, genericType));
 		}
  	}
+	public class igBaseMetaList : igTObjectList<igBaseMeta>{}
 }

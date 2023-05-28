@@ -1,0 +1,27 @@
+﻿using igLibrary.Core;
+using igLibrary.DotNet;
+
+namespace VvlToDll
+{
+	public static class Program
+	{
+		public static void Main(string[] args)
+		{
+			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
+			ArkDllExport.Create();
+			igFileContext.Singleton.Initialize(args[0]);
+			igArchive arc = new igArchive("archives/permanent.pak");
+			          arc = new igArchive("archives/permanent_ps3.pak");
+			          arc = new igArchive("archives/permanentdeveloper.pak");
+			          arc = new igArchive("archives/chopchop.pak");
+
+			DotNetRuntime runtime = new DotNetRuntime();
+
+			//DotNetLibrary lib = VvlLoader.Load("scripts:/interop/Runtime.vvl", runtime, out bool success);
+			DotNetLibrary lib = VvlLoader.Load("scripts:/ChopChop_script.vvl", runtime, out bool success);
+
+			DllExporter vvlExporter = new DllExporter();
+			vvlExporter.ExportLibrary(lib, "ChopChop.dll");
+		}
+	}
+}

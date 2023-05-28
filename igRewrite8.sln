@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igCauldron2", "igCauldron2\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igCauldron3", "igCauldron3\igCauldron3.csproj", "{836C339B-380A-446E-867F-84AFF3CC2F39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VvlToDll", "VvlToDll\VvlToDll.csproj", "{B77C5F2B-4DFB-46FE-9D76-60F66016DACF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{836C339B-380A-446E-867F-84AFF3CC2F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{836C339B-380A-446E-867F-84AFF3CC2F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{836C339B-380A-446E-867F-84AFF3CC2F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B77C5F2B-4DFB-46FE-9D76-60F66016DACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B77C5F2B-4DFB-46FE-9D76-60F66016DACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B77C5F2B-4DFB-46FE-9D76-60F66016DACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B77C5F2B-4DFB-46FE-9D76-60F66016DACF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
