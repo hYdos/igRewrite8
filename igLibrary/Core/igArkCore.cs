@@ -61,25 +61,6 @@ namespace igLibrary.Core
 			EV_Count
 		}
 
-		public static Type[] MetaFields = new Type[]
-		{
-			typeof(igMetaField),
-			typeof(igMemoryRefMetaField),
-			typeof(igMemoryRefArrayMetaField),
-			typeof(igMemoryRefHandleMetaField),
-			typeof(igMemoryRefHandleArrayMetaField),
-			typeof(igRefMetaField),
-			typeof(igHandleMetaField),
-			typeof(igHandleArrayMetaField),
-			typeof(igObjectRefMetaField),
-			typeof(igObjectRefArrayMetaField),
-			typeof(igEnumMetaField),
-			typeof(igEnumArrayMetaField),
-			typeof(igStaticMetaField),
-			typeof(igPropertyFieldMetaField),
-			typeof(igBitFieldMetaField),
-		};
-
 		public const uint _magicCookie = 0x41726B00;
 		public const uint _magicVersion = 0x01;
 		public const string ArkCoreFolder = "ArkCore";

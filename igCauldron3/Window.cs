@@ -14,11 +14,11 @@ namespace igCauldron3
 		List<Frame> frames = new List<Frame>();
 		string[] args;
 		public static igObjectDirectory directory = null;
+		public static string? targetIgz = null;
 
 		public Window(GameWindowSettings gws, NativeWindowSettings nws, string[] args) : base(gws, nws)
 		{
 			this.args = args;
-			igFileContext.Singleton.Initialize(args[0]);
 			igLibrary.Gfx.igGfx.Initialize();
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 		}
@@ -29,10 +29,11 @@ namespace igCauldron3
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
 			igArchive permanentArc = new igArchive("archives/permanent.pak");
-			          permanentArc = new igArchive("archives/shaders_ps3.pak");
-			          permanentArc = new igArchive("archives/permanent_ps3.pak");
-			igArchive arc = new igArchive(args[1]);
-			directory = igObjectStreamManager.Singleton.Load(args[2]);
+			IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
+			permanentArc = new igArchive($"archives/shaders_{igAlchemyCore.GetPlatformString(platform)}.pak");
+			permanentArc = new igArchive($"archives/permanent_{igAlchemyCore.GetPlatformString(platform)}.pak");
+
+			directory = igObjectStreamManager.Singleton.Load(targetIgz);
 
 			frames.Add(new ObjectManagerFrame());
 			frames.Add(new InspectorFrame());

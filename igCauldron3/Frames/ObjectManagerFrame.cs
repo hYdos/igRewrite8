@@ -288,7 +288,8 @@ namespace igCauldron3
 				igHandle hnd = (igHandle)value;
 				ImGui.Text(label);
 				ImGui.SameLine();
-				ImGui.Text(hnd.ToString());
+				if(hnd != null) ImGui.Text(hnd.ToString());
+				else            ImGui.Text("null");
 				/*int selectedNs = directory._dependancies.FindIndex(x => x._name._hash == hnd._namespace._hash);
 				int selectedName = -1;
 
