@@ -84,6 +84,8 @@ namespace igLibrary.Core
 
 		public override void PostUndump()
 		{
+			if(_name == "igOrderedMapMetaField")
+			;
 			_vTablePointer = igArkCore.GetStructDotNetType(_name.Substring(0, _name.Length-9));
 			_platformInfo = igArkCore.GetMetaFieldPlatformInfo(_name);
 

@@ -1,12 +1,17 @@
 namespace igLibrary.Core
 {
-	public class igObjectLoader : igObject
+	public abstract class igObjectLoader : igObject
 	{
-		static igObjectLoaderTable _loaders = new igObjectLoaderTable();
+		public static Dictionary<string, igObjectLoader> _loaders = new Dictionary<string, igObjectLoader>();
 		static uint _testFileMaxSize;
-		public virtual string GetExtension() => "";
-		public virtual string GetType() => "";
-		public virtual string GetName() => "";
-		public virtual void ReadFile(){}
+		public static void RegisterLoader<T>() where T : igObjectLoader, new()
+		{
+			T loader = new T();
+			_loaders.TryAdd(loader.GetLoaderType(), loader);
+		}
+		public virtual string GetLoaderExtension() => "";
+		public virtual string GetLoaderType() => "";
+		public virtual string GetLoaderName() => "";
+		public virtual void ReadFile(string filePath, igBlockingType blockingType){}
 	}
 }

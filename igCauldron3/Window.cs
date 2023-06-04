@@ -19,7 +19,7 @@ namespace igCauldron3
 		{
 			this.args = args;
 			igFileContext.Singleton.Initialize(args[0]);
-			igLibrary.Gfx.igGfx.Initialize();
+			igAlchemyCore.InitializeSystems();
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 		}
 		protected override void OnLoad()
@@ -29,9 +29,26 @@ namespace igCauldron3
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
 			igArchive permanentArc = new igArchive("archives/permanent.pak");
+			          permanentArc = new igArchive("archives/gamestartup.pak");
 			          permanentArc = new igArchive("archives/shaders_ps3.pak");
 			          permanentArc = new igArchive("archives/permanent_ps3.pak");
 			igArchive arc = new igArchive(args[1]);
+
+			igObjectLoader scriptLoader = igObjectLoader._loaders["DotNet"];
+			scriptLoader.ReadFile("scripts:/interop/Runtime.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/interop/Core.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/interop/DotNetAttributes.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/interop/game.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/interop/VisualScript.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/interop/DebugLink.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/common.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/ui.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/behaviorHandlers.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/common_script_vs.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/Characters_script_vs.vvl", igBlockingType.kMayBlock);
+			//scriptLoader.ReadFile("scripts:/ChopChop_script.vvl", igBlockingType.kMayBlock);
+			scriptLoader.ReadFile("scripts:/Legs_Template_script.vvl", igBlockingType.kMayBlock);
+
 			directory = igObjectStreamManager.Singleton.Load(args[2]);
 
 			frames.Add(new ObjectManagerFrame());

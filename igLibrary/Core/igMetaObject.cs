@@ -83,7 +83,7 @@ namespace igLibrary.Core
 
 		public override void FinalizeType()
 		{
-			if(_name == "igComponentList")
+			if(_name == "igEffectAnnotationListList")
 			;
 			if(!_beganFinalizationPrep)
 			{
@@ -94,6 +94,23 @@ namespace igLibrary.Core
 					Console.WriteLine($"Prepping {_name}");
 
 					_parent.FinalizeType();
+
+					if(tb.BaseType != null && tb.BaseType.IsGenericType)
+					{
+						if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTObjectList<>))
+						{
+							igMemoryRefMetaField _data = (igMemoryRefMetaField)_metaFields[2];
+							if(_data._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
+						}
+						else if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTUHashTable<,>))
+						{
+							igMemoryRefMetaField memField = (igMemoryRefMetaField)_metaFields[0];
+							if(memField._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
+							memField = (igMemoryRefMetaField)_metaFields[1];
+							if(memField._memType is igObjectRefMetaField objectRefMetaField2) objectRefMetaField2._metaObject.FinalizeType();
+						}
+					}
+					
 
 					for(int i = 0; i < _metaFields.Count; i++)
 					{

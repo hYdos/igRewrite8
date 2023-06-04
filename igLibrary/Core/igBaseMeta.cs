@@ -25,6 +25,7 @@ namespace igLibrary.Core
 		public virtual void FinalizeType(){}
 		protected void ReadyFieldDependancy(igMetaField field)
 		{
+			if(field == null) return;
 			if(field is igObjectRefMetaField objField) objField._metaObject.DeclareType();
 			else if(field is igHandleMetaField hndField) hndField._metaObject.DeclareType();
 			else if(field is igMemoryRefMetaField memField) ReadyFieldDependancy(memField._memType);
@@ -39,9 +40,9 @@ namespace igLibrary.Core
 		}
 		protected void FinalizeFieldDependancy(igMetaField field)
 		{
-			if(field is igObjectRefMetaField objField && !IsAssignableToGenericType(objField._metaObject._vTablePointer, typeof(igTObjectList<>))) objField._metaObject.FinalizeType();
+			//if(field is igObjectRefMetaField objField) objField._metaObject.FinalizeType();
 			//else if(field is igHandleMetaField hndField) hndField._metaObject.FinalizeType();		//Not needed since the field is igHandle
-			else if(field is igMemoryRefMetaField memField) FinalizeFieldDependancy(memField._memType);
+			if(field is igMemoryRefMetaField memField) FinalizeFieldDependancy(memField._memType);
 			else if(field is igCompoundMetaField compoundField) compoundField._compoundFieldInfo.FinalizeType();
 			else if(field is igMemoryRefHandleMetaField memHndField) FinalizeFieldDependancy(memHndField._memType);
 			else if(field is igStaticMetaField staticField) FinalizeFieldDependancy(staticField._storageMetaField);

@@ -1,3 +1,5 @@
+using igLibrary.DotNet;
+
 namespace igLibrary
 {
 	public class CDotNetaManager //: CManager
@@ -5,9 +7,11 @@ namespace igLibrary
 		//public igObjectDirectoryLoadCallback _objectDirectoryUnloadedCallback;
 		//public igUnsignedIntStringHashTable _functionHashes;
 		//public CDotNetLibraryHashTable _libraries;
-		//public DotNetRuntime _runtime;
+		public DotNetRuntime _runtime = new DotNetRuntime();
 		//public igObject _dotNetCommunicator;
 		//public bool _debuggerEnabled;
-		public static CDotNetaManager _Instance { get; private set; }
+		private static CDotNetaManager fakeInstance = new CDotNetaManager();
+		public static CDotNetaManager _Instance => fakeInstance;
+
 	}
 }

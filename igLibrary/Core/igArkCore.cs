@@ -218,7 +218,10 @@ namespace igLibrary.Core
 				_compoundStructCache = new Dictionary<string, Type>();
 				for(uint i = 0; i < types.Length; i++)
 				{
-					_compoundStructCache.Add(types[i].Name, types[i]);
+					string typeName = types[i].Name;
+					int backtickIndex = typeName.IndexOf('`');
+					if(backtickIndex >= 0) typeName = typeName.Substring(0, backtickIndex);
+					_compoundStructCache.Add(typeName, types[i]);
 				}
 			}
 
