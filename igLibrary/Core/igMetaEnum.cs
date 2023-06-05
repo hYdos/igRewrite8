@@ -39,7 +39,10 @@ namespace igLibrary.Core
 			if(_internalType == null) throw new NotImplementedException("this enum is not connected to any type. This feature will be implemented in the future");
 
 			int index = _values.IndexOf(value);
-			if(index < 0) throw new KeyNotFoundException($"Value {value} not found in enum {_name}");
+			if(index < 0) //throw new KeyNotFoundException($"Value {value} not found in enum {_name}");
+			{
+				return Activator.CreateInstance(_internalType);
+			}
 
 			return Enum.Parse(_internalType, _names[index]);
 		}

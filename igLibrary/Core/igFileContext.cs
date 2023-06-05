@@ -108,6 +108,10 @@ namespace igLibrary.Core
 			_root = root.TrimEnd('/');
 			_root = _root.TrimEnd('\\');
 		}
+		public void InitializeUpdate(string updatePath)
+		{
+			_archiveManager._patchArchives.Append(new igArchive(updatePath));
+		}
 
 		public void AddStorageDevice(igStorageDevice device)
 		{
