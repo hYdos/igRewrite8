@@ -33,7 +33,6 @@ namespace igCauldron3
 			          permanentArc = new igArchive("archives/gamestartup.pak");
 			          permanentArc = new igArchive($"archives/shaders_{igAlchemyCore.GetPlatformString(platform)}.pak");
 			          permanentArc = new igArchive($"archives/permanent_{igAlchemyCore.GetPlatformString(platform)}.pak");
-			igArchive arc = new igArchive(args[1]);
 
 			igObjectLoader scriptLoader = igObjectLoader._loaders["DotNet"];
 			scriptLoader.ReadFile("scripts:/interop/Runtime.vvl", igBlockingType.kMayBlock);
