@@ -91,7 +91,7 @@ namespace igLibrary.Core
 		public override Type GetOutputType()
 		{
 			//if(_metaObject._vTablePointer == typeof(igBlindObject)) return typeof(igObject);
-			if(_metaObject._vTablePointer == null) _metaObject.DeclareType();
+			if(_metaObject._vTablePointer == null) _metaObject.GatherDependancies();
 			return _metaObject._vTablePointer;
 		}
 		public override object? GetDefault(igObject target)

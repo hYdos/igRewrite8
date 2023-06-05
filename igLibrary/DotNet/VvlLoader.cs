@@ -137,6 +137,8 @@ namespace igLibrary.DotNet
 				if(!typeDetails[i]._ownsMeta) continue;
 				if(typeDetails[i]._targetMeta is igMetaObject metaObject)
 				{
+					if(metaObject._name.Contains("List"))
+					;
 					incompleteObjects.Append(i);
 				}
 				else
@@ -156,7 +158,20 @@ namespace igLibrary.DotNet
 				{
 					//You'd implement igPatchAttribute here
 
-					bool importSuccess = typeDetails[metaIndex]._baseType.TryResolveObject(out DotNetType baseType);
+					bool importSuccess = false;
+					igDotNetTypeReference typeRef = typeDetails[metaIndex]._baseType;
+					DotNetType baseType = new DotNetType();
+					while(!importSuccess)
+					{
+						importSuccess = typeRef.TryResolveObject(out baseType);
+						if(!importSuccess)
+						{
+							int nsIndex = typeRef._name.IndexOf('.');
+							if(nsIndex >= 0) typeRef._name = typeRef._name.Substring(nsIndex+1);
+							//else throw new TypeLoadException($"Failed to find class {typeName}");
+							else break;
+						}
+					}
 					if(!importSuccess)
 					{
 						baseType._baseMeta = igArkCore.GetObjectMeta("Object");	//Should replace this with DotNet.Object._Meta when that's implemented
@@ -165,15 +180,21 @@ namespace igLibrary.DotNet
 					if(baseType._baseMeta is not igMetaObject baseMetaObject)
 					{
 						throw new TypeLoadException($"Somehow didn't get a metaobject for the parent of {baseType._baseMeta}, instead got {baseType._baseMeta._name}");
-						//incompleteObjects.Append(metaIndex);
 					}
 					else
 					{
+						if(baseMetaObject._parent == null)
+						{
+							incompleteObjects.Append(metaIndex);
+							continue;
+						}
+						if(meta._name == "Scripts.CelebrateLevelUpComponentData")
+						;
 						meta._parent = baseMetaObject;
 						meta.InheritFields();
 						for(int j = 0; j < memberCounts[metaIndex]; j++)
 						{
-							meta._metaFields.Add(AddField(library, resolver, fieldDefs[memberStarts[metaIndex] + j], strings));
+							meta.AppendDynamicField(AddField(library, resolver, fieldDefs[memberStarts[metaIndex] + j], strings));
 						}
 						library._ownedTypes.Append(meta);
 					}
@@ -269,14 +290,13 @@ namespace igLibrary.DotNet
 				else
 				{
 					dntd._ownsMeta = false;
-					string testTypeName = typeName;
 					while(true)
 					{
-						meta = igArkCore.GetMetaEnum(testTypeName);
+						meta = igArkCore.GetMetaEnum(typeName);
 						if(meta == null)
 						{
-							int nsIndex = testTypeName.IndexOf('.');
-							if(nsIndex >= 0) testTypeName = testTypeName.Substring(nsIndex+1);
+							int nsIndex = typeName.IndexOf('.');
+							if(nsIndex >= 0) typeName = typeName.Substring(nsIndex+1);
 							//else throw new TypeLoadException($"Failed to find enum {typeName}");
 							else break;
 							continue;
@@ -317,6 +337,7 @@ namespace igLibrary.DotNet
 						else
 						{
 							meta = dnt._baseMeta;
+							typeName = typeRef._name;
 							break;
 						}
 					}
@@ -484,11 +505,25 @@ namespace igLibrary.DotNet
 						break;
 					case ElementType.kElementTypeClass:
 					case ElementType.kElementTypeObject:
+						bool importSuccess = false;
 						igDotNetTypeReference typeRef = new igDotNetTypeReference(resolver, field._isArray != 0, field._fieldType, ReadVvlString(strings, field._refTypeName));
-						if(!typeRef.TryResolveObject(out DotNetType dntRef))
+						DotNetType dntRef = new DotNetType();
+						while(!importSuccess)
+						{
+							importSuccess = typeRef.TryResolveObject(out dntRef);
+							if(!importSuccess)
+							{
+								int nsIndex = typeRef._name.IndexOf('.');
+								if(nsIndex >= 0) typeRef._name = typeRef._name.Substring(nsIndex+1);
+								//else throw new TypeLoadException($"Failed to find class {typeName}");
+								else break;
+							}
+						}
+						if(!importSuccess)
 						{
 							dntRef._baseMeta = igArkCore.GetObjectMeta("Object");
 						}
+
 						if(dntRef._baseMeta is igMetaEnum metaEnum)
 						{
 							metaField = new igDotNetEnumMetaField();

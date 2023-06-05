@@ -252,6 +252,11 @@ namespace igRewrite8.Devel
 			{
 				(metaField as igHandleMetaField)._metaObject = metaObjectLookup[data[index++]];
 			}
+			else if(typeName.StartsWith("igStruct"))
+			{
+				(metaField as igStructMetaField)._sizes.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT, ushort.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber));
+				(metaField as igStructMetaField)._alignments.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT, ushort.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber));
+			}
 			else if(typeName.StartsWith("igEnum"))
 			{
 				string enumName = data[index++];

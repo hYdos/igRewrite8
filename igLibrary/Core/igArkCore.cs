@@ -341,5 +341,17 @@ namespace igLibrary.Core
 			}
 			_pendingTypes.Clear();
 		}
+		public static void FlushPendingTypes()
+		{
+			for(int i = 0; i < _pendingTypes.Count; i++)
+			{
+				_pendingTypes[i].DefineType2();
+			}
+			for(int i = 0; i < _pendingTypes.Count; i++)
+			{
+				_pendingTypes[i].CreateType2();
+			}
+			_pendingTypes.Clear();
+		}
 	}
 }

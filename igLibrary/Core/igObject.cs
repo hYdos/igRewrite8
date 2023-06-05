@@ -9,13 +9,15 @@ namespace igLibrary.Core
 			uint objectOffset = loader._stream.Tell();
 
 			List<igMetaField> metaFields = GetMeta()._metaFields;
+			if(GetMeta()._name == "CAttributeBoostComponentData")
+			;
 
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
 
-				//if(!metaFields[i]._properties._persistent) continue;
+				if(!metaFields[i]._properties._persistent) continue;
 
 				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 

@@ -8,6 +8,7 @@ namespace igLibrary.Core
 		protected bool _beganFinalizationPrep = false;
 		protected bool _finishedFinalization = false;
 		protected bool _finishedFinalizationPrep = false;
+		protected bool _gatheredDependancies = false;
 		public BuildPriority _priority = BuildPriority.Normal;
 		public enum BuildPriority
 		{
@@ -23,6 +24,21 @@ namespace igLibrary.Core
 		public virtual void DeclareType(){}
 		public virtual void DefineType(){}
 		public virtual void FinalizeType(){}
+		protected void ReadyFieldDependancy2(igMetaField field)
+		{
+			if(field is igObjectRefMetaField objField) objField._metaObject.GatherDependancies();
+			else if(field is igMemoryRefMetaField memField) ReadyFieldDependancy2(memField._memType);
+			else if(field is igMemoryRefHandleMetaField memHndField) ReadyFieldDependancy2(memHndField._memType);
+			else if(field is igStaticMetaField staticField) ReadyFieldDependancy2(staticField._storageMetaField);
+		}
+		protected void ReadyCompoundFieldDependancy(igMetaField field)
+		{
+			if(field is igCompoundMetaField compoundField)
+			compoundField._compoundFieldInfo.DeclareType();
+			else if(field is igMemoryRefMetaField memField) ReadyCompoundFieldDependancy(memField._memType);
+			else if(field is igMemoryRefHandleMetaField memHndField) ReadyCompoundFieldDependancy(memHndField._memType);
+			else if(field is igStaticMetaField staticField) ReadyCompoundFieldDependancy(staticField._storageMetaField);
+		}
 		protected void ReadyFieldDependancy(igMetaField field)
 		{
 			if(field == null) return;
@@ -52,6 +68,9 @@ namespace igLibrary.Core
 				FinalizeFieldDependancy(field.GetTemplateParameter(i));
 			}
 		}
+		public virtual void GatherDependancies(){}
+		public virtual void DefineType2(){}
+		public virtual void CreateType2(){}
 		//https://stackoverflow.com/questions/74616/how-to-detect-if-type-is-another-generic-type/1075059#1075059
 		public static bool IsAssignableToGenericType(Type type, Type genericType)
 		{
