@@ -127,10 +127,6 @@ namespace igLibrary.Core
 
 			igArkCoreFile loader = new igArkCoreFile();
 			loader.ReadFile($"{ArkCoreFolder}/{game.ToString()}.ark");
-			_metaObjects.AddRange(loader._metaObjectsInFile);
-			_metaEnums.AddRange(loader._metaEnumsInFile);
-			_compoundFieldInfos.AddRange(loader._compoundsInFile);
-			_metaFieldPlatformInfos.AddRange(loader._metaFieldPlatformInfosInFile);
 			loader.Dispose();
 
 			stopwatch.Stop();
@@ -203,7 +199,10 @@ namespace igLibrary.Core
 				_compoundStructCache = new Dictionary<string, Type>();
 				for(uint i = 0; i < types.Length; i++)
 				{
-					_compoundStructCache.Add(types[i].Name, types[i]);
+					string typeName = types[i].Name;
+					int backtickIndex = typeName.IndexOf('`');
+					if(backtickIndex >= 0) typeName = typeName.Substring(0, backtickIndex);
+					_compoundStructCache.Add(typeName, types[i]);
 				}
 			}
 
@@ -320,6 +319,18 @@ namespace igLibrary.Core
 			for(int i = 0; i < _pendingTypes.Count; i++)
 			{
 				_pendingTypes[i].FinalizeType();
+			}
+			_pendingTypes.Clear();
+		}
+		public static void FlushPendingTypes()
+		{
+			for(int i = 0; i < _pendingTypes.Count; i++)
+			{
+				_pendingTypes[i].DefineType2();
+			}
+			for(int i = 0; i < _pendingTypes.Count; i++)
+			{
+				_pendingTypes[i].CreateType2();
 			}
 			_pendingTypes.Clear();
 		}

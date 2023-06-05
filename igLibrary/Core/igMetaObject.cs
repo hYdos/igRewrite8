@@ -10,6 +10,7 @@ namespace igLibrary.Core
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Type _vTablePointer;
+		private bool _baseFieldsInherited = false;
 
 
 		public igMetaObject()
@@ -52,7 +53,7 @@ namespace igLibrary.Core
 
 				parentType = typeof(igTDataList<>).MakeGenericType(dataField._memType.GetOutputType());
 			}
-			else if(_parent._name == "igObjectList")
+			else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
 			{
 				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
 
@@ -83,7 +84,7 @@ namespace igLibrary.Core
 
 		public override void FinalizeType()
 		{
-			if(_name == "igComponentList")
+			if(_name == "igEffectAnnotationListList")
 			;
 			if(!_beganFinalizationPrep)
 			{
@@ -94,6 +95,23 @@ namespace igLibrary.Core
 					Console.WriteLine($"Prepping {_name}");
 
 					_parent.FinalizeType();
+
+					if(tb.BaseType != null && tb.BaseType.IsGenericType)
+					{
+						if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTObjectList<>))
+						{
+							igMemoryRefMetaField _data = (igMemoryRefMetaField)_metaFields[2];
+							if(_data._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
+						}
+						else if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTUHashTable<,>))
+						{
+							igMemoryRefMetaField memField = (igMemoryRefMetaField)_metaFields[0];
+							if(memField._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
+							memField = (igMemoryRefMetaField)_metaFields[1];
+							if(memField._memType is igObjectRefMetaField objectRefMetaField2) objectRefMetaField2._metaObject.FinalizeType();
+						}
+					}
+					
 
 					for(int i = 0; i < _metaFields.Count; i++)
 					{
@@ -121,6 +139,91 @@ namespace igLibrary.Core
 
 					Console.WriteLine($"Finalized {_name}");
 				}
+
+				_finishedFinalization = true;
+			}
+		}
+		public override void GatherDependancies()
+		{
+			if(_gatheredDependancies) return;
+			_gatheredDependancies = true;
+			if(_vTablePointer is not null) return;
+			_vTablePointer = igArkCore.GetNewTypeBuilder(_name);
+
+			_parent.GatherDependancies();
+
+			for(int i = 0; i < _metaFields.Count; i++)
+			{
+				ReadyCompoundFieldDependancy(_metaFields[i]);
+			}
+			for(int i = 0; i < _parent._metaFields.Count; i++)
+			{
+				if(_metaFields[i] != _parent._metaFields[i]) ReadyFieldDependancy2(_metaFields[i]);
+			}
+
+			igArkCore._pendingTypes.Add(this);
+
+			for(int i = _parent._metaFields.Count; i < _metaFields.Count; i++)
+			{
+				ReadyFieldDependancy2(_metaFields[i]);
+			}
+
+		}
+		public override void DefineType2()
+		{
+			if(_vTablePointer is not TypeBuilder tb) return;
+
+			Type parentType = _parent._vTablePointer;
+
+			if(_parent._name == "igDataList")
+			{
+				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
+
+				parentType = typeof(igTDataList<>).MakeGenericType(dataField._memType.GetOutputType());
+			}
+			else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
+			{
+				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
+
+				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
+				_priority = BuildPriority.Low;
+			}
+			else if(_parent._name == "igHashTable")
+			{
+				igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
+				igMemoryRefMetaField keysField = (igMemoryRefMetaField)_metaFields[1];
+
+				parentType = typeof(igTUHashTable<,>).MakeGenericType(valuesField._memType.GetOutputType(), keysField._memType.GetOutputType());
+				_priority = BuildPriority.Low;
+			}
+
+			tb.SetParent(parentType);
+			for(int i = _parent._metaFields.Count; i < _metaFields.Count; i++)
+			{
+				if(_metaFields[i] is igPropertyFieldMetaField) continue;
+
+				FieldAttributes attrs = FieldAttributes.Public;
+				if(_metaFields[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
+
+				FieldBuilder fb = tb.DefineField(_metaFields[i]._name, _metaFields[i].GetOutputType(), attrs);
+			}
+		}
+		public override void CreateType2()
+		{
+			if(_vTablePointer is not TypeBuilder tb) return;
+
+			if(!_parent._finishedFinalization) throw new TypeLoadException("Derived class being initialized before parent.");
+			if(!_beganFinalization)
+			{
+				_beganFinalization = true;
+
+				Console.WriteLine($"Finalizing {_name}");
+				
+				Type testType = tb.CreateType();
+				igArkCore.AddDynamicTypeToCache(testType);
+				_vTablePointer = testType;
+
+				Console.WriteLine($"Finalized {_name}");
 
 				_finishedFinalization = true;
 			}
@@ -158,8 +261,16 @@ namespace igLibrary.Core
 		}
 		public void InheritFields()
 		{
+			//if(_baseFieldsInherited) return;
+			//_baseFieldsInherited = true;
 			if(_parent == null) return;
+			//_parent.InheritFields();
 			_metaFields.AddRange(_parent._metaFields);
+		}
+		public void AppendDynamicField(igMetaField field)
+		{
+			field._offset = (ushort)(_metaFields.Max(x => x._offset) + 1u);
+			_metaFields.Add(field);
 		}
 		public void CalculateOffsets()
 		{
@@ -222,11 +333,16 @@ namespace igLibrary.Core
 		{
 			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
-		public igObject ConstructInstance(igMemoryPool memPool)
+		public igObject ConstructInstance(igMemoryPool memPool, bool setFields = true)
 		{
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;
-			obj.ResetFields();
+			if(setFields) obj.ResetFields();
+			FieldInfo? fi = _vTablePointer.GetField("_meta");
+			if(fi != null)
+			{
+				fi.SetValue(obj, this);
+			}
 			return obj;
 		}
 	}

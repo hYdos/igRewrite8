@@ -2,6 +2,12 @@ namespace igLibrary.Core
 {
 	public static class igAlchemyCore
 	{
+		public static void InitializeSystems()
+		{
+			Gfx.igGfx.Initialize();
+			
+			igObjectLoader.RegisterLoader<DotNet.igDotNetMetaOnlyLibraryLoader>();
+		}
 		public static bool isPlatform64Bit(IG_CORE_PLATFORM platform)
 		{
 			switch(platform)

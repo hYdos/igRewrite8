@@ -126,7 +126,8 @@ namespace igLibrary.Core
 			_shs[Section.ObjectInst].Seek(0);
 			for(int i = 0; i < metaObjectCount; i++)
 			{
-				igMetaObject metaObject = new igMetaObject();
+				string type = ReadString(_shs[Section.ObjectInst]);
+				igMetaObject metaObject = (igMetaObject)Activator.CreateInstance(igArkCore.GetObjectDotNetType(type));
 				metaObject._name = ReadString(_shs[Section.ObjectInst]);
 				_metaObjectsInFile.Add(metaObject);
 				igArkCore._metaObjects.Add(metaObject);
@@ -134,6 +135,7 @@ namespace igLibrary.Core
 		}
 		public void SaveMetaObject(igMetaObject metaObject)
 		{
+			SaveString(_shs[Section.ObjectInst], metaObject.GetType().Name);
 			SaveString(_shs[Section.ObjectInst], metaObject._name);
 			SaveString(_shs[Section.ObjectInfo], metaObject._parent != null ? metaObject._parent._name : null);
 			

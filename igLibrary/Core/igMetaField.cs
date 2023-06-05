@@ -105,4 +105,5 @@ namespace igLibrary.Core
 
 		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
 	}
+	public class igMetaFieldList : igTObjectList<igMetaField>{}
 }

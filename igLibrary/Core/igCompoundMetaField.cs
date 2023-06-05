@@ -84,6 +84,8 @@ namespace igLibrary.Core
 
 		public override void PostUndump()
 		{
+			if(_name == "igOrderedMapMetaField")
+			;
 			_vTablePointer = igArkCore.GetStructDotNetType(_name.Substring(0, _name.Length-9));
 			_platformInfo = igArkCore.GetMetaFieldPlatformInfo(_name);
 
@@ -155,6 +157,52 @@ namespace igLibrary.Core
 
 					Console.WriteLine($"Finalized {_name}");
 				}
+
+				_finishedFinalization = true;
+			}
+		}
+		public override void GatherDependancies()
+		{
+			if(_gatheredDependancies) return;
+			_gatheredDependancies = true;
+			if(_vTablePointer is not null) return;
+			_vTablePointer = igArkCore.GetNewStructTypeBuilder(_name);
+
+			igArkCore._pendingTypes.Add(this);
+
+			for(int i = 0; i < _fieldList.Count; i++)
+			{
+				ReadyFieldDependancy2(_fieldList[i]);
+			}
+		}
+		public override void DefineType2()
+		{
+			if(_vTablePointer is not TypeBuilder tb) return;
+
+			for(int i = 0; i < _fieldList.Count; i++)
+			{
+				if(_fieldList[i] is igPropertyFieldMetaField) continue;
+
+				FieldAttributes attrs = FieldAttributes.Public;
+				if(_fieldList[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
+
+				FieldBuilder fb = tb.DefineField(_fieldList[i]._name, _fieldList[i].GetOutputType(), attrs);
+			}
+		}
+		public override void CreateType2()
+		{
+			if(_vTablePointer is not TypeBuilder tb) return;
+
+			if(!_beganFinalization)
+			{
+				_beganFinalization = true;
+
+				Console.WriteLine($"Finalizing {_name}");
+				
+				Type testType = tb.CreateType();
+				_vTablePointer = testType;
+
+				Console.WriteLine($"Finalized {_name}");
 
 				_finishedFinalization = true;
 			}

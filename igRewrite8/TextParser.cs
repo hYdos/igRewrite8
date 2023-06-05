@@ -98,8 +98,8 @@ namespace igRewrite8.Devel
 				string[] members = line.Split(' ');
 				if(members[0] == "igMetaObject")
 				{
-					igMetaObject metaObject = new igMetaObject();
-					metaObject._name = members[1];
+					igMetaObject metaObject = (igMetaObject)Activator.CreateInstance(igArkCore.GetObjectDotNetType(members[1]));
+					metaObject._name = members[2];
 
 					metaObjectLookup.Add(metaObject._name, metaObject);
 				}
@@ -125,13 +125,13 @@ namespace igRewrite8.Devel
 
 				if(members[0] == "igMetaObject")
 				{
-					igMetaObject metaObject = metaObjectLookup[members[1]];
+					igMetaObject metaObject = metaObjectLookup[members[2]];
 
-					if(members.Length > 2)
+					if(members.Length > 3)
 					{
-						metaObject._parent = metaObjectLookup[members[2]];
+						metaObject._parent = metaObjectLookup[members[3]];
 						metaObject.InheritFields();
-						int parentMetaIndex = 3;
+						int parentMetaIndex = 4;
 						if(metaObject._parent._name == "igDataList")
 						{
 							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
@@ -251,6 +251,11 @@ namespace igRewrite8.Devel
 			else if(typeName.StartsWith("igHandle") && !typeName.StartsWith("igHandleName"))
 			{
 				(metaField as igHandleMetaField)._metaObject = metaObjectLookup[data[index++]];
+			}
+			else if(typeName.StartsWith("igStruct"))
+			{
+				(metaField as igStructMetaField)._sizes.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT, ushort.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber));
+				(metaField as igStructMetaField)._alignments.Add(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT, ushort.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber));
 			}
 			else if(typeName.StartsWith("igEnum"))
 			{

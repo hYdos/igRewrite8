@@ -7,8 +7,11 @@ namespace igLibrary.Core
 {
 	public class igMetaEnum : igBaseMeta
 	{
+		public bool _flags;
 		public List<string> _names = new List<string>();
 		public List<int> _values = new List<int>();
+		public igObject _attributes;
+		public igObject _valueAttributes;
 
 		public override void PostUndump()
 		{

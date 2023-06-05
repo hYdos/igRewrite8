@@ -65,6 +65,8 @@
 		{
 			foreach(KeyValuePair<ulong, igObject> offsetObject in _offsetObjectList)
 			{
+				if(offsetObject.Key == 1176)
+				;
 				_stream.Seek(DeserializeOffset(offsetObject.Key));
 				offsetObject.Value.ReadIGZFields(this);
 			}
@@ -136,12 +138,13 @@
 							if(vtable != null) _vtableList.Add(vtable);
 							else               throw new TypeLoadException("Failed to find type \"" + vtableName + "\". This type may be platform specific or loaded from a game script, please contact NefariousTechSupport.");
 
-							vtable.GenerateType();
+							vtable.GatherDependancies();
 							vtable.CalculateOffsetForPlatform(_platform);
 
 							int bits = (_version > 7) ? 2 : 1;
 							_stream.Seek(basePos + bits + (vtableName.Length & (uint)(-bits)));
 						}
+						igArkCore.FlushPendingTypes();
 						break;
 					case 0x52545354:							//TSTR
 						_vtableList.Capacity = (int)count;
@@ -386,9 +389,7 @@
 		{
 			_stream.Seek(DeserializeOffset(offset));
 			int index = (int)ReadRawOffset();
-			Type t = _vtableList[index]._vTablePointer;
-			igObject obj = (igObject)Activator.CreateInstance(t);
-			obj.internalMemoryPool = GetMemoryPoolFromSerializedOffset(offset);
+			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset), false);
 
 			if(obj is igBlindObject blindObj)
 			{
