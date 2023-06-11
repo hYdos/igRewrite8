@@ -8,16 +8,15 @@ namespace igLibrary.Core
 		{
 			uint objectOffset = loader._stream.Tell();
 
-			List<igMetaField> metaFields = GetMeta()._metaFields;
-			if(GetMeta()._name == "CAttributeBoostComponentData")
-			;
+			igMetaObject meta = GetMeta();
+			List<igMetaField> metaFields = meta._metaFields;
 
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
 
-				if(!metaFields[i]._properties._persistent) continue;
+				//if(!metaFields[i]._properties._persistent) continue;
 
 				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 
@@ -29,15 +28,13 @@ namespace igLibrary.Core
 					field.SetValue(this, data);
 				}
 			}
+			meta.CorrectObjectMeta(this);
 		}
 		public virtual void WriteIGZFields(igIGZSaver saver, igIGZSaver.SaverSection section)
 		{
 			uint objectOffset = section._sh.Tell();
 
 			List<igMetaField> metaFields = GetMeta()._metaFields;
-
-			if(this is Gfx.igImage2)
-			;
 
 			for(int i = 0; i < metaFields.Count; i++)
 			{

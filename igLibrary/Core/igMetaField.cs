@@ -101,7 +101,24 @@ namespace igLibrary.Core
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;
 		public virtual uint GetTemplateParameterCount() => 0;
 
-		public virtual object? GetDefault(igObject target) => _default;
+		public virtual object? GetDefault(igObject target)
+		{
+			FieldInfo? fi = GetType().GetField("_num");
+			if(fi != null)
+			{
+				short num = (short)fi.GetValue(this);
+				Array arrayDefault = Array.CreateInstance(GetOutputType().GetElementType(), num);
+				if(_default != null)
+				{
+					for(int i = 0; i < num; i++)
+					{
+						arrayDefault.SetValue(_default, i);
+					}
+				}
+				return arrayDefault;
+			}
+			else return _default;
+		}
 
 		public virtual igMetaField CreateFieldCopy() => (igMetaField)this.MemberwiseClone();
 	}

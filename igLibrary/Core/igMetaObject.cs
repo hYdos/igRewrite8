@@ -338,12 +338,16 @@ namespace igLibrary.Core
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;
 			if(setFields) obj.ResetFields();
+			CorrectObjectMeta(obj);
+			return obj;
+		}
+		public void CorrectObjectMeta(igObject obj)
+		{
 			FieldInfo? fi = _vTablePointer.GetField("_meta");
 			if(fi != null)
 			{
 				fi.SetValue(obj, this);
 			}
-			return obj;
 		}
 	}
 }

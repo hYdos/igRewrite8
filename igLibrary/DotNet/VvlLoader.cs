@@ -137,8 +137,6 @@ namespace igLibrary.DotNet
 				if(!typeDetails[i]._ownsMeta) continue;
 				if(typeDetails[i]._targetMeta is igMetaObject metaObject)
 				{
-					if(metaObject._name.Contains("List"))
-					;
 					incompleteObjects.Append(i);
 				}
 				else
@@ -188,8 +186,6 @@ namespace igLibrary.DotNet
 							incompleteObjects.Append(metaIndex);
 							continue;
 						}
-						if(meta._name == "Scripts.CelebrateLevelUpComponentData")
-						;
 						meta._parent = baseMetaObject;
 						meta.InheritFields();
 						for(int j = 0; j < memberCounts[metaIndex]; j++)

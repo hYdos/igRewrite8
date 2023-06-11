@@ -47,7 +47,7 @@ namespace igCauldron3
 			scriptLoader.ReadFile("scripts:/common_script_vs.vvl", igBlockingType.kMayBlock);
 			scriptLoader.ReadFile("scripts:/Characters_script_vs.vvl", igBlockingType.kMayBlock);
 			//scriptLoader.ReadFile("scripts:/ChopChop_script.vvl", igBlockingType.kMayBlock);
-			scriptLoader.ReadFile("scripts:/Legs_Template_script.vvl", igBlockingType.kMayBlock);
+			//scriptLoader.ReadFile("scripts:/Legs_Template_script.vvl", igBlockingType.kMayBlock);
 
 			directory = igObjectStreamManager.Singleton.Load(targetIgz);
 
@@ -70,6 +70,10 @@ namespace igCauldron3
 			}
 
 			base.OnUpdateFrame(e);
+		}
+		protected override void OnMouseWheel(MouseWheelEventArgs e)
+		{
+			controller.MouseScroll(e.Offset);
 		}
 		protected override void OnTextInput(TextInputEventArgs e)
 		{

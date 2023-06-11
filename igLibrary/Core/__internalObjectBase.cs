@@ -29,10 +29,12 @@ namespace igLibrary.Core
 			//All of these use the field name _meta
 			//This is why the following code is weird, try to replace this with overriding the original function, in the meantime we have this
 			Type thisType = GetType();
+			igMetaObject? thisMeta = igArkCore.GetObjectMeta(thisType.Name);
+			if(thisMeta != null) return thisMeta;
+
 			FieldInfo? fi = thisType.GetField("_meta");
-			if(fi != null)
-				return (igMetaObject)fi.GetValue(this);
-			else return igArkCore.GetObjectMeta(GetType().Name);
+			if(fi != null) return (igMetaObject)fi.GetValue(this);
+			else throw new Exception("Failed to get metaobject of this object");
 		}
 	}
 }

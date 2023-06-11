@@ -168,9 +168,6 @@ namespace igLibrary.Core
 			if(_vTablePointer is not null) return;
 			_vTablePointer = igArkCore.GetNewStructTypeBuilder(_name);
 
-			if(_name == "igSortKeyValuePairMetaField")
-			;
-
 			for(int i = 0; i < _fieldList.Count; i++)
 			{
 				ReadyCompoundFieldDependancy(_fieldList[i]);
