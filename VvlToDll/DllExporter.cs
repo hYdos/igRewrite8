@@ -24,7 +24,7 @@ namespace VvlToDll
 		public void ExportLibrary(DotNetLibrary library, string name)
 		{
 			_module = ModuleDefinition.CreateModule(name, ModuleKind.Dll);
-			_module.ModuleReferences.Add(ArkDllExport.module);
+			//_module.ModuleReferences.Add(ArkDllExport.module);
 			_library = library;
 			//module.ModuleReferences.Add(mscorlib);
 			CreateTypes();
@@ -40,7 +40,15 @@ namespace VvlToDll
 				GetNsAndName(in meta._name, out string ns, out string name);
 				TypeDefinition td = new TypeDefinition(ns, name, TypeAttributes.Public);
 				_metaTypeLookup.Add(meta, td);
+				_module.Types.Add(td);
 			}
+		}
+		public TypeReference GetTypeFromMeta(igBaseMeta meta)
+		{
+			//return _module.ImportReference(typeof(object));
+			if(ArkDllExport._metaTypeLookup.TryGetValue(meta, out TypeDefinition td)) return _module.ImportReference(td);
+			if(_metaTypeLookup.TryGetValue(meta, out td)) return td;
+			throw new KeyNotFoundException("Failed to load type");
 		}
 		private void DefineEnums()
 		{
@@ -56,7 +64,6 @@ namespace VvlToDll
 					td.Fields.Add(new FieldDefinition(metaEnum._names[i], FieldAttributes.Public | FieldAttributes.Static | FieldAttributes.Literal, td));
 					td.Fields.Last().Constant = metaEnum._values[i];
 				}
-				_module.Types.Add(td);
 			}
 		}
 		private void DefineObjects()
@@ -68,14 +75,24 @@ namespace VvlToDll
 				TypeDefinition td = kvp.Value;
 				if(metaObject._parent != null)
 				{
-					td.BaseType = FindType(metaObject._parent);
+					td.BaseType = GetTypeFromMeta(metaObject._parent);
 				}
-				_module.Types.Add(td);
+				else continue;
+
+				for(int i = metaObject._parent._metaFields.Count; i < metaObject._metaFields.Count; i++)
+				{
+					//FieldDefinition fd = new FieldDefinition(metaObject._metaFields[i]._name, FieldAttributes.Public, _module.ImportReference(typeof(object)));
+					//td.Fields.Add(fd);
+
+					ArkDllExport.AddField(_module, td, metaObject, metaObject._metaFields[i], GetTypeFromMeta);
+				}
 			}
 		}
 		private static void GetNsAndName(in string qualifiedName, out string ns, out string name)
 		{
-			int nsEnd = qualifiedName.LastIndexOf('.');
+			int checkGeneric = qualifiedName.IndexOf('`');
+			int genericTestIndex = checkGeneric < 0 ? qualifiedName.Length-1 : checkGeneric;	//Poorly named
+			int nsEnd = qualifiedName.LastIndexOf('.', genericTestIndex, genericTestIndex);
 			if(nsEnd > 0)
 			{
 				ns = qualifiedName.Substring(0, nsEnd);
@@ -86,12 +103,6 @@ namespace VvlToDll
 				ns = "-";
 				name = qualifiedName;
 			}
-		}
-		private TypeDefinition FindType(igBaseMeta meta)
-		{
-			if(_metaTypeLookup.TryGetValue(meta, out TypeDefinition td)) return td;
-			if(ArkDllExport._metaTypeLookup.TryGetValue(meta, out td)) return td;
-			throw new KeyNotFoundException($"Failed to find meta {meta._name}");
 		}
 	}
 }
