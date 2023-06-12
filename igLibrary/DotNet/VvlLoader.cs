@@ -281,6 +281,7 @@ namespace igLibrary.DotNet
 						dndme._names.Add(ReadVvlString(strings, field._name));
 						dndme._values.Add(field._default);
 					}
+					dndme.PostUndump();
 					resolver.AppendMeta(dndme);
 				}
 				else
@@ -523,6 +524,7 @@ namespace igLibrary.DotNet
 						if(dntRef._baseMeta is igMetaEnum metaEnum)
 						{
 							metaField = new igDotNetEnumMetaField();
+							((igDotNetEnumMetaField)metaField)._metaEnum = metaEnum;
 							((igDotNetEnumMetaField)metaField)._definedMetaEnum = metaEnum;
 						}
 						else if(field._isHandle == 0)
