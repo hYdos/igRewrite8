@@ -57,7 +57,16 @@ namespace igLibrary.Core
 				saver.WriteRawOffset(0, section);
 				return;
 			}
-			
+
+			igExternalReferenceSystem.Singleton._globalSet.MakeReference(obj, null, out igHandleName name);
+			if(name._ns._hash != 0)
+			{
+				section._runtimeFields._namedExternals.Add(section._sh.Tell64());
+				section._sh.WriteUInt32((uint)saver._namedExternalList.Count | 0x80000000);
+				saver._namedExternalList.Add(new igHandle(name));
+				return;
+			}
+
 			igHandle hnd = igObjectHandleManager.Singleton.GetHandle(obj);
 			if(hnd != null)
 			{
@@ -67,7 +76,6 @@ namespace igLibrary.Core
 					section._runtimeFields._externals.Add(section._sh.Tell64());
 					section._sh.WriteUInt32((uint)saver._externalList.Count | 0x80000000);
 					saver._externalList.Add(hnd);
-					return;
 				}
 				else
 				{
@@ -76,6 +84,7 @@ namespace igLibrary.Core
 					section._sh.WriteUInt32((uint)saver._namedExternalList.Count | 0x80000000);
 					saver._namedExternalList.Add(hnd);
 				}
+				return;
 			}
 			//Should add stuff to check for externals
 

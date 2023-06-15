@@ -224,14 +224,20 @@
 								}
 							}
 
-							igHandle hnd = new igHandle(depHandleName);
 							if((nsStrIndex & 0x80000000) != 0)
 							{
+								igHandle hnd = new igHandle(depHandleName);
 								_namedHandleList.Add(hnd);
 							}
 							else
 							{
-								_namedExternalList.Append(hnd.GetObjectAlias<igObject>());
+								igObject? reference = igExternalReferenceSystem.Singleton._globalSet.ResolveReference(depHandleName, null);
+								if(reference == null)
+								{
+									igHandle hnd = new igHandle(depHandleName);
+									reference = hnd.GetObjectAlias<igObject>();
+								}
+								_namedExternalList.Append(reference);
 							}
 						}
 						break;

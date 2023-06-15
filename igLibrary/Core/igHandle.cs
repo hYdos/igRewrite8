@@ -25,9 +25,6 @@ namespace igLibrary.Core
 		{
 			if(_object != null) return (T)_object;
 
-			if(_namespace._hash == 0x7054BE0F) return (T)(igObject)igArkCore.GetObjectMeta(_alias._string);
-			if(_namespace._hash == 0x61B3DAD4) return (T)(igObject)igArkCore.GetFieldMetaForObject(_alias._string);
-
 			Dictionary<uint, igObjectDirectory> dirs = igObjectStreamManager.Singleton._directories;
 			if(dirs.ContainsKey(_namespace._hash))
 			{

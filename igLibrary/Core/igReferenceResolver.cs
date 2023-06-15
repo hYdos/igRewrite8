@@ -1,8 +1,8 @@
 namespace igLibrary.Core
 {
-	public class igReferenceResolver : igNamedObject
+	public abstract class igReferenceResolver : igNamedObject
 	{
-		public virtual void MakeReference(string reference, igReferenceResolverContext ctx){}
-		public virtual void ResolveReference(string reference, igReferenceResolverContext ctx){}
+		public virtual string MakeReference(igObject reference, igReferenceResolverContext ctx) => null;
+		public virtual igObject? ResolveReference(string reference, igReferenceResolverContext ctx) => null;
 	}
 }

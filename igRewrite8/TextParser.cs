@@ -123,6 +123,8 @@ namespace igRewrite8.Devel
 
 				string[] members = metaObjectLine.Split(' ');
 
+				List<(int, igMetaField)> replacedFields = new List<(int, igMetaField)>();
+
 				if(members[0] == "igMetaObject")
 				{
 					igMetaObject metaObject = metaObjectLookup[members[2]];
@@ -131,29 +133,8 @@ namespace igRewrite8.Devel
 					{
 						metaObject._parent = metaObjectLookup[members[3]];
 						metaObject.InheritFields();
-						int parentMetaIndex = 4;
-						if(metaObject._parent._name == "igDataList")
-						{
-							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-							_data._memType = ReadFieldType(members, ref parentMetaIndex);
-							metaObject._metaFields[2] = _data;
-						}
-						else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
-						{
-							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-							((igObjectRefMetaField)_data._memType)._metaObject = metaObjectLookup[members[parentMetaIndex]];
-							metaObject._metaFields[2] = _data;
-						}
-						else if(metaObject._parent._name == "igHashTable")
-						{
-							igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0].CreateFieldCopy();
-							igMemoryRefMetaField _keys   = (igMemoryRefMetaField)metaObject._metaFields[1].CreateFieldCopy();
-							_values._memType = ReadFieldType(members, ref parentMetaIndex);
-							  _keys._memType = ReadFieldType(members, ref parentMetaIndex);
-							metaObject._metaFields[0] = _values;
-							metaObject._metaFields[1] = _keys;
-						}
 					}
+
 					while(true)
 					{
 						string memberLine = sh.ReadLine();
@@ -162,11 +143,39 @@ namespace igRewrite8.Devel
 						if(memberInfo[0] == "igMetaEndObject") break;
 						
 						int dataIndex = 0;
+						int parentFieldIndex = -1;
+						if(memberInfo[dataIndex] == "p")
+						{
+							parentFieldIndex = int.Parse(memberInfo[++dataIndex].Substring(2), System.Globalization.NumberStyles.HexNumber);
+							dataIndex++;
+						}
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, metaObject);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
 						ReadFieldDefault(metaField, ref dataIndex, memberInfo);
-						metaObject._metaFields.Add(metaField);
+						if(parentFieldIndex < 0)
+						{
+							metaObject._metaFields.Add(metaField);
+						}
+						else
+						{
+							replacedFields.Add((parentFieldIndex, metaField));
+						}
+					}
+
+					if(members.Length > 3)
+					{
+						for(int j = 0; j < replacedFields.Count; j++)
+						{
+							metaObject._metaFields[replacedFields[j].Item1] = replacedFields[j].Item2;
+						}
+						int parentMetaIndex = 4;
+						if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+						{
+							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
+							((igObjectRefMetaField)_data._memType)._metaObject = metaObjectLookup[members[parentMetaIndex]];
+							metaObject._metaFields[2] = _data;
+						}
 					}
 					previousMeta = metaObject._name;
 				}
@@ -203,7 +212,7 @@ namespace igRewrite8.Devel
 			igMetaField? metaField = null;
 
 			string typeName = data[index++];
-			uint properties = uint.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+			string properties = data[index++];
 			int templateCount = int.Parse(data[index++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 
 			for(int i = 0; i < templateCount; i++)
@@ -288,7 +297,16 @@ namespace igRewrite8.Devel
 				placeholder._platformInfo = igArkCore.GetMetaFieldPlatformInfo(typeName);
 			}
 
-			metaField._properties._storage = properties;
+			metaField._properties._copyMethod = (igMetaField.CopyType)int.Parse(properties.Substring(0, 1));
+			metaField._properties._resetMethod = (igMetaField.ResetType)int.Parse(properties.Substring(1, 1));
+			metaField._properties._isAlikeCompareMethod = (igMetaField.IsAlikeCompareType)int.Parse(properties.Substring(2, 1));
+			metaField._properties._itemsCopyMethod = (igMetaField.CopyType)int.Parse(properties.Substring(3, 1));
+			metaField._properties._keysCopyMethod = (igMetaField.CopyType)int.Parse(properties.Substring(4, 1));
+			metaField._properties._persistent = properties[5] != '0';
+			metaField._properties._hasInvariance = properties[6] != '0';
+			metaField._properties._hasPoolName = properties[7] != '0';
+			metaField._properties._mutable = properties[8] != '0';
+			metaField._properties._implicitAlignment = properties[9] != '0';
 
 			metaField.SetTemplateParameterCount((uint)templateCount);
 			for(int i= 0; i < templateCount; i++)

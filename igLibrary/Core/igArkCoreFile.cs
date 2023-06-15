@@ -140,35 +140,28 @@ namespace igLibrary.Core
 			SaveString(_shs[Section.ObjectInfo], metaObject._parent != null ? metaObject._parent._name : null);
 			
 			int fieldCount = metaObject._metaFields.Count;
+			List<(int, igMetaField)> fieldsToReplace = new List<(int, igMetaField)>();	//I hate tuples too
 			int firstField = 0;
 			if(metaObject._parent != null)
 			{
-				if(metaObject._parent._name == "igDataList")
+				for(int i = 0; i < fieldCount; i++)
 				{
-					igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2];
-					SaveMetaField(_shs[Section.ObjectInfo], _data._memType);
-				}
-				else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
-				{
-					igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2];
-					igMetaObject _metaObject  = ((igObjectRefMetaField)_data._memType)._metaObject;
-					SaveString(_shs[Section.ObjectInfo], _metaObject._name);
-				}
-				else if(metaObject._parent._name == "igHashTable")
-				{
-					igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0];
-					igMemoryRefMetaField _keys = (igMemoryRefMetaField)metaObject._metaFields[1];
-					SaveMetaField(_shs[Section.ObjectInfo], _values._memType);
-					SaveMetaField(_shs[Section.ObjectInfo], _keys._memType);
+					if(i < metaObject._parent._metaFields.Count && metaObject._parent._metaFields[i] != metaObject._metaFields[i]) fieldsToReplace.Add((i, metaObject._metaFields[i]));
 				}
 				firstField = metaObject._parent._metaFields.Count;
 			}
 
 			_shs[Section.ObjectInfo].WriteInt32(fieldCount - firstField);
+			_shs[Section.ObjectInfo].WriteInt32(fieldsToReplace.Count);
 
 			for(int i = firstField; i < fieldCount; i++)
 			{
 				SaveMetaField(_shs[Section.ObjectInfo], metaObject._metaFields[i]);
+			}
+			for(int i = 0; i < fieldsToReplace.Count; i++)
+			{
+				_shs[Section.ObjectInfo].WriteInt32(fieldsToReplace[i].Item1);
+				SaveMetaField(_shs[Section.ObjectInfo], fieldsToReplace[i].Item2);
 			}
 
 			_metaObjectsInFile.Add(metaObject);
@@ -222,33 +215,18 @@ namespace igLibrary.Core
 				{
 					metaObject._parent = igArkCore.GetObjectMeta(parentName);
 					metaObject.InheritFields();
-					if(metaObject._parent._name == "igDataList")
-					{
-						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-						_data._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
-						metaObject._metaFields[2] = _data;
-					}
-					else if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
-					{
-						igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
-						((igObjectRefMetaField)_data._memType)._metaObject = igArkCore.GetObjectMeta(ReadString(_shs[Section.ObjectInfo]));
-						metaObject._metaFields[2] = _data;
-					}
-					else if(metaObject._parent._name == "igHashTable")
-					{
-						igMemoryRefMetaField _values = (igMemoryRefMetaField)metaObject._metaFields[0].CreateFieldCopy();
-						igMemoryRefMetaField _keys   = (igMemoryRefMetaField)metaObject._metaFields[1].CreateFieldCopy();
-						_values._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
-						  _keys._memType = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
-						metaObject._metaFields[0] = _values;
-						metaObject._metaFields[1] = _keys;
-					}
 				}
 				int fieldCount = _shs[Section.ObjectInfo].ReadInt32();
+				int editedFieldCount = _shs[Section.ObjectInfo].ReadInt32();
 				metaObject._metaFields.Capacity += fieldCount;
 				for(int j = 0; j < fieldCount; j++)
 				{
 					metaObject._metaFields.Add(ReadMetaField(_shs[Section.ObjectInfo], metaObject));
+				}
+				for(int j = 0; j < editedFieldCount; j++)
+				{
+					int editedIndex = _shs[Section.ObjectInfo].ReadInt32();
+					metaObject._metaFields[editedIndex] = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
 				}
 				metaObject.PostUndump();
 			}

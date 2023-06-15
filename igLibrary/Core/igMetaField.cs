@@ -4,19 +4,59 @@ namespace igLibrary.Core
 {
 	public class igMetaField : igObject
 	{
+		public enum CopyType
+		{
+			kCopyByValue,
+			kCopyByReference,
+			kCopyByNoCopy,
+			kCopyByDefault,
+			kCopyTypeMax
+		}
+		public enum ResetType
+		{
+			kResetByValue,
+			kResetByReference,
+			kResetByNoReset,
+			kResetByDefault,
+			kResetTypeMax
+		}
+		public enum IsAlikeCompareType
+		{
+			kIsAlikeCompareValue,
+			kIsAlikeCompareReference,
+			kIsAlikeCompareNoCompare,
+			kIsAlikeCompareDefault,
+			kIsAlikeCompareTypeMax
+		}
 		public struct Properties
 		{
-			//Others will be added as I figure out their structures
-			public uint _storage;
-			public bool _persistent
+			public CopyType _copyMethod;
+			public ResetType _resetMethod;
+			public IsAlikeCompareType _isAlikeCompareMethod;
+			public CopyType _itemsCopyMethod;
+			public CopyType _keysCopyMethod;
+			public bool _persistent;
+			public bool _hasInvariance;
+			public bool _hasPoolName;
+			public bool _mutable;
+			public bool _implicitAlignment;
+
+			//I'm so sorry
+			internal int getArkStorage() => (int)_copyMethod | (int)_resetMethod << 2 | (int)_isAlikeCompareMethod << 4 | (int)_itemsCopyMethod << 6 | (int)_keysCopyMethod << 8 | bts(_persistent, 10) | bts(_hasInvariance, 11) | bts(_hasPoolName, 12) | bts(_mutable, 13) | bts(_implicitAlignment, 14);
+			private int bts(bool value, byte shift) => (value ? 1 : 0) << shift;
+			private bool stb(int value, byte shift) => ((value >> shift) & 1) != 0;
+			internal void setArkStorage(int value)
 			{
-				get => ((_storage >> 13) & 1) != 0;
-				set => _storage = (uint)(_storage & ~0x2000) | (uint)((value ? 1 : 0) << 13);
-			}
-			public bool _writeOut
-			{
-				get => ((_storage >> 18) & 1) != 0;
-				set => _storage = (uint)(_storage & ~0x40000) | (uint)((value ? 1 : 0) << 18);
+				_copyMethod = (CopyType)((value >> 0) & 3);
+				_resetMethod = (ResetType)((value >> 2) & 3);
+				_isAlikeCompareMethod = (IsAlikeCompareType)((value >> 4) & 3);
+				_itemsCopyMethod = (CopyType)((value >> 6) & 3);
+				_keysCopyMethod = (CopyType)((value >> 8) & 3);
+				_persistent = stb(value, 10);
+				_hasInvariance = stb(value, 11);
+				_hasPoolName = stb(value, 12);
+				_mutable = stb(value, 13);
+				_implicitAlignment = stb(value, 14);
 			}
 		}
 		public string? _name;
@@ -36,7 +76,7 @@ namespace igLibrary.Core
 			{
 				saver.SaveString(sh, GetType().Name);
 			}
-			sh.WriteUInt32(_properties._storage);
+			sh.WriteInt32(_properties.getArkStorage());
 			uint templateParameterCount = GetTemplateParameterCount();
 			sh.WriteUInt32(templateParameterCount);
 			for(uint i = 0; i < templateParameterCount; i++)
@@ -64,7 +104,7 @@ namespace igLibrary.Core
 		public virtual void DumpDefault(igArkCoreFile saver, StreamHelper sh){}
 		public virtual void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
-			_properties._storage = sh.ReadUInt32();
+			_properties.setArkStorage(sh.ReadInt32());
 			uint templateArgCount = sh.ReadUInt32();
 			SetTemplateParameterCount(templateArgCount);
 			for(uint i = 0; i < templateArgCount; i++)

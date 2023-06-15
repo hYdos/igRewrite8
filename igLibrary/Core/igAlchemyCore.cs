@@ -7,6 +7,9 @@ namespace igLibrary.Core
 			Gfx.igGfx.Initialize();
 			
 			igObjectLoader.RegisterLoader<DotNet.igDotNetMetaOnlyLibraryLoader>();
+
+			igExternalReferenceSystem.Singleton._globalSet.Add("metaobject", new igMetaObjectReferenceResolver());
+			igExternalReferenceSystem.Singleton._globalSet.Add("metafield", new igMetaFieldReferenceResolver());
 		}
 		public static bool isPlatform64Bit(IG_CORE_PLATFORM platform)
 		{
