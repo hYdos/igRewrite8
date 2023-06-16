@@ -167,14 +167,14 @@ namespace igRewrite8.Devel
 					{
 						for(int j = 0; j < replacedFields.Count; j++)
 						{
-							metaObject._metaFields[replacedFields[j].Item1] = replacedFields[j].Item2;
+							metaObject.ValidateAndSetField(replacedFields[j].Item1, replacedFields[j].Item2);
 						}
 						int parentMetaIndex = 4;
 						if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
 						{
 							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
 							((igObjectRefMetaField)_data._memType)._metaObject = metaObjectLookup[members[parentMetaIndex]];
-							metaObject._metaFields[2] = _data;
+							metaObject.ValidateAndSetField(2, _data);
 						}
 					}
 					previousMeta = metaObject._name;
@@ -202,7 +202,10 @@ namespace igRewrite8.Devel
 			sh.Close();
 			sh.Dispose();
 
-			igArkCore._metaObjects.AddRange(metaObjectLookup.Values);
+			foreach(KeyValuePair<string, igMetaObject> kvp in metaObjectLookup)
+			{
+				kvp.Value.AppendToArkCore();
+			}
 			igArkCore._compoundFieldInfos.AddRange(compoundInfoLookup.Values);
 		}
 

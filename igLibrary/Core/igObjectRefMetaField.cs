@@ -106,7 +106,7 @@ namespace igLibrary.Core
 		public override object? GetDefault(igObject target)
 		{
 			if(_construct) return _metaObject.ConstructInstance(target.internalMemoryPool);
-			else return null;
+			else return _default;
 		}
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField

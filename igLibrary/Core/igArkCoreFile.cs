@@ -130,7 +130,7 @@ namespace igLibrary.Core
 				igMetaObject metaObject = (igMetaObject)Activator.CreateInstance(igArkCore.GetObjectDotNetType(type));
 				metaObject._name = ReadString(_shs[Section.ObjectInst]);
 				_metaObjectsInFile.Add(metaObject);
-				igArkCore._metaObjects.Add(metaObject);
+				metaObject.AppendToArkCore();
 			}
 		}
 		public void SaveMetaObject(igMetaObject metaObject)
@@ -226,7 +226,7 @@ namespace igLibrary.Core
 				for(int j = 0; j < editedFieldCount; j++)
 				{
 					int editedIndex = _shs[Section.ObjectInfo].ReadInt32();
-					metaObject._metaFields[editedIndex] = ReadMetaField(_shs[Section.ObjectInfo], metaObject);
+					metaObject.ValidateAndSetField(editedIndex, ReadMetaField(_shs[Section.ObjectInfo], metaObject));
 				}
 				metaObject.PostUndump();
 			}

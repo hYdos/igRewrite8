@@ -23,8 +23,6 @@ namespace igLibrary.Core
 			if(!loader._runtimeFields._handles.Contains(loader._stream.Tell64())) return null;
 
 			uint raw = loader._stream.ReadUInt32();
-			if(this._name == "_collisionMaterial")
-			;
 			if((raw & 0x80000000) != 0)
 			{
 				return loader._namedHandleList[(int)(raw & 0x3FFFFFFF)];
@@ -43,8 +41,8 @@ namespace igLibrary.Core
 			bool namedExternal = hnd._alias._string != null && hnd._namespace._string != null;
 			List<igHandle> handleList = null;
 
-			if(namedExternal) handleList = saver._externalList;
-			else              handleList = saver._namedExternalList;
+			if(namedExternal) handleList = saver._namedHandleList;
+			else              handleList = saver._externalList;
 
 			int handleIndex = handleList.FindIndex(x => x == value);
 			if(handleIndex < 0)

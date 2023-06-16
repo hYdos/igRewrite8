@@ -6,6 +6,7 @@ namespace igLibrary.Core
 	{
 		public uint refCount;
 		public igMemoryPool internalMemoryPool;
+		internal bool dynamicMeta;
 
 		public virtual igMetaObject GetMeta()
 		{
@@ -29,12 +30,22 @@ namespace igLibrary.Core
 			//All of these use the field name _meta
 			//This is why the following code is weird, try to replace this with overriding the original function, in the meantime we have this
 			Type thisType = GetType();
-			igMetaObject? thisMeta = igArkCore.GetObjectMeta(thisType.Name);
-			if(thisMeta != null) return thisMeta;
+			igMetaObject? thisMeta;
+			if(!dynamicMeta)
+			{
+				thisMeta = igArkCore.GetObjectMeta(thisType.Name);
+			}
+			else
+			{
+				FieldInfo? metaFi = thisType.GetField("_meta");
+				if(metaFi == null) throw new MissingFieldException("Failed to access _meta field for " + thisType.Name);
 
-			FieldInfo? fi = thisType.GetField("_meta");
-			if(fi != null) return (igMetaObject)fi.GetValue(this);
-			else throw new Exception("Failed to get metaobject of this object");
+				thisMeta = (igMetaObject?)metaFi.GetValue(this);
+			}
+
+			if(thisMeta == null) throw new TypeLoadException("Failed to find type for " + thisType.Name);
+
+			return thisMeta;
 		}
 	}
 }

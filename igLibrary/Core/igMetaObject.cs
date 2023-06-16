@@ -253,11 +253,16 @@ namespace igLibrary.Core
 			}
 			return false;
 		}
-		public override igMetaField? GetFieldByName(string name)
+		public int GetFieldIndexByName(string name)
 		{
 			int index = _metaFields.FindIndex(x => x._name == name);
-			if(index < 0) return null;
-			return _metaFields[index];
+			return index;
+		}
+		public override igMetaField? GetFieldByName(string name) => _metaFields[GetFieldIndexByName(name)];
+		public void ValidateAndSetField(int index, igMetaField field)
+		{
+			field._parentMeta = this;
+			_metaFields[index] = field;
 		}
 		public void InheritFields()
 		{
@@ -333,12 +338,15 @@ namespace igLibrary.Core
 		{
 			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
-		public igObject ConstructInstance(igMemoryPool memPool, bool setFields = true)
+		public virtual void AppendToArkCore()
+		{
+			igArkCore._metaObjects.Add(this);
+		}
+		public virtual igObject ConstructInstance(igMemoryPool memPool, bool setFields = true)
 		{
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;
 			if(setFields) obj.ResetFields();
-			CorrectObjectMeta(obj);
 			return obj;
 		}
 		public void CorrectObjectMeta(igObject obj)

@@ -311,34 +311,30 @@ namespace igLibrary.Core
 				_fixupCount += 1;
 			}
 
-			List<igHandle> allExternals = new List<igHandle>(_namedHandleList.Count + _namedExternalList.Count);
-			allExternals.AddRange(_namedHandleList);
-			allExternals.AddRange(_namedExternalList);
-			if(_namedHandleList.Count > 0)
+			if(_namedHandleList.Count > 0 || _namedExternalList.Count > 0)
 			{
 				startOffset = endOffset;
+				int externalCount = _namedHandleList.Count + _namedExternalList.Count;
 				_stream.WriteUInt32(0x4D4E5845);
-				_stream.WriteInt32(allExternals.Count);
+				_stream.WriteInt32(externalCount);
 				uint alignedDataStart = (uint)Align(_stream.Tell()+8 - (uint)startOffset, igAlchemyCore.GetPointerSize(_platform));
-				_stream.WriteUInt32((uint)allExternals.Count * igAlchemyCore.GetPointerSize(_platform) * 2u + alignedDataStart);
+				_stream.WriteUInt32((uint)externalCount * igAlchemyCore.GetPointerSize(_platform) * 2u + alignedDataStart);
 				_stream.WriteUInt32(alignedDataStart);
-				for(int j = 0; j < allExternals.Count; j++)
+				_stream.Seek(startOffset + alignedDataStart);
+
+				//Write named handles
+				for(int j = 0; j < _namedHandleList.Count; j++)
 				{
-					int index = _stringList.FindIndex(x => x == allExternals[j]._namespace._string);
-					if(index < 0)
-					{
-						index = _stringList.Count;
-						_stringList.Add(allExternals[j]._namespace._string);
-					}
-					_stream.WriteUInt32((uint)index | 0x80000000);
-					index = _stringList.FindIndex(x => x == allExternals[j]._alias._string);
-					if(index < 0)
-					{
-						index = _stringList.Count;
-						_stringList.Add(allExternals[j]._alias._string);
-					}
-					_stream.WriteInt32(index);
+					_stream.WriteUInt32((uint)AddString(_namedHandleList[j]._namespace._string) | 0x80000000);
+					_stream.WriteUInt32((uint)AddString(_namedHandleList[j]._alias._string));
 				}
+				//Write named externals
+				for(int j = 0; j < _namedExternalList.Count; j++)
+				{
+					_stream.WriteUInt32((uint)AddString(_namedExternalList[j]._namespace._string));
+					_stream.WriteUInt32((uint)AddString(_namedExternalList[j]._alias._string));
+				}
+
 				endOffset = _stream.Tell();
 				_stream.Seek(endOffset);
 				_fixupCount += 1;
@@ -413,6 +409,7 @@ namespace igLibrary.Core
 			WriteRuntimeFixup(0x44495052, ref startOffset, ref endOffset, x => x._runtimeFields._poolIds);			//RPID
 			WriteRuntimeFixup(0x54584552, ref startOffset, ref endOffset, x => x._runtimeFields._externals);		//REXT
 			WriteRuntimeFixup(0x444E4852, ref startOffset, ref endOffset, x => x._runtimeFields._handles);			//RHND
+			WriteRuntimeFixup(0x58454E52, ref startOffset, ref endOffset, x => x._runtimeFields._namedExternals);	//RNEX
 			WriteRuntimeFixup(0x4E484D52, ref startOffset, ref endOffset, x => x._runtimeFields._memoryHandles);	//RMHN
 			WriteRuntimeFixup(0x544F4F52, ref startOffset, ref endOffset, x => x._runtimeFields._objectLists);		//ROOT
 
@@ -433,6 +430,16 @@ namespace igLibrary.Core
 			}
 
 			_fixupSize = (uint)endOffset - 0x800u;
+		}
+		private int AddString(string value)
+		{
+			int index = _stringList.FindIndex(x => x == value);
+			if(index < 0)
+			{
+				index = _stringList.Count;
+				_stringList.Add(value);
+			}
+			return index;
 		}
 		private void WriteRuntimeFixup(uint magic, ref ulong startOffset, ref ulong endOffset, Func<SaverSection, List<ulong>> getRuntimeFunc)
 		{

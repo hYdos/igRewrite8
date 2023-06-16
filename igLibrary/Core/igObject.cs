@@ -28,7 +28,6 @@ namespace igLibrary.Core
 					field.SetValue(this, data);
 				}
 			}
-			meta.CorrectObjectMeta(this);
 		}
 		public virtual void WriteIGZFields(igIGZSaver saver, igIGZSaver.SaverSection section)
 		{
