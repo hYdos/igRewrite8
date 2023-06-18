@@ -395,7 +395,7 @@
 		{
 			_stream.Seek(DeserializeOffset(offset));
 			int index = (int)ReadRawOffset();
-			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset), false);
+			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset));
 
 			if(obj is igBlindObject blindObj)
 			{

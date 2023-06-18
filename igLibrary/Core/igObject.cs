@@ -63,9 +63,9 @@ namespace igLibrary.Core
 				metaFields[i].WriteIGZField(saver, section, data);
 			}
 		}
-		public virtual void ResetFields()
+		public virtual void ResetFields() => ResetFields(GetMeta());
+		public virtual void ResetFields(igMetaObject meta)
 		{
-			igMetaObject meta = GetMeta();
 			for(int i = 0; i < meta._metaFields.Count; i++)
 			{
 				if(meta._metaFields[i] is igStaticMetaField || meta._metaFields[i] is igPropertyFieldMetaField || meta._metaFields[i] is igBitFieldMetaField) continue;
