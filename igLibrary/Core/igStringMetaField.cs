@@ -72,6 +72,15 @@ namespace igLibrary.Core
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);
 		public override Type GetOutputType() => typeof(string);
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			sh.WriteUInt32(4);
+			saver.SaveString(sh, (string?)_default);
+		}
+		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			_default = loader.ReadString(sh);
+		}
 	}
 	public class igStringArrayMetaField : igStringMetaField
 	{

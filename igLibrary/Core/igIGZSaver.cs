@@ -11,6 +11,7 @@ namespace igLibrary.Core
 		public List<igHandle> _namedHandleList = new List<igHandle>();
 		public List<igHandle> _namedExternalList = new List<igHandle>();
 		public List<igHandle> _externalList = new List<igHandle>();
+		public List<(string, string)> _buildDependancies = new List<(string, string)>();
 		public IG_CORE_PLATFORM _platform;
 		private StreamHelper _stream;
 		public uint _version;

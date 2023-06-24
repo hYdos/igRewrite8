@@ -152,6 +152,7 @@ namespace igRewrite8.Devel
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, metaObject);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
 						metaField._name = memberInfo[dataIndex++];
+						ReadFieldAttributes(metaField, ref dataIndex, memberInfo);
 						ReadFieldDefault(metaField, ref dataIndex, memberInfo);
 						if(parentFieldIndex < 0)
 						{
@@ -329,6 +330,51 @@ namespace igRewrite8.Devel
 
 			return metaField;
 		}
+		private static void ReadFieldAttributes(igMetaField field, ref int dataIndex, string[] memberInfo)
+		{
+			if(memberInfo.Length <= dataIndex) return;
+
+			int attrCount = int.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
+			field._attributes = new igObjectList();
+			field._attributes.SetCapacity(attrCount);
+			if(attrCount == 0) return;
+			for(uint i = 0; i < attrCount; i++)
+			{
+				igObject? attr = ReadFieldAttribute(ref dataIndex, memberInfo);
+				if(attr != null)
+					field._attributes.Append(attr);
+			}
+		}
+		private static igObject? ReadFieldAttribute(ref int dataIndex, string[] memberInfo)
+		{
+			if(memberInfo.Length <= dataIndex) return null;
+
+			string typeName = memberInfo[dataIndex++];
+			string rawdata = memberInfo[dataIndex++];
+
+			if(rawdata == "MISSING_ATTR") return null;
+
+			Type? t = igArkCore.GetObjectDotNetType(typeName);
+			if(t == null) return null;
+
+			FieldInfo? valueField = t.GetField("_value");
+			object attrValue = null;
+			     if(valueField.FieldType == typeof(bool))             attrValue = rawdata == "1";
+			else if(valueField.FieldType == typeof(int))              attrValue = int.Parse(rawdata, System.Globalization.NumberStyles.HexNumber);
+			//else if(valueField.FieldType == typeof(igMetaObject))     attrValue = int.Parse(rawdata, System.Globalization.NumberStyles.HexNumber);
+			else if(valueField.FieldType == typeof(string))
+			{
+				attrValue = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(rawdata));
+			}
+			else return null;
+
+			igObject? attr = (igObject?)Activator.CreateInstance(t);
+			if(attr == null) return null;
+
+			valueField.SetValue(attr, attrValue);
+
+			return attr;
+		}
 		private void ReadFieldDefault(igMetaField field, ref int dataIndex, string[] memberInfo)
 		{
 			if(memberInfo.Length <= dataIndex) return;
@@ -363,7 +409,7 @@ namespace igRewrite8.Devel
 			else if(typeName.StartsWith("igString"))
 			{
 				string hexString = memberInfo[dataIndex];
-				string data = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(hexString));
+				field._default = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(hexString));
 			}
 		}
 	}

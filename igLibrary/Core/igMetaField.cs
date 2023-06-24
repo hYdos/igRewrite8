@@ -64,6 +64,7 @@ namespace igLibrary.Core
 		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public igBaseMeta _parentMeta;
 		public Properties _properties;
+		public igObjectList _attributes;
 		public object? _default;
 
 		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)
