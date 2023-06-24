@@ -335,7 +335,6 @@ namespace igRewrite8.Devel
 			if(memberInfo.Length <= dataIndex) return;
 
 			int attrCount = int.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
-			field._attributes = new igObjectList();
 			field._attributes.SetCapacity(attrCount);
 			if(attrCount == 0) return;
 			for(uint i = 0; i < attrCount; i++)

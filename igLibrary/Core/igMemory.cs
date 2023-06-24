@@ -6,7 +6,7 @@ namespace igLibrary.Core
 	public struct igMemory<T> : IEnumerable<T>, IigMemory
 	{
 		public igMemoryPool _memoryPool;
-		private T[] _data;
+		private T[]? _data;
 
 		public T this[int index]
 		{

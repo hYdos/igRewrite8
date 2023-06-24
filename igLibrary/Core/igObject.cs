@@ -55,8 +55,6 @@ namespace igLibrary.Core
 				else
 				{
 					data = metaFields[i].GetDefault(this);
-					if(metaFields[i]._name == "_enableErrorMessage")
-					;
 					if((metaFields[i].GetOutputType().IsValueType || metaFields[i].GetOutputType() == typeof(string)) && data == null) continue;
 				}
 				

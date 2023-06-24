@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace igLibrary.Core
 {
-	public abstract class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>
+	public abstract class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>, IigHashTable
 	{
 		public igMemory<T> _values;
 		public igMemory<U> _keys;
@@ -26,6 +26,12 @@ namespace igLibrary.Core
 				if(index == -1) throw new KeyNotFoundException();
 				_values[index] = value;
 			}
+		}
+
+		public void Activate(int capacity)
+		{
+			_values.Realloc(capacity);
+			_keys.Realloc(capacity);
 		}
 
 		protected virtual int GetKeyIndex(U key)
@@ -76,5 +82,9 @@ namespace igLibrary.Core
 	public class igHashTable : igTUHashTable<byte, byte>
 	{
 		public static uint HashString(string str) => igHash.Hash(str);
+	}
+	public interface IigHashTable
+	{
+		public void Activate(int capacity);
 	}
 }

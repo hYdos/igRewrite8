@@ -270,11 +270,14 @@ namespace igCauldron3
 					}
 
 					Array data = memValue.GetData();
-					for(int i = 0; i < data.Length; i++)
+					if(data != null)
 					{
-						object? arrValue = data.GetValue(i);
-						RenderArrayField($"Element {i}", ref arrValue, memType);
-						data.SetValue(arrValue, i);
+						for(int i = 0; i < data.Length; i++)
+						{
+							object? arrValue = data.GetValue(i);
+							RenderArrayField($"Element {i}", ref arrValue, memType);
+							data.SetValue(arrValue, i);
+						}
 					}
 					ImGui.TreePop();
 				}

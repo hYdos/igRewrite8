@@ -105,7 +105,17 @@ namespace igLibrary.Core
 		}
 		public override object? GetDefault(igObject target)
 		{
-			if(_construct) return _metaObject.ConstructInstance(target.internalMemoryPool);
+			if(_construct)
+			{
+				igObject obj = _metaObject.ConstructInstance(target.internalMemoryPool);
+				igCapacityAttribute? capacityAttr = GetAttribute<igCapacityAttribute>();
+				if(capacityAttr != null)
+				{
+					if(obj is IigDataList dataList) dataList.SetCapacity(capacityAttr._value);
+					else if (obj is IigHashTable hashTable) hashTable.Activate(capacityAttr._value);
+				}
+				return obj;
+			}
 			else return _default;
 		}
 	}

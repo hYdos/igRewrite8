@@ -76,8 +76,7 @@ namespace igLibrary.Core
 			ulong flags = memory.GetFlags(this, saver._platform);
 			ulong size = flags & 0x07FFFFFF;
 
-
-			if(objects != null && objects.Length > 0)
+			if(objects != null)
 			{
 				ulong memOffset = memorySection.MallocAligned((uint)size, (ushort)memory.GetPlatformAlignment(this, saver._platform));
 				memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));

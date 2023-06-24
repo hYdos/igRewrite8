@@ -59,14 +59,11 @@
 			ParseSections();
 			ProcessFixupSections(dir, numFixups);
 			ReadObjects();
-			return;
 		}
 		public void ReadObjects()
 		{
 			foreach(KeyValuePair<ulong, igObject> offsetObject in _offsetObjectList)
 			{
-				if(offsetObject.Key == 1176)
-				;
 				_stream.Seek(DeserializeOffset(offsetObject.Key));
 				offsetObject.Value.ReadIGZFields(this);
 			}

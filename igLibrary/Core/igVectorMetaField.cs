@@ -71,7 +71,10 @@ namespace igLibrary.Core
 		public override object? GetDefault(igObject target)
 		{
 			igVectorCommon vector = (igVectorCommon)Activator.CreateInstance(GetOutputType());
-			vector.SetCapacity(_initialCapacity);
+			if(_initialCapacity > 0)
+			{
+				vector.SetCapacity(_initialCapacity);
+			}
 			IigMemory memory = vector.GetData();
 			memory.SetMemoryPool(target.internalMemoryPool);
 			vector.SetData(memory);
