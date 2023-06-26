@@ -31,7 +31,9 @@ namespace igLibrary.Core
 		public void Activate(int capacity)
 		{
 			_values.Realloc(capacity);
+			_values._optimalCPUReadWrite = true;
 			_keys.Realloc(capacity);
+			_keys._optimalCPUReadWrite = true;
 		}
 
 		protected virtual int GetKeyIndex(U key)

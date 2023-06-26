@@ -108,9 +108,6 @@ namespace igLibrary.Core
 			}
 			sh.WriteUInt16(_offset);
 
-			if(_default == null) sh.WriteInt32(-1);
-			else DumpDefault(saver, sh);
-
 			sh.WriteInt32(_attributes._count);
 			for(int i = 0; i < _attributes._count; i++)
 			{
@@ -145,8 +142,6 @@ namespace igLibrary.Core
 			{
 				numField.SetValue(this, num);
 			}
-			int size = sh.ReadInt32();
-			if(size > 0) UndumpDefault(loader, sh);
 
 			int attrCount = sh.ReadInt32();
 			_attributes.SetCapacity(attrCount);

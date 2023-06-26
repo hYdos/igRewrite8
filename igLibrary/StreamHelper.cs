@@ -151,6 +151,8 @@ namespace igLibrary
 			byte[] buffer = new byte[1]{data};
 			BaseStream.Write(buffer, 0x00, 0x01);
 		}
+		public void WriteSByte(sbyte data) => WriteByte(unchecked((byte)data), (uint)BaseStream.Position);
+		public void WriteSByte(sbyte data, uint offset) => WriteByte(unchecked((byte)data), offset);
 
 		public string ReadString(uint offset)
 		{

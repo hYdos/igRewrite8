@@ -36,14 +36,19 @@ namespace igLibrary.Core
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 4;
 		public override Type GetOutputType() => _metaEnum == null ? typeof(int) : _metaEnum._internalType;
-		//I don't wanna deal with these two
 		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
 		{
-			base.DumpDefault(saver, sh);
+			sh.WriteUInt32(4);			
+			sh.WriteInt32((int)_default);			
 		}
 		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
 		{
-			base.UndumpDefault(loader, sh);
+			_default = sh.ReadInt32();
+		}
+		public override object? GetDefault(igObject target)
+		{
+			if(_default != null) return _metaEnum.GetEnumFromValue((int)_default);
+			return Activator.CreateInstance(GetOutputType());
 		}
 	}
 	public class igEnumArrayMetaField : igEnumMetaField

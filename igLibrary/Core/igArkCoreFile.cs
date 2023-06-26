@@ -262,7 +262,12 @@ namespace igLibrary.Core
 		public void SaveMetaField(StreamHelper sh, igMetaField? metaField)
 		{
 			if(metaField == null) sh.WriteInt32(-1);
-			else                  metaField.DumpArkData(this, sh);
+			else
+			{
+				metaField.DumpArkData(this, sh);
+				if(metaField._default == null) sh.WriteInt32(-1);
+				else metaField.DumpDefault(this, sh);
+			}
 		}
 		public igMetaField? ReadMetaField(StreamHelper sh, igBaseMeta? meta = null)
 		{
@@ -293,6 +298,10 @@ namespace igLibrary.Core
 				compoundField._compoundFieldInfo = compoundFieldInfo;
 			}
 			metaField.UndumpArkData(this, sh);
+
+			int size = sh.ReadInt32();
+			if(size > 0) metaField.UndumpDefault(this, sh);
+
 			return metaField;
 		}
 		public void SaveCompoundInfo(igCompoundMetaFieldInfo compoundInfo)
@@ -378,8 +387,6 @@ namespace igLibrary.Core
 		{
 			int index = sh.ReadInt32();
 			if(index < 0) return null;
-			if(index == 7599)
-				index = index;
 			return _stringTable[index];
 		}
 		public void Dispose()

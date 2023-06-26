@@ -383,6 +383,7 @@ namespace igRewrite8.Devel
 
 			     if(typeName.StartsWith("igIntPtr"))			field._default = long.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igInt"))				field._default = int.Parse(memberInfo[dataIndex]);
+			else if(typeName.StartsWith("igEnum"))				field._default = int.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igUnsignedIntPtr"))	field._default = ulong.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igUnsignedInt"))		field._default = uint.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igLong"))				field._default = long.Parse(memberInfo[dataIndex]);
@@ -391,7 +392,7 @@ namespace igRewrite8.Devel
 			else if(typeName.StartsWith("igUnsignedShort"))		field._default = ushort.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igSizeType"))			field._default = ulong.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igBool"))				field._default = byte.Parse(memberInfo[dataIndex]) == 1;
-			else if(typeName.StartsWith("igChar"))				field._default = unchecked((sbyte)byte.Parse(memberInfo[dataIndex]));
+			else if(typeName.StartsWith("igChar"))				field._default = sbyte.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igUnsignedChar"))		field._default = byte.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igFloat"))				field._default = float.Parse(memberInfo[dataIndex]);
 			else if(typeName.StartsWith("igVec2f"))				field._default = new igLibrary.Math.igVec2f(float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]));
@@ -409,6 +410,13 @@ namespace igRewrite8.Devel
 			{
 				string hexString = memberInfo[dataIndex];
 				field._default = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(hexString));
+			}
+			else if(typeName.StartsWith("igBitField"))
+			{
+				igBitFieldMetaField bfmf = (igBitFieldMetaField)field;
+				ReadFieldDefault(bfmf._assignmentMetaField, ref dataIndex, memberInfo);
+				bfmf._default = bfmf._assignmentMetaField._default;
+				bfmf._assignmentMetaField._default = null;
 			}
 		}
 	}

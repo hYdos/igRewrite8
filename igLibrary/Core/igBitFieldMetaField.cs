@@ -16,7 +16,7 @@ namespace igLibrary.Core
 			sh.WriteUInt32(_shift);
 			sh.WriteUInt32(_bits);
 			saver.SaveString(sh, _storageMetaField._name);
-			_assignmentMetaField.DumpArkData(saver, sh);
+			saver.SaveMetaField(sh, _assignmentMetaField);
 		}
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
@@ -46,7 +46,97 @@ namespace igLibrary.Core
 		}
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
 		{
-			return;
+			uint size = _storageMetaField.GetSize(saver._platform);
+			ulong storage;
+			switch(size)
+			{
+				case 1:
+					storage = section._sh.ReadByte();
+					break;
+				case 2:
+					storage = section._sh.ReadUInt16();
+					break;
+				case 4:
+					storage = section._sh.ReadUInt32();
+					break;
+				case 8:
+					storage = section._sh.ReadUInt64();
+					break;
+				default:
+					throw new NotSupportedException("unsupported assignment type");
+			}
+			section._sh.Seek(-size, SeekOrigin.Current);
+			ulong assignment;
+
+				 if(_assignmentMetaField is igBoolMetaField)          assignment = (ulong)(((bool)value) ? 1 : 0);
+			else if(_assignmentMetaField is igCharMetaField)          assignment = unchecked((ulong)(sbyte)value);
+			else if(_assignmentMetaField is igUnsignedCharMetaField)  assignment = (ulong)(byte)value;
+			else if(_assignmentMetaField is igShortMetaField)         assignment = unchecked((ulong)(short)value);
+			else if(_assignmentMetaField is igUnsignedShortMetaField) assignment = (ulong)(ushort)value;
+			else if(_assignmentMetaField is igIntMetaField)           assignment = unchecked((ulong)(int)value);
+			else if(_assignmentMetaField is igUnsignedIntMetaField)   assignment = (ulong)(uint)value;
+			else if(_assignmentMetaField is igEnumMetaField e)        assignment = unchecked((ulong)e._metaEnum.GetValueFromEnum(value));
+			else if(_assignmentMetaField is igLongMetaField)          assignment = unchecked((ulong)(long)value);
+			else if(_assignmentMetaField is igUnsignedLongMetaField)  assignment = (ulong)value;
+			else throw new NotSupportedException("unsupported assignment type");
+
+			ulong mask1 = 0xFFFFFFFFFFFFFFFF;
+			mask1 >>= (int)(64 - _bits);
+			ulong mask2 = mask1;
+			mask2 <<= (int)_shift;
+			ulong mask3 = ~mask2;
+			storage = (storage & mask3) | (assignment << (int)_shift);
+			switch(size)
+			{
+				case 1:
+					section._sh.WriteByte((byte)storage);
+					break;
+				case 2:
+					section._sh.WriteUInt16((ushort)storage);
+					break;
+				case 4:
+					section._sh.WriteUInt32((uint)storage);
+					break;
+				case 8:
+					section._sh.WriteUInt64((ulong)storage);
+					break;
+				default:
+					throw new NotSupportedException("unsupported assignment type");
+			}
+		}
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			uint size = _assignmentMetaField.GetSize(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT);
+			//sh.WriteInt32(-1);
+			//return;
+			sh.WriteUInt32(size);
+				 if(_assignmentMetaField is igBoolMetaField)          sh.WriteByte((byte)(((bool)_default) ? 1 : 0));
+			else if(_assignmentMetaField is igCharMetaField)          sh.WriteSByte((sbyte)_default);
+			else if(_assignmentMetaField is igUnsignedCharMetaField)  sh.WriteByte((byte)_default);
+			else if(_assignmentMetaField is igShortMetaField)         sh.WriteInt16((short)_default);
+			else if(_assignmentMetaField is igUnsignedShortMetaField) sh.WriteUInt16((ushort)_default);
+			else if(_assignmentMetaField is igIntMetaField)           sh.WriteInt32((int)_default);
+			else if(_assignmentMetaField is igUnsignedIntMetaField)   sh.WriteUInt32((uint)_default);
+			else if(_assignmentMetaField is igEnumMetaField)          sh.WriteInt32((int)_default);
+			else if(_assignmentMetaField is igLongMetaField)          sh.WriteInt64((long)_default);
+			else if(_assignmentMetaField is igUnsignedLongMetaField)  sh.WriteUInt64((ulong)_default);
+			else throw new NotSupportedException("unsupported assignment type");
+		}
+		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			//sh.Seek(_assignmentMetaField.GetSize(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT), SeekOrigin.Current);
+			
+				 if(_assignmentMetaField is igBoolMetaField)          _default = sh.ReadByte() != 0;
+			else if(_assignmentMetaField is igCharMetaField)          _default = sh.ReadSByte();
+			else if(_assignmentMetaField is igUnsignedCharMetaField)  _default = sh.ReadByte();
+			else if(_assignmentMetaField is igShortMetaField)         _default = sh.ReadInt16();
+			else if(_assignmentMetaField is igUnsignedShortMetaField) _default = sh.ReadUInt16();
+			else if(_assignmentMetaField is igIntMetaField)           _default = sh.ReadInt32();
+			else if(_assignmentMetaField is igUnsignedIntMetaField)   _default = sh.ReadUInt32();
+			else if(_assignmentMetaField is igEnumMetaField)          _default = sh.ReadInt32();
+			else if(_assignmentMetaField is igLongMetaField)          _default = sh.ReadInt64();
+			else if(_assignmentMetaField is igUnsignedLongMetaField)  _default = sh.ReadUInt64();
+			else throw new NotSupportedException("unsupported assignment type");
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;

@@ -10,7 +10,7 @@ namespace igLibrary.Core
 		{
 			base.DumpArkData(saver, sh);
 
-			_memType.DumpArkData(saver, sh);
+			saver.SaveMetaField(sh, _memType);
 		}
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
