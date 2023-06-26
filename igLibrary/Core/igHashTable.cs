@@ -11,6 +11,7 @@ namespace igLibrary.Core
 		public int _hashItemCount;
 		public bool _autoRehash;
 		public float _loadFactor;
+		//private igHashTraits<U> _hashTraits = new igHashTraits<U>();
 
 		public virtual T this[U key]
 		{
@@ -34,6 +35,7 @@ namespace igLibrary.Core
 			_values._optimalCPUReadWrite = true;
 			_keys.Realloc(capacity);
 			_keys._optimalCPUReadWrite = true;
+			KeyTraitsInvalidateAll();
 		}
 
 		protected virtual int GetKeyIndex(U key)
@@ -63,12 +65,22 @@ namespace igLibrary.Core
 			return (IEnumerator<KeyValuePair<U, T>>)kvps.GetEnumerator();
 		}
 
+		public virtual void KeyTraitsInvalidateAll()
+		{
+			for(int i = 0; i < _keys.Length; i++)
+			{
+				KeyTraitsInvalidate(i);
+			}
+		}
 		public virtual void KeyTraitsInvalidate(int keyIndex)
 		{
-			     if(!typeof(U).IsValueType)                                    _keys[keyIndex] = default(U);
-			else if(typeof(U) == typeof(int)   || typeof(U) == typeof(uint))   _keys[keyIndex] = (U)(object)0xFAFAFAFA;
-			else if(typeof(U) == typeof(long)  || typeof(U) == typeof(ulong))  _keys[keyIndex] = (U)(object)0xFAFAFAFAFAFAFAFA;
-			else if(typeof(U) == typeof(short))                                _keys[keyIndex] = (U)(object)0x7FFF;
+			     if(!typeof(U).IsValueType)      _keys[keyIndex] = default(U);
+			else if(typeof(U) == typeof(uint))   _keys[keyIndex] = (U)(object)0xFAFAFAFA;
+			else if(typeof(U) == typeof(int))    _keys[keyIndex] = (U)(object)-84215046;
+			else if(typeof(U) == typeof(ulong))  _keys[keyIndex] = (U)(object)0xFAFAFAFAFAFAFAFA;
+			else if(typeof(U) == typeof(long))   _keys[keyIndex] = (U)(object)-361700864190383366;
+			else if(typeof(U) == typeof(ushort)) _keys[keyIndex] = (U)(object)0x7FFF;
+			else throw new NotImplementedException("Key type " + typeof(U).Name + " is not implemented.");
 		}
 		public virtual bool KeyTraitsInvalid(int keyIndex)
 		{
