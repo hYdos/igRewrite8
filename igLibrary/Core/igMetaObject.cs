@@ -84,8 +84,6 @@ namespace igLibrary.Core
 
 		public override void FinalizeType()
 		{
-			if(_name == "igEffectAnnotationListList")
-			;
 			if(!_beganFinalizationPrep)
 			{
 				_beganFinalizationPrep = true;

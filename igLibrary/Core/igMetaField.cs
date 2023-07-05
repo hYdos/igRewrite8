@@ -41,6 +41,20 @@ namespace igLibrary.Core
 			public bool _mutable;
 			public bool _implicitAlignment;
 
+			public Properties()
+			{
+				_copyMethod = CopyType.kCopyByDefault;
+				_resetMethod = ResetType.kResetByDefault;
+				_isAlikeCompareMethod = IsAlikeCompareType.kIsAlikeCompareDefault;
+				_itemsCopyMethod = CopyType.kCopyByDefault;
+				_keysCopyMethod = CopyType.kCopyByDefault;
+				_persistent = true;
+				_hasInvariance = false;
+				_hasPoolName = false;
+				_mutable = false;
+				_implicitAlignment = true;
+			}
+
 			//I'm so sorry
 			internal int getArkStorage() => (int)_copyMethod | (int)_resetMethod << 2 | (int)_isAlikeCompareMethod << 4 | (int)_itemsCopyMethod << 6 | (int)_keysCopyMethod << 8 | bts(_persistent, 10) | bts(_hasInvariance, 11) | bts(_hasPoolName, 12) | bts(_mutable, 13) | bts(_implicitAlignment, 14);
 			private int bts(bool value, byte shift) => (value ? 1 : 0) << shift;
@@ -63,7 +77,7 @@ namespace igLibrary.Core
 		public ushort _offset;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public igBaseMeta _parentMeta;
-		public Properties _properties;
+		public Properties _properties = new Properties();
 		public igObjectList _attributes = new igObjectList();
 		public object? _default;
 

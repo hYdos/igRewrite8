@@ -36,6 +36,11 @@ namespace igLibrary.Core
 			}
 			else
 			{
+				CBuildDependencyAttribute? dependencyAttribute = GetAttribute<CBuildDependencyAttribute>();
+				if(dependencyAttribute != null)
+				{
+					dependencyAttribute.GenerateBuildDependancies(saver, value);
+				}
 				//why use string refs when you can use the string table
 				//Because alchemy sucks
 				if(igAlchemyCore.isPlatform64Bit(saver._platform))

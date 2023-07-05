@@ -80,11 +80,28 @@ namespace igLibrary.Core
 			{
 				ulong memOffset = memorySection.MallocAligned((uint)size, (ushort)memory.GetPlatformAlignment(this, saver._platform));
 				memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
-				for(int i = 0; i < objects.Length; i++)
+				/*if(_name == "_values" && _memType is igObjectRefMetaField objRefMf)
 				{
-					memorySection._sh.Seek((long)memOffset + memSize * i);
-					_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+					(bool, ulong)[] objectOffsets = new (bool, ulong)[objects.Length];
+					for(int i = 0; i < objects.Length; i++)
+					{
+						memorySection._sh.Seek((long)memOffset + memSize * i);
+						objRefMf.WriteIGZFieldShallow(saver, memorySection, (igObject?)objects.GetValue(i), out objectOffsets[i].Item2, out objectOffsets[i].Item1);
+					}
+					for(int i = 0; i < objects.Length; i++)
+					{
+						if(!objectOffsets[i].Item1) continue;
+						saver.SaveObjectDeep(objectOffsets[i].Item2, (igObject)objects.GetValue(i));
+					}
 				}
+				else
+				{*/
+					for(int i = 0; i < objects.Length; i++)
+					{
+						memorySection._sh.Seek((long)memOffset + memSize * i);
+						_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+					}
+				//}
 
 				section._sh.Seek(start);
 				saver.WriteRawOffset(memory.GetFlags(this, saver._platform), section);

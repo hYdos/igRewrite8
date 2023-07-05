@@ -41,14 +41,24 @@ namespace igLibrary.Core
 			bool namedExternal = hnd._alias._string != null && hnd._namespace._string != null;
 			List<igHandle> handleList = null;
 
-			if(namedExternal) handleList = saver._namedHandleList;
-			else              handleList = saver._externalList;
+			if(!namedExternal) handleList = saver._externalList;
+			else
+			{
+				//I hate this
+				handleList = new List<igHandle>();
+				for(int i = 0; i < saver._namedList.Count; i++)
+				{
+					if(!saver._namedList[i].Item2) continue;
+					handleList.Add(saver._namedList[i].Item1);
+				}
+			}
 
-			int handleIndex = handleList.FindIndex(x => x == value);
+			int handleIndex = handleList.FindIndex(x => x == hnd);
 			if(handleIndex < 0)
 			{
 				handleIndex = handleList.Count;
-				handleList.Add((igHandle)value);
+				if(!namedExternal) handleList.Add(hnd);
+				else               saver._namedList.Add((hnd, true));
 			}
 			section._runtimeFields._handles.Add(section._sh.Tell64());
 			if(namedExternal) section._sh.WriteUInt32(0x80000000u | (uint)handleIndex);

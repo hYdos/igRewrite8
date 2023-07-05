@@ -31,9 +31,12 @@ namespace igLibrary.Core
 		}
 		public virtual void WriteIGZFields(igIGZSaver saver, igIGZSaver.SaverSection section)
 		{
-			uint objectOffset = section._sh.Tell();
-
 			List<igMetaField> metaFields = GetMeta()._metaFields;
+			WriteIGZFieldsInternal(saver, section, metaFields);
+		}
+		public virtual void WriteIGZFieldsInternal(igIGZSaver saver, igIGZSaver.SaverSection section, List<igMetaField> metaFields)
+		{
+			uint objectOffset = section._sh.Tell();
 
 			for(int i = 0; i < metaFields.Count; i++)
 			{

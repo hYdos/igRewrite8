@@ -42,6 +42,18 @@ namespace igLibrary.Core
 			Console.WriteLine($"failed to load {_namespace._string}:/{_alias._string}");
 			return null;
 		}
+		public static bool operator ==(igHandle? a, igHandle? b)
+		{
+			if(ReferenceEquals(a, b)) return true;
+			if(a is null || b is null) return false;
+			return a._namespace._hash == b._namespace._hash && a._alias._hash == b._alias._hash;
+		}
+		public static bool operator !=(igHandle? a, igHandle? b)
+		{
+			if(ReferenceEquals(a, b)) return false;
+			if(a is null || b is null) return true;
+			return a._namespace._hash != b._namespace._hash || a._alias._hash != b._alias._hash;
+		}
 		public override string ToString()
 		{
 			return $"{_namespace._string}.{_alias._string}";

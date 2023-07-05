@@ -187,8 +187,6 @@ namespace igLibrary.DotNet
 							continue;
 						}
 						meta._parent = baseMetaObject;
-						if(meta._name == "Scripts.CelebrateAbilityUpgradeComponentData")
-						;
 						meta.InheritFields();
 						for(int j = 0; j < memberCounts[metaIndex]; j++)
 						{

@@ -8,11 +8,11 @@ namespace igLibrary.Core
 		public Dictionary<string, uint> _stringRefList = new Dictionary<string, uint>();
 		public List<Tuple<ulong, ulong>> _thumbnails = new List<Tuple<ulong, ulong>>();
 		private List<SaverSection> _sections = new List<SaverSection>();
-		public List<igHandle> _namedHandleList = new List<igHandle>();
-		public List<igHandle> _namedExternalList = new List<igHandle>();
+		public List<(igHandle, bool)> _namedList = new List<(igHandle, bool)>();	//If true then namedHandle, otherwise named external
 		public List<igHandle> _externalList = new List<igHandle>();
 		public List<(string, string)> _buildDependancies = new List<(string, string)>();
 		public IG_CORE_PLATFORM _platform;
+		public igObjectDirectory _dir;
 		private StreamHelper _stream;
 		public uint _version;
 		private uint _fixupCount;
@@ -65,6 +65,7 @@ namespace igLibrary.Core
 			_platform = platform;
 			_version = 0x09;
 			_stream = new StreamHelper(File.Create(path), igAlchemyCore.isPlatformBigEndian(platform) ? StreamHelper.Endianness.Big : StreamHelper.Endianness.Little);
+			_dir = dir;
 
 			SaverSection rootSection = GetSaverSection(dir._objectList.internalMemoryPool);
 			rootSection._runtimeFields._objectLists.Add(SaveObject(dir._objectList));
@@ -83,12 +84,29 @@ namespace igLibrary.Core
 
 		public ulong SaveObject(igObject? obj)
 		{
-			if(obj == null) return 0;
+			ulong offset = SaveObjectShallow(obj, out bool needsDeep);
+			if(needsDeep)
+			{
+				SaveObjectDeep(offset, obj);
+			}
+			return offset;
+		}
+		public ulong SaveObjectShallow(igObject? obj, out bool needsDeep)
+		{
+			if(obj == null)
+			{
+				needsDeep = false;
+				return 0;
+			}
 
 			SaverSection section = GetSaverSection(obj.internalMemoryPool);
 
 			bool previouslyWritten = section._objectOffsetList.TryGetValue(obj, out ulong offset);
-			if(previouslyWritten) return offset;
+			if(previouslyWritten)
+			{
+				needsDeep = false;
+				return offset;
+			}
 
 			igMetaObject meta = obj.GetMeta();
 
@@ -101,9 +119,21 @@ namespace igLibrary.Core
 
 			section._sh.Seek(offset);
 
-			obj.WriteIGZFields(this, section);
+			needsDeep = true;
 
 			return offset | (section._index << (_version >= 7 ? 0x1B : 0x18));
+		}
+		public ulong SaveObjectDeep(ulong serialized, igObject obj)
+		{
+			GetOffsetBad(serialized, out igIGZSaver.SaverSection section, out ulong deserialized);
+			bool found = section._objectOffsetList.TryGetValue(obj, out ulong offset);
+			if(!found)
+			{
+				throw new KeyNotFoundException("Failed to find saved object somehow");
+			}
+			section._sh.Seek(deserialized);
+			obj.WriteIGZFields(this, section);
+			return offset;
 		}
 		public void RefObject(igObject? obj)
 		{
@@ -176,6 +206,19 @@ namespace igLibrary.Core
 			WriteRawOffset((ulong)index, section);
 		}
 
+		public void GetOffsetBad(ulong serialized, out igIGZSaver.SaverSection section, out ulong deserialized)
+		{
+			if(_version <= 0x06)
+			{
+				deserialized = serialized & 0x00FFFFFF;
+				section = _sections[(int)(serialized >> 0x18)];
+			}
+			else
+			{
+				deserialized = serialized & 0x07FFFFFF;
+				section = _sections[(int)(serialized >> 0x1B)];
+			}
+		}
 		public SaverSection GetSaverSection(igMemoryPool pool)
 		{
 			int index = _sections.FindIndex(x => x._pool == pool);
@@ -211,10 +254,15 @@ namespace igLibrary.Core
 			{
 				startOffset = endOffset;
 				_stream.WriteUInt32(0x50454454);
-				_stream.WriteInt32(dir._dependancies.Count);
+				_stream.WriteInt32(dir._dependancies.Count + _buildDependancies.Count);
 				_stream.WriteInt32(0);
 				_stream.WriteInt32(0x10);
 
+				for(int j = 0; j < _buildDependancies.Count; j++)
+				{
+					_stream.WriteString(_buildDependancies[j].Item1);
+					_stream.WriteString("<build>" + _buildDependancies[j].Item2);
+				}
 				for(int j = 0; j < dir._dependancies.Count; j++)
 				{
 					_stream.WriteString(dir._dependancies[j]._name._string);
@@ -312,10 +360,10 @@ namespace igLibrary.Core
 				_fixupCount += 1;
 			}
 
-			if(_namedHandleList.Count > 0 || _namedExternalList.Count > 0)
+			if(_namedList.Count > 0)
 			{
 				startOffset = endOffset;
-				int externalCount = _namedHandleList.Count + _namedExternalList.Count;
+				int externalCount = _namedList.Count;
 				_stream.WriteUInt32(0x4D4E5845);
 				_stream.WriteInt32(externalCount);
 				uint alignedDataStart = (uint)Align(_stream.Tell()+8 - (uint)startOffset, igAlchemyCore.GetPointerSize(_platform));
@@ -323,17 +371,10 @@ namespace igLibrary.Core
 				_stream.WriteUInt32(alignedDataStart);
 				_stream.Seek(startOffset + alignedDataStart);
 
-				//Write named handles
-				for(int j = 0; j < _namedHandleList.Count; j++)
+				for(int j = 0; j < _namedList.Count; j++)
 				{
-					_stream.WriteUInt32((uint)AddString(_namedHandleList[j]._namespace._string) | 0x80000000);
-					_stream.WriteUInt32((uint)AddString(_namedHandleList[j]._alias._string));
-				}
-				//Write named externals
-				for(int j = 0; j < _namedExternalList.Count; j++)
-				{
-					_stream.WriteUInt32((uint)AddString(_namedExternalList[j]._namespace._string));
-					_stream.WriteUInt32((uint)AddString(_namedExternalList[j]._alias._string));
+					_stream.WriteUInt32((uint)AddString(_namedList[j].Item1._namespace._string) | (_namedList[j].Item2 ? 0x80000000u : 0u));
+					_stream.WriteUInt32((uint)AddString(_namedList[j].Item1._alias._string));
 				}
 
 				endOffset = _stream.Tell();

@@ -31,6 +31,7 @@ namespace igLibrary.Core
 				igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
 				AddObjectDirectory(objDir);
 				objDir.ReadFile(readDependancies);
+				igObjectHandleManager.Singleton.AddDirectory(objDir);
 				return objDir;
 			}
 			else

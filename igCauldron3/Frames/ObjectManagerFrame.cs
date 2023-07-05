@@ -30,6 +30,7 @@ namespace igCauldron3
 
 		public override void Render()
 		{
+			igObjectList list = directory._objectList;
 			ImGui.Begin("Object Manager");
 			if(ImGui.TreeNode("Dependancies"))
 			{

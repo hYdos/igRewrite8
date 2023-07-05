@@ -7,7 +7,7 @@ namespace igLibrary.Core
 		public bool _construct;
 		public bool _destruct;
 		public bool _reconstruct;
-		public bool _refCounted;
+		public bool _refCounted = true;
 
 		public override void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{
@@ -18,10 +18,10 @@ namespace igLibrary.Core
 		{
 			base.UndumpArkData(loader, sh);
 			byte data = sh.ReadByte();
-			_construct   = ((data >> 3) & 1) != 0 ? true : false;
-			_destruct    = ((data >> 2) & 1) != 0 ? true : false;
-			_reconstruct = ((data >> 1) & 1) != 0 ? true : false;
-			_refCounted  = ((data >> 0) & 1) != 0 ? true : false;
+			_construct   = ((data >> 3) & 1) != 0;
+			_destruct    = ((data >> 2) & 1) != 0;
+			_reconstruct = ((data >> 1) & 1) != 0;
+			_refCounted  = ((data >> 0) & 1) != 0;
 		}
 
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform);

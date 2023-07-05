@@ -47,10 +47,11 @@ namespace igLibrary.Core
 			//if(ret is T t) return t;
 			//else return null;
 		}
-		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		public void WriteIGZFieldShallow(igIGZSaver saver, igIGZSaver.SaverSection section, igObject? obj, out ulong serializedOffset, out bool needsDeep)
 		{
 			ulong baseOffset = section._sh.Tell64();
-			igObject? obj = (igObject?)value;
+			needsDeep = false;
+			serializedOffset = 0;
 
 			if(obj == null)
 			{
@@ -62,39 +63,48 @@ namespace igLibrary.Core
 			if(name._ns._hash != 0)
 			{
 				section._runtimeFields._namedExternals.Add(section._sh.Tell64());
-				section._sh.WriteUInt32((uint)saver._namedExternalList.Count | 0x80000000);
-				saver._namedExternalList.Add(new igHandle(name));
+				section._sh.WriteUInt32((uint)saver._namedList.Count | (_refCounted ? 0x80000000 : 0));
+				saver._namedList.Add((new igHandle(name), false));
+				serializedOffset = 0;
 				return;
 			}
 
 			igHandle hnd = igObjectHandleManager.Singleton.GetHandle(obj);
-			if(hnd != null)
+			if(hnd != null && hnd._namespace._hash != saver._dir._name._hash)
 			{
 				if(igObjectHandleManager.Singleton.IsSystemObject(hnd))
 				{
 					Console.WriteLine("EXID object found, reference to " + hnd.ToString());
 					section._runtimeFields._externals.Add(section._sh.Tell64());
-					section._sh.WriteUInt32((uint)saver._externalList.Count | 0x80000000);
+					section._sh.WriteUInt32((uint)saver._externalList.Count | (_refCounted ? 0x80000000 : 0));
 					saver._externalList.Add(hnd);
 				}
 				else
 				{
 					Console.WriteLine("EXNM object found, reference to " + hnd.ToString());
 					section._runtimeFields._namedExternals.Add(section._sh.Tell64());
-					section._sh.WriteUInt32((uint)saver._namedExternalList.Count | 0x80000000);
-					saver._namedExternalList.Add(hnd);
+					section._sh.WriteUInt32((uint)saver._namedList.Count | (_refCounted ? 0x80000000 : 0));
+					saver._namedList.Add((hnd, false));
 				}
+				serializedOffset = 0;
 				return;
 			}
-			//Should add stuff to check for externals
 
-			ulong objectOffset = saver.SaveObject(obj);
+			serializedOffset = saver.SaveObjectShallow(obj, out needsDeep);
 			section._sh.Seek(baseOffset);
-			saver.WriteRawOffset(objectOffset, section);
+			saver.WriteRawOffset(serializedOffset, section);
 			section._runtimeFields._offsets.Add(baseOffset);
 			if(_refCounted && obj != null)
 			{
 				saver.RefObject(obj);
+			}
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			WriteIGZFieldShallow(saver, section, (igObject?)value, out ulong serializedOffset, out bool needsDeep);
+			if(needsDeep)
+			{
+				saver.SaveObjectDeep(serializedOffset, (igObject?)value);
 			}
 		}
 		public override Type GetOutputType()
