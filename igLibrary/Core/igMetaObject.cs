@@ -7,6 +7,7 @@ namespace igLibrary.Core
 	{
 		public igMetaObject? _parent;
 		public List<igMetaField> _metaFields;
+		public igObjectList? _attributes;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Type _vTablePointer;
@@ -17,7 +18,15 @@ namespace igLibrary.Core
 		{
 			_metaFields = new List<igMetaField>();
 		}
-
+		public T? GetAttribute<T>() where T : igObject
+		{
+			if(_attributes == null) return null;
+			for(int i = 0; i < _attributes._count; i++)
+			{
+				if(_attributes[i] is T attr) return attr;
+			}
+			return null;
+		}
 		public void GenerateType()
 		{
 			DeclareType();
@@ -342,6 +351,10 @@ namespace igLibrary.Core
 		}
 		public virtual igObject ConstructInstance(igMemoryPool memPool, bool setFields = true)
 		{
+			if(_vTablePointer == null)
+			{
+				GenerateType();
+			}
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;
 			if(setFields) obj.ResetFields(this);

@@ -129,10 +129,23 @@ namespace igRewrite8.Devel
 				{
 					igMetaObject metaObject = metaObjectLookup[members[2]];
 
-					if(members.Length > 3)
+					if(members.Length > 4)
 					{
 						metaObject._parent = metaObjectLookup[members[3]];
 						metaObject.InheritFields();
+						int attrIndex = 4;
+						if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+						{
+							attrIndex++;
+						}
+						int attrCount = int.Parse(members[attrIndex], System.Globalization.NumberStyles.HexNumber);
+						attrIndex++;
+						metaObject._attributes = new igObjectList();
+						metaObject._attributes.SetCapacity(attrCount);
+						for(int a = 0; a < attrCount; a++)
+						{
+							metaObject._attributes.Append(ReadFieldAttribute(ref attrIndex, members));
+						}
 					}
 
 					while(true)
@@ -164,7 +177,7 @@ namespace igRewrite8.Devel
 						}
 					}
 
-					if(members.Length > 3)
+					if(members.Length > 4)
 					{
 						for(int j = 0; j < replacedFields.Count; j++)
 						{
@@ -330,7 +343,7 @@ namespace igRewrite8.Devel
 
 			return metaField;
 		}
-		private static void ReadFieldAttributes(igMetaField field, ref int dataIndex, string[] memberInfo)
+		private void ReadFieldAttributes(igMetaField field, ref int dataIndex, string[] memberInfo)
 		{
 			if(memberInfo.Length <= dataIndex) return;
 
@@ -344,7 +357,7 @@ namespace igRewrite8.Devel
 					field._attributes.Append(attr);
 			}
 		}
-		private static igObject? ReadFieldAttribute(ref int dataIndex, string[] memberInfo)
+		private igObject? ReadFieldAttribute(ref int dataIndex, string[] memberInfo)
 		{
 			if(memberInfo.Length <= dataIndex) return null;
 
@@ -360,7 +373,7 @@ namespace igRewrite8.Devel
 			object attrValue = null;
 			     if(valueField.FieldType == typeof(bool))             attrValue = rawdata == "1";
 			else if(valueField.FieldType == typeof(int))              attrValue = int.Parse(rawdata, System.Globalization.NumberStyles.HexNumber);
-			//else if(valueField.FieldType == typeof(igMetaObject))     attrValue = int.Parse(rawdata, System.Globalization.NumberStyles.HexNumber);
+			else if(valueField.FieldType == typeof(igMetaObject))     attrValue = metaObjectLookup[rawdata];
 			else if(valueField.FieldType == typeof(string))
 			{
 				attrValue = System.Text.Encoding.ASCII.GetString(Convert.FromHexString(rawdata));
@@ -406,6 +419,15 @@ namespace igRewrite8.Devel
 			else if(typeName.StartsWith("igVec4uc"))			field._default = new igLibrary.Math.igVec4uc(byte.Parse(defaultInfo[0]), byte.Parse(defaultInfo[1]), byte.Parse(defaultInfo[2]), byte.Parse(defaultInfo[3]));
 			else if(typeName.StartsWith("igVec4i"))				field._default = new igLibrary.Math.igVec4i(int.Parse(defaultInfo[0]), int.Parse(defaultInfo[1]), int.Parse(defaultInfo[2]), int.Parse(defaultInfo[3]));
 			else if(typeName.StartsWith("igMatrix44f"))			field._default = new igLibrary.Math.igMatrix44f(new float[16] {float.Parse(defaultInfo[0]), float.Parse(defaultInfo[1]), float.Parse(defaultInfo[2]), float.Parse(defaultInfo[3]), float.Parse(defaultInfo[4]), float.Parse(defaultInfo[5]), float.Parse(defaultInfo[6]), float.Parse(defaultInfo[7]), float.Parse(defaultInfo[8]), float.Parse(defaultInfo[9]), float.Parse(defaultInfo[10]), float.Parse(defaultInfo[11]), float.Parse(defaultInfo[12]), float.Parse(defaultInfo[13]), float.Parse(defaultInfo[14]), float.Parse(defaultInfo[15])});
+			else if(typeName.StartsWith("igObjectRef"))
+			{
+				igObjectRefMetaField objField = (igObjectRefMetaField)field;
+				if(objField._metaObject._name == "igMetaObject")
+				{
+					string hexString = memberInfo[dataIndex];
+					field._default = metaObjectLookup[System.Text.Encoding.ASCII.GetString(Convert.FromHexString(hexString))];
+				}
+			}
 			else if(typeName.StartsWith("igString"))
 			{
 				string hexString = memberInfo[dataIndex];

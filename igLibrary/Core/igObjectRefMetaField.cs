@@ -63,8 +63,7 @@ namespace igLibrary.Core
 			if(name._ns._hash != 0)
 			{
 				section._runtimeFields._namedExternals.Add(section._sh.Tell64());
-				section._sh.WriteUInt32((uint)saver._namedList.Count | (_refCounted ? 0x80000000 : 0));
-				saver._namedList.Add((new igHandle(name), false));
+				section._sh.WriteUInt32((uint)saver.GetOrAddHandle((new igHandle(name), false)) | (_refCounted ? 0x80000000 : 0));
 				serializedOffset = 0;
 				return;
 			}
@@ -75,16 +74,20 @@ namespace igLibrary.Core
 				if(igObjectHandleManager.Singleton.IsSystemObject(hnd))
 				{
 					Console.WriteLine("EXID object found, reference to " + hnd.ToString());
+					int index = saver._externalList.FindIndex(x => x == hnd);
+					if(index < 0)
+					{
+						index = saver._externalList.Count;
+						saver._externalList.Add(hnd);
+					}
 					section._runtimeFields._externals.Add(section._sh.Tell64());
-					section._sh.WriteUInt32((uint)saver._externalList.Count | (_refCounted ? 0x80000000 : 0));
-					saver._externalList.Add(hnd);
+					section._sh.WriteUInt32((uint)index | (_refCounted ? 0x80000000 : 0));
 				}
 				else
 				{
 					Console.WriteLine("EXNM object found, reference to " + hnd.ToString());
 					section._runtimeFields._namedExternals.Add(section._sh.Tell64());
-					section._sh.WriteUInt32((uint)saver._namedList.Count | (_refCounted ? 0x80000000 : 0));
-					saver._namedList.Add((hnd, false));
+					section._sh.WriteUInt32((uint)saver.GetOrAddHandle((hnd, false)) | (_refCounted ? 0x80000000 : 0));
 				}
 				serializedOffset = 0;
 				return;
@@ -127,6 +130,22 @@ namespace igLibrary.Core
 				return obj;
 			}
 			else return _default;
+		}
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			if(_metaObject._name == "igMetaObject")
+			{
+				sh.WriteInt32(4);
+				saver.SaveString(sh, ((igMetaObject)_default)._name);
+			}
+			else
+			{
+				sh.WriteInt32(-1);
+			}
+		}
+		public override void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
+		{
+			_default = igArkCore.GetObjectMeta(loader.ReadString(sh));
 		}
 	}
 	public class igObjectRefArrayMetaField : igObjectRefMetaField

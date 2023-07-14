@@ -16,10 +16,10 @@ namespace igLibrary.Math
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
 		{
 			igQuaternionf data = (igQuaternionf)value;
-			data._x = section._sh.ReadSingle();
-			data._y = section._sh.ReadSingle();
-			data._z = section._sh.ReadSingle();
-			data._w = section._sh.ReadSingle();
+			section._sh.WriteSingle(data._x);
+			section._sh.WriteSingle(data._y);
+			section._sh.WriteSingle(data._z);
+			section._sh.WriteSingle(data._w);
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x10;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x10;

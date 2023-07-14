@@ -11,6 +11,9 @@ namespace igLibrary.Core
 			igMetaObject meta = GetMeta();
 			List<igMetaField> metaFields = meta._metaFields;
 
+			if(GetMeta()._name == "CBehaviorPhysicsPencilComponentData")
+			;
+
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
@@ -31,8 +34,28 @@ namespace igLibrary.Core
 		}
 		public virtual void WriteIGZFields(igIGZSaver saver, igIGZSaver.SaverSection section)
 		{
+			igMetaObject meta = GetMeta();
 			List<igMetaField> metaFields = GetMeta()._metaFields;
 			WriteIGZFieldsInternal(saver, section, metaFields);
+			igDependenciesAttribute? depAttr = meta.GetAttribute<igDependenciesAttribute>();
+			if(depAttr == null) return;
+			igDependencyProvider depProvider = (igDependencyProvider)depAttr._value.ConstructInstance(section._pool);
+			depProvider.GetBuildDependencies(this, out igStringRefList? list);
+			if(list != null)
+			{
+				for(int i = 0; i < list._count; i++)
+				{
+					saver.AddBuildDependency(list[i]);
+				}
+			}
+			depProvider.GetFileDependencies(this, out list);
+			if(list != null)
+			{
+				for(int i = 0; i < list._count; i++)
+				{
+					saver.AddFileDependency(list[i]);
+				}
+			}
 		}
 		public virtual void WriteIGZFieldsInternal(igIGZSaver saver, igIGZSaver.SaverSection section, List<igMetaField> metaFields)
 		{

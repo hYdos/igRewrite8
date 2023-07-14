@@ -36,11 +36,11 @@ namespace igLibrary.Core
 			}
 			else
 			{
-				CBuildDependencyAttribute? dependencyAttribute = GetAttribute<CBuildDependencyAttribute>();
-				if(dependencyAttribute != null)
-				{
-					dependencyAttribute.GenerateBuildDependancies(saver, value);
-				}
+				igBuildDependencyAttribute? dependencyAttribute1 = GetAttribute<igBuildDependencyAttribute>();
+				CBuildDependencyAttribute? dependencyAttribute2 = GetAttribute<CBuildDependencyAttribute>();
+				if(dependencyAttribute1 != null) dependencyAttribute1.GenerateBuildDependancies(saver, (string)value);
+				if(dependencyAttribute2 != null) dependencyAttribute2.GenerateBuildDependancies(saver, value);
+
 				//why use string refs when you can use the string table
 				//Because alchemy sucks
 				if(igAlchemyCore.isPlatform64Bit(saver._platform))
@@ -56,11 +56,7 @@ namespace igLibrary.Core
 				}
 				else
 				{
-					if(saver._stringRefList.TryGetValue((string)value, out uint offset))
-					{
-
-					}
-					else
+					if(!saver._stringRefList.TryGetValue((string)value, out uint offset))
 					{
 						igIGZSaver.SaverSection stringSection = saver.GetSaverSection(igMemoryContext.Singleton.GetMemoryPoolByName("String"));
 						stringSection._sh.Seek(stringSection.FindFreeMemory((byte)((saver._version < 7) ? 1u : 2u)));

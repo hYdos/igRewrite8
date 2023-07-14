@@ -172,14 +172,16 @@
 								Console.WriteLine($"igIGZ EXID load: Failed to find {depName._ns._hash.ToString("X08")}, referenced in {_dir._path}");
 								goto finish;
 							}
-							//Console.WriteLine($"igIGZ EXID load: Successfully found {depName._ns._hash.ToString("X08")}, referenced in {_file._path._path}");
 							igObjectDirectory dependantDir = igObjectStreamManager.Singleton._directories.First(x => x.Value._name._hash == depName._ns._hash).Value;
+							//depName._ns._string = dependantDir._name._string;
+							//Console.WriteLine($"igIGZ EXID load: Successfully found {depName._ns._string}, referenced in {_dir._path}");
 							if(dependantDir._useNameList)
 							{
 								for(int k = 0; k < dependantDir._nameList._count; k++)
 								{
 									if(dependantDir._nameList[k]._hash == depName._name._hash)
 									{
+										//depName._name._string = dependantDir._nameList[k]._string;
 										obj = dependantDir._objectList[k];
 										break;
 									}

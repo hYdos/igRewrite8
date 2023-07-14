@@ -78,11 +78,12 @@ namespace igLibrary.Core
 		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public igBaseMeta _parentMeta;
 		public Properties _properties = new Properties();
-		public igObjectList _attributes = new igObjectList();
+		public igObjectList? _attributes = new igObjectList();
 		public object? _default;
 
 		public T? GetAttribute<T>() where T : igObject
 		{
+			if(_attributes == null) return null;
 			for(int i = 0; i < _attributes._count; i++)
 			{
 				if(_attributes[i] is T attr) return attr;
@@ -122,21 +123,7 @@ namespace igLibrary.Core
 			}
 			sh.WriteUInt16(_offset);
 
-			sh.WriteInt32(_attributes._count);
-			for(int i = 0; i < _attributes._count; i++)
-			{
-				igObject attr = _attributes[i];
-				Type attrType = attr.GetType();
-				saver.SaveString(sh, attrType.Name);
-
-				FieldInfo? valueField = attrType.GetField("_value");
-				object? attrValue = valueField.GetValue(attr);
-
-				     if(attrValue is bool boolValue)     sh.WriteInt32(boolValue ? 1 : 0);
-				else if(attrValue is string stringValue) saver.SaveString(sh, stringValue);
-				else if(attrValue is int intValue)       sh.WriteInt32(intValue);
-				else                                     sh.WriteInt32(-1);
-			}
+			saver.SaveAttributes(sh, _attributes);
 		}
 		public virtual void DumpDefault(igArkCoreFile saver, StreamHelper sh){}
 		public virtual void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
@@ -157,24 +144,7 @@ namespace igLibrary.Core
 				numField.SetValue(this, num);
 			}
 
-			int attrCount = sh.ReadInt32();
-			_attributes.SetCapacity(attrCount);
-			for(int i = 0; i < attrCount; i++)
-			{
-				Type attrType = igArkCore.GetObjectDotNetType(loader.ReadString(sh));
-				igObject attr = (igObject)Activator.CreateInstance(attrType);
-
-				FieldInfo? valueField = attrType.GetField("_value");
-				object? attrValue = null;
-
-				     if(valueField.FieldType == typeof(bool))     attrValue = sh.ReadUInt32() != 0;
-				else if(valueField.FieldType == typeof(string))   attrValue = loader.ReadString(sh);
-				else if(valueField.FieldType == typeof(int))      attrValue = sh.ReadInt32();
-				else throw new NotSupportedException("Unsupported attribute value type");
-
-				valueField.SetValue(attr, attrValue);
-				_attributes.Append(attr);
-			}
+			_attributes = loader.ReadAttributes(sh);
 		}
 		public virtual void UndumpDefault(igArkCoreFile loader, StreamHelper sh)
 		{

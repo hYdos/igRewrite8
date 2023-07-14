@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace igLibrary.Core
 {
 	public class igArkCoreFile
@@ -164,6 +166,8 @@ namespace igLibrary.Core
 				SaveMetaField(_shs[Section.ObjectInfo], fieldsToReplace[i].Item2);
 			}
 
+			SaveAttributes(_shs[Section.ObjectInfo], metaObject._attributes);
+
 			_metaObjectsInFile.Add(metaObject);
 		}
 		private void ReadPlatformInfos(int platformInfoCount)
@@ -228,6 +232,8 @@ namespace igLibrary.Core
 					int editedIndex = _shs[Section.ObjectInfo].ReadInt32();
 					metaObject.ValidateAndSetField(editedIndex, ReadMetaField(_shs[Section.ObjectInfo], metaObject));
 				}
+				metaObject._attributes = ReadAttributes(_shs[Section.ObjectInfo]);
+
 				metaObject.PostUndump();
 			}
 		}
@@ -258,6 +264,62 @@ namespace igLibrary.Core
 				return null;
 			metaEnum.PostUndump();
 			return metaEnum;
+		}
+		public void SaveAttributes(StreamHelper sh, igObjectList? attrs)
+		{
+			if(attrs == null)
+			{
+				sh.WriteInt32(0);
+				return;
+			}
+			sh.WriteInt32(attrs._count);
+			for(int i = 0; i < attrs._count; i++)
+			{
+				igObject attr = attrs[i];
+				if(attr == null)
+				{
+					sh.WriteInt32(-1);
+					continue;
+				}
+				Type attrType = attr.GetType();
+				SaveString(sh, attrType.Name);
+
+				FieldInfo? valueField = attrType.GetField("_value");
+				object? attrValue = valueField.GetValue(attr);
+
+				     if(attrValue is bool boolValue)       sh.WriteInt32(boolValue ? 1 : 0);
+				else if(attrValue is string stringValue)   SaveString(sh, stringValue);
+				else if(attrValue is int intValue)         sh.WriteInt32(intValue);
+				else if(attrValue is igMetaObject moValue) SaveString(sh, moValue._name);
+				else throw new NotSupportedException("Unsupported attribute value type");
+			}
+		}
+		public igObjectList? ReadAttributes(StreamHelper sh)
+		{
+			int attrCount = sh.ReadInt32();
+			if(attrCount == 0) return null;
+			igObjectList attrs = new igObjectList();
+			attrs.SetCapacity(attrCount);
+			for(int i = 0; i < attrCount; i++)
+			{
+				string? typeName = ReadString(sh);
+				if(typeName == null) continue;
+				Type attrType = igArkCore.GetObjectDotNetType(typeName);
+				igObject attr = (igObject)Activator.CreateInstance(attrType);
+
+				FieldInfo? valueField = attrType.GetField("_value");
+				object? attrValue = null;
+
+				     if(valueField.FieldType == typeof(bool))         attrValue = sh.ReadUInt32() != 0;
+				else if(valueField.FieldType == typeof(string))       attrValue = ReadString(sh);
+				else if(valueField.FieldType == typeof(int))          attrValue = sh.ReadInt32();
+				else if(valueField.FieldType == typeof(igMetaObject)) attrValue = igArkCore.GetObjectMeta(ReadString(_shs[Section.ObjectInfo]));
+				else throw new NotSupportedException("Unsupported attribute value type");
+
+				valueField.SetValue(attr, attrValue);
+				attrs.Append(attr);
+			}
+			return attrs;
 		}
 		public void SaveMetaField(StreamHelper sh, igMetaField? metaField)
 		{
