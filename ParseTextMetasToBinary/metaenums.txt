@@ -152,13 +152,6 @@ enum IG_VERTEX_TYPE
 	IG_VERTEX_TYPE_SHORT4N_EDGE = 54,
 	IG_VERTEX_TYPE_MAX = 55,
 };
-enum Scripts.HideShowComponentTargetFlags
-{
-	None = 0,
-	Self = 1,
-	Players = 2,
-	Vehicle = 4,
-};
 enum SubEffectChainMode
 {
 	kChainNone = 0,
@@ -171,12 +164,6 @@ enum ETimeFormatComponents
 	eTFC_Seconds = 1,
 	eTFC_Minutes = 2,
 	eTFC_Hours = 3,
-};
-enum Scripts.ERespawnActivationTypes
-{
-	None = 0,
-	OnEnter = 1,
-	OnTouch = 2,
 };
 enum SpeakerMode
 {
@@ -192,12 +179,6 @@ enum EModType
 	eMT_Invalid = 0,
 	eMT_Vehicle = 1,
 	eMT_Character = 2,
-};
-enum Scripts.LockPickMinigameTileAttemptEnterMode
-{
-	Walking = 0,
-	Teleporting = 1,
-	Presenting = 2,
 };
 enum EActionEntityDataFlags
 {
@@ -241,20 +222,6 @@ enum EQuerySortMode
 	eQSM_SortByLeftToRight = 4,
 	eQSM_SortByRightToLeft = 5,
 };
-enum Scripts.MusicManagerComponentMessageTypes
-{
-	Play = 0,
-	PreviousState = 1,
-	NextState = 2,
-	Restart = 3,
-	End = 4,
-};
-enum Scripts.SpawnProjectilesCloseToPlayerComponent.SpawnDataSelectionType
-{
-	Random = 0,
-	Loop = 1,
-	Bounce = 2,
-};
 enum ELeadFollowBackwardOption
 {
 	eLFBO_None = 0,
@@ -274,6 +241,12 @@ enum ERotationSource
 	eRS_AngleOffset = 1,
 	eRS_AxisSpeed = 2,
 	eRS_AxisTime = 3,
+};
+enum Distribution
+{
+	kDistributionLinear = 0,
+	kDistributionBinary = 1,
+	kDistributionNormal = 2,
 };
 enum EDriverChallengeResult
 {
@@ -453,18 +426,10 @@ enum ScheduleMode
 	kScheduleOnlyEarliest = 2,
 	kScheduleOnlyLatest = 3,
 };
-enum Scripts.UpgradePlatformState
-{
-	Open = 0,
-};
 enum EPointSelectionMethod
 {
 	ePSM_DifficultyBased = 0,
 	ePSM_Closest = 1,
-};
-enum Scripts.SoundEntityMessage.ESoundMessage
-{
-	Stop = 0,
 };
 enum EThrottleEventType
 {
@@ -546,14 +511,6 @@ enum EGreebleFoiledReason
 	eGFR_LostTarget = 1,
 	eGRR_CannotAttackTarget = 2,
 };
-enum Scripts.TreasureChestMicrogameData.Orientation
-{
-	Front = 0,
-	Back = 1,
-	Left = 2,
-	Right = 3,
-	None = 4,
-};
 enum EButtonState
 {
 	eBS_Down = 0,
@@ -616,12 +573,6 @@ enum ELevelSelectMethod
 {
 	eLSM_SelectLevel = 0,
 	eLSM_ZoomOnLevelAndSelectCheckpoint = 1,
-};
-enum Scripts.PlayerForceFeedbackComponentMessageAction
-{
-	Start = 0,
-	Stop = 1,
-	UpdateOnly = 2,
 };
 enum EElementalGateFunnel
 {
@@ -773,11 +724,6 @@ enum SendPriority
 	kPriorityCritical = 3,
 	kPriorityInternalUse = 4,
 };
-enum Scripts.AirSpawnSequenceComponent.State
-{
-	Falling = 0,
-	Landing = 1,
-};
 enum EShapeshifterTurboType
 {
 	eSTT_None = 0,
@@ -802,11 +748,6 @@ enum EGameVariableLifetime
 	eGVL_Saved = 0,
 	eGVL_Session = 1,
 	eGVL_Level = 2,
-};
-enum Scripts.WanderAIComponent.AIState
-{
-	ApproachDestination = 0,
-	Idle = 1,
 };
 enum EInfluenceType
 {
@@ -931,14 +872,6 @@ enum ESpellTargets
 	eST_HandAny = 448,
 	eST_AnyCardSlot = 504,
 };
-enum Scripts.MicrogameComponent.State
-{
-	Inactive = 0,
-	Intro = 1,
-	Active = 2,
-	Failed = 3,
-	Success = 4,
-};
 enum ETickerArrowType
 {
 	eTAT_Min = 0,
@@ -979,11 +912,6 @@ enum ESpawnMessageType
 	eSMT_ProjectileSpawnWithSpeedReticle = 3,
 	eSMT_ProjectileSpawnWithHoming = 4,
 	eSMT_ProjectileSpawnWithAiming = 8,
-};
-enum Scripts.WanderAIComponentData.WanderAIActorSpeed
-{
-	Walk = 0,
-	Run = 1,
 };
 enum EShapeshifterPartType
 {
@@ -1115,16 +1043,6 @@ enum EPlayerAttackComponentType
 	ePACT_ShapeshifterLegs = 1,
 	ePACT_ShapeshifterBody = 2,
 };
-enum Scripts.VehicleCharacterControllerHandler.ControllerMotionTypeEnum
-{
-	AnimationDriven = 0,
-	Dynamic = 1,
-};
-enum Scripts.Minigame.MinigameStartReason
-{
-	PlayerStart = 0,
-	MagicMomentExit = 1,
-};
 enum WorkType
 {
 	kTypeInvalid = 0,
@@ -1246,18 +1164,6 @@ enum EVehicleCameraType
 	eVCT_Default = 0,
 	eVCT_Driving = 1,
 };
-enum Scripts.TwoPlayerTriggerEventMessage.TwoPlayerTriggerEvent
-{
-	Nothing = 0,
-	AllPlayersEntered = 1,
-	AllPlayersExit = 2,
-	OnePlayerEnters = 3,
-	OnePlayerExits = 4,
-	FirstPlayerEnters = 5,
-	FirstPlayerExits = 6,
-	DetectChangeToSinglePlayer = 7,
-	DetectChangeToMultiplayer = 8,
-};
 enum BlendMode
 {
 	kDiffuseColor = 0,
@@ -1270,6 +1176,11 @@ enum BlendMode
 	kVertAlpha = 7,
 	kZero = 8,
 	kOne = 9,
+};
+enum ModulationMix
+{
+	kMixRange = 0,
+	kMixAdd = 1,
 };
 enum igSortKeyCommandId
 {
@@ -1571,27 +1482,10 @@ enum ELoadZoneMode
 	eLZM_Reset = 1,
 	eLZM_AllPeers = 2,
 };
-enum Scripts.DamageCombatTargetEvent.DamageCombatTargetSelectEnum
-{
-	First = 0,
-	All = 1,
-};
-enum Scripts.LockPickMinigamePieceMoveMode
-{
-	Walk = 0,
-	WalkThenFall = 1,
-};
 enum ECollectionNavigatorState
 {
 	eCNS_Normal = 0,
 	eCNS_MultiLevel = 1,
-};
-enum Scripts.ConveyerComponentData.EEntityTeamFlags
-{
-	eETF_None = 1,
-	eETF_Hero = 2,
-	eETF_Enemy = 4,
-	eETF_AltEnemy = 8,
 };
 enum Representations
 {
@@ -1611,12 +1505,6 @@ enum SourceAxis
 	kSourcePosition = 3,
 	eSA_Velocity = 4,
 	kSourceVelocity = 4,
-};
-enum Scripts.SpawnWaypointProjectilesComponent.SpawnDataSelectionType
-{
-	Random = 0,
-	Loop = 1,
-	Bounce = 2,
 };
 enum ReportSortMode
 {
@@ -1657,12 +1545,6 @@ enum FileType
 	kIGX = 2,
 	kDataStream = 3,
 	kIGZ = 4,
-};
-enum Scripts.RotationChangeStates
-{
-	StartRotate = 0,
-	StopRotate = 1,
-	NONE = 2,
 };
 enum EHighlightState
 {
@@ -1796,12 +1678,6 @@ enum QueueType
 	kQueueRegular = 1,
 	kQueueOne = 2,
 };
-enum Scripts.EonSoundTableType
-{
-	None = 0,
-	Gates = 1,
-	Chests = 2,
-};
 enum ENetworkSyncWaitMode
 {
 	eNSWM_None = 0,
@@ -1875,14 +1751,6 @@ enum EAcquisitionMethod
 	eAM_SpecificallyAwarded = 2,
 	eAM_PlacedInLevel = 3,
 };
-enum Scripts.ScaleEntityMessage.ScaleOption
-{
-	ToggleScale = 0,
-	SetOriginalScale = 1,
-	SetScale = 2,
-	IncrementScale = 3,
-	InstantSetOriginalScale = 4,
-};
 enum ETurboBarState
 {
 	eTBS_filling = 0,
@@ -1899,16 +1767,6 @@ enum ETargetPriority
 {
 	eTP_Default = 0,
 	eTP_Boss = 1,
-};
-enum Scripts.DirectionalTouchMessengerComponent.EDirectionalFlags
-{
-	None = 0,
-	Top = 1,
-	Bottom = 2,
-	Left = 4,
-	Right = 8,
-	Front = 16,
-	Back = 32,
 };
 enum ETriggerVolumeDetectionType
 {
@@ -2057,6 +1915,14 @@ enum EEntityDataFlags
 	eEDF_StopPlayers = 134217728,
 	eEDF_StopLevelBorder = 268435456,
 };
+enum CompilerPass
+{
+	kPassPrepare = 0,
+	kPassLiveness = 1,
+	kPassAllocation = 2,
+	kPassCleanup = 3,
+	kPassCount = 4,
+};
 enum EActFlags
 {
 	eAF_None = 0,
@@ -2204,6 +2070,11 @@ enum EMagnetForceDirection
 	eMD_LocalY = 2,
 	eMD_LocalZ = 3,
 };
+enum RequestType
+{
+	kOpen = 0,
+	kClose = 1,
+};
 enum ETriggerVolumeQualityType
 {
 	eTVQT_Fixed = 0,
@@ -2265,15 +2136,6 @@ enum ESplineEnd
 	eSE_Start = 0,
 	eSE_End = 1,
 	eSE_Both = 2,
-};
-enum Scripts.FloatingBlockComponent.FloatBlockState
-{
-	Idle = 0,
-	JumpMovement = 1,
-	MovingUp = 2,
-	TopMovement = 3,
-	MovingDown = 4,
-	WaitingForMovement = 5,
 };
 enum EFlyingArenaAIState
 {
@@ -2370,12 +2232,6 @@ enum ERaceParticipantPlacementMethod
 	eRPPM_Replace = 0,
 	eRPPM_RemoveAndAppend = 1,
 };
-enum Scripts.ELockOnOption
-{
-	LockAnglesOnly = 0,
-	LockPositionAtDistance = 1,
-	LockPositionAndAngles = 2,
-};
 enum ChunkInstallationState
 {
 	kUnknown = 0,
@@ -2391,13 +2247,6 @@ enum EFlyingAIState
 	eFAIS_LineUpWithTarget = 3,
 	eFAIS_AttackTarget = 4,
 	eFAIS_Chase = 5,
-};
-enum Scripts.LockStates
-{
-	Locking = 0,
-	Locked = 1,
-	UnLocking = 2,
-	UnLocked = 3,
 };
 enum Values
 {
@@ -2568,18 +2417,6 @@ enum ESoundPauseType
 	eSPT_MagicMoment = 2,
 	eSPT_PauseMenu = 3,
 	eSPT_AllPaused = 4,
-};
-enum Scripts.InformationEntityMessage.EInformationMessage
-{
-	Bolted = 0,
-	Toggle = 1,
-	Jumppad = 2,
-	Bounce = 3,
-	Charge = 4,
-	Release = 5,
-	Turbo = 6,
-	Start = 7,
-	Stop = 8,
 };
 enum EDeviceClass
 {
@@ -2827,14 +2664,6 @@ enum EVehicleDriveAnimStates
 	eVDAS_MaxSpeed = 2,
 	eVDAS_Reverse = 3,
 };
-enum Scripts.ScaleEntityComponent.OverrideReturnType
-{
-	PlayerNotFound = 0,
-	PlayerFound = 1,
-	EntityFound = 2,
-	EntityNotFound = 3,
-	Invalid = 4,
-};
 enum EAIBehaviorSyncPriority
 {
 	eAIBSP_Traversal = 0,
@@ -3001,22 +2830,6 @@ enum EControlMode
 	ECONTROLMODE_AI = 1,
 	ECONTROLMODE_INVALID = 2,
 };
-enum Scripts.SpawnerComponentMessage.MessageOptions
-{
-	Spawn = 0,
-	Remove = 1,
-	RemoveAll = 2,
-	ChangeSpawnEntity = 3,
-	ChangeBoltPoint = 4,
-	ChangeWaypoint = 5,
-	Disable = 6,
-	Enable = 7,
-};
-enum Scripts.HazardTriggerVolumeComponent.OnTriggerVolumeRegisterTypes
-{
-	OnEnter = 0,
-	OnTouch = 1,
-};
 enum ELinearCarAIState
 {
 	eLCAIS_Inactive = 0,
@@ -3171,14 +2984,6 @@ enum IG_MATH_PLANAR_REGION
 	IG_MATH_PLANAR_REGION_XP_YN = 1,
 	IG_MATH_PLANAR_REGION_XN_YP = 2,
 	IG_MATH_PLANAR_REGION_XN_YN = 3,
-};
-enum Scripts.ConditionPayload.ConditionType
-{
-	GreaterThan = 0,
-	GreaterThanEqualTo = 1,
-	EqualTo = 2,
-	LessThanEqualTo = 3,
-	LessThan = 4,
 };
 enum EPositionOffsetType
 {
@@ -3342,16 +3147,6 @@ enum igDspType
 	kHighpassSimple = 15,
 	kParamEqParamEqCompressor = 16,
 };
-enum Scripts.TimerOption
-{
-	Start = 0,
-	Stop = 1,
-	Restart = 2,
-	Pause = 3,
-	Resume = 4,
-	AddDelay = 5,
-	Update = 6,
-};
 enum CullType
 {
 	kCullNone = 0,
@@ -3396,13 +3191,6 @@ enum ESyncFlag
 	eSF_LevelResultsReadyToExit = 8,
 	eSF_LevelResultsExited = 9,
 	eSF_ReadyToEnterRace = 10,
-};
-enum Scripts.ConnectorPuzzleComponent.ConnectorStatus
-{
-	Disabled = 0,
-	Inactive = 1,
-	BeingPoweredByEntity = 2,
-	PoweringEntity = 3,
 };
 enum AnimType
 {
@@ -3461,13 +3249,6 @@ enum TestEnum
 	kBeta = 1,
 	kGamma = 2,
 	kDelta = 3,
-};
-enum Scripts.DirectionofVelocityTypes
-{
-	TowardEntity = 0,
-	TowardNearestPlayer = 1,
-	TowardCamera = 2,
-	ExactDirectionOnly = 3,
 };
 enum ETraversalMode
 {
@@ -4250,12 +4031,6 @@ enum ECooldownType
 	eCType_TriggerOnStart = 0,
 	eCType_TriggerOnEnd = 1,
 };
-enum Scripts.TeleporterComponentData.ETeleportVelocity
-{
-	eTV_X = 1,
-	eTV_Y = 2,
-	eTV_Z = 4,
-};
 enum EObjectSelectionMethod
 {
 	eOSM_InOrder = 0,
@@ -4336,32 +4111,6 @@ enum EAimingMethod
 	eAM_AimAtTargetThenPosition = 3,
 	eAM_LeadTarget = 4,
 };
-enum Scripts.VortexMessage.VortexMode
-{
-	Off = 0,
-	On = 1,
-	Add = 2,
-	Remove = 3,
-};
-enum Scripts.PushBlockComponent.PushBlockAnimationState
-{
-	Sleeping = 0,
-	Wakeup = 1,
-	Idle = 2,
-	Pushing = 3,
-	Sleep = 4,
-	PushStart = 5,
-	Arrive = 6,
-	Drop = 7,
-	DropHit = 8,
-	WalkOn = 9,
-};
-enum Scripts.ChangeHavokVariableHandler.SetHavokBehaviorVariableEnum
-{
-	Int = 0,
-	Float = 1,
-	Bool = 2,
-};
 enum ESplineInterpolationMode
 {
 	eSIM_Curved = 0,
@@ -4416,19 +4165,6 @@ enum EZoneCategory
 	eZC_Elemental = 6,
 	eZC_Count = 7,
 };
-enum Scripts.AmbientLayerControlHandler.AmbientStateChoice
-{
-	Ambient_Idle = 0,
-	Ambient_Motion = 1,
-};
-enum Scripts.PortalGolemGameMessage.EPortalGolemGameMessageType
-{
-	Open = 0,
-	Close = 1,
-	PortalTaken = 2,
-	TakingPortal = 3,
-	CancelTakingPortal = 4,
-};
 enum EGuiMenuSoundEvent
 {
 	eGMSE_None = 0,
@@ -4449,18 +4185,6 @@ enum ERailSlideEvent
 	eRSE_JumpLeft = 1,
 	eRSE_JumpRight = 2,
 };
-enum Scripts.EMinigamePlayerSettings
-{
-	None = 0,
-	DisableAttack = 1,
-	DisableMovement = 2,
-	Invulnerable = 4,
-	Hidden = 8,
-	Muted = 16,
-	DisableMagicMoment = 32,
-	DisableCollision = 64,
-	DisableHavok = 128,
-};
 enum eMashResults
 {
 	eMR_Cancelled = 0,
@@ -4475,18 +4199,6 @@ enum EMarketplaceDirtyStatus
 	eMDS_StoreProductsChanged = 4,
 	eMDS_StorePurchasesChanged = 8,
 	eMDS_AllChanged = 15,
-};
-enum Scripts.EEnableDisable
-{
-	None = 0,
-	Enable = 1,
-	Disable = 2,
-};
-enum Scripts.ControlExternEntityHandlerState
-{
-	Beginning = 0,
-	Moving = 1,
-	Paused = 2,
 };
 enum OperatorCurveInput
 {
@@ -4564,12 +4276,6 @@ enum ETransitionRestriction
 	eTR_None = 0,
 	eTR_AlreadyOnPath = 1,
 };
-enum Scripts.TurretMinigameExitReason
-{
-	Win = 0,
-	Lose = 1,
-	Quit = 2,
-};
 enum Direction
 {
 	kBottomUp = 0,
@@ -4609,12 +4315,6 @@ enum EActionPackGoalValueComparaison
 	eAPGVC_Lower = 2,
 	eAPGVC_LowerOrEqual = 3,
 };
-enum Scripts.MicrogameAnalogStickDetectionType
-{
-	Deflection = 0,
-	ClockwiseSpin = 1,
-	CounterClockwiseSpin = 2,
-};
 enum EEmblemTierAccoutrement
 {
 	eETA_Base = 0,
@@ -4635,16 +4335,6 @@ enum ETouchHandlingMode
 	eTHM_FocusThenSelect = 2,
 	eTHM_FocusAndSelect = 3,
 };
-enum Scripts.SheepInteractionsMessage.SheepStates
-{
-	Fire = 0,
-	Water = 1,
-	Electricity = 2,
-	Blade = 3,
-	Crush = 4,
-	Magic = 5,
-	Basic = 6,
-};
 enum IG_INDEX_TYPE
 {
 	IG_INDEX_TYPE_INT8 = 1,
@@ -4656,11 +4346,6 @@ enum ECameraModelBlendType
 	eCMBT_Spherical = 0,
 	eCMBT_Linear = 1,
 	eCMBT_Experimental = 2,
-};
-enum Scripts.BossVoPlaylist.PlaylistOrderTypes
-{
-	shuffle = 0,
-	sequential = 1,
 };
 enum ENetworkSendRestriction
 {
@@ -4754,13 +4439,6 @@ enum eDiveDepthType
 	eDDT_Undetermined = 0,
 	eDDT_Quick = 1,
 	eDDT_Long = 2,
-};
-enum Scripts.RespawnTriggerType
-{
-	Generic = 0,
-	Water = 1,
-	Ice = 2,
-	Instant = 3,
 };
 enum igNetStatGroupMode
 {
@@ -4897,22 +4575,6 @@ enum igSliderState
 	kSliderStateStandby = 0,
 	kSliderStateActive = 1,
 	kSliderStateDone = 2,
-};
-enum Scripts.ConnectorPosition
-{
-	None = 0,
-	Forward = 1,
-	Backward = 2,
-	Left = 4,
-	Right = 8,
-};
-enum Scripts.CutscenePlayerMessage.CutsceneMessageTypes
-{
-	Prepare = 0,
-	Play = 1,
-	Done = 2,
-	Stop = 3,
-	Advance = 4,
 };
 enum IG_CORE_LANGUAGE
 {
@@ -5105,17 +4767,6 @@ enum ENetworkChannel
 	eNC_VehicleBegin = 10,
 	eNC_VehicleEnd = 17,
 };
-enum Scripts.VehicleDriverMotionLayerHandler.MotionLayerOptions
-{
-	None = 0,
-	Body = 1,
-	Legs = 2,
-	Turbo = 3,
-	PrimaryMotion = 4,
-	SecondaryMotion = 5,
-	TertiaryMotion = 6,
-	ModWeaponizedMotion = 7,
-};
 enum UpdateWhenHiddenMode
 {
 	kUseParentValue = 0,
@@ -5179,12 +4830,6 @@ enum HealthState
 	eHS_High = 3,
 	eHS_VeryHigh = 4,
 	eHS_Full = 5,
-};
-enum Scripts.SetHavokBehaviorVariableEvent.SetHavokBehaviorVariableEnum
-{
-	Int = 0,
-	Float = 1,
-	Bool = 2,
 };
 enum ESoundInterpolatorType
 {
@@ -5264,11 +4909,6 @@ enum OrbitType
 	Default = 0,
 	DistanceFromCameraToTargetPlane = 1,
 	DistanceDependentAngles = 2,
-};
-enum Scripts.ToggleDamageOverTimeMessage.Action
-{
-	TurnOn = 0,
-	TurnOff = 1,
 };
 enum IG_CORE_DEVICE_CLASS
 {
@@ -5443,30 +5083,11 @@ enum EMemoryPrintScope
 	eMPS_LevelEnd = 2,
 	eMPS_Character = 3,
 };
-enum Scripts.FollowPlayerOnTouchComponentData.FollowIdentifier
-{
-	Follow_None = 0,
-	Follow_Red = 1,
-	Follow_Green = 2,
-	Follow_Blue = 3,
-};
-enum Scripts.SpawnWaypointProjectilesComponent.WaypointSelectionType
-{
-	RandomPoint = 0,
-	ClosestToPlayer = 1,
-	AvoidPlayer = 2,
-	Sequential = 3,
-};
 enum EReplication
 {
 	eR_NotReplicated = 0,
 	eR_Replicated = 1,
 	eR_ReplicateOnce = 2,
-};
-enum Scripts.MaterialOverrideComponentApplyMaterialMessage.Action
-{
-	Apply = 0,
-	Remove = 1,
 };
 enum EVehiclePersonalizationType
 {
@@ -5505,11 +5126,6 @@ enum EUpgradePaths
 	eUP_Option1 = 1,
 	eUP_SoulGem = 3,
 	eUP_WowPow = 4,
-};
-enum Scripts.BehaviorAnimationEntityMessage.BehaviorAnimationMessage
-{
-	Capture_Free = 0,
-	Reward = 1,
 };
 enum ElementType
 {
@@ -5620,11 +5236,6 @@ enum EFruitType
 {
 	eFT_Fruit1 = 0,
 	eFT_Fruit2 = 1,
-};
-enum Scripts.FollowActorDamageType
-{
-	Sphere = 0,
-	OverTime = 1,
 };
 enum EGameMode
 {
@@ -6014,6 +5625,18 @@ enum EScreenspaceTargetShape
 	eSSTS_Box = 0,
 	eSSTS_Circle = 1,
 };
+enum ModulationType
+{
+	kModulationNone = 0,
+	kModulationPoint = 1,
+	kModulationLinear = 2,
+	kModulationSmooth = 3,
+	kModulationWhite = 4,
+	kModulationSin = 5,
+	kModulationRampUp = 6,
+	kModulationRampDown = 7,
+	kModulationTriangle = 8,
+};
 enum EPlayerFlag
 {
 	ePF_OwnsLandActionPack = 1,
@@ -6116,12 +5739,6 @@ enum ControlType
 	kControlPotential = 0,
 	kControlCurrent = 1,
 };
-enum Scripts.TriggerBehavior
-{
-	RespawnPlayer = 0,
-	EnableRespawnPoints = 1,
-	DisableRespawnPoints = 2,
-};
 enum ERigidBodyPoolType
 {
 	eRBPT_Invalid = 0,
@@ -6175,13 +5792,6 @@ enum EGameModeSpecificPoolMode
 	eGMSPM_Count = 2,
 	eGMSPM_Default = 0,
 	eGMSPM_Invalid = -1,
-};
-enum Scripts.PushBlockComponent.PushBlockArrow.PushBlockArrowState
-{
-	Showing = 0,
-	IdleOn = 1,
-	Hiding = 2,
-	IdleOff = 3,
 };
 enum ERotationType
 {
@@ -6310,13 +5920,6 @@ enum EVehicleDockingEffectState
 	eVDES_PromptForCorrectVehicle = 2,
 	eVDES_VehicleEnter = 3,
 	eVDES_VehicleExit = 4,
-};
-enum Scripts.LockPickMinigameTileEnterMode
-{
-	Walking = 0,
-	Falling = 1,
-	Teleporting = 2,
-	Presenting = 3,
 };
 enum RotationMode
 {
@@ -6693,12 +6296,6 @@ enum kTfbSpyroTag_ToyType
 	kTfbSpyroTag_ToyType_MAX = 5000,
 	kTfbSpyroTag_ToyType_UNKNOWN = -1,
 };
-enum Scripts.PlayerVOTargetType
-{
-	Player_1 = 0,
-	Player_2 = 1,
-	Random = 2,
-};
 enum EVehicleForceTransitionType
 {
 	eVFTT_UseData = 0,
@@ -6749,12 +6346,6 @@ enum igCreateTextureFlags
 	kCreateUseTileRegion = 16,
 	kCreateUseSecondaryMemory = 32,
 	kCreateUseBufferPtrAsEsramOffset = 64,
-};
-enum Scripts.PlayerForceFeedbackComponentMessageUpdateAction
-{
-	DontUpdate = 0,
-	Update = 1,
-	Reset = 2,
 };
 enum EVehicleId
 {
@@ -6826,12 +6417,6 @@ enum EBuffAttributeFlag
 	eBAF_Attack = 4,
 	eBAF_SpellValue = 8,
 };
-enum Scripts.ControlExternalEntityHandler.ExternalControlMode
-{
-	Physics = 0,
-	FollowGroundXY = 1,
-	Actor = 2,
-};
 enum EInvulnerabilityType
 {
 	eIT_PermanentOnly = 0,
@@ -6868,11 +6453,6 @@ enum EBallotComponentState
 	eBCS_Reset = 2,
 	eBCS_Max = 3,
 };
-enum Scripts.FetchTaskCompletedMessage.FetchTaskCompletedStates
-{
-	CHEER = 0,
-	REWARD = 1,
-};
 enum EToyAbilityFlagBits
 {
 	eTAFB_PathChosen = 0,
@@ -6887,40 +6467,6 @@ enum ERelativePositionOffsetType
 	eRPOT_None = 0,
 	eRPOT_2D = 1,
 	eRPOT_3D = 2,
-};
-enum Scripts.Finale01BossFightMgrVoMessage.FinaleVoPlaylists
-{
-	FootStompSuperKaosAttackBanterPlaylist = 0,
-	FootStompSuperKaosCrystalToeDestroyedBanterPlaylist = 1,
-	FootStompSuperKaosTauntPlaylist = 2,
-	InMouthTransitionSuperKaosPlaylist = 3,
-	InMouthSuperKaosCrystalToothDestroyedBanterPlaylist = 4,
-	InMouthSuperKaosSummonMinionsBanterPlaylist = 5,
-	InMouthSuperKaosSummonSpicyMinionBanterPlaylist = 6,
-	InMouthSuperKaosSpicyAttackedBanterPlaylist = 7,
-	InHeadSuperKaosBrainIntroBanterPlaylist = 8,
-	InHeadSuperKaosBrainSpawnGlumshanksPlaylist = 9,
-	InHeadSuperKaosBrainGlumshanksDefeatedPlaylist = 10,
-	InHeadSuperKaosBrainThoughtBubbleBurstPlaylist = 11,
-	InHeadSuperKaosBrainSpawnMinionsPlaylist = 12,
-	InHeadSuperKaosBrainSpawnTrollsPlaylist = 13,
-	InHeadSuperKaosBrainSpawnArkeyanMissilesPlaylist = 14,
-	InHeadSuperKaosBrainCrystalDestroyedPlaylist = 15,
-	InHeadSuperKaosBrainSpawnCyclopsPlaylist = 16,
-	InHeadSuperKaosBrainSpawnAirshipPlaylist = 17,
-	InHeadSuperKaosBrainThinkingEvilSheepsPlaylist = 18,
-	InHeadSuperKaosBrainSpawnPuppetBombsPlaylist = 19,
-	KaosChaseCannonTauntPlayList = 20,
-	KaosChaseCannonFiredBanterPlaylist = 21,
-	KaosChaseEmoteAttackPlaylist = 22,
-	KaosChaseEmoteLaughPlaylist = 23,
-	KaosChaseAttackTaunt_21 = 24,
-	KaosChaseAttackTaunt_25 = 25,
-	KaosChaseAttackTaunt_53 = 26,
-	KaosChaseAttackTaunt_54 = 27,
-	KaosChaseAttackTaunt_55 = 28,
-	KaosChaseAttackTaunt_58 = 29,
-	KaosChaseAttackTaunt_60 = 30,
 };
 enum ERenderOverrideMode
 {
@@ -6937,30 +6483,12 @@ enum igColorWriteEnable
 	kColorWriteEnableAlpha = 8,
 	kColorWriteEnableAll = 15,
 };
-enum Scripts.RotatingDoorComponent.GateState
-{
-	Unchanged = 0,
-	Open = 1,
-	Close = 2,
-};
 enum OperatorCurveOutput
 {
 	kSetTrackParameter1 = 4,
 	kSetTrackParameter2 = 5,
 	kSetTrackParameter3 = 6,
 	kSetTrackParameter4 = 7,
-};
-enum Scripts.HideShowEntityStartupFlag
-{
-	Collideable_Visible_Muted = 0,
-	Collideable_Visible_NotMuted = 1,
-	Collideable_Invisible_Muted = 2,
-	Collideable_Invisible_NotMuted = 3,
-	NonCollideable_Visible_Muted = 4,
-	NonCollideable_Visible_NotMuted = 5,
-	NonCollideable_Invisible_Muted = 6,
-	NonCollideable_Invisible_NotMuted = 7,
-	USE_DEPRECATED_IsHiddenAtStartup_INSTEAD = 8,
 };
 enum IG_GFX_CULL_FACE_MODE
 {
@@ -6996,11 +6524,6 @@ enum EDirection
 	ED_Leftwards = 2,
 	ED_Rightwards = 3,
 	ED_LastPressedStickDirection = 4,
-};
-enum Scripts.ProtoAir_Vehicle_ContactMessage.ProtoAir_VehicleContactMessageState
-{
-	On = 0,
-	Off = 1,
 };
 enum EMagicMomentVehicleIntroDebugOption
 {
@@ -7126,43 +6649,17 @@ enum EScaleBeamState
 	eSBS_Active = 3,
 	eSBS_Cooldown = 4,
 };
-enum Scripts.ForwardMessageMode
-{
-	ExactDataNodeMatch = 0,
-	SameFieldValues = 1,
-	SameType = 2,
-};
 enum EDeadZoneType
 {
 	eDZT_None = 0,
 	eDZT_Circular = 1,
 	eDZT_PerAxis = 2,
 };
-enum Scripts.VfxBoltOnComponentData.OnDeathBehavior
-{
-	Nothing = 0,
-	SoftKillVFXs = 1,
-	HardKillVFXs = 2,
-};
 enum SubEffectChildKill
 {
 	kDontKill = 0,
 	kSoftKill = 1,
 	kHardKill = 2,
-};
-enum Scripts.StateChangeEntityMessage.EStateMessage
-{
-	Uncorrupt = 0,
-	BeingCorrupt = 1,
-	Corrupt = 2,
-	Loregather = 3,
-	Locomotion = 4,
-	FightStart = 5,
-	SpinStart = 6,
-	LoopStart = 7,
-	Decision = 8,
-	Break = 9,
-	Success = 10,
 };
 enum EDataValidationState
 {
@@ -7328,16 +6825,6 @@ enum ECharacterAttribute
 	eCA_CriticalHitMultiplier = 54,
 	eCA_StrengthSuperchargeBoost = 55,
 	eCA_Count = 56,
-};
-enum Scripts.MinibossComponent.EEventType
-{
-	eNoEvent = 0,
-	eAttack1 = 1,
-	eAttack2 = 2,
-	eAttack3 = 3,
-	eStunned = 4,
-	eTakehit = 5,
-	eStunnedEnd = 6,
 };
 enum EEmblemTierLevel
 {
@@ -7654,13 +7141,6 @@ enum kTfbSpyroTag_HatType
 	kTfbSpyroTag_Hat_MAX_2015 = 280,
 	kTfbSpyroTag_Hat_MAX = 280,
 };
-enum Scripts.JumpAttackState
-{
-	Started = 0,
-	Active = 1,
-	Stopped = 2,
-	Count = 3,
-};
 enum FaceAtTypes
 {
 	ClosestPlayer = 0,
@@ -7746,12 +7226,6 @@ enum ChildCommand
 	kDrawForceCommand = 1034,
 	kDrawDebrisCommand = 1035,
 };
-enum Scripts.VolcanoRockSpawnTypes
-{
-	Rock = 0,
-	Crate = 1,
-	Mine = 2,
-};
 enum EVehiclePowerUpElementType
 {
 	eVPUET_Invalid = -1,
@@ -7768,24 +7242,6 @@ enum EVehiclePowerUpElementType
 	eVPUET_Sheep = 10,
 	eVPUET_Panderghast = 11,
 	eVPUET_Count = 12,
-};
-enum Scripts.PushBlockComponent.AvailableWaypoints
-{
-	Right = 1,
-	Back = 2,
-	BackRight = 3,
-	Left = 4,
-	LeftRight = 5,
-	LeftBack = 6,
-	LeftBackRight = 7,
-	Front = 8,
-	FrontRight = 9,
-	FrontBack = 10,
-	FrontBackRight = 11,
-	FrontLeft = 12,
-	FrontLeftRight = 13,
-	FrontLeftBack = 14,
-	FrontLeftBackRight = 15,
 };
 enum Controller
 {
@@ -7844,21 +7300,6 @@ enum ESeaVehicleType
 {
 	eSVT_Invalid = 0,
 	eSVT_WaterFishSub = 3222,
-};
-enum Scripts.VolcanoRockSpawnPatterns
-{
-	SideToRight = 0,
-	SideToLeft = 1,
-	SideToRCorner = 2,
-	SideToLCorner = 3,
-	LeftToCenter = 4,
-	RightToCenter = 5,
-	LeftToCorner = 6,
-	RightToCorner = 7,
-	LeftToSide = 8,
-	RightToSide = 9,
-	StraightFromLeft = 10,
-	StraightFromRight = 11,
 };
 enum eDialogCloseSource
 {
@@ -8010,12 +7451,6 @@ enum ECorkscrewRotationState
 	eCRS_Decelerating = 2,
 	eCRS_RotatingToOriginalRotation = 3,
 };
-enum Scripts.Minigame.MinigameStopReason
-{
-	Completed = 0,
-	PlayerQuit = 1,
-	PlayerQuitAlwaysFadeIn = 2,
-};
 enum ESplineMoverEventAlert
 {
 	eSMEH_None = 0,
@@ -8097,23 +7532,11 @@ enum ECustomShapeProperty
 	eCSP_SharedLifetimeTracker = 1,
 	eCSP_ScaledShapeCoreShape = 2,
 };
-enum Scripts.ScaleEntityComponent.ScalePlayer
-{
-	Player1 = 0,
-	Player2 = 1,
-	None = 2,
-};
 enum igBufferType
 {
 	kVertexBuffer = 0,
 	kIndexBuffer = 1,
 	kConstantBuffer = 2,
-};
-enum Scripts.TimedDeathHazardComponent.TimedDeathHazardStates
-{
-	Idle = 0,
-	CountingDown = 1,
-	WarningState = 2,
 };
 enum ERespawnState
 {
@@ -8165,21 +7588,6 @@ enum EOpenedFrom
 	eOF_DRC = 1,
 	eOF_EndOfLevel = 2,
 	eOF_LevelSelect = 3,
-};
-enum Scripts.TouchHazardComponentData.EEntityTeamFlags
-{
-	eETF_None = 1,
-	eETF_Hero = 2,
-	eETF_Enemy = 4,
-	eETF_AltEnemy = 8,
-};
-enum Scripts.VoiceOverComponentMessageCommands
-{
-	Play = 0,
-	Play_Single = 1,
-	Pause = 2,
-	Stop = 3,
-	StopAll = 4,
 };
 enum EMemoryPoolID
 {
@@ -8248,17 +7656,6 @@ enum StorePurchaseErrorCode
 	eMSPEC_FAILURE = -1,
 	eMSPEC_CANCELLED = -2,
 	eMSPEC_INSUFFICENT_FUNDS = -3,
-};
-enum Scripts.CMotionLayerHandler.MotionLayerOptions
-{
-	None = 0,
-	Body = 1,
-	Legs = 2,
-	Turbo = 3,
-	PrimaryMotion = 4,
-	SecondaryMotion = 5,
-	TertiaryMotion = 6,
-	ModWeaponizedMotion = 7,
 };
 enum EDamageVibration
 {
@@ -8383,34 +7780,6 @@ enum ESplineMoverEvent
 	eSME_ReattachAndPlay = 15,
 	eSME_UpdateTrackToRatio = 16,
 };
-enum Scripts.VictimEntityMessage.VictimStates
-{
-	None = 0,
-	AirBlown = 1,
-	Bubble = 2,
-	CatchBomb = 3,
-	CatchFirework = 4,
-	Cower = 5,
-	Dance = 6,
-	Devour = 7,
-	Electrified = 8,
-	FirePanic = 9,
-	Freeze = 10,
-	Hypnotize = 11,
-	Ill = 12,
-	Ink = 13,
-	Jaded = 14,
-	LookAtThat = 15,
-	Magnet_Levitate = 16,
-	Magnet_Shake = 17,
-	Smell = 18,
-	Stoned = 19,
-	Stunned = 20,
-	StuckBall = 21,
-	TornadoSpin = 22,
-	Whirlwind = 23,
-	WhirlwindWithFacing = 24,
-};
 enum EActionPackStars
 {
 	eAPS_None = 0,
@@ -8429,13 +7798,6 @@ enum EJoinGameBehaviorState
 {
 	eJGBS_Normal = 0,
 	eJGBS_Closing = 1,
-};
-enum Scripts.LockPickMinigameTileDirection
-{
-	Left = 0,
-	Right = 1,
-	Up = 2,
-	Down = 3,
 };
 enum EBehaviorPhysicsControllerType
 {
@@ -8465,12 +7827,6 @@ enum ENetworkSendPriority
 	eNSP_Normal = 1,
 	eNSP_High = 2,
 	eNSP_Critical = 3,
-};
-enum Scripts.BossVoManager.SpeakPriorities
-{
-	Low = 0,
-	Medium = 1,
-	High = 2,
 };
 enum Priority
 {
@@ -8512,14 +7868,6 @@ enum ERaceAIState
 	eRAIS_ChooseObjective = 3,
 	eRAIS_Overtake = 4,
 	eRAIS_Dead = 5,
-};
-enum Scripts.RotatingDoorComponent.DoorState
-{
-	Unchanged = 0,
-	Start = 1,
-	Stop = 2,
-	Reset = 3,
-	Pause = 4,
 };
 enum Mode
 {
@@ -8581,15 +7929,6 @@ enum EPoolType
 	ePT_VehicleTaunt = 15,
 	ePT_VehicleBoost = 16,
 	ePT_Count = 17,
-};
-enum Scripts.ControlExternalEntityEvents
-{
-	NoGround = 0,
-};
-enum Scripts.Finale01BossFightMgrVoMessage.PlayVoMessageActions
-{
-	PlayVo = 0,
-	StopVo = 1,
 };
 enum kTfbSpyroTag_VillainType
 {
@@ -8825,15 +8164,6 @@ enum EDisplayMode
 	eDM_CurrentAndMax = 2,
 	eDM_Time = 3,
 };
-enum Scripts.PushBlockComponent.PushBlockArrowType
-{
-	OneWay = 0,
-	TwoWay = 1,
-	TwoWayAngled = 2,
-	ThreeWay = 3,
-	FourWay = 4,
-	Count = 5,
-};
 enum IG_GFX_SHADING_MODE
 {
 	IG_GFX_SHADING_MODE_FACET = 0,
@@ -9007,24 +8337,6 @@ enum EMagicMomentCameraFraming
 	eMMCF_VehicleCoopCore = 4,
 	eMMCF_VehicleCoopGiant = 5,
 };
-enum Scripts.LightBeamBaseComponent.ELightBeamDirection
-{
-	Forward = 0,
-	Left = 1,
-	Backward = 2,
-	Right = 3,
-};
-enum Scripts.FollowPlayerFormationManagerComponentData.FollowPlayerFormations
-{
-	NONE = 0,
-	ROW = 1,
-};
-enum Scripts.RadialMessageOptions
-{
-	TurnOff = 0,
-	TurnOn = 1,
-	ChangeStage = 2,
-};
 enum IG_GFX_HISTENCIL_CLEAR
 {
 	IG_GFX_HISTENCIL_CLEAR_CULL = 0,
@@ -9130,23 +8442,6 @@ enum EDifficultyLevel
 	eDL_Hard = 2,
 	eDL_Nightmare = 3,
 	eDL_Count = 4,
-};
-enum Scripts.EElementalLockState
-{
-	idle = -2,
-	approachToIdle = -1,
-	approach = 0,
-	fullyPowered = 1,
-	unlocking = 2,
-	completed = 3,
-};
-enum Scripts.LockPickMinigameMoveResult
-{
-	Success = 0,
-	NoTile = 1,
-	AlreadyMoving = 2,
-	Blocked = 3,
-	Stuck = 4,
 };
 enum ESpawnPositionMode
 {
@@ -9329,17 +8624,6 @@ enum EVehicleTutorialType
 	eVTT_Sea = 1,
 	eVTT_Air = 2,
 	eVTT_Coop = 3,
-};
-enum Scripts.BigBuffMessage.BigBuffMode
-{
-	Grow = 0,
-	Shrink = 1,
-};
-enum Scripts.VoiceOverListTypes
-{
-	Sequential = 0,
-	Random_NoDoublePlays = 1,
-	Random_NeverRepeat = 2,
 };
 enum EPlayerAttackAction
 {
