@@ -12,6 +12,7 @@ namespace igLibrary.DotNet
 		public DotNetFieldDefinitionList _staticFields = new DotNetFieldDefinitionList();
 		public igMetaFieldList _fields = new igMetaFieldList();
 		public igDotNetMetaObjectList _patchClasses = new igDotNetMetaObjectList();
+		public string _path;
 	}
 	public class NonRefCountedDotNetLibraryList : igTObjectList<DotNetLibrary>{}	//Technically inherits fro igTNonRefCountedObjectList but in this library there's no point to have that distinction
 }

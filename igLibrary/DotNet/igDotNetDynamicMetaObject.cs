@@ -2,6 +2,7 @@ namespace igLibrary.DotNet
 {
 	public class igDotNetDynamicMetaObject : igDotNetMetaObject
 	{
+		public DotNetLibrary _owner;
 		public override void AppendToArkCore()
 		{
 			igDynamicMetaObject.setMetaDataField(this);

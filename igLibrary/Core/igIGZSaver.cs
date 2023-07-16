@@ -76,6 +76,24 @@ namespace igLibrary.Core
 				_nameListOffset = SaveObject(dir._nameList);
 			}
 
+			if(_vTableList.Any(x => x._name == "igLocalizedInfo"))
+			{
+				//This isn't accurate to how the game does it
+				string formatStr = Path.ChangeExtension(_dir._path, null).ReplaceBeginning("data:/", $"cwd:/Temporary/BuildServer/{igAlchemyCore.GetPlatformString(_platform)}/Output/") + "_{0}.lng";
+				AddBuildDependency(string.Format(formatStr, "da"));
+				AddBuildDependency(string.Format(formatStr, "de"));
+				AddBuildDependency(string.Format(formatStr, "en"));
+				AddBuildDependency(string.Format(formatStr, "es"));
+				AddBuildDependency(string.Format(formatStr, "fi"));
+				AddBuildDependency(string.Format(formatStr, "fr"));
+				AddBuildDependency(string.Format(formatStr, "it"));
+				AddBuildDependency(string.Format(formatStr, "mx"));
+				AddBuildDependency(string.Format(formatStr, "nl"));
+				AddBuildDependency(string.Format(formatStr, "no"));
+				AddBuildDependency(string.Format(formatStr, "pt"));
+				AddBuildDependency(string.Format(formatStr, "sv"));
+			}
+
 			WriteFixupSections(dir);
 			WriteHeader();
 
@@ -218,6 +236,10 @@ namespace igLibrary.Core
 			{
 				index = _vTableList.Count;
 				_vTableList.Add(meta);
+				if(meta is DotNet.igDotNetDynamicMetaObject dndmo && dndmo._owner._path != "scripts:/common.vvl")
+				{
+					AddBuildDependency(dndmo._owner._path);
+				}
 			}
 			section._runtimeFields._vtables.Add(section._sh.Tell());
 			WriteRawOffset((ulong)index, section);
@@ -334,6 +356,10 @@ namespace igLibrary.Core
 				}
 
 				endOffset = Align(_stream.Tell(), 4);
+				if(endOffset == _stream.Tell())
+				{
+					endOffset += 4;
+				}
 				_stream.Seek(startOffset + 8);
 				_stream.WriteUInt32((uint)(endOffset - startOffset));
 				_stream.Seek(endOffset);

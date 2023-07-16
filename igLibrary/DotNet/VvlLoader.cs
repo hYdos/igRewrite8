@@ -22,6 +22,7 @@ namespace igLibrary.DotNet
 			//Prepare library and resolver
 			DotNetLibrary library = new DotNetLibrary();
 			library._runtime = runtime;
+			library._path = libName;
 			igDotNetLoadResolver resolver = new igDotNetLoadResolver();
 			resolver._runtime = runtime;
 
@@ -193,6 +194,7 @@ namespace igLibrary.DotNet
 							meta.AppendDynamicField(AddField(library, resolver, fieldDefs[memberStarts[metaIndex] + j], strings));
 						}
 						library._ownedTypes.Append(meta);
+						((igDotNetDynamicMetaObject)meta)._owner = library;
 					}
 				}
 			}

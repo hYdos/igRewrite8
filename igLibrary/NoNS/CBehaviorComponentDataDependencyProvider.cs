@@ -14,11 +14,11 @@ namespace igLibrary
 				string animDep = behavior._behaviorFile;
 				if(animDep.StartsWith("behaviors:"))
 				{
-					animDep = "data:/anims" + behavior._behaviorFile.Substring(10);
+					animDep = "data:/anims" + behavior._behaviorFile.Substring(10).Replace('\\', '/');
 				}
 				animDep = Path.TrimEndingDirectorySeparator(animDep);
 				animDep = Path.ChangeExtension(animDep, ".hka");
-				output.Append(animDep);
+				//output.Append(animDep);
 			}
 		}
 	}
