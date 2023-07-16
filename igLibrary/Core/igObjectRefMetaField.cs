@@ -58,6 +58,13 @@ namespace igLibrary.Core
 				saver.WriteRawOffset(0, section);
 				return;
 			}
+			bool addDepItems = GetAttribute<igAddDependencyItemsAttribute>() != null;
+			if(addDepItems)
+			{
+				AddDependencyItems((IigDataList)obj, saver._platform, saver._dir, out igStringRefList buildDeps, out igStringRefList fileDeps);
+				for(int i = 0; i < buildDeps._count; i++) saver.AddBuildDependency(buildDeps[i]);
+				for(int i = 0; i < fileDeps._count; i++) saver.AddFileDependency(fileDeps[i]);
+			}
 
 			igExternalReferenceSystem.Singleton._globalSet.MakeReference(obj, null, out igHandleName name);
 			if(name._ns._hash != 0)
@@ -100,6 +107,38 @@ namespace igLibrary.Core
 			if(_refCounted && obj != null)
 			{
 				saver.RefObject(obj);
+			}
+		}
+		private void AddDependencyItems(IigDataList list, IG_CORE_PLATFORM platform, igObjectDirectory dir, out igStringRefList buildDeps, out igStringRefList fileDeps)
+		{
+			igObject? item;
+			buildDeps = new igStringRefList();
+			fileDeps = new igStringRefList();
+			for(int i = 0; i < list.GetCount(); i++)
+			{
+				object obj = list.GetObject(i);
+				if(obj == null) continue;
+				item = obj as igObject;
+				if(item == null)
+				{
+					if(obj is igHandle hnd) item = hnd.GetObjectAlias<igObject>();
+					else throw new InvalidOperationException("Item type is not valid");
+				}
+				item.GetDependencies(platform, dir, out igStringRefList? itemBuildDeps, out igStringRefList? itemFileDeps);
+				if(itemBuildDeps != null)
+				{
+					for(int j = 0; j < itemBuildDeps._count; j++)
+					{
+						buildDeps.Append(itemBuildDeps[i]);
+					}
+				}
+				if(itemFileDeps != null)
+				{
+					for(int j = 0; j < itemFileDeps._count; j++)
+					{
+						fileDeps.Append(itemFileDeps[i]);
+					}
+				}
 			}
 		}
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)

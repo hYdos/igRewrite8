@@ -16,8 +16,7 @@ namespace igCauldron3
 
 		public ObjectManagerFrame() : base()
 		{
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			Type[] types = assemblies.SelectMany(x => x.GetTypes()).Where(x => x.IsAssignableTo(typeof(InspectorDrawOverride))).ToArray();
+			Type[] types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(InspectorDrawOverride))).ToArray();
 			for(uint i = 0; i < types.Length; i++)
 			{
 				if(!types[i].IsAbstract)

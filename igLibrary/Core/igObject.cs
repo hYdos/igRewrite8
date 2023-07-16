@@ -11,9 +11,6 @@ namespace igLibrary.Core
 			igMetaObject meta = GetMeta();
 			List<igMetaField> metaFields = meta._metaFields;
 
-			if(GetMeta()._name == "CBehaviorPhysicsPencilComponentData")
-			;
-
 			for(int i = 0; i < metaFields.Count; i++)
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
@@ -32,30 +29,38 @@ namespace igLibrary.Core
 				}
 			}
 		}
+		public void GetDependencies(IG_CORE_PLATFORM platform, igObjectDirectory directory, out igStringRefList? buildDeps, out igStringRefList? fileDeps)
+		{
+			buildDeps = null;
+			fileDeps = null;
+			igDependenciesAttribute? depAttr = GetMeta().GetAttribute<igDependenciesAttribute>();
+			if(depAttr == null) return;
+			igDependencyProvider depProvider = (igDependencyProvider)depAttr._value.ConstructInstance(igMemoryContext.Singleton.GetMemoryPoolByName("Default"));
+			depProvider._platform = platform;
+			depProvider._directory = directory;
+			depProvider.GetBuildDependencies(this, out buildDeps);
+			depProvider.GetFileDependencies(this, out fileDeps);
+		}
 		public virtual void WriteIGZFields(igIGZSaver saver, igIGZSaver.SaverSection section)
 		{
 			igMetaObject meta = GetMeta();
 			List<igMetaField> metaFields = GetMeta()._metaFields;
 			WriteIGZFieldsInternal(saver, section, metaFields);
-			igDependenciesAttribute? depAttr = meta.GetAttribute<igDependenciesAttribute>();
-			if(depAttr == null) return;
-			igDependencyProvider depProvider = (igDependencyProvider)depAttr._value.ConstructInstance(section._pool);
-			depProvider.GetBuildDependencies(this, out igStringRefList? list);
-			if(list != null)
+			GetDependencies(saver._platform, saver._dir, out igStringRefList? buildDeps, out igStringRefList? fileDeps);
+			if(buildDeps != null)
 			{
-				for(int i = 0; i < list._count; i++)
+				for(int i = 0; i < buildDeps._count; i++)
 				{
-					saver.AddBuildDependency(list[i]);
+					saver.AddBuildDependency(buildDeps[i]);
 				}
 			}
-			depProvider.GetFileDependencies(this, out list);
-			if(list != null)
+			if(fileDeps != null)
 			{
-				for(int i = 0; i < list._count; i++)
+				for(int i = 0; i < fileDeps._count; i++)
 				{
-					saver.AddFileDependency(list[i]);
+					saver.AddFileDependency(fileDeps[i]);
 				}
-			}
+			}			
 		}
 		public virtual void WriteIGZFieldsInternal(igIGZSaver saver, igIGZSaver.SaverSection section, List<igMetaField> metaFields)
 		{
