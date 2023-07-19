@@ -132,9 +132,9 @@ namespace igRewrite8
 			{
 				string fileName = Path.GetFileName(archiveFilePaths[i].FullName);
 				igArchive arc = new igArchive(fileName);
-				for(int j = 0; j < arc.fileHeaders.Length; j++)
+				for(int j = 0; j < arc._fileHeaders.Length; j++)
 				{
-					string outputPath = Path.Combine(args[1], arc.fileHeaders[j].fullName);
+					string outputPath = Path.Combine(args[1], arc._fileHeaders[j].fullName);
 					Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 					FileStream fs = File.Create(outputPath);
 					arc.ExtractFile(j, fs);

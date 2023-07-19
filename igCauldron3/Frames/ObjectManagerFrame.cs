@@ -3,56 +3,75 @@ using System.Linq;
 using igLibrary.Core;
 using ImGuiNET;
 
-using static igCauldron3.Window;
-
 using igLibrary.Math;
 
 namespace igCauldron3
 {
 	public class ObjectManagerFrame : Frame
 	{
-		private static List<InspectorDrawOverride> overrides = new List<InspectorDrawOverride>();
+		private static List<InspectorDrawOverride>? overrides;
+		public static List<igObjectDirectory> _dirs = new List<igObjectDirectory>();
 		private bool renderChangeReference = false;
+		public static int _currentDir;
 
-		public ObjectManagerFrame() : base()
+		public ObjectManagerFrame(Window wnd) : base(wnd)
 		{
-			Type[] types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(InspectorDrawOverride))).ToArray();
-			for(uint i = 0; i < types.Length; i++)
+			if(overrides == null)
 			{
-				if(!types[i].IsAbstract)
+				overrides = new List<InspectorDrawOverride>();
+				Type[] types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(InspectorDrawOverride))).ToArray();
+				for(uint i = 0; i < types.Length; i++)
 				{
-					InspectorDrawOverride drawOverride = (InspectorDrawOverride)Activator.CreateInstance(types[i]);
-					overrides.Add(drawOverride);
+					if(!types[i].IsAbstract)
+					{
+						InspectorDrawOverride drawOverride = (InspectorDrawOverride)Activator.CreateInstance(types[i]);
+						overrides.Add(drawOverride);
+					}
 				}
 			}
 		}
 
 		public override void Render()
 		{
-			igObjectList list = directory._objectList;
 			ImGui.Begin("Object Manager");
+			if(ImGui.BeginTabBar("Object Directories"))
+			{
+				for(int i = 0; i < _dirs.Count; i++)
+				{
+					if(ImGui.BeginTabItem(_dirs[i]._name._string))
+					{
+						_currentDir = i;
+						RenderDir(_dirs[i]);
+						ImGui.EndTabItem();
+					}
+				}
+				ImGui.EndTabBar();
+			}
+			ImGui.End();
+		}
+		public void RenderDir(igObjectDirectory dir)
+		{
+			igObjectList list = dir._objectList;
 			if(ImGui.TreeNode("Dependancies"))
 			{
-				for(int i = 0; i < directory._dependancies.Count; i++)
+				for(int i = 0; i < dir._dependancies.Count; i++)
 				{
-					ImGui.Text(directory._dependancies[i]._path);					
+					ImGui.Text(dir._dependancies[i]._path);					
 				}
 				ImGui.TreePop();
 			}
 			if(ImGui.TreeNode("Objects"))
 			{
-				for(int i = 0; i < directory._objectList._count; i++)
+				for(int i = 0; i < dir._objectList._count; i++)
 				{
 					string name;
-					if(directory._useNameList) name = directory._nameList[i]._string;
+					if(dir._useNameList) name = dir._nameList[i]._string;
 					else                       name = $"Object {i}";
 
-					RenderObject(name, directory._objectList[i]);
+					RenderObject(name, dir._objectList[i]);
 				}
 				ImGui.TreePop();
 			}
-			ImGui.End();
-
 			if(renderChangeReference)
 			{
 				RenderObjectReferenceWindow();

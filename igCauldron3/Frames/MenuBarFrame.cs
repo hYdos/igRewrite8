@@ -4,6 +4,7 @@ namespace igCauldron3
 {
 	public class MenuBarFrame : Frame
 	{
+		public MenuBarFrame(Window wnd) : base(wnd){}
 		public override void Render()
 		{
 			if(ImGui.BeginMainMenuBar())
@@ -12,7 +13,7 @@ namespace igCauldron3
 				{
 					if(ImGui.MenuItem("Save As"))
 					{
-						Window.directory.WriteFile("test.igz");
+						ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir].WriteFile("test.igz");
 					}
 					ImGui.EndMenu();
 				}

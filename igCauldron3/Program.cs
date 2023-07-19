@@ -89,9 +89,9 @@ namespace igCauldron3
 		{
 			igFileContext.Singleton.Initialize(args[0]);
 			igArchive arc = new igArchive(args[1]);
-			for(int i = 0; i < arc.fileHeaders.Length; i++)
+			for(int i = 0; i < arc._fileHeaders.Length; i++)
 			{
-				string path = Path.Combine("F:/SLI", arc.fileHeaders[i].fullName);
+				string path = Path.Combine("F:/SLI", arc._fileHeaders[i].fullName);
 				Directory.CreateDirectory(Path.GetDirectoryName(path));
 				FileStream fs = File.Create(path);
 				arc.ExtractFile(i, fs);

@@ -11,7 +11,7 @@ namespace igCauldron3
 	public class Window : GameWindow
 	{
 		ImGuiController controller;
-		List<Frame> frames = new List<Frame>();
+		public List<Frame> frames = new List<Frame>();
 		string[] args;
 		public static igObjectDirectory directory = null;
 		public static string? targetIgz = null;
@@ -51,9 +51,10 @@ namespace igCauldron3
 
 			directory = igObjectStreamManager.Singleton.Load(targetIgz);
 
-			frames.Add(new ObjectManagerFrame());
-			frames.Add(new InspectorFrame());
-			frames.Add(new MenuBarFrame());
+			frames.Add(new ArchiveFrame(this));
+			frames.Add(new ObjectManagerFrame(this));
+			frames.Add(new MenuBarFrame(this));
+			ObjectManagerFrame._dirs.Add(directory);
 		}
 		protected override void OnResize(ResizeEventArgs e)
 		{

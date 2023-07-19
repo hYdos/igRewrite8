@@ -7,10 +7,7 @@ namespace igCauldron3
 	public class ChangeReferenceFrame : Frame
 	{
 		private FieldInfo _target;
-		public ChangeReferenceFrame(ref object? target, igObjectRefMetaField metadata)
-		{
-
-		}
+		public ChangeReferenceFrame(Window wnd, ref object? target, igObjectRefMetaField metadata) : base(wnd){}
 		public override void Render()
 		{
 			ImGui.Begin("Change Object Reference");

@@ -34,7 +34,7 @@ namespace igLibrary.Core
 		IG_CORE_ARCHIVE_VERSION version;
 
 		uint alignment;
-		public IG_CORE_ARCHIVE_FILE_HEADER[] fileHeaders;
+		public IG_CORE_ARCHIVE_FILE_HEADER[] _fileHeaders;
 
 		uint numLargeBlocks;
 		uint numMediumBlocks;
@@ -52,6 +52,7 @@ namespace igLibrary.Core
 
 		public igArchive(string path)
 		{
+			_path = path;
 			_file = new igFile();
 			_file.Open(path);
 			sh = new StreamHelper(_file._file._handle);
@@ -130,41 +131,41 @@ namespace igLibrary.Core
 
 			//Initialize arrays
 			//names = new string[numFiles];
-			fileHeaders = new IG_CORE_ARCHIVE_FILE_HEADER[numFiles];
+			_fileHeaders = new IG_CORE_ARCHIVE_FILE_HEADER[numFiles];
 
 			//Read stuff
 			for(uint i = 0; i < numFiles; i++)
 			{
 				//Read nametable
 				uint relativeNameOffset = sh.ReadUInt32(nametableStart + i * 0x04);
-				fileHeaders[i].fullName = sh.ReadString(nametableStart + relativeNameOffset);
-				fileHeaders[i].name = sh.ReadString();
+				_fileHeaders[i].fullName = sh.ReadString(nametableStart + relativeNameOffset);
+				_fileHeaders[i].name = sh.ReadString();
 
 				//Read Hash
-				fileHeaders[i].hash = sh.ReadUInt32(headerLength + i * 4);
+				_fileHeaders[i].hash = sh.ReadUInt32(headerLength + i * 4);
 				
 				sh.Seek(headerLength + numFiles * 4 + i * fileHeaderLength);
 
 				if(version == IG_CORE_ARCHIVE_VERSION.sli_ssf_not_citrus)
 				{
-					fileHeaders[i].offset = sh.ReadUInt32();
-					fileHeaders[i].ordinal = sh.ReadUInt32();
-					fileHeaders[i].length = sh.ReadUInt32();
-					fileHeaders[i].mode = sh.ReadUInt32();
+					_fileHeaders[i].offset = sh.ReadUInt32();
+					_fileHeaders[i].ordinal = sh.ReadUInt32();
+					_fileHeaders[i].length = sh.ReadUInt32();
+					_fileHeaders[i].mode = sh.ReadUInt32();
 				}
 				else if(version == IG_CORE_ARCHIVE_VERSION.ssc_all_or_si_ps3_xenon_cafe)
 				{
-					fileHeaders[i].ordinal = sh.ReadUInt32();
-					fileHeaders[i].offset = sh.ReadUInt32();
-					fileHeaders[i].length = sh.ReadUInt32();
-					fileHeaders[i].mode = sh.ReadUInt32();
+					_fileHeaders[i].ordinal = sh.ReadUInt32();
+					_fileHeaders[i].offset = sh.ReadUInt32();
+					_fileHeaders[i].length = sh.ReadUInt32();
+					_fileHeaders[i].mode = sh.ReadUInt32();
 				}
 				else if(version == IG_CORE_ARCHIVE_VERSION.stt_not_citrus)
 				{
-					fileHeaders[i].offset = sh.ReadUInt32();
-					fileHeaders[i].ordinal = sh.ReadUInt32();
-					fileHeaders[i].length = sh.ReadUInt32();
-					fileHeaders[i].mode = sh.ReadUInt32();
+					_fileHeaders[i].offset = sh.ReadUInt32();
+					_fileHeaders[i].ordinal = sh.ReadUInt32();
+					_fileHeaders[i].length = sh.ReadUInt32();
+					_fileHeaders[i].mode = sh.ReadUInt32();
 				}
 			}
 
@@ -181,14 +182,14 @@ namespace igLibrary.Core
 		public void ExtractFile(int i, Stream dst)
 		{
 			if(i < 0) throw new FileNotFoundException("File does not exist.");
-			sh.Seek(fileHeaders[i].offset);
+			sh.Seek(_fileHeaders[i].offset);
 
-			if(dst is MemoryStream dsms) dsms.Capacity = (int)fileHeaders[i].length;
+			if(dst is MemoryStream dsms) dsms.Capacity = (int)_fileHeaders[i].length;
 			dst.Seek(0, SeekOrigin.Begin);
 
-			if(fileHeaders[i].mode == 0xFFFFFFFF)
+			if(_fileHeaders[i].mode == 0xFFFFFFFF)
 			{
-				dst.Write(sh.ReadBytes((int)fileHeaders[i].length));
+				dst.Write(sh.ReadBytes((int)_fileHeaders[i].length));
 				dst.Seek(0, SeekOrigin.Begin);
 				return;
 			}
@@ -197,16 +198,16 @@ namespace igLibrary.Core
 
 			bool isWriting = false;
 
-			uint numBlocks = (fileHeaders[i].length + 0x7FFF) >> 0xF;
+			uint numBlocks = (_fileHeaders[i].length + 0x7FFF) >> 0xF;
 			for(uint currentBlockIndex = 0; currentBlockIndex < numBlocks; currentBlockIndex++)
 			{
-				uint blockIndex = (fileHeaders[i].mode & 0x0FFFFFFF) + currentBlockIndex;
+				uint blockIndex = (_fileHeaders[i].mode & 0x0FFFFFFF) + currentBlockIndex;
 				uint blockOffset = 0;
 				uint blockSize = 0;
 				bool isCompressed = false;
-				if(0x7F * alignment < fileHeaders[i].length)
+				if(0x7F * alignment < _fileHeaders[i].length)
 				{
-					if(0x7FFF * alignment < fileHeaders[i].length)
+					if(0x7FFF * alignment < _fileHeaders[i].length)
 					{
 						//Console.WriteLine("Large blocks");
 						uint block = largeBlockTable[blockIndex];
@@ -232,10 +233,10 @@ namespace igLibrary.Core
 					blockSize = (uint)(smallBlockTable[blockIndex + 1] & 0x7F) * alignment - blockOffset;
 				}
 
-				uint decompressedSize = (fileHeaders[i].length < (currentBlockIndex + 1) * 0x8000) ? fileHeaders[i].length & 0x7FFF : 0x8000;
+				uint decompressedSize = (_fileHeaders[i].length < (currentBlockIndex + 1) * 0x8000) ? _fileHeaders[i].length & 0x7FFF : 0x8000;
 
 				byte[] chunk;
-				sh.Seek(fileHeaders[i].offset + blockOffset);
+				sh.Seek(_fileHeaders[i].offset + blockOffset);
 
 				if(!isCompressed)
 				{
@@ -245,7 +246,7 @@ namespace igLibrary.Core
 					continue;
 				}
 
-				uint compressionType = fileHeaders[i].mode >> 0x1C;
+				uint compressionType = _fileHeaders[i].mode >> 0x1C;
 				uint compressedSize = 0;
 				if(((uint)version & 0xF) < 0x0C)
 				{
@@ -283,7 +284,7 @@ namespace igLibrary.Core
 			}
 			dst.Flush();
 			dst.Seek(0, SeekOrigin.Begin);
-			if(fileHeaders[i].length == 0) Console.WriteLine($"file {fileHeaders[i].name} is empty");
+			if(_fileHeaders[i].length == 0) Console.WriteLine($"file {_fileHeaders[i].name} is empty");
 		}
 		//Likely unsafe
 		public void Close()
@@ -305,7 +306,7 @@ namespace igLibrary.Core
 			return FindFile(igHash.Hash(pathToHash));
 		}
 
-		public int FindFile(uint hash) => Array.FindIndex<IG_CORE_ARCHIVE_FILE_HEADER>(fileHeaders, x => x.hash == hash);
+		public int FindFile(uint hash) => Array.FindIndex<IG_CORE_ARCHIVE_FILE_HEADER>(_fileHeaders, x => x.hash == hash);
 		public bool HasFile(string path) => FindFile(path) >= 0;
 		public bool HasFile(uint hash) => FindFile(hash) >= 0;
 		public string GetFileName(string path) => GetFileName(FindFile(path));
@@ -313,7 +314,7 @@ namespace igLibrary.Core
 		public string GetFileName(int i)
 		{
 			string volumeName = Path.GetFileName((sh.BaseStream as FileStream).Name);
-			return $"{volumeName}:/{fileHeaders[i].name}";
+			return $"{volumeName}:/{_fileHeaders[i].name}";
 		}
 
 		public override void Process(igFileWorkItem workItem)
@@ -384,7 +385,7 @@ namespace igLibrary.Core
 		{
 			int fileId = FindFile(workItem._path);
 			workItem._file._path = workItem._path;
-			workItem._file._size = fileHeaders[fileId].length;
+			workItem._file._size = _fileHeaders[fileId].length;
 			workItem._file._position = 0;
 			workItem._file._handle = new MemoryStream((int)workItem._file._size);
 			workItem._file._device = this;
@@ -424,10 +425,10 @@ namespace igLibrary.Core
 		public override void GetFileList(igFileWorkItem workItem)
 		{
 			igStringRefList nameList = (igStringRefList)workItem._buffer;
-			nameList.SetCapacity(fileHeaders.Length);
-			for(int i = 0; i < fileHeaders.Length; i++)
+			nameList.SetCapacity(_fileHeaders.Length);
+			for(int i = 0; i < _fileHeaders.Length; i++)
 			{
-				nameList.Append(fileHeaders[i].name);
+				nameList.Append(_fileHeaders[i].name);
 			}
 			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
 		}
