@@ -33,14 +33,16 @@ namespace igLibrary.Core
 			ulong storage = (ulong)Convert.ChangeType(_storageMetaField.ReadIGZField(loader), typeof(ulong));
 			storage = (storage >> (int)_shift) & (0xFFFFFFFFFFFFFFFF >> (int)(64 - _bits));
 
-			if(_assignmentMetaField is igUnsignedIntMetaField)	return unchecked((uint)storage);
-			if(_assignmentMetaField is igIntMetaField)			return unchecked((int)storage);
-			if(_assignmentMetaField is igUnsignedCharMetaField)	return unchecked((byte)storage);
-			if(_assignmentMetaField is igCharMetaField)			return unchecked((sbyte)storage);
-			if(_assignmentMetaField is igBoolMetaField)			return storage != 0;
-			if(_assignmentMetaField is igUnsignedLongMetaField)	return storage;
-			if(_assignmentMetaField is igLongMetaField)			return unchecked((long)storage);
-			if(_assignmentMetaField is igEnumMetaField enumMf)	return enumMf._metaEnum.GetEnumFromValue((int)storage);
+			if(_assignmentMetaField is igUnsignedIntMetaField)		return unchecked((uint)storage);
+			if(_assignmentMetaField is igIntMetaField)				return unchecked((int)storage);
+			if(_assignmentMetaField is igUnsignedCharMetaField)		return unchecked((byte)storage);
+			if(_assignmentMetaField is igCharMetaField)				return unchecked((sbyte)storage);
+			if(_assignmentMetaField is igBoolMetaField)				return storage != 0;
+			if(_assignmentMetaField is igUnsignedShortMetaField)	return unchecked((ushort)storage);
+			if(_assignmentMetaField is igShortMetaField)			return unchecked((short)storage);
+			if(_assignmentMetaField is igUnsignedLongMetaField)		return storage;
+			if(_assignmentMetaField is igLongMetaField)				return unchecked((long)storage);
+			if(_assignmentMetaField is igEnumMetaField enumMf)		return enumMf._metaEnum.GetEnumFromValue((int)storage);
 
 			throw new NotImplementedException($"_assignmentMetaField for {_assignmentMetaField.GetType().Name} is not implemented, contact a developer.");
 		}

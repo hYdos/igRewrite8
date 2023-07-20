@@ -113,6 +113,7 @@ namespace igLibrary.Core
 			_archiveManager._patchArchives.Append(new igArchive(updatePath));
 		}
 
+		public igArchive LoadArchive(string path) => _archiveManager.LoadArchive(path);
 		public void AddStorageDevice(igStorageDevice device)
 		{
 			_devices.Add(device);

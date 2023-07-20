@@ -44,7 +44,7 @@ namespace igRewrite8
 
 			igFileContext.Singleton.Initialize(args[0]);
 
-			igArchive arc = new igArchive("archives/permanent.pak");
+			igFileContext.Singleton.LoadArchive("archives/permanent.pak");
 
 			//igFileContext.Singleton.Open("packages:/generated/packageXmls/permanent_pkg.igz", igFileContext.GetOpenFlags(FileAccess.Read, FileMode.Open), out igFileDescriptor fd, igBlockingType.kBlocking, igFileWorkItem.Priority.kPriorityNormal);
 
@@ -131,7 +131,7 @@ namespace igRewrite8
 			for(int i = 0; i < archiveFilePaths.Length; i++)
 			{
 				string fileName = Path.GetFileName(archiveFilePaths[i].FullName);
-				igArchive arc = new igArchive(fileName);
+				igArchive arc = igFileContext.Singleton.LoadArchive(fileName);
 				for(int j = 0; j < arc._fileHeaders.Length; j++)
 				{
 					string outputPath = Path.Combine(args[1], arc._fileHeaders[j].fullName);

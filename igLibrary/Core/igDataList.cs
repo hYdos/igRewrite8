@@ -4,6 +4,7 @@ namespace igLibrary.Core
 {
 	public class igTDataList<T> : igContainer, IEnumerable<T>, IigDataList
 	{
+		//TODO: Modify the reflection system so we can put proper access modifiers on these
 		public int _count;
 		public int _capacity;
 		public igMemory<T> _data = new igMemory<T>();
@@ -35,11 +36,6 @@ namespace igLibrary.Core
 			return _data;
 		}
 
-		public IEnumerator<T> GetEnumerator()
-		{
-			return ((IEnumerable<T>)_data).GetEnumerator();
-		}
-
 		public Type GetMemoryType()
 		{
 			return _data.GetType().GenericTypeArguments[0];
@@ -66,11 +62,14 @@ namespace igLibrary.Core
 			_data[index] = (T)data;
 		}
 
-		IEnumerator IEnumerable.GetEnumerator()
+		public IEnumerator<T> GetEnumerator()
 		{
-			return ((IEnumerable)_data).GetEnumerator();
+			for(int i = 0; i < _count; i++)
+			{
+				yield return _data[i];
+			}
 		}
-
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 
 	public interface IigDataList

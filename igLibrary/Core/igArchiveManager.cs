@@ -5,6 +5,21 @@ namespace igLibrary.Core
 		public igArchiveList _archiveList = new igArchiveList();
 		public igArchiveList _patchArchives = new igArchiveList();
 
+		public igArchive LoadArchive(string path)
+		{
+			for(int i = 0; i < _archiveList._count; i++)
+			{
+				if(_archiveList[i]._path.ToLower() == path.ToLower())
+				{
+					return _archiveList[i];
+				}
+			}
+
+			igArchive loaded = new igArchive(path);
+			_archiveList.Append(loaded);
+			return loaded;
+		}
+
 		public override void Process(igFileWorkItem workItem)
 		{
 			if(workItem._type == igFileWorkItem.WorkType.kTypeFileList)

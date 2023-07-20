@@ -10,10 +10,10 @@ namespace VvlToDll
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 			ArkDllExport.Create();
 			igFileContext.Singleton.Initialize(args[0]);
-			igArchive arc = new igArchive("archives/permanent.pak");
-			          arc = new igArchive("archives/permanent_ps3.pak");
-			          arc = new igArchive("archives/permanentdeveloper.pak");
-			          arc = new igArchive("archives/gamestartup.pak");
+			igFileContext.Singleton.LoadArchive("archives/permanent.pak");
+			igFileContext.Singleton.LoadArchive("archives/permanent_ps3.pak");
+			igFileContext.Singleton.LoadArchive("archives/permanentdeveloper.pak");
+			igFileContext.Singleton.LoadArchive("archives/gamestartup.pak");
 
 			DotNetRuntime runtime = new DotNetRuntime();
 

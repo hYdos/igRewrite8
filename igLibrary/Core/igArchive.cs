@@ -53,6 +53,7 @@ namespace igLibrary.Core
 		public igArchive(string path)
 		{
 			_path = path;
+			_name = Path.GetFileName(path);
 			_file = new igFile();
 			_file.Open(path);
 			sh = new StreamHelper(_file._file._handle);
@@ -62,8 +63,6 @@ namespace igLibrary.Core
 			else if(magicNumber == 0x4947411A) sh._endianness = StreamHelper.Endianness.Big;
 
 			ReadHeader();
-
-			igFileContext.Singleton._archiveManager._archiveList.Append(this);
 		}
 
 		//Bypasses igFileContext, useful when not reading an archive from _root
