@@ -5,6 +5,9 @@ namespace igLibrary.Core
 	//Should define DotNet::igDotNetEnumMetaField but it's not too important as it doesn't appear in igzs
 	public class igEnumMetaField : igMetaField
 	{
+		private static igEnumMetaField _MetaField = new igEnumMetaField();
+		public static igEnumMetaField GetMetaField() => _MetaField;
+
 		public igMetaEnum _metaEnum;
 
 		public override void DumpArkData(igArkCoreFile saver, StreamHelper sh)

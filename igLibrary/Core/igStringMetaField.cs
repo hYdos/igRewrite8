@@ -2,6 +2,8 @@ namespace igLibrary.Core
 {
 	public class igStringMetaField : igRefMetaField
 	{
+		private static igStringMetaField _MetaField = new igStringMetaField();
+		public static igStringMetaField GetMetaField() => _MetaField;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			uint basePos = loader._stream.Tell();

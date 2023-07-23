@@ -11,7 +11,6 @@ namespace igLibrary.Core
 		public int _hashItemCount;
 		public bool _autoRehash;
 		public float _loadFactor;
-		//private igHashTraits<U> _hashTraits = new igHashTraits<U>();
 
 		public virtual T this[U key]
 		{
@@ -80,6 +79,12 @@ namespace igLibrary.Core
 			else if(typeof(U) == typeof(ulong))  _keys[keyIndex] = (U)(object)0xFAFAFAFAFAFAFAFA;
 			else if(typeof(U) == typeof(long))   _keys[keyIndex] = (U)(object)-361700864190383366;
 			else if(typeof(U) == typeof(ushort)) _keys[keyIndex] = (U)(object)0x7FFF;
+			else if(typeof(U).IsEnum)
+			{
+				igMetaObject meta = GetMeta();
+				igMemoryRefMetaField keysField = (igMemoryRefMetaField)meta._metaFields[1];
+				_keys[keyIndex] = (U)keysField._memType.GetDefault(null);
+			}
 			else throw new NotImplementedException("Key type " + typeof(U).Name + " is not implemented.");
 		}
 		public virtual bool KeyTraitsInvalid(int keyIndex)

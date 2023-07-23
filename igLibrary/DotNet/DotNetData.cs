@@ -2,9 +2,10 @@ namespace igLibrary.DotNet
 {
 	public struct DotNetData
 	{
-		object _data;
-		ElementType _type;
-		DataRepresentation _representation;
+		public object? _data;
+		public DotNetType _type;
+		public DataRepresentation _representation;
+		public uint _maybeRepresentation;
 
 		public enum DataRepresentation
 		{

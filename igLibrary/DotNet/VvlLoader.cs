@@ -437,7 +437,7 @@ namespace igLibrary.DotNet
 						break;
 					case ElementType.kElementTypeClass:
 					case ElementType.kElementTypeObject:
-						if(field._isHandle == 0)
+						if((field._isHandle & 1) == 0)
 						{
 							metaField = new igObjectRefArrayMetaField();
 							((igObjectRefArrayMetaField)metaField)._num = (short)field._default;
@@ -529,7 +529,7 @@ namespace igLibrary.DotNet
 							((igDotNetEnumMetaField)metaField)._metaEnum = metaEnum;
 							((igDotNetEnumMetaField)metaField)._definedMetaEnum = metaEnum;
 						}
-						else if(field._isHandle == 0)
+						else if((field._isHandle & 1) == 0)
 						{
 							metaField = new igObjectRefMetaField();
 							((igObjectRefMetaField)metaField)._metaObject = (igMetaObject)dntRef._baseMeta;	//replace this with Core.igObject._Meta once that's implemented

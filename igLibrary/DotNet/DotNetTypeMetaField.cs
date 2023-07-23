@@ -6,8 +6,9 @@ namespace igLibrary.DotNet
 	{
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
+			ulong baseOffset = loader._stream.Tell64();
 			DotNetType data = new DotNetType();
-			//No idea
+
 			return data;
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 8;

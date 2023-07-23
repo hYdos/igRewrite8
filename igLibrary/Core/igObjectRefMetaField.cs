@@ -4,6 +4,9 @@ namespace igLibrary.Core
 {
 	public class igObjectRefMetaField : igRefMetaField
 	{
+		private static igObjectRefMetaField _MetaField = new igObjectRefMetaField();
+		public static igObjectRefMetaField GetMetaField() => _MetaField;
+
 		public igMetaObject _metaObject;
 
 		public override void DumpArkData(igArkCoreFile saver, StreamHelper sh)

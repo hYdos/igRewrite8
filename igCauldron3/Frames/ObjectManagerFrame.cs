@@ -235,6 +235,16 @@ namespace igCauldron3
 					value = strValue;
 				}
 			}
+			if(field is igFloatMetaField)
+			{
+				float floatValue = (float)value;
+				ImGui.Text(label);
+				ImGui.SameLine();
+				ImGui.PushID(label);
+				ImGui.InputFloat(string.Empty, ref floatValue);
+				ImGui.PopID();
+				value = floatValue;
+			}
 			else if(field is igUnsignedCharMetaField)
 			{
 				int byteValue = (byte)value;

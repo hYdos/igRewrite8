@@ -18,6 +18,14 @@ namespace igLibrary.Core
 
 			_memType = loader.ReadMetaField(sh);
 		}
+		public override void DumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			_memType.DumpDefault(saver, sh);
+		}
+		public override void UndumpDefault(igArkCoreFile saver, StreamHelper sh)
+		{
+			_memType.UndumpDefault(saver, sh);
+		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			ulong start = loader._stream.Tell64();

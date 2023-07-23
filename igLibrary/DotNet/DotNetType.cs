@@ -4,7 +4,7 @@ namespace igLibrary.DotNet
 {
 	public struct DotNetType
 	{
-		public igBaseMeta _baseMeta;
+		public igBaseMeta? _baseMeta;
 		public uint _flags;
 		//public ElementType _elementType;
 

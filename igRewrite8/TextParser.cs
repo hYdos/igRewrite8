@@ -134,7 +134,7 @@ namespace igRewrite8.Devel
 						metaObject._parent = metaObjectLookup[members[3]];
 						metaObject.InheritFields();
 						int attrIndex = 4;
-						if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+						if(metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList" || metaObject._parent._name == "igHashTable")
 						{
 							attrIndex++;
 						}
@@ -189,6 +189,14 @@ namespace igRewrite8.Devel
 							igMemoryRefMetaField _data = (igMemoryRefMetaField)metaObject._metaFields[2].CreateFieldCopy();
 							((igObjectRefMetaField)_data._memType)._metaObject = metaObjectLookup[members[parentMetaIndex]];
 							metaObject.ValidateAndSetField(2, _data);
+						}
+						else if(metaObject._parent._name == "igHashTable")
+						{
+							igMemoryRefMetaField _keys = (igMemoryRefMetaField)metaObject._metaFields[1];
+							if(_keys._memType is igEnumMetaField emf)
+							{
+								emf._default = int.Parse(members[parentMetaIndex]);
+							}
 						}
 					}
 					previousMeta = metaObject._name;
