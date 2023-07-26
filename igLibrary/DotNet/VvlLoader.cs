@@ -5,6 +5,24 @@ namespace igLibrary.DotNet
 {
 	public static class VvlLoader
 	{
+		/* Steps:
+		 * Read Header
+		 * Read sections into buffers
+		 * Read DotNetMethodMeta array
+		 * Read DotNetTypeDetails array
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * DotNet more like DeezNuts amirite 
+		*/
 		public static DotNetLibrary Load(string libName, DotNetRuntime runtime, out bool success)
 		{
 			//Open file
@@ -29,7 +47,7 @@ namespace igLibrary.DotNet
 			//Read the file's sections
 			resolver._stringTable = new StreamHelper(sh.ReadBytes(header._stringTableLength));
 			StreamHelper strings = resolver._stringTable;
-			sh.Seek(header._novaUnkCount * 0x54, SeekOrigin.Current);
+			VvlMethodDef[] methodRefs = sh.ReadStructArray<VvlMethodDef>(header._numMethodRefs);
 			VvlFieldDefinition[] fieldDefs = sh.ReadStructArray<VvlFieldDefinition>(header._fieldCount);
 			SDotNetMethodMeta[] sMethodMetas = sh.ReadStructArray<SDotNetMethodMeta>(header._methodCount);
 			VvlParameterMeta[] paramMetas = sh.ReadStructArray<VvlParameterMeta>(header._parameterCount);
@@ -46,27 +64,28 @@ namespace igLibrary.DotNet
 			//Method metadata pass
 			Debug.Assert(typeHeader._methodCount == header._methodCount);
 
-			library._methodDefs.SetCapacity((int)header._methodCount);
+			DotNetMethodMetaList methodMetas = new DotNetMethodMetaList();
+			methodMetas.SetCapacity((int)header._methodCount);
 
 			bTypeDetails.Seek(typeHeader._methodDefOffset);
 			VvlMethodDef[] methodDefs = bTypeDetails.ReadStructArray<VvlMethodDef>(typeHeader._methodCount);
 			for(int i = 0; i < typeHeader._methodCount; i++)
 			{
-				DotNetMethodDefinition methodDef = new DotNetMethodDefinition();
-
-				methodDef._methodMeta._importTag = ReadVvlString(strings, sMethodMetas[i]._importTag);
-				methodDef._methodMeta._methodName = ReadVvlString(strings, sMethodMetas[i]._methodName);
-				methodDef._methodMeta._entryPoint = ReadVvlString(strings, sMethodMetas[i]._entryPoint);
-				methodDef._methodMeta._return = ConvertParameterMeta(paramMetas[sMethodMetas[i]._retParamIndex], attributeMetas, strings);
+				DotNetMethodMeta methodMeta = new DotNetMethodMeta();
+				
+				methodMeta._importTag = ReadVvlString(strings, sMethodMetas[i]._importTag);
+				methodMeta._methodName = ReadVvlString(strings, sMethodMetas[i]._methodName);
+				methodMeta._entryPoint = ReadVvlString(strings, sMethodMetas[i]._entryPoint);
+				methodMeta._return = ConvertParameterMeta(paramMetas[sMethodMetas[i]._retParamIndex], attributeMetas, strings);
 
 				int paramCount = methodDefs[i]._paramCount;
-				methodDef._methodMeta._parameters.SetCapacity(paramCount);
+				methodMeta._parameters.SetCapacity(paramCount);
 				for(int j = 0; j < paramCount; j++)
 				{
-					methodDef._methodMeta._parameters.Append(ConvertParameterMeta(paramMetas[sMethodMetas[i]._paramIndex + j], attributeMetas, strings));
+					methodMeta._parameters.Append(ConvertParameterMeta(paramMetas[sMethodMetas[i]._paramIndex + j], attributeMetas, strings));
 				}
 
-				library._methodDefs.Append(methodDef);
+				methodMetas.Append(methodMeta);
 			}
 
 			//Dereference these to hopefully free them?
@@ -146,7 +165,46 @@ namespace igLibrary.DotNet
 				}
 			}
 
-			//TODO: Read static fields
+			resolver.AddTypes(library);
+
+			bTypeDetails.Seek(typeHeader._staticFieldOffset);
+			VvlFieldDefinition[] staticFields = bTypeDetails.ReadStructArray<VvlFieldDefinition>((uint)typeHeader._staticFieldCount);
+			library._staticFields.SetCapacity(typeHeader._staticFieldCount);
+			for(int i = 0; i < typeHeader._staticFieldCount; i++)
+			{
+				DotNetFieldDefinition dnFieldDef = new DotNetFieldDefinition();
+				dnFieldDef.Name = ReadVvlString(strings, staticFields[i]._name);
+				dnFieldDef.Flags = staticFields[i]._flags;
+				dnFieldDef.Data = new DotNetData();
+				if(staticFields[i]._fieldType == ElementType.kElementTypeString)
+				{
+					dnFieldDef.Data._type._flags = (uint)ElementType.kElementTypeString | (uint)DotNetType.Flags.kIsSimple;
+					if(staticFields[i]._default != 0)
+					{
+						dnFieldDef.Data._data = ReadVvlString(strings, (uint)(staticFields[i]._default - 1));
+					}
+				}
+				else if(staticFields[i]._fieldType == ElementType.kElementTypeObject && staticFields[i]._isArray == 0)
+				{
+					igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, false, staticFields[i]._fieldType, ReadVvlString(resolver._stringTable, staticFields[i]._refTypeName));
+					if(!dntr.TryResolveObject(out dnFieldDef.Data._type))
+					{
+						dnFieldDef.Data._type._baseMeta = igArkCore.GetObjectMeta("Object");
+						dnFieldDef.Data._type._flags = (uint)ElementType.kElementTypeObject;
+					}
+				}
+				else
+				{
+					dnFieldDef.Data._type._flags = 0;
+					if(staticFields[i]._fieldType != ElementType.kElementTypeObject)
+					{
+						dnFieldDef.Data._type._flags = (uint)DotNetType.Flags.kIsSimple;
+					}
+					dnFieldDef.Data._type._flags |= (uint)staticFields[i]._fieldType | (staticFields[i]._isArray != 0 ? 0 : (uint)DotNetType.Flags.kIsArray);
+					dnFieldDef.Data._representation = staticFields[i]._dataRep;
+				}
+				library._staticFields.Append(dnFieldDef);
+			}
 
 			//Read fields of types
 			for(int i = 0; i < incompleteObjects._count; i++)
@@ -235,6 +293,72 @@ namespace igLibrary.DotNet
 					metaObject._templateParameters.Append(library._referencedTypes[typeDetails[i]._templateParameterOffset + j]);
 				}
 			}
+
+			//Read method defs
+			bTypeDetails.Seek(typeHeader._ILOffset);
+			StreamHelper IL = new StreamHelper(new MemoryStream(bTypeDetails.ReadBytes(typeHeader._ILCount)), bTypeDetails._endianness);
+			Dictionary<igObject, int> methodLookup = new Dictionary<igObject, int>();
+			library._methodDefs.SetCapacity((int)typeHeader._methodCount);
+			for(int i = 0; i < typeHeader._methodCount; i++)
+			{
+				DotNetMethodDefinition? dnMethodDef = ConvertMethodDef(resolver, methodDefs[i], strings, out int methodIndex, library, IL);
+				
+				if(dnMethodDef != null)
+				{
+					dnMethodDef._methodMeta = methodMetas[i];	//Not real but it's good to have it
+					//TODO: Finish this
+				}
+
+				library._methodDefs.Append(dnMethodDef);
+			}
+
+			//There's code here
+			
+			library._methodRefs.SetCapacity((int)typeHeader._methodRefCount);
+			for(int i = 0; i < typeHeader._methodRefCount; i++)
+			{
+				DotNetMethodDefinition? dnMethodRef = ConvertMethodDef(resolver, methodRefs[i], strings, out int methodIndex, library, null);
+				library._methodRefs.Append(dnMethodRef);
+			}
+
+			library._fields.SetCapacity((int)typeHeader._fieldCount);
+			for(uint i = 0; i < typeHeader._fieldCount; i++)
+			{
+				string fieldHandle = ReadVvlString(strings, bTypeDetails.ReadUInt32(typeHeader._fieldOffset + i * 4));
+				string typeName = fieldHandle.Substring(0, fieldHandle.LastIndexOf('.'));
+				string fieldName = fieldHandle.Substring(typeName.Length + 1);
+				bool successfulImport = false;
+				DotNetType dnt = default(DotNetType);
+				igDotNetTypeReference typeRef = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, typeName);
+				while(!successfulImport)
+				{
+					successfulImport = typeRef.TryResolveObject(out dnt);
+					if(!successfulImport)
+					{
+						int nsIndex = typeRef._name.IndexOf('.');
+						if(nsIndex >= 0) typeRef._name = typeRef._name.Substring(nsIndex+1);
+						//else throw new TypeLoadException($"Failed to find class {typeName}");
+						else break;
+					}
+					else
+					{
+						typeName = typeRef._name;
+						break;
+					}
+				}
+				if(!successfulImport)
+				{
+					dnt._baseMeta = igArkCore.GetObjectMeta("Object");
+					dnt._flags = (uint)ElementType.kElementTypeObject;
+				}
+				if(fieldName[0] == '<')
+				{
+					fieldName = fieldName.Substring(1, fieldName.LastIndexOf('>') - 1);
+				}
+				igMetaField field = dnt._baseMeta.GetFieldByName(fieldName);
+				library._fields.Append(field);
+			}
+
 			success = true;
 			//CDotNetaManager._Instance._libraries.Add(libName, library);
 			return library;
@@ -288,7 +412,7 @@ namespace igLibrary.DotNet
 				}
 				else
 				{
-					dntd._ownsMeta = false;
+					//dntd._ownsMeta = false;
 					while(true)
 					{
 						meta = igArkCore.GetMetaEnum(typeName);
@@ -320,7 +444,7 @@ namespace igLibrary.DotNet
 				}
 				else
 				{
-					dntd._ownsMeta = false;
+					//dntd._ownsMeta = false;
 					bool successfulImport = false;
 					igDotNetTypeReference typeRef = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, typeName);
 					while(!successfulImport)
@@ -437,7 +561,7 @@ namespace igLibrary.DotNet
 						break;
 					case ElementType.kElementTypeClass:
 					case ElementType.kElementTypeObject:
-						if((field._isHandle & 1) == 0)
+						if((field._flags & DotNetFieldDefinition.EFlags.kHandle) == 0)
 						{
 							metaField = new igObjectRefArrayMetaField();
 							((igObjectRefArrayMetaField)metaField)._num = (short)field._default;
@@ -529,7 +653,7 @@ namespace igLibrary.DotNet
 							((igDotNetEnumMetaField)metaField)._metaEnum = metaEnum;
 							((igDotNetEnumMetaField)metaField)._definedMetaEnum = metaEnum;
 						}
-						else if((field._isHandle & 1) == 0)
+						else if((field._flags & DotNetFieldDefinition.EFlags.kHandle) == 0)
 						{
 							metaField = new igObjectRefMetaField();
 							((igObjectRefMetaField)metaField)._metaObject = (igMetaObject)dntRef._baseMeta;	//replace this with Core.igObject._Meta once that's implemented
@@ -554,6 +678,67 @@ namespace igLibrary.DotNet
 			//Read attributes
 			return metaField;
 		}
+		public static DotNetMethodDefinition? ConvertMethodDef(igDotNetLoadResolver resolver, VvlMethodDef methodDef, StreamHelper strings, out int methodIndex, DotNetLibrary library, StreamHelper? IL)
+		{
+			igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, ReadVvlString(strings, methodDef._declaringTypeName));
+			if(!dntr.TryResolveObject(out DotNetType declaringType))
+			{
+				methodIndex = 0;
+				return null;
+			}
+
+			DotNetMethodDefinition dnMethodDef = new DotNetMethodDefinition();
+			dnMethodDef._name = ReadVvlString(strings, methodDef._methodName);
+			dnMethodDef._declaringType = declaringType;
+
+			dntr._isArray = methodDef._isReturnArray != 0;
+			dntr._elementType = methodDef._returnElementType;
+			dntr._name = ReadVvlString(resolver._stringTable, methodDef._returnTypeName);
+
+			if(dntr._elementType == ElementType.kElementTypeObject && !dntr._isArray)
+			{
+				if(!dntr.TryResolveObject(out dnMethodDef._retType))
+				{
+					dnMethodDef._retType._baseMeta = igArkCore.GetObjectMeta("Object");
+					dnMethodDef._retType._flags = (uint)ElementType.kElementTypeObject;
+				}
+			}
+			else
+			{
+				if(dntr._elementType != ElementType.kElementTypeObject)
+				{
+					dnMethodDef._retType._flags = (uint)DotNetType.Flags.kIsSimple;
+				}
+				dnMethodDef._retType._flags |= (uint)dntr._elementType | (dntr._isArray ? 0 : (uint)DotNetType.Flags.kIsArray);
+			}
+
+			dnMethodDef._stackHeight = methodDef._stackHeight;
+			dnMethodDef._flags = methodDef._flags;
+			dnMethodDef._methodIndex = methodDef._methodIndex;
+			if(IL != null)
+			{
+				dnMethodDef._IL = new igVector<byte>();
+				dnMethodDef._IL.SetCapacity((int)methodDef._ILCount);
+				IL.Seek(methodDef._ILOffset);
+				for(int i = 0; i < methodDef._ILCount; i++)
+				{
+					dnMethodDef._IL.Append(IL.ReadByte());
+				}
+			}
+			methodIndex = dnMethodDef._methodIndex;
+			dnMethodDef._owner = library;
+			dnMethodDef._parameters.SetCapacity(methodDef._paramCount);
+			for(int i = 0; i < methodDef._paramCount; i++)
+			{
+				dnMethodDef._parameters.Append(library._referencedTypes[methodDef._paramStartIndex + i]);
+			}
+			dnMethodDef._locals.SetCapacity(methodDef._localCount);
+			for(int i = 0; i < methodDef._localCount; i++)
+			{
+				dnMethodDef._locals.Append(library._referencedTypes[methodDef._localStartIndex + i]);
+			}
+			return dnMethodDef;
+		}
 
 		[StructLayout(LayoutKind.Explicit, Size = 0x28)]
 		public struct VvlHeader
@@ -561,7 +746,7 @@ namespace igLibrary.DotNet
 			[FieldOffset(0x00)] public uint unk00;
 			[FieldOffset(0x04)] public uint _sizeofSize;
 			[FieldOffset(0x08)] public uint _stringTableLength;
-			[FieldOffset(0x0C)] public uint _novaUnkCount;
+			[FieldOffset(0x0C)] public uint _numMethodRefs;
 			[FieldOffset(0x10)] public uint _fieldCount;
 			[FieldOffset(0x14)] public uint _methodCount;
 			[FieldOffset(0x18)] public uint _parameterCount;
@@ -586,26 +771,29 @@ namespace igLibrary.DotNet
 		[FieldOffset(0x04)] public uint _declaringTypeName;
 		[FieldOffset(0x10)] public uint _methodName;
 		[FieldOffset(0x20)] public int _paramCount;
+		[FieldOffset(0x24)] public int _localCount;
 		[FieldOffset(0x28)] public int _stackHeight;
 		[FieldOffset(0x2C)] public ElementType _returnElementType;
 		[FieldOffset(0x30)] public int _isReturnArray;
 		[FieldOffset(0x34)] public uint _returnTypeName;
 		[FieldOffset(0x40)] public int _paramStartIndex;
+		[FieldOffset(0x44)] public int _localStartIndex;
 		[FieldOffset(0x48)] public uint _ILOffset;
 		[FieldOffset(0x4C)] public uint _ILCount;
-		[FieldOffset(0x50)] public short _flags;
-		[FieldOffset(0x52)] public short _methodIndex;
+		[FieldOffset(0x50)] public ushort _flags;
+		[FieldOffset(0x52)] public ushort _methodIndex;
 	}
 	[StructLayout(LayoutKind.Explicit, Size = 0x30)]
 	public struct VvlFieldDefinition
 	{
 		[FieldOffset(0x00)] public uint _sizeofSize;
 		[FieldOffset(0x04)] public uint _name;
-		[FieldOffset(0x08)] public uint _isHandle;
+		[FieldOffset(0x08)] public DotNetFieldDefinition.EFlags _flags;
+		[FieldOffset(0x18)] public int _default;
 		[FieldOffset(0x20)] public ElementType _fieldType;
 		[FieldOffset(0x24)] public uint _isArray;
 		[FieldOffset(0x28)] public uint _refTypeName;
-		[FieldOffset(0x18)] public int _default;
+		[FieldOffset(0x2C)] public DotNetData.DataRepresentation _dataRep;
 	}
 	[StructLayout(LayoutKind.Explicit, Size = 0x10)]
 	public struct VvlParameterMeta
@@ -660,12 +848,15 @@ namespace igLibrary.DotNet
 		[FieldOffset(0x14)] public uint _ILCount;
 		[FieldOffset(0x18)] public uint _methodDefOffset;
 		[FieldOffset(0x1C)] public uint _methodCount;
+		[FieldOffset(0x20)] public uint _methodRefCount;
 		[FieldOffset(0x24)] public uint _ownedTypeOffset;
 		[FieldOffset(0x28)] public int _ownedTypeCount;
 		[FieldOffset(0x2C)] public uint _referencedTypeOffset;
 		[FieldOffset(0x30)] public int _referencedTypeCount;
 		[FieldOffset(0x34)] public uint _staticFieldOffset;
 		[FieldOffset(0x38)] public int _staticFieldCount;
+		[FieldOffset(0x3C)] public uint _fieldOffset;
+		[FieldOffset(0x40)] public uint _fieldCount;
 		[FieldOffset(0x44)] public uint _genericTypeOffset;
 		[FieldOffset(0x48)] public int _genericTypeCount;
 	}

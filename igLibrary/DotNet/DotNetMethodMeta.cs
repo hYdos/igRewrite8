@@ -8,4 +8,5 @@ namespace igLibrary.DotNet
 		public DotNetParameterMeta _return;
 		public DotNetParameterMetaList _parameters = new DotNetParameterMetaList();
 	}
+	public class DotNetMethodMetaList : igTObjectList<DotNetMethodMeta>{}
 }

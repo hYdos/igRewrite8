@@ -3,7 +3,7 @@ namespace igLibrary.DotNet
 	public class DotNetMethodDefinition : DotNetMethodSignature
 	{
 		public object _method;
-		public DotNetTypeList _locals;
+		public DotNetTypeList _locals = new DotNetTypeList();
 		public DotNetMethodDefinition _next;
 		public DotNetType _declaringType;
 		public igVector<byte> _IL;

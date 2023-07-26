@@ -10,5 +10,13 @@ namespace igLibrary.DotNet
 		{
 			_pending.Add(meta._name, meta);
 		}
+		public void AddTypes(DotNetLibrary library)
+		{
+			for(int i = 0; i < library._ownedTypes._count; i++)
+			{
+				if(library._ownedTypes[i] is igMetaObject metaObject)  metaObject.AppendToArkCore();
+				else if(library._ownedTypes[i] is igMetaEnum metaEnum) igArkCore._metaEnums.Add(metaEnum);
+			}
+		}
 	}
 }

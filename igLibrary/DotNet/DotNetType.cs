@@ -14,6 +14,12 @@ namespace igLibrary.DotNet
 			kIsArray  = 0x80000000,
 			kTypeMask = 0x000000FF,
 		}
+
+		public DotNetType()
+		{
+			_baseMeta = null;
+			_flags = (uint)ElementType.kElementTypeVoid;
+		}
 	}
 	public class DotNetTypeList : igTDataList<DotNetType>{}
 }

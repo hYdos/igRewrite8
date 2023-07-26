@@ -265,7 +265,12 @@ namespace igLibrary.Core
 			int index = _metaFields.FindIndex(x => x._name == name);
 			return index;
 		}
-		public override igMetaField? GetFieldByName(string name) => _metaFields[GetFieldIndexByName(name)];
+		public override igMetaField? GetFieldByName(string name)
+		{
+			int index = GetFieldIndexByName(name);
+			if(index < 0) return null;
+			return _metaFields[index];
+		}
 		public void ValidateAndSetField(int index, igMetaField field)
 		{
 			field._parentMeta = this;

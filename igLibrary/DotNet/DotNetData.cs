@@ -15,5 +15,13 @@ namespace igLibrary.DotNet
 			RawIndirect = 4,
 			FieldReference = 8,
 		}
+
+		public DotNetData()
+		{
+			_data = null;
+			_type = new DotNetType();
+			_representation = DataRepresentation.Normal;
+			_maybeRepresentation = 0;
+		}
 	}
 }
