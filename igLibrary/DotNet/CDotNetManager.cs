@@ -7,6 +7,7 @@ namespace igLibrary
 		//public igObjectDirectoryLoadCallback _objectDirectoryUnloadedCallback;
 		//public igUnsignedIntStringHashTable _functionHashes;
 		//public CDotNetLibraryHashTable _libraries;
+		public Dictionary<string, DotNetLibrary> _libraries = new Dictionary<string, DotNetLibrary>();
 		public DotNetRuntime _runtime = new DotNetRuntime();
 		//public igObject _dotNetCommunicator;
 		//public bool _debuggerEnabled;

@@ -14,6 +14,8 @@ debug
 *.obj
 *.dae
 *.fbx
+*.dll
+#.dll because of the vvl exporter
 
 # debug files + explanations
 

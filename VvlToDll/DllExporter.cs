@@ -1,4 +1,5 @@
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using igLibrary.Core;
 using igLibrary.DotNet;
 
@@ -6,21 +7,25 @@ namespace VvlToDll
 {
 	public class DllExporter
 	{
-		private static ModuleReference mscorlib;
+		private static ModuleReference module = new ModuleReference("mscorlib");
 		private static bool _initialized = false;
 
 		private ModuleDefinition _module;
 		private DotNetLibrary _library;
+		private List<DotNetLibrary> _dependencies = new List<DotNetLibrary>();
 		private Dictionary<igBaseMeta, TypeDefinition> _metaTypeLookup = new Dictionary<igBaseMeta, TypeDefinition>();
+		private Dictionary<DotNetMethodDefinition, MethodDefinition> _methodLookup = new Dictionary<DotNetMethodDefinition, MethodDefinition>();
 
 		private static void Init()
 		{
 			if(_initialized) return;
-
-			mscorlib = new ModuleReference("mscorlib");
 			_initialized = true;
 		}
-		public DllExporter() => Init();
+		public DllExporter(DotNetLibrary library)
+		{
+			_module = ModuleDefinition.CreateModule(Path.GetFileNameWithoutExtension(library._path), ModuleKind.Dll);
+			_library = library;
+		}
 		public void ExportLibrary(DotNetLibrary library, string name)
 		{
 			_module = ModuleDefinition.CreateModule(name, ModuleKind.Dll);
@@ -32,14 +37,14 @@ namespace VvlToDll
 			DefineObjects();
 			_module.Write(name);
 		}
-		private void CreateTypes()
+		public void CreateTypes()
 		{
 			foreach(igBaseMeta meta in _library._ownedTypes)
 			{
 				if(meta == null) continue;
 				GetNsAndName(in meta._name, out string ns, out string name);
 				TypeDefinition td = new TypeDefinition(ns, name, TypeAttributes.Public);
-				_metaTypeLookup.Add(meta, td);
+				if(!_metaTypeLookup.TryAdd(meta, td) && meta is not igMetaEnum) throw new ArgumentException("Type exists boss."); 	//So many enums are called just "Flags" or "Mode" that I had to make this 
 				_module.Types.Add(td);
 			}
 		}
@@ -50,7 +55,7 @@ namespace VvlToDll
 			if(_metaTypeLookup.TryGetValue(meta, out td)) return td;
 			throw new KeyNotFoundException("Failed to load type");
 		}
-		private void DefineEnums()
+		public void DefineEnums()
 		{
 			foreach(KeyValuePair<igBaseMeta, TypeDefinition> kvp in _metaTypeLookup)
 			{
@@ -66,7 +71,7 @@ namespace VvlToDll
 				}
 			}
 		}
-		private void DefineObjects()
+		public void DefineObjects()
 		{
 			foreach(KeyValuePair<igBaseMeta, TypeDefinition> kvp in _metaTypeLookup)
 			{
@@ -88,6 +93,102 @@ namespace VvlToDll
 				}
 			}
 		}
+		public TypeReference ImportVvlTypeRef(DotNetType dnTypeRef)
+		{
+			switch((ElementType)(dnTypeRef._flags & (uint)DotNetType.Flags.kTypeMask))
+			{
+				default:
+					throw new ArgumentException("Yo what???");
+				case ElementType.kElementTypeVoid:
+					return _module.TypeSystem.Void;
+				case ElementType.kElementTypeBoolean:
+					return _module.TypeSystem.Boolean;
+				case ElementType.kElementTypeChar:
+					return _module.TypeSystem.Char;
+				case ElementType.kElementTypeI1:
+					return _module.TypeSystem.SByte;
+				case ElementType.kElementTypeU1:
+					return _module.TypeSystem.Byte;
+				case ElementType.kElementTypeI2:
+					return _module.TypeSystem.Int16;
+				case ElementType.kElementTypeU2:
+					return _module.TypeSystem.UInt16;
+				case ElementType.kElementTypeI4:
+					return _module.TypeSystem.Int32;
+				case ElementType.kElementTypeU4:
+					return _module.TypeSystem.UInt32;
+				case ElementType.kElementTypeI8:
+					return _module.TypeSystem.Int64;
+				case ElementType.kElementTypeU8:
+					return _module.TypeSystem.UInt64;
+				case ElementType.kElementTypeR4:
+					return _module.TypeSystem.Single;
+				case ElementType.kElementTypeR8:
+					return _module.TypeSystem.Double;
+				case ElementType.kElementTypeString:
+					return _module.TypeSystem.String;
+				case ElementType.kElementTypeObject:
+					DotNetLibrary? owner = null;
+					if(dnTypeRef._baseMeta is igDotNetDynamicMetaEnum dndme)
+					{
+						owner = dndme._owner;
+					}
+					else if(dnTypeRef._baseMeta is igDotNetDynamicMetaObject dndmo)
+					{
+						owner = dndmo._owner;
+					}
+					else if(dnTypeRef._baseMeta is igMetaObject || dnTypeRef._baseMeta is igMetaEnum)
+					{
+						return _module.ImportReference(ArkDllExport._metaTypeLookup[dnTypeRef._baseMeta]);
+					}
+					if(owner == null) return _module.TypeSystem.Object;	//This is bad, this happening indicates that the vvls were not loaded properly
+
+					if(!_dependencies.Contains(owner))
+					{
+						_dependencies.Add(owner);
+					}
+
+					DllExporter dependentExporter = DllExportManager._libExporterLookup[owner];
+					return _module.ImportReference(dependentExporter._metaTypeLookup[dnTypeRef._baseMeta]);				
+			}
+		}
+		public void DeclareMethods()
+		{
+			foreach(DotNetMethodDefinition? dnMethodDef in _library._methodDefs)
+			{
+				if(dnMethodDef == null) continue;
+
+				TypeDefinition td = _metaTypeLookup[dnMethodDef._declaringType._baseMeta];
+				MethodDefinition md = new MethodDefinition(dnMethodDef._name, MethodAttributes.CompilerControlled, ImportVvlTypeRef(dnMethodDef._retType));
+				
+				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.Constructor) != 0) md.Attributes |= MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig;
+				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.StaticMethod) != 0) md.Attributes |= MethodAttributes.Static;
+				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.AbstractMethod) != 0) md.Attributes |= MethodAttributes.Abstract;
+				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.RuntimeImplMethod) != 0) md.Attributes |= MethodAttributes.;
+				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.NoSpecializationCopyMethod) != 0) md.Attributes |= MethodAttributes.;
+
+				//If it's not static then param 1 is "this"
+				for(int i = md.IsStatic ? 0 : 1; i < dnMethodDef._parameters._count; i++)
+				{
+					ParameterDefinition pd = new ParameterDefinition(ImportVvlTypeRef(dnMethodDef._parameters[i]));
+					pd.Name = dnMethodDef._methodMeta._parameters[i]._name;
+					md.Parameters.Add(pd);
+				}
+
+				if(md.HasBody)
+				{
+					md.Body.MaxStackSize = dnMethodDef._stackHeight;
+					for(int i = 0; i < dnMethodDef._locals._count; i++)
+					{
+						md.Body.Variables.Add(new VariableDefinition(ImportVvlTypeRef(dnMethodDef._locals[i])));
+					}
+					ILProcessor il = md.Body.GetILProcessor();
+					il.Append(il.Create(OpCodes.Ret));
+				}
+
+				td.Methods.Add(md);
+			}
+		}
 		private static void GetNsAndName(in string qualifiedName, out string ns, out string name)
 		{
 			int checkGeneric = qualifiedName.IndexOf('`');
@@ -103,6 +204,10 @@ namespace VvlToDll
 				ns = "-";
 				name = qualifiedName;
 			}
+		}
+		public void Finish()
+		{
+			_module.Write($"{_module.Name}.dll");
 		}
 	}
 }

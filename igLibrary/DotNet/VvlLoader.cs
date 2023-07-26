@@ -161,6 +161,10 @@ namespace igLibrary.DotNet
 				}
 				else
 				{
+					if(typeDetails[i]._targetMeta is igDotNetDynamicMetaEnum dndme)
+					{
+						dndme._owner = library;
+					}
 					library._ownedTypes.Append(typeDetails[i]._targetMeta);
 				}
 			}
@@ -251,10 +255,10 @@ namespace igLibrary.DotNet
 						{
 							meta.AppendDynamicField(AddField(library, resolver, fieldDefs[memberStarts[metaIndex] + j], strings));
 						}
-						library._ownedTypes.Append(meta);
 						((igDotNetDynamicMetaObject)meta)._owner = library;
 					}
 				}
+				library._ownedTypes.Append(meta);
 			}
 
 			library._referencedTypes.SetCapacity(typeHeader._referencedTypeCount);
@@ -360,7 +364,7 @@ namespace igLibrary.DotNet
 			}
 
 			success = true;
-			//CDotNetaManager._Instance._libraries.Add(libName, library);
+			CDotNetaManager._Instance._libraries.Add(libName, library);
 			return library;
 		}
 		private static string ReadVvlString(StreamHelper strings, uint offset)
@@ -413,14 +417,14 @@ namespace igLibrary.DotNet
 				else
 				{
 					//dntd._ownsMeta = false;
+					string trimmedTypeName = typeName;
 					while(true)
 					{
-						meta = igArkCore.GetMetaEnum(typeName);
+						meta = igArkCore.GetMetaEnum(trimmedTypeName);
 						if(meta == null)
 						{
-							int nsIndex = typeName.IndexOf('.');
-							if(nsIndex >= 0) typeName = typeName.Substring(nsIndex+1);
-							//else throw new TypeLoadException($"Failed to find enum {typeName}");
+							int nsIndex = trimmedTypeName.IndexOf('.');
+							if(nsIndex >= 0) trimmedTypeName = trimmedTypeName.Substring(nsIndex+1);
 							else break;
 							continue;
 						}

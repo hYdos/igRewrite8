@@ -14,14 +14,26 @@ namespace VvlToDll
 			igFileContext.Singleton.LoadArchive("archives/permanent_ps3.pak");
 			igFileContext.Singleton.LoadArchive("archives/permanentdeveloper.pak");
 			igFileContext.Singleton.LoadArchive("archives/gamestartup.pak");
+			igFileContext.Singleton.LoadArchive("archives/ChopChop.pak");
 
 			DotNetRuntime runtime = new DotNetRuntime();
 
-			DotNetLibrary lib = VvlLoader.Load("scripts:/interop/game.vvl", runtime, out bool success);
-			//DotNetLibrary lib = VvlLoader.Load("scripts:/ChopChop_script.vvl", runtime, out bool success);
+			bool success;
+			DotNetLibrary lib = VvlLoader.Load("scripts:/interop/DotNetAttributes.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/interop/Core.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/interop/Runtime.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/interop/DebugLink.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/interop/VisualScript.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/interop/game.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/common.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/ui.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/behaviorHandlers.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/common_script_vs.vvl", runtime, out success);
+			VvlLoader.Load("scripts:/Characters_script_vs.vvl", runtime, out success);
 
-			DllExporter vvlExporter = new DllExporter();
-			vvlExporter.ExportLibrary(lib, "Game.dll");
+			VvlLoader.Load("scripts:/ChopChop_script.vvl", runtime, out success);
+
+			DllExportManager.ExportAllVvls();
 		}
 	}
 }
