@@ -82,27 +82,27 @@ namespace VvlToDll
 		}
 		public static TypeReference GetFieldTypeRef(ModuleDefinition md, igMetaField field, Func<igBaseMeta, TypeReference> resolver)
 		{
-			     if(field is igIntMetaField)                   return md.ImportReference(typeof(int));
-			else if(field is igUnsignedIntMetaField)           return md.ImportReference(typeof(uint));
-			else if(field is igShortMetaField)                 return md.ImportReference(typeof(short));
-			else if(field is igUnsignedShortMetaField)         return md.ImportReference(typeof(ushort));
-			else if(field is igLongMetaField)                  return md.ImportReference(typeof(long));
-			else if(field is igUnsignedLongMetaField)          return md.ImportReference(typeof(ulong));
-			else if(field is igCharMetaField)                  return md.ImportReference(typeof(sbyte));
-			else if(field is igUnsignedCharMetaField)          return md.ImportReference(typeof(byte));
-			else if(field is igFloatMetaField)                 return md.ImportReference(typeof(float));
-			else if(field is igDoubleMetaField)                return md.ImportReference(typeof(double));
-			else if(field is igIntPtrMetaField)                return md.ImportReference(typeof(IntPtr));
-			else if(field is igUnsignedIntPtrMetaField)        return md.ImportReference(typeof(UIntPtr));
-			else if(field is igBoolMetaField)                  return md.ImportReference(typeof(bool));
-			else if(field is igStringMetaField)                return md.ImportReference(typeof(string));
+			     if(field is igIntMetaField)                   return md.TypeSystem.Int32;
+			else if(field is igUnsignedIntMetaField)           return md.TypeSystem.UInt32;
+			else if(field is igShortMetaField)                 return md.TypeSystem.Int16;
+			else if(field is igUnsignedShortMetaField)         return md.TypeSystem.UInt16;
+			else if(field is igLongMetaField)                  return md.TypeSystem.Int64;
+			else if(field is igUnsignedLongMetaField)          return md.TypeSystem.UInt64;
+			else if(field is igCharMetaField)                  return md.TypeSystem.SByte;
+			else if(field is igUnsignedCharMetaField)          return md.TypeSystem.Byte;
+			else if(field is igFloatMetaField)                 return md.TypeSystem.Single;
+			else if(field is igDoubleMetaField)                return md.TypeSystem.Double;
+			else if(field is igIntPtrMetaField)                return md.TypeSystem.IntPtr;
+			else if(field is igUnsignedIntPtrMetaField)        return md.TypeSystem.UIntPtr;
+			else if(field is igBoolMetaField)                  return md.TypeSystem.Boolean;
+			else if(field is igStringMetaField)                return md.TypeSystem.String;
 			else if(field is igDotNetEnumMetaField dnemf)      return resolver.Invoke(dnemf._definedMetaEnum);
-			else if(field is igEnumMetaField emf)              return resolver.Invoke(emf._metaEnum);
+			else if(field is igEnumMetaField emf)              return emf._metaEnum == null ? md.TypeSystem.Int32 : resolver.Invoke(emf._metaEnum);
 			else if(field is igMemoryRefMetaField mrmf)        return CreateMemoryRefType(md, GetFieldTypeRef(md, mrmf._memType, resolver));
 			else if(field is igMemoryRefHandleMetaField mrhmf) return CreateMemoryRefType(md, GetFieldTypeRef(md, mrhmf._memType, resolver));
 			else if(field is igObjectRefMetaField ormf)        return resolver.Invoke(ormf._metaObject);
 			else if(field is igHandleMetaField hmf)            return CreateHandleType(md, resolver.Invoke(hmf._metaObject));
-			else                                               return md.ImportReference(typeof(object));
+			else                                               return md.TypeSystem.Object;
 		}
 		private static TypeReference CreateMemoryRefType(ModuleDefinition md, TypeReference typeRef)
 		{

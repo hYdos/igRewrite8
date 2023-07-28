@@ -20,7 +20,15 @@ namespace VvlToDll
 			}
 			foreach(KeyValuePair<DotNetLibrary, DllExporter> kvp in _libExporterLookup)
 			{
+				kvp.Value.DefineObjects();
+			}
+			foreach(KeyValuePair<DotNetLibrary, DllExporter> kvp in _libExporterLookup)
+			{
 				kvp.Value.DeclareMethods();
+			}
+			foreach(KeyValuePair<DotNetLibrary, DllExporter> kvp in _libExporterLookup)
+			{
+				kvp.Value.DefineMethods();
 			}
 			foreach(KeyValuePair<DotNetLibrary, DllExporter> kvp in _libExporterLookup)
 			{

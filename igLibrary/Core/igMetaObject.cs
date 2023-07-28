@@ -287,6 +287,7 @@ namespace igLibrary.Core
 		public void AppendDynamicField(igMetaField field)
 		{
 			field._offset = (ushort)(_metaFields.Max(x => x._offset) + 1u);
+			field._parentMeta = this;
 			_metaFields.Add(field);
 		}
 		public void CalculateOffsets()

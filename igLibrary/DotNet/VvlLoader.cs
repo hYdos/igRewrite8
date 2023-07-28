@@ -39,6 +39,7 @@ namespace igLibrary.DotNet
 
 			//Prepare library and resolver
 			DotNetLibrary library = new DotNetLibrary();
+			library._isLittleEndian = sh._endianness == StreamHelper.Endianness.Little;
 			library._runtime = runtime;
 			library._path = libName;
 			igDotNetLoadResolver resolver = new igDotNetLoadResolver();
@@ -321,7 +322,12 @@ namespace igLibrary.DotNet
 			library._methodRefs.SetCapacity((int)typeHeader._methodRefCount);
 			for(int i = 0; i < typeHeader._methodRefCount; i++)
 			{
+				//string typeName = ReadVvlString(strings, methodRefs[i]._declaringTypeName);
+				//string methodName = ReadVvlString(strings, methodRefs[i]._methodName);
+				//ResolveMethod(resolver, out DotNetMethodDefinition methodRef, typeName, methodName);
+
 				DotNetMethodDefinition? dnMethodRef = ConvertMethodDef(resolver, methodRefs[i], strings, out int methodIndex, library, null);
+
 				library._methodRefs.Append(dnMethodRef);
 			}
 
@@ -367,7 +373,7 @@ namespace igLibrary.DotNet
 			CDotNetaManager._Instance._libraries.Add(libName, library);
 			return library;
 		}
-		private static string ReadVvlString(StreamHelper strings, uint offset)
+		public static string ReadVvlString(StreamHelper strings, uint offset)
 		{
 			strings.Seek(offset);
 			return strings.ReadString();
@@ -682,13 +688,68 @@ namespace igLibrary.DotNet
 			//Read attributes
 			return metaField;
 		}
+		public static void ResolveMethod(igDotNetLoadResolver resolver, out DotNetMethodDefinition methodDef, string typeName, string methodName)
+		{
+			igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, typeName);
+			string trimmedTypeName = typeName;
+			DotNetType declaringType;
+			while(true)
+			{
+				if(!dntr.TryResolveObject(out declaringType))
+				{
+					int nsIndex = dntr._name.IndexOf('.');
+					if(nsIndex >= 0) dntr._name = dntr._name.Substring(nsIndex+1);
+					else throw new TypeLoadException($"Failed to load referenced type {typeName}");
+					continue;
+				}
+				else break;
+			}
+
+			igDotNetDynamicMetaObject dndmo = (igDotNetDynamicMetaObject)declaringType._baseMeta;
+			for(int i = 0; i < dndmo._owner._methodDefs._count; i++)
+			{
+				if(dndmo._owner._methodDefs[i]._name == $"{typeName}.{methodName}")
+				{
+					methodDef = dndmo._owner._methodDefs[i];
+					return;
+				}
+			}
+			if(methodName == ".ctor")
+			{
+				methodDef = new DotNetMethodDefinition();
+				methodDef._declaringType = declaringType;
+				methodDef._owner = dndmo._owner;
+				methodDef._stackHeight = 1;
+				methodDef._name = methodName;
+				methodDef._parameters.Append(declaringType);
+				methodDef._methodMeta = new DotNetMethodMeta();
+				methodDef._methodMeta._parameters.Append(new DotNetParameterMeta() { _name = "this" });
+				methodDef._retType = new DotNetType();
+				methodDef._flags = (uint)DotNetMethodSignature.FlagTypes.Constructor;
+				methodDef._owner._methodDefs.Append(methodDef);
+				methodDef._IL.Append(0x2A);	//Ret
+				return;
+			}
+			throw new MissingMethodException($"Failed to load method {methodName} from class {typeName}");
+		}
 		public static DotNetMethodDefinition? ConvertMethodDef(igDotNetLoadResolver resolver, VvlMethodDef methodDef, StreamHelper strings, out int methodIndex, DotNetLibrary library, StreamHelper? IL)
 		{
 			igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, ReadVvlString(strings, methodDef._declaringTypeName));
-			if(!dntr.TryResolveObject(out DotNetType declaringType))
+			DotNetType declaringType;
+			while(true)
 			{
-				methodIndex = 0;
-				return null;
+				if(!dntr.TryResolveObject(out declaringType))
+				{
+					int nsIndex = dntr._name.IndexOf('.');
+					if(nsIndex >= 0) dntr._name = dntr._name.Substring(nsIndex+1);
+					//else throw new TypeLoadException($"Failed to find class {typeName}");
+					else
+					{
+						methodIndex = 0;
+						return null;
+					}
+				}
+				else break;
 			}
 
 			DotNetMethodDefinition dnMethodDef = new DotNetMethodDefinition();
