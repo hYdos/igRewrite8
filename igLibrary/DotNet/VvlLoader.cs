@@ -25,6 +25,12 @@ namespace igLibrary.DotNet
 		*/
 		public static DotNetLibrary Load(string libName, DotNetRuntime runtime, out bool success)
 		{
+			DotNetLibrary? library;
+			if(CDotNetaManager._Instance._libraries.TryGetValue(libName, out library))
+			{
+				success = true;
+				return library;
+			}
 			//Open file
 			igFileContext.Singleton.Open(libName, igFileContext.GetOpenFlags(FileAccess.Read, FileMode.Open), out igFileDescriptor fd, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 			StreamHelper sh = new StreamHelper(fd._handle, StreamHelper.Endianness.Little);
@@ -38,7 +44,7 @@ namespace igLibrary.DotNet
 			Debug.Assert(header._sizeofSize == 0x28);
 
 			//Prepare library and resolver
-			DotNetLibrary library = new DotNetLibrary();
+			library = new DotNetLibrary();
 			library._isLittleEndian = sh._endianness == StreamHelper.Endianness.Little;
 			library._runtime = runtime;
 			library._path = libName;
@@ -371,6 +377,9 @@ namespace igLibrary.DotNet
 
 			success = true;
 			CDotNetaManager._Instance._libraries.Add(libName, library);
+
+			resolver.FinalizeTypes(library);
+
 			return library;
 		}
 		public static string ReadVvlString(StreamHelper strings, uint offset)

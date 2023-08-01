@@ -95,7 +95,10 @@ namespace igLibrary.DotNet
 
 			ulong baseOffset = section._sh.Tell64();
 			section._sh.Seek(baseOffset + 0x08);
-			igObjectRefMetaField.GetMetaField().WriteIGZField(saver, section, data._type._baseMeta);
+			igObjectRefMetaField metaWriter = igObjectRefMetaField.GetMetaField();
+			metaWriter._refCounted = false;
+			metaWriter.WriteIGZField(saver, section, data._type._baseMeta);
+			metaWriter._refCounted = true;
 			section._sh.WriteUInt32(data._type._flags);
 			if(igAlchemyCore.isPlatform64Bit(saver._platform))
 			{

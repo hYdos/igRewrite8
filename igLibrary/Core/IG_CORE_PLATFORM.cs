@@ -1,7 +1,7 @@
 namespace igLibrary.Core
 {
 	//While this is really nice to have, it can't be used for reading the igz header since IG_CORE_PLATFORM changes between games, hence you see the tomfoolery happen
-	public enum IG_CORE_PLATFORM : uint
+	public enum IG_CORE_PLATFORM
 	{
 		IG_CORE_PLATFORM_DEFAULT,
 		IG_CORE_PLATFORM_DEPRECATED,

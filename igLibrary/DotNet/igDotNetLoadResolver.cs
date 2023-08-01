@@ -10,6 +10,13 @@ namespace igLibrary.DotNet
 		{
 			_pending.Add(meta._name, meta);
 		}
+		public void FinalizeTypes(DotNetLibrary library)
+		{
+			for(int i = 0; i < library._ownedTypes._count; i++)
+			{
+				if(library._ownedTypes[i] is igDotNetDynamicMetaObject metaObject) metaObject.FinalizeAppendToArkCore();
+			}
+		}
 		public void AddTypes(DotNetLibrary library)
 		{
 			for(int i = 0; i < library._ownedTypes._count; i++)

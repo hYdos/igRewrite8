@@ -1,5 +1,6 @@
 using ImGuiNET;
 using igLibrary.Core;
+using igLibrary;
 
 namespace igCauldron3
 {
@@ -54,6 +55,7 @@ namespace igCauldron3
 								PackagePrecacher.PrecachePackage(loaded._fileHeaders[j].name);
 							}
 						}
+						CDotNetaManager cdnm = CDotNetaManager._Instance;
 					}
 				}
 			}
