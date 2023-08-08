@@ -8,6 +8,11 @@ namespace igLibrary.Core
 		public igMemoryPool _memoryPool;
 		private T[]? _data;
 
+		public T this[uint index]
+		{
+			get => _data[index];
+			set => _data[index] = value;
+		}
 		public T this[int index]
 		{
 			get => _data[index];
@@ -28,6 +33,12 @@ namespace igLibrary.Core
 			_optimalGPURead = false;
 			_alignmentMultiple = 1;
  		}
+		public igMemory<T> CreateCopy()
+		{
+			igMemory<T> copy = (igMemory<T>)this.MemberwiseClone();
+			copy._data = _data == null ? null : _data.ToArray();
+			return copy;
+		}
 
 		public IEnumerator<T> GetEnumerator()
 		{

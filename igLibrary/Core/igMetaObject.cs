@@ -308,7 +308,7 @@ namespace igLibrary.Core
 		}
 		public void CalculateOffsetForPlatform(IG_CORE_PLATFORM platform)
 		{
-			ushort alignment = 0;
+			ushort alignment = (ushort)igAlchemyCore.GetPointerSize(platform);	//alignment set to alignof pointer cos vtable
 			igMetaField[] metaFieldsByOffset = _metaFields.OrderBy(x => x._offset).ToArray();
 			ushort currentOffset = (ushort)(4u + igAlchemyCore.GetPointerSize(platform));
 			for(int i = 0; i < metaFieldsByOffset.Length; i++)
