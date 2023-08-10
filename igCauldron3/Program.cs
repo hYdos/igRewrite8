@@ -7,6 +7,7 @@ namespace igCauldron3
 {
 	public static class Program
 	{
+		[STAThread] 
 		public static void Main(string[] args)
 		{
 			Window wnd = new Window(

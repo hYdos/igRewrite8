@@ -1,4 +1,5 @@
 using ImGuiNET;
+using igCauldron3.Utils;
 
 namespace igCauldron3
 {
@@ -13,7 +14,11 @@ namespace igCauldron3
 				{
 					if(ImGui.MenuItem("Save As"))
 					{
-						ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir].WriteFile("test.igz");
+						string savePath = CrossFileDialog.SaveFile("Save IGZ", ".igz;.lng");
+						if(!string.IsNullOrWhiteSpace(savePath))
+						{
+							ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir].WriteFile(savePath);
+						}
 					}
 					ImGui.EndMenu();
 				}

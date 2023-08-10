@@ -50,6 +50,7 @@ namespace igLibrary.Core
 		}
 		public override object? GetDefault(igObject target)
 		{
+			if(_metaEnum == null) return _default;
 			if(_default != null) return _metaEnum.GetEnumFromValue((int)_default);
 			return Activator.CreateInstance(GetOutputType());
 		}

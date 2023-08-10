@@ -54,3 +54,4 @@ debug
 smoke_config.xml
 igTests/imgui.ini
 *.csv
+ParseTextMetasToBinary/gameconfig.json

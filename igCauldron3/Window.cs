@@ -18,49 +18,27 @@ namespace igCauldron3
 		{
 			this.args = args;
 			igAlchemyCore.InitializeSystems();
-			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 		}
 		protected override void OnLoad()
 		{
 			base.OnLoad();
 
+			Title = "igCauldron";
+
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 
-			ParseArgs();
-
-			IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
-			igFileContext.Singleton.LoadArchive("archives/loosefiles.pak");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}");
-			PackagePrecacher.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/essentialui");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/gamestartup");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/permanentdeveloper");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/languagestartup");
-			PackagePrecacher.PrecachePackage($"generated/UI/legal");
-			PackagePrecacher.PrecachePackage($"generated/maps/zoneinfos");
-			PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent_2015");
-			if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN || platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)
-			{
-				PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_Mobile");
-			}
-			PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_FrontEnd");
-			PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_FrontEnd");
-
-			frames.Add(new ArchiveFrame(this));
-			frames.Add(new ObjectManagerFrame(this));
-			frames.Add(new MenuBarFrame(this));
+			frames.Add(new ConfigFrame(this));
 		}
 		protected override void OnResize(ResizeEventArgs e)
 		{
 			base.OnResize(e);
-			
+
 			GL.Viewport(0, 0, ClientSize.X, ClientSize.Y);
 			controller.WindowResized(ClientSize.X, ClientSize.Y);
 		}
 		protected override void OnUpdateFrame(FrameEventArgs e)
 		{
-			if (KeyboardState.IsKeyDown(Keys.Escape))
+			if (KeyboardState.IsKeyDown(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Escape))
 			{
 				Close();
 			}
@@ -89,7 +67,7 @@ namespace igCauldron3
 
 			controller.Render();
 
-			Title = e.Time.ToString();
+			//Title = e.Time.ToString();
 			SwapBuffers();
 		}
 		private void ParseArgs()

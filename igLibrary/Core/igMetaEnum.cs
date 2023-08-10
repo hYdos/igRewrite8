@@ -44,7 +44,7 @@ namespace igLibrary.Core
 				return Activator.CreateInstance(_internalType);
 			}
 
-			return Enum.ToObject(_internalType, value);
+			return Enum.Parse(_internalType, _names[index]);
 		}
 		public int GetValueFromEnum(object enumValue)
 		{
