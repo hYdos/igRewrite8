@@ -144,6 +144,8 @@ namespace igLibrary
 			BaseStream.Read(buffer, 0x00, 0x01);
 			return buffer[0];
 		}
+		public void WriteBoolean(bool data) => WriteBoolean(data, (uint)BaseStream.Position);
+		public void WriteBoolean(bool data, uint offset) => WriteByte((byte)(data ? 1 : 0), offset);
 		public void WriteByte(byte data) => WriteByte(data, (uint)BaseStream.Position);
 		public void WriteByte(byte data, uint offset)
 		{
