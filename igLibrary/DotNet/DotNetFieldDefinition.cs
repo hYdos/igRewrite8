@@ -3,13 +3,13 @@ namespace igLibrary.DotNet
 	public struct DotNetFieldDefinition
 	{
 		public string Name;
-		public EFlags Flags;
+		public FieldDefFlags Flags;
 		public DotNetData Data;
 
-		public enum EFlags
+		public enum FieldDefFlags
 		{
 			kHandle = 1,
-			kConstruct = 1
+			kConstruct = 2
 		}
 	}
 	public class DotNetFieldDefinitionList : igTDataList<DotNetFieldDefinition>{}

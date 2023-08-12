@@ -580,7 +580,7 @@ namespace igLibrary.DotNet
 						break;
 					case ElementType.kElementTypeClass:
 					case ElementType.kElementTypeObject:
-						if((field._flags & DotNetFieldDefinition.EFlags.kHandle) == 0)
+						if((field._flags & DotNetFieldDefinition.FieldDefFlags.kHandle) == 0)
 						{
 							metaField = new igObjectRefArrayMetaField();
 							((igObjectRefArrayMetaField)metaField)._num = (short)field._default;
@@ -672,7 +672,7 @@ namespace igLibrary.DotNet
 							((igDotNetEnumMetaField)metaField)._metaEnum = metaEnum;
 							((igDotNetEnumMetaField)metaField)._definedMetaEnum = metaEnum;
 						}
-						else if((field._flags & DotNetFieldDefinition.EFlags.kHandle) == 0)
+						else if((field._flags & DotNetFieldDefinition.FieldDefFlags.kHandle) == 0)
 						{
 							metaField = new igObjectRefMetaField();
 							((igObjectRefMetaField)metaField)._metaObject = (igMetaObject)dntRef._baseMeta;	//replace this with Core.igObject._Meta once that's implemented
@@ -862,7 +862,7 @@ namespace igLibrary.DotNet
 	{
 		[FieldOffset(0x00)] public uint _sizeofSize;
 		[FieldOffset(0x04)] public uint _name;
-		[FieldOffset(0x08)] public DotNetFieldDefinition.EFlags _flags;
+		[FieldOffset(0x08)] public DotNetFieldDefinition.FieldDefFlags _flags;
 		[FieldOffset(0x18)] public int _default;
 		[FieldOffset(0x20)] public ElementType _fieldType;
 		[FieldOffset(0x24)] public uint _isArray;
