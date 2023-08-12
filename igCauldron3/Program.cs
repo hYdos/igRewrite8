@@ -24,7 +24,18 @@ namespace igCauldron3
 				args
 			);
 
+#if !DEBUG
+			try
+			{
+				wnd.Run();
+			}
+			catch(Exception e)
+			{
+				System.Windows.Forms.MessageBox.Show(e.StackTrace, $"Error \"{e.Message}\"", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+#else
 			wnd.Run();
+#endif
 		}
 		private static void ExtractSLIArchive(string[] args)
 		{
