@@ -308,6 +308,7 @@ namespace igLibrary.Core
 		}
 		public void CalculateOffsetForPlatform(IG_CORE_PLATFORM platform)
 		{
+			if(_parent != null) _parent.CalculateOffsetForPlatform(platform);
 			ushort alignment = (ushort)igAlchemyCore.GetPointerSize(platform);	//alignment set to alignof pointer cos vtable
 			igMetaField[] metaFieldsByOffset = _metaFields.OrderBy(x => x._offset).ToArray();
 			ushort currentOffset = (ushort)(4u + igAlchemyCore.GetPointerSize(platform));
@@ -322,6 +323,11 @@ namespace igLibrary.Core
 						bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
 					}
 					continue;
+				}
+
+				if(i == _parent._metaFields.Count && platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_CAFE)	//Dumb Wii U alignment rule
+				{
+					currentOffset = _parent._sizes[platform];
 				}
 
 				alignment = (ushort)System.Math.Max(alignment, metaFieldsByOffset[i].GetAlignment(platform));
