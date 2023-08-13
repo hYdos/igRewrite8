@@ -31,7 +31,7 @@ namespace igCauldron3
 			}
 			catch(Exception e)
 			{
-				System.Windows.Forms.MessageBox.Show(e.StackTrace, $"Error \"{e.Message}\"", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				System.Windows.Forms.MessageBox.Show($"{e.Message}\".\n\n{e.StackTrace}", $"Encountered \"{e.GetType().Name}\"", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 #else
 			wnd.Run();

@@ -18,14 +18,21 @@ namespace igLibrary.Core
 
 				//if(!metaFields[i]._properties._persistent) continue;
 
-				loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
-
-				object? data = metaFields[i].ReadIGZField(loader);
-
-				FieldInfo? field = GetType().GetField(metaFields[i]._name);
-				if(field != null)
+				try
 				{
-					field.SetValue(this, data);
+					loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
+
+					object? data = metaFields[i].ReadIGZField(loader);
+
+					FieldInfo? field = GetType().GetField(metaFields[i]._name);
+					if(field != null)
+					{
+						field.SetValue(this, data);
+					}
+				}
+				catch(Exception e)
+				{
+					throw new FieldReadException(e, loader._dir._path, loader._stream.Tell(), meta, metaFields[i]);
 				}
 			}
 		}
