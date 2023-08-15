@@ -312,8 +312,24 @@ namespace igLibrary.Core
 			ushort alignment = (ushort)igAlchemyCore.GetPointerSize(platform);	//alignment set to alignof pointer cos vtable
 			igMetaField[] metaFieldsByOffset = _metaFields.OrderBy(x => x._offset).ToArray();
 			ushort currentOffset = (ushort)(4u + igAlchemyCore.GetPointerSize(platform));
+			igMetaField? maxOffset = null;
+			if(_parent != null)
+			{
+				for(int i = 0; i < _parent._metaFields.Count; i++)
+				{
+					if(maxOffset == null) maxOffset = _metaFields[i];
+					if(maxOffset._offset < _metaFields[i]._offset) maxOffset = _metaFields[i];
+				}
+			}
+			bool surpassedMaxOffset = false;
 			for(int i = 0; i < metaFieldsByOffset.Length; i++)
 			{
+				if(maxOffset != null && !surpassedMaxOffset && metaFieldsByOffset[i]._offset > maxOffset._offset && platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_CAFE)	//Dumb Wii U alignment rule
+				{
+					surpassedMaxOffset = true;
+					currentOffset = _parent._sizes[platform];
+				}
+
 				if(metaFieldsByOffset[i] is igStaticMetaField) continue;
 				if(metaFieldsByOffset[i] is igPropertyFieldMetaField) continue;
 				if(metaFieldsByOffset[i] is igBitFieldMetaField bfMf)
@@ -323,11 +339,6 @@ namespace igLibrary.Core
 						bfMf._offsets.Add(platform, bfMf._storageMetaField._offsets[platform]);
 					}
 					continue;
-				}
-
-				if(i == _parent._metaFields.Count && platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_CAFE)	//Dumb Wii U alignment rule
-				{
-					currentOffset = _parent._sizes[platform];
 				}
 
 				alignment = (ushort)System.Math.Max(alignment, metaFieldsByOffset[i].GetAlignment(platform));
