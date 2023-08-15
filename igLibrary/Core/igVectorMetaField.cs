@@ -36,14 +36,18 @@ namespace igLibrary.Core
 				count = loader._stream.ReadUInt32();
 			}
 
-			igMemoryRefMetaField memoryRefMetaField = new igMemoryRefMetaField();
-			memoryRefMetaField._memType = _memType;
-			IigMemory memory = (IigMemory)memoryRefMetaField.ReadIGZField(loader);
-
 			igVectorCommon vector = (igVectorCommon)Activator.CreateInstance(GetOutputType());
 
-			vector.SetData(memory);
-			vector.SetCount(count);
+			IigMemory memory;
+
+			if(count != 0)
+			{
+				igMemoryRefMetaField memoryRefMetaField = new igMemoryRefMetaField();
+				memoryRefMetaField._memType = _memType;
+				memory = (IigMemory)memoryRefMetaField.ReadIGZField(loader);
+				vector.SetData(memory);
+				vector.SetCount(count);
+			}
 
 			return vector;
 		}
