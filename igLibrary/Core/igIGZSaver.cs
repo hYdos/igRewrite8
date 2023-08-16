@@ -312,7 +312,8 @@ namespace igLibrary.Core
 					depList.Add((dir._dependancies[j]._name._string, dir._dependancies[j]._path));
 				}
 				depList = depList.OrderBy(x => x.Item1).ThenBy(x => x.Item2).ToList();
-				List<(string, string)> buildDepList = _buildDependancies.OrderBy(x => x.Item1).ThenBy(x => x.Item2).ToList();
+				//List<(string, string)> buildDepList = _buildDependancies.OrderBy(x => x.Item1).ThenBy(x => x.Item2).ToList();
+				List<(string, string)> buildDepList = new List<(string, string)>();//_buildDependancies.OrderBy(x => x.Item1).ThenBy(x => x.Item2).ToList();
 				List<(string, string)> sortedDepList = new List<(string, string)>();
 
 				int depIndex = 0;
