@@ -14,7 +14,8 @@ namespace igRewrite8
 		{
 			//DumpToyDataToRunes(args); return;
 			//DumpAllArchives(args); return;
-			ReadFromTextFile(args); return;
+			//ReadFromTextFile(args); return;
+			TestArchives(args); return;
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
@@ -158,6 +159,20 @@ namespace igRewrite8
 			igArkCore.WriteToFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 			
 			igArkCore.Reset();
+		}
+		private static void TestArchives(string[] args)
+		{
+			igFileContext.Singleton.Initialize(args[0]);
+			igArchive2 archive = new igArchive2();
+			archive.Open("archives/airzone.pak", igBlockingType.kMayBlock);
+			Directory.CreateDirectory("dev");
+			for(int i = 0; i < archive._files.Count; i++)
+			{
+				FileStream fs = File.Create($"dev/test_{i.ToString("X08")}.dat");
+				archive.Decompress(archive._files[i], fs);
+				fs.Close();
+			}
+			return;
 		}
 	}
 }

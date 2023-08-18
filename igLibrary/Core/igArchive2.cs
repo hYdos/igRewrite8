@@ -1,0 +1,258 @@
+using System.IO.Compression;
+using K4os.Compression.LZ4;
+
+namespace igLibrary.Core
+{
+	public class igArchive2
+	{
+		[igStruct]
+		public struct Header
+		{
+			public uint _magicNumber;
+			public uint _version;
+			public uint _tocSize;
+			public uint _numFiles;
+			public uint _sectorSize;
+			public uint _hashSearchDivider;
+			public uint _hashSearchSlop;
+			public uint _numLargeFileBlocks;
+			public uint _numMediumFileBlocks;
+			public uint _numSmallFileBlocks;
+			public ulong _nameTableOffset;
+			public uint _nameTableSize;
+			public uint _flags;
+		}
+		enum CompressionType : uint
+		{
+			kUncompressed = 0,
+			kZlib = 1,
+			kLzma = 2,
+			kLz4 = 3,
+			kCompressionFormatShift = 28,
+			kCompressionFormatMask = 0xF0000000,
+			kFirstBlockMask = 0x0FFFFFFF,
+			kOffsetBits = 40,
+		};
+		public class FileInfo
+		{
+			public uint _hash;
+			public uint _offset;
+			public uint _ordinal;
+			public uint _length;
+			public uint _blockIndex;
+			public string _name;
+			public string _logicalName;
+			public uint _modificationTime;
+			public uint[] _blocks;
+			public byte[] _compressedData;
+		}
+
+		public bool _loadNameTable;
+		public bool _sequentialRead;
+		public bool _loadingForIncrementalUpdate;
+		public bool _enableCache;
+		public bool _override;
+		public igFileDescriptor _fileDescriptor;
+		public bool _open;
+		public bool _configured;
+		public bool _needsEndianSwap = false;
+		public Header _archiveHeader;
+		public List<FileInfo> _files = new List<FileInfo>();
+		public string _nativeMedia;
+		public string _nativePath;
+
+		public void Open(string filePath, igBlockingType blockingType)
+		{
+			_fileDescriptor = igFileContext.Singleton.Open(filePath);
+			StreamHelper sh = _fileDescriptor._stream;
+			sh.Seek(0);
+			_archiveHeader._magicNumber = sh.ReadUInt32();
+			if(_archiveHeader._magicNumber == 0x4947411A)
+			{
+				if(sh._endianness == StreamHelper.Endianness.Little) sh._endianness = StreamHelper.Endianness.Big;
+				else                                                 sh._endianness = StreamHelper.Endianness.Little;
+			}
+			else if(_archiveHeader._magicNumber != 0x1A414749) throw new InvalidDataException($"{filePath} is not a valid igArchive.");
+			if((sh._endianness == StreamHelper.Endianness.Little && !BitConverter.IsLittleEndian) || (sh._endianness == StreamHelper.Endianness.Big && BitConverter.IsLittleEndian)) _needsEndianSwap = true;
+			_archiveHeader._version = sh.ReadUInt32();
+			switch(_archiveHeader._version)
+			{
+				case 0x0B:
+					_archiveHeader._tocSize = sh.ReadUInt32();
+					_archiveHeader._numFiles = sh.ReadUInt32();
+					_archiveHeader._sectorSize = sh.ReadUInt32();
+					_archiveHeader._hashSearchDivider = sh.ReadUInt32();
+					_archiveHeader._hashSearchSlop = sh.ReadUInt32();
+					_archiveHeader._numLargeFileBlocks = sh.ReadUInt32();
+					_archiveHeader._numMediumFileBlocks = sh.ReadUInt32();
+					_archiveHeader._numSmallFileBlocks = sh.ReadUInt32();
+					_archiveHeader._nameTableOffset = sh.ReadUInt64();
+					_archiveHeader._nameTableSize = sh.ReadUInt32();
+					_archiveHeader._flags = sh.ReadUInt32();
+					break;
+				default:
+					throw new NotImplementedException($"Version {_archiveHeader._version} is not implemented");
+			}
+			_files.Capacity = (int)_archiveHeader._numFiles;
+			for(int i = 0; i < _archiveHeader._numFiles; i++)
+			{
+				FileInfo fileInfo = new FileInfo();
+				fileInfo._hash = sh.ReadUInt32();
+				_files.Add(fileInfo);
+			}
+			for(int i = 0; i < _archiveHeader._numFiles; i++)
+			{
+				_files[i]._ordinal = sh.ReadUInt32();
+				_files[i]._offset = sh.ReadUInt32();
+				_files[i]._length = sh.ReadUInt32();
+				_files[i]._blockIndex = sh.ReadUInt32();
+			}
+			for(int i = 0; i < _archiveHeader._numFiles; i++)
+			{
+				sh.Seek(_archiveHeader._nameTableOffset + (uint)i * 0x04);
+				sh.Seek(_archiveHeader._nameTableOffset + sh.ReadUInt32());
+				string name1 = sh.ReadString();
+
+				string? name2 = null;
+				if(_archiveHeader._version >= 0x0A)
+				{
+					name2 = sh.ReadString();
+				}
+				if(_archiveHeader._version >= 0x08)
+				{
+					_files[i]._modificationTime = sh.ReadUInt32();
+				}
+				if(_archiveHeader._version >= 0x0B)
+				{
+					_files[i]._name = name1;
+					_files[i]._logicalName = name2;
+				}
+				else
+				{
+					_files[i]._logicalName = name1;
+					_files[i]._name = name2;
+				}			
+			}
+			uint blockInfoStart = GetHeaderSize() + _archiveHeader._numFiles * (0x04u + GetFileInfoSize());
+			sh.Seek(blockInfoStart);
+			uint[] largeBlockTable = sh.ReadStructArray<uint>(_archiveHeader._numLargeFileBlocks);
+			ushort[] mediumBlockTable = sh.ReadStructArray<ushort>(_archiveHeader._numMediumFileBlocks);
+			byte[] smallBlockTable = sh.ReadStructArray<byte>(_archiveHeader._numSmallFileBlocks);
+
+			for(int i = 0; i < _files.Count; i++)
+			{
+				sh.Seek(_files[i]._offset);
+				if(_files[i]._blockIndex == 0xFFFFFFFF)
+				{
+					_files[i]._compressedData = sh.ReadBytes(_files[i]._length);
+					continue;
+				}
+				uint numSectors = 0;
+				uint numBlocks = (_files[i]._length + 0x7FFF) >> 0xF;
+				uint[] fixedBlocks = new uint[numBlocks];
+				for(uint j = 0; j < numBlocks; j++)
+				{
+					uint blockIndex = (_files[i]._blockIndex & 0x0FFFFFFF) + j;
+					bool isCompressed;
+					uint block;
+					if(0x7F * _archiveHeader._sectorSize < _files[i]._length)
+					{
+						if(0x7FFF * _archiveHeader._sectorSize < _files[i]._length)
+						{
+							block = largeBlockTable[blockIndex];
+							isCompressed = (block >> 0x1F) == 1;
+							block &= 0x7FFFFFFF;
+							numSectors += (uint)(largeBlockTable[blockIndex + 1] & 0x7FFFFFFF) - block;
+						}
+						else
+						{
+							block = mediumBlockTable[blockIndex];
+							isCompressed = (block >> 0x0F) == 1;
+							block &= 0x7FFF;
+							numSectors += (uint)(mediumBlockTable[blockIndex + 1] & 0x7FFF) - block;
+						}
+					}
+					else
+					{
+						block = smallBlockTable[blockIndex];
+						isCompressed = (block >> 0x07) == 1;
+						block &= 0x7F;
+						numSectors += (uint)(smallBlockTable[blockIndex + 1] & 0x7F) - block;
+					}
+					fixedBlocks[j] = (isCompressed ? 0x80000000u : 0u) | block;
+				}
+				_files[i]._blocks = fixedBlocks;
+				_files[i]._compressedData = sh.ReadBytes(numSectors * _archiveHeader._sectorSize);
+			}
+		}
+		private byte GetFileInfoSize()
+		{
+			switch(_archiveHeader._version)
+			{
+				case 0x0B: return 0x10;
+				default: throw new NotSupportedException($"IGA version {_archiveHeader._version} is unsupported");
+			}
+		}
+		private byte GetHeaderSize()
+		{
+			switch(_archiveHeader._version)
+			{
+				case 0x0B: return 0x38;
+				default: throw new NotSupportedException($"IGA version {_archiveHeader._version} is unsupported");
+			}
+		}
+		public void Decompress(FileInfo fileInfo, Stream dst)
+		{
+			if(fileInfo._blockIndex == 0xFFFFFFFF)
+			{
+				dst.Write(fileInfo._compressedData);
+				return;
+			}
+			CompressionType type = (CompressionType)(fileInfo._blockIndex >> 28);
+			for(int i = 0; i < fileInfo._blocks.Length; i++)
+			{
+				uint decompressedSize = (fileInfo._length < (i + 1) * 0x8000) ? fileInfo._length & 0x7FFF : 0x8000;
+				bool shouldDecompress = (fileInfo._blocks[i] & 0x80000000u) != 0;
+				uint offset = (fileInfo._blocks[i] & 0x7FFFFFFF) * _archiveHeader._sectorSize;
+				if((fileInfo._blocks[i] & 0x80000000u) == 0)
+				{
+					dst.Write(fileInfo._compressedData, (int)offset, (int)decompressedSize);
+					continue;
+				}
+
+				uint compressedSize = BitConverter.ToUInt16(fileInfo._compressedData, (int)offset);
+				offset += 2;
+
+				MemoryStream tempMs;
+				switch(type)
+				{
+					case CompressionType.kZlib:
+						tempMs = new MemoryStream(fileInfo._compressedData, (int)offset, (int)compressedSize);
+						DeflateStream zstr = new DeflateStream(tempMs, CompressionMode.Decompress);
+						zstr.CopyTo(dst);
+						zstr.Close();
+						tempMs.Close();
+						break;
+					case CompressionType.kLzma:
+						byte[] properties = new byte[5];
+						Array.Copy(fileInfo._compressedData, offset, properties, 0, 5);
+						tempMs = new MemoryStream(fileInfo._compressedData, (int)offset + 5, (int)compressedSize);
+						SevenZip.Compression.LZMA.Decoder dec = new SevenZip.Compression.LZMA.Decoder();
+						dec.SetDecoderProperties(properties);
+						dec.Code(tempMs, dst, compressedSize, decompressedSize, null);
+						tempMs.Close();
+						break;
+					case CompressionType.kLz4:
+						byte[] dest = new byte[decompressedSize];
+						LZ4Codec.Decode(fileInfo._compressedData, (int)offset, (int)compressedSize, dest, 0, dest.Length);
+						dst.Write(dest);
+						break;
+					default:
+						throw new NotImplementedException($"Compression type 0x{type.ToString("X")} is unsupported");
+				}
+			}
+			dst.Flush();
+			dst.Seek(0, SeekOrigin.Begin);
+		}
+	}
+}
