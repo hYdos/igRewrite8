@@ -30,11 +30,12 @@ namespace igLibrary
 		public StreamHelper(byte[] input, Encoding encoding, bool leaveOpen, Endianness endianness) : base(new MemoryStream(input), encoding, leaveOpen) => _endianness = endianness;
 		public StreamHelper(Stream input, Encoding encoding, bool leaveOpen, Endianness endianness) : base(input, encoding, leaveOpen) => _endianness = endianness;
 
-		public void Align(uint alignment) => Align(0, alignment);
-		public void Align(uint basePos, uint alignment)
+		public static uint Align(uint value, uint alignment, uint basePos = 0)
 		{
-			Seek(basePos + (((Tell64() - basePos + (alignment - 1)) / alignment) * alignment));
+			return basePos + (((value - basePos + (alignment - 1)) / alignment) * alignment);
 		}
+		public void Align(uint alignment) => Seek(Align(Tell(), alignment, 0));
+		public void Align(uint basePos, uint alignment) => Seek(Align(Tell(), alignment, basePos));
 		public void Seek(ulong offset, SeekOrigin origin = SeekOrigin.Begin) => Seek((long)offset, origin);
 		public void Seek(long offset, SeekOrigin origin = SeekOrigin.Begin) => BaseStream.Seek(offset, origin);
 		public uint Tell() => (uint)BaseStream.Position;

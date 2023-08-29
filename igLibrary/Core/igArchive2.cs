@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO.Compression;
 using K4os.Compression.LZ4;
+using SevenZip;
 
 namespace igLibrary.Core
 {
@@ -47,7 +48,7 @@ namespace igLibrary.Core
 			public uint _offset;
 			public uint _ordinal;
 			public uint _length;
-			public uint _blockIndex;
+			public uint _blockIndex;	//Change this for just compression mode at some point
 			public string _name;
 			public string _logicalName;
 			public uint _modificationTime;
@@ -67,6 +68,30 @@ namespace igLibrary.Core
 				return EBlockType.kSmall;
 			}
 		}
+
+        static CoderPropID[] propIDs =
+        {
+            CoderPropID.DictionarySize,
+            CoderPropID.PosStateBits,
+            CoderPropID.LitContextBits,
+            CoderPropID.LitPosBits,
+            CoderPropID.Algorithm,
+            CoderPropID.NumFastBytes,
+            CoderPropID.EndMarker,
+            CoderPropID.MatchFinder,
+        };
+        static object[] properties =
+        {
+            0x8000,
+            2,
+            3,
+            0,
+            2,
+            0x80,
+            false,
+            "bt4",
+        };
+
 
 		public bool _loadNameTable;
 		public bool _sequentialRead;
@@ -452,6 +477,50 @@ namespace igLibrary.Core
 			}
 			dst.Flush();
 			dst.Seek(0, SeekOrigin.Begin);
+		}
+		public void Compress(FileInfo fileInfo, Stream src)
+		{
+			src.Seek(0, SeekOrigin.Begin);
+			fileInfo._length = (uint)src.Length;
+			//Add in setting the modification time for the funny
+			if(fileInfo._blockIndex == 0xFFFFFFFF)
+			{
+				fileInfo._compressedData = new byte[src.Length];
+				src.Read(fileInfo._compressedData);
+				return;
+			}
+			fileInfo._blocks = new uint[(src.Length + 0x7FFF) >> 0xF];
+			CompressionType type = (CompressionType)(fileInfo._blockIndex >> 28);
+			MemoryStream dst = new MemoryStream();
+			for(uint processedBytes = 0, blockI = 0; processedBytes < src.Length; processedBytes += 0x8000, blockI++)
+			{
+				uint decompressedSize = (uint)src.Length - processedBytes;
+				if(decompressedSize > 0x8000) decompressedSize = 0x8000;
+				ushort compressedSize;
+				MemoryStream tempMs = new MemoryStream();
+				dst.Position = StreamHelper.Align((uint)dst.Position, _archiveHeader._sectorSize);
+				fileInfo._blocks[blockI] = 0x80000000u | ((uint)dst.Position / _archiveHeader._sectorSize); 
+				switch(type)
+				{
+					case CompressionType.kLzma:
+						SevenZip.Compression.LZMA.Encoder enc = new SevenZip.Compression.LZMA.Encoder();
+						enc.SetCoderProperties(propIDs, properties);
+						enc.WriteCoderProperties(tempMs);
+						enc.Code(src, tempMs, decompressedSize, -1, null);
+						compressedSize = (ushort)(tempMs.Length - 5);
+						break;
+					default:
+						throw new NotImplementedException($"Compression for type {type} is not supported");
+				}
+				tempMs.Seek(0, SeekOrigin.Begin);
+				dst.WriteByte((byte)(compressedSize & 0xFF));
+				dst.WriteByte((byte)(compressedSize >> 8));
+				tempMs.WriteTo(dst);
+			}
+			//The memory stream buffer has extra zeroes at the end
+			fileInfo._compressedData = new byte[dst.Length];
+			Array.Copy(dst.GetBuffer(), fileInfo._compressedData, fileInfo._compressedData.Length);
+			
 		}
 		//Reverse engineered by DTZxPorter
 		private void CalculateHashSearchProperties()

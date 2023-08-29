@@ -166,12 +166,15 @@ namespace igRewrite8
 			igArchive2 archive = new igArchive2();
 			archive.Open("archives/permanent.backup.pak", igBlockingType.kMayBlock);
 			Directory.CreateDirectory("dev");
-			for(int i = 0; i < archive._files.Count; i++)
+			/*for(int i = 0; i < archive._files.Count; i++)
 			{
 				FileStream fs = File.Create($"dev/test_{i.ToString("X08")}.dat");
 				archive.Decompress(archive._files[i], fs);
 				fs.Close();
-			}
+			}*/
+			MemoryStream uwu = new MemoryStream();
+			archive.Decompress(archive._files[0], uwu);
+			archive.Compress(archive._files[0], uwu);
 			archive.Save("test.pak");
 			return;
 		}
