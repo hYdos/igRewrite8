@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO.Compression;
 using K4os.Compression.LZ4;
 
@@ -33,6 +34,13 @@ namespace igLibrary.Core
 			kFirstBlockMask = 0x0FFFFFFF,
 			kOffsetBits = 40,
 		};
+		public enum EBlockType : byte
+		{
+			kSmall,
+			kMedium,
+			kLarge,
+			kNone
+		}
 		public class FileInfo
 		{
 			public uint _hash;
@@ -43,8 +51,21 @@ namespace igLibrary.Core
 			public string _name;
 			public string _logicalName;
 			public uint _modificationTime;
-			public uint[] _blocks;
+			public uint[]? _blocks;
 			public byte[] _compressedData;
+			public EBlockType GetBlockType(uint sectorSize)
+			{
+				if(_blocks == null) return EBlockType.kNone;
+				if(0x7F * sectorSize < _length)
+				{
+					if(0x7FFF * sectorSize < _length)
+					{
+						return EBlockType.kLarge;
+					}
+					return EBlockType.kMedium;
+				}
+				return EBlockType.kSmall;
+			}
 		}
 
 		public bool _loadNameTable;
@@ -185,6 +206,184 @@ namespace igLibrary.Core
 				_files[i]._compressedData = sh.ReadBytes(numSectors * _archiveHeader._sectorSize);
 			}
 		}
+		public void Save(string filePath)
+		{
+			FileStream fs = File.Create(filePath);
+			StreamHelper sh = new StreamHelper(fs, StreamHelper.Endianness.Big);
+			sh.WriteUInt32(0x1A414749);
+			sh.WriteUInt32(_archiveHeader._version);
+			UpdateFileHashes();
+
+			FillBlockBuffers(out List<byte> smallBlockTable, out List<ushort> mediumBlockTable, out List<uint> largeBlockTable);
+
+			sh.Seek(GetHeaderSize());
+			for(int i = 0; i < _files.Count; i++) sh.WriteUInt32(_files[i]._hash);
+
+			_archiveHeader._numSmallFileBlocks = (uint)smallBlockTable.Count;
+			_archiveHeader._numMediumFileBlocks = (uint)mediumBlockTable.Count;
+			_archiveHeader._numLargeFileBlocks = (uint)largeBlockTable.Count;
+			_archiveHeader._tocSize = _archiveHeader._numFiles * (0x04u + GetFileInfoSize()) + _archiveHeader._numSmallFileBlocks + (_archiveHeader._numMediumFileBlocks << 1) + (_archiveHeader._numLargeFileBlocks << 2);
+
+			uint fileHeaderOffset = GetHeaderSize() + (_archiveHeader._numFiles << 2);
+			sh.Seek(_archiveHeader._tocSize + GetHeaderSize());
+			sh.Align(4);
+			sh.WriteUInt32(0xFFFFFFFF);
+			sh.WriteByte(0x00);
+			sh.WriteByte(0x80);
+			sh.WriteUInt16(0x0000);
+			sh.WriteUInt64(0xFFFFFFFFFFFFFFFF);
+			sh.WriteUInt64(0xFFFFFFFFFFFFFFFF);
+			sh.Align(_archiveHeader._sectorSize);
+			uint currentOffset = sh.Tell();
+
+			for(int i = 0; i < _files.Count; i++)
+			{
+				sh.Seek(fileHeaderOffset + i * GetFileInfoSize());
+
+				sh.WriteUInt32(_files[i]._ordinal);
+				sh.WriteUInt32(currentOffset);
+				sh.WriteUInt32(_files[i]._length);
+				sh.WriteUInt32(_files[i]._blockIndex);
+
+				sh.Seek(currentOffset);
+				sh.BaseStream.Write(_files[i]._compressedData);
+				sh.Align(_archiveHeader._sectorSize);
+				currentOffset = sh.Tell();
+			}
+
+			_archiveHeader._nameTableOffset = currentOffset;
+			currentOffset += (uint)_files.Count * 0x4u;
+			for(int i = 0; i < _files.Count; i++)
+			{
+				sh.Seek(_archiveHeader._nameTableOffset + (uint)i * 4u);
+				sh.WriteUInt32(currentOffset - (uint)_archiveHeader._nameTableOffset);
+				sh.Seek(currentOffset);
+
+				if(_archiveHeader._version <= 0x08)
+				{
+					sh.WriteString(_files[i]._name);
+				}
+				else if(_archiveHeader._version == 0x0A)
+				{
+					sh.WriteString(_files[i]._logicalName);
+					sh.WriteString(_files[i]._name);
+				}
+				else
+				{
+					sh.WriteString(_files[i]._name);
+					sh.WriteString(_files[i]._logicalName);
+				}
+
+				if(_archiveHeader._version >= 0x08)
+				{
+					sh.WriteUInt32(_files[i]._modificationTime);
+				}
+				currentOffset = sh.Tell();
+			}
+			_archiveHeader._nameTableSize = currentOffset - (uint)_archiveHeader._nameTableOffset;
+
+			_archiveHeader._numFiles = (uint)_files.Count;
+			CalculateHashSearchProperties();
+
+			sh.Seek(GetHeaderSize() + (GetFileInfoSize() + 0x04u) * _archiveHeader._numFiles);
+			for(int i = 0; i < largeBlockTable.Count; i++)  sh.WriteUInt32(largeBlockTable[i]);
+			for(int i = 0; i < mediumBlockTable.Count; i++) sh.WriteUInt16(mediumBlockTable[i]);
+			for(int i = 0; i < smallBlockTable.Count; i++)  sh.WriteByte(smallBlockTable[i]);
+
+			sh.Seek(0x08);
+			switch(_archiveHeader._version)
+			{
+				case 0x0B:
+					sh.WriteUInt32(_archiveHeader._tocSize);
+					sh.WriteUInt32(_archiveHeader._numFiles);
+					sh.WriteUInt32(_archiveHeader._sectorSize);
+					sh.WriteUInt32(_archiveHeader._hashSearchDivider);
+					sh.WriteUInt32(_archiveHeader._hashSearchSlop);
+					sh.WriteUInt32(_archiveHeader._numLargeFileBlocks);
+					sh.WriteUInt32(_archiveHeader._numMediumFileBlocks);
+					sh.WriteUInt32(_archiveHeader._numSmallFileBlocks);
+					sh.WriteUInt64(_archiveHeader._nameTableOffset);
+					sh.WriteUInt32(_archiveHeader._nameTableSize);
+					sh.WriteUInt32(_archiveHeader._flags);
+					break;
+				default:
+					throw new NotImplementedException($"Version {_archiveHeader._version} is not implemented");
+			}
+			fs.Flush();
+			fs.Close();
+		}
+		private void UpdateFileHashes()
+		{
+			for(int i = 0; i < _files.Count; i++)
+			{
+				if(_files[i]._logicalName == null) return;
+
+				_files[i]._hash = HashFilePath(_files[i]._logicalName);
+			}
+			_files.OrderBy(x => x._hash);
+		}
+		private uint HashFilePath(string filepath)
+		{
+			string pathToHash = filepath;
+			if((_archiveHeader._flags & 1u) != 0)
+			{
+				pathToHash = pathToHash.Replace('\\', '/');
+				pathToHash = pathToHash.ToLower();
+				//Console.WriteLine("kCaseInsensitiveHash");
+			}
+			if((_archiveHeader._flags & 2u) != 0) pathToHash = Path.GetFileName(pathToHash);
+			pathToHash = pathToHash.TrimStart('/', '\\');
+			return igHash.Hash(pathToHash);
+		}
+		private void FillBlockBuffers(out List<byte> smallBlockTable, out List<ushort> mediumBlockTable, out List<uint> largeBlockTable)
+		{
+			IOrderedEnumerable<FileInfo> files = _files.OrderBy(x => x._ordinal);
+			smallBlockTable = new List<byte>();
+			mediumBlockTable = new List<ushort>();
+			largeBlockTable = new List<uint>();
+			for(int i = 0; i < files.Count(); i++)
+			{
+				EBlockType blockType = files.ElementAt(i).GetBlockType(_archiveHeader._sectorSize);
+				FileInfo file = files.ElementAt(i);
+				file._blockIndex = file._blockIndex & 0xF0000000;
+				uint numSectors;
+				switch(blockType)
+				{
+#pragma warning disable CS8602
+					case EBlockType.kSmall:
+						file._blockIndex |= (uint)smallBlockTable.Count;
+						smallBlockTable.Capacity += file._blocks.Length + 1;
+						for(int j = 0; j < file._blocks.Length; j++)
+						{
+							smallBlockTable.Add((byte)((file._blocks[j] >> 24) | (file._blocks[j] & 0x7F)));
+						}
+						smallBlockTable.Add((byte)(file._compressedData.Length / _archiveHeader._sectorSize));
+						break;
+					case EBlockType.kMedium:
+						file._blockIndex |= (uint)mediumBlockTable.Count;
+						mediumBlockTable.Capacity += file._blocks.Length + 1;
+						for(int j = 0; j < file._blocks.Length; j++)
+						{
+							mediumBlockTable.Add((ushort)((file._blocks[j] >> 16) | (file._blocks[j] & 0x7FFF)));
+						}
+						mediumBlockTable.Add((ushort)(file._compressedData.Length / _archiveHeader._sectorSize));
+						break;
+					case EBlockType.kLarge:
+						file._blockIndex |= (uint)largeBlockTable.Count;
+						largeBlockTable.Capacity += file._blocks.Length + 1;
+						for(int j = 0; j < file._blocks.Length; j++)
+						{
+							largeBlockTable.Add(file._blocks[j]);
+						}
+						largeBlockTable.Add((uint)(file._compressedData.Length / _archiveHeader._sectorSize));
+						break;
+#pragma warning restore CS8602
+					case EBlockType.kNone:
+						file._blockIndex = 0xFFFFFFFF;
+						break;
+				}
+			}
+		}
 		private byte GetFileInfoSize()
 		{
 			switch(_archiveHeader._version)
@@ -253,6 +452,64 @@ namespace igLibrary.Core
 			}
 			dst.Flush();
 			dst.Seek(0, SeekOrigin.Begin);
+		}
+		//Reverse engineered by DTZxPorter
+		private void CalculateHashSearchProperties()
+		{
+			_archiveHeader._hashSearchDivider = uint.MaxValue / _archiveHeader._numFiles;
+
+			int TopMatchIndex = 0;
+			for (int i = 0x0; i < _files.Count; i++)
+			{
+				int Matches = 0;
+
+				for (int j = 0x0; j < _files.Count; j++)
+				{
+					if (HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, (uint)i, _files[j]._hash) != -1)
+						Matches++;
+				}
+
+				if (Matches == _files.Count)
+				{
+					TopMatchIndex = i;
+					break;
+				}
+			}
+
+			_archiveHeader._hashSearchSlop = (uint)TopMatchIndex;
+		}
+		//Reverse engineered by DTZxPorter
+		private static int HashSearch(List<FileInfo> fileInfos, uint numFiles, uint hashSearchDivider, uint hashSearchSlop, uint fileId)
+		{
+			uint fileIdDivided = fileId / hashSearchDivider;
+			uint searchAt = 0;
+			if (hashSearchSlop < fileIdDivided)
+				searchAt = (fileIdDivided - hashSearchSlop);
+
+			fileIdDivided += hashSearchSlop + 1;
+			if (fileIdDivided < numFiles)
+				numFiles = fileIdDivided;
+
+			uint index = searchAt;
+			searchAt = (numFiles - index);
+			uint i = searchAt;
+			while (0 < i)
+			{
+				i = searchAt / 2;
+				if (fileInfos[(int)(index + i)]._hash < fileId)
+				{
+					index += i + 1;
+					i = searchAt - 1 - i;
+				}
+				searchAt = i;
+			}
+
+			if (index < fileInfos.Count && fileInfos[(int)index]._hash == fileId)
+			{
+				return (int)index;
+			}
+
+			return -1;
 		}
 	}
 }

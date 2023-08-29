@@ -164,7 +164,7 @@ namespace igRewrite8
 		{
 			igFileContext.Singleton.Initialize(args[0]);
 			igArchive2 archive = new igArchive2();
-			archive.Open("archives/airzone.pak", igBlockingType.kMayBlock);
+			archive.Open("archives/permanent.backup.pak", igBlockingType.kMayBlock);
 			Directory.CreateDirectory("dev");
 			for(int i = 0; i < archive._files.Count; i++)
 			{
@@ -172,6 +172,7 @@ namespace igRewrite8
 				archive.Decompress(archive._files[i], fs);
 				fs.Close();
 			}
+			archive.Save("test.pak");
 			return;
 		}
 	}
