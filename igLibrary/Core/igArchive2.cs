@@ -516,6 +516,7 @@ namespace igLibrary.Core
 				dst.WriteByte((byte)(compressedSize & 0xFF));
 				dst.WriteByte((byte)(compressedSize >> 8));
 				tempMs.WriteTo(dst);
+				tempMs.Close();
 			}
 			//The memory stream buffer has extra zeroes at the end
 			fileInfo._compressedData = new byte[dst.Length];
