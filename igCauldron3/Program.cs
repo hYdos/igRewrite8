@@ -40,13 +40,14 @@ namespace igCauldron3
 		private static void ExtractSLIArchive(string[] args)
 		{
 			igFileContext.Singleton.Initialize(args[0]);
-			igArchive arc = new igArchive(args[1]);
-			for(int i = 0; i < arc._fileHeaders.Length; i++)
+			igArchive arc = new igArchive();
+			arc.Open(args[1], igBlockingType.kMayBlock);
+			for(int i = 0; i < arc._files.Count; i++)
 			{
-				string path = Path.Combine("F:/SLI", arc._fileHeaders[i].fullName);
+				string path = Path.Combine("F:/SLI", arc._files[i]._name);
 				Directory.CreateDirectory(Path.GetDirectoryName(path));
 				FileStream fs = File.Create(path);
-				arc.ExtractFile(i, fs);
+				arc.Decompress(arc._files[i], fs);
 				fs.Close();
 			}
 		}

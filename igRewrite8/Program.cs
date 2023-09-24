@@ -45,7 +45,7 @@ namespace igRewrite8
 
 			igFileContext.Singleton.Initialize(args[0]);
 
-			igFileContext.Singleton.LoadArchive("archives/permanent.pak");
+			igFileContext.Singleton.LoadArchive("data:/archives/permanent.pak");
 
 			//igFileContext.Singleton.Open("packages:/generated/packageXmls/permanent_pkg.igz", igFileContext.GetOpenFlags(FileAccess.Read, FileMode.Open), out igFileDescriptor fd, igBlockingType.kBlocking, igFileWorkItem.Priority.kPriorityNormal);
 
@@ -133,12 +133,12 @@ namespace igRewrite8
 			{
 				string fileName = Path.GetFileName(archiveFilePaths[i].FullName);
 				igArchive arc = igFileContext.Singleton.LoadArchive(fileName);
-				for(int j = 0; j < arc._fileHeaders.Length; j++)
+				for(int j = 0; j < arc._files.Count; j++)
 				{
-					string outputPath = Path.Combine(args[1], arc._fileHeaders[j].fullName);
+					string outputPath = Path.Combine(args[1], arc._files[j]._logicalName);
 					Directory.CreateDirectory(Path.GetDirectoryName(outputPath));
 					FileStream fs = File.Create(outputPath);
-					arc.ExtractFile(j, fs);
+					arc.Decompress(arc._files[j], fs);
 					fs.Flush();
 					fs.Close();
 				}
@@ -163,7 +163,7 @@ namespace igRewrite8
 		private static void TestArchives(string[] args)
 		{
 			igFileContext.Singleton.Initialize(args[0]);
-			igArchive2 archive = new igArchive2();
+			igArchive archive = new igArchive();
 			archive.Open("archives/permanent.backup.pak", igBlockingType.kMayBlock);
 			for(int i = 0; i < archive._files.Count; i++)
 			{

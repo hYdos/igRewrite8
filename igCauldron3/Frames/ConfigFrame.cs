@@ -45,13 +45,13 @@ namespace igCauldron3
 						igFileContext.Singleton.Initialize(game._path);
 						if(!string.IsNullOrWhiteSpace(game._updatePath))
 						{
-							igFileContext.Singleton.InitializeUpdate("data:" + game._updatePath);
+							igFileContext.Singleton.InitializeUpdate(game._updatePath);
 						}
 						igRegistry.GetRegistry()._platform = game._platform;
 						igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 						IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
 
-						igFileContext.Singleton.LoadArchive("archives/loosefiles.pak");
+						igFileContext.Singleton.LoadArchive("data:/archives/loosefiles.pak");
 						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent");
 						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}");
 						PackagePrecacher.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}");

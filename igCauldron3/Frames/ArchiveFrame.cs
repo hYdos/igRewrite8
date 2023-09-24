@@ -8,7 +8,7 @@ namespace igCauldron3
 	{
 		private bool _isChoosingArchive = false;
 		private string?[]? _allowedArchives = null;
-		private Dictionary<string, igArchive.IG_CORE_ARCHIVE_FILE_HEADER[]> _sortedFileHeaders = new Dictionary<string, igArchive.IG_CORE_ARCHIVE_FILE_HEADER[]>();
+		private Dictionary<string, igArchive.FileInfo[]> _sortedFileHeaders = new Dictionary<string, igArchive.FileInfo[]>();
 		public ArchiveFrame(Window wnd) : base(wnd){}
 		public override void Render()
 		{
@@ -47,12 +47,12 @@ namespace igCauldron3
 					if(ImGui.Button(_allowedArchives[i]))
 					{
 						_isChoosingArchive = false;
-						igArchive loaded = igFileContext.Singleton.LoadArchive("archives/" + _allowedArchives[i]);
-						for(int j = 0; j < loaded._fileHeaders.Length; j++)
+						igArchive loaded = igFileContext.Singleton.LoadArchive("data:/archives/" + _allowedArchives[i]);
+						for(int j = 0; j < loaded._files.Count; j++)
 						{
-							if(loaded._fileHeaders[j].name.EndsWith("_pkg.igz"))
+							if(loaded._files[j]._logicalName.EndsWith("_pkg.igz"))
 							{
-								PackagePrecacher.PrecachePackage(loaded._fileHeaders[j].name);
+								PackagePrecacher.PrecachePackage(loaded._files[j]._logicalName);
 							}
 						}
 						CDotNetaManager cdnm = CDotNetaManager._Instance;
@@ -63,21 +63,21 @@ namespace igCauldron3
 		}
 		private void RenderArchive(igArchive archive)
 		{
-			igArchive.IG_CORE_ARCHIVE_FILE_HEADER[]? fileHeaders;
-			if(!_sortedFileHeaders.TryGetValue(archive._name, out fileHeaders))
+			igArchive.FileInfo[]? fileHeaders;
+			if(!_sortedFileHeaders.TryGetValue(archive._path, out fileHeaders))
 			{
-				fileHeaders = archive._fileHeaders.OrderBy(x => x.name).ToArray();
-				_sortedFileHeaders.Add(archive._name, fileHeaders);
+				fileHeaders = archive._files.OrderBy(x => x._logicalName).ToArray();
+				_sortedFileHeaders.Add(archive._path, fileHeaders);
 			}
 			if(ImGui.TreeNode(archive._path))
 			{
 				for(int i = 0; i < fileHeaders.Count(); i++)
 				{
-					string name = fileHeaders.ElementAt(i).name;
+					string name = fileHeaders.ElementAt(i)._logicalName;
 					if(!(name.EndsWith(".igz") || name.EndsWith(".lng"))) continue;
 					if(ImGui.Button(name))
 					{
-						ObjectManagerFrame._dirs.Add(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i).name));
+						ObjectManagerFrame._dirs.Add(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName));
 					}
 				}
 				ImGui.TreePop();

@@ -15,7 +15,8 @@ namespace igLibrary.Core
 				}
 			}
 
-			igArchive loaded = new igArchive(path);
+			igArchive loaded = new igArchive();
+			loaded.Open(path, igBlockingType.kMayBlock);
 			_archiveList.Append(loaded);
 			return loaded;
 		}

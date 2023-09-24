@@ -3,7 +3,14 @@ namespace igLibrary.Core
 	//This'd be called igWin32StorageDevice, igPosixStorageDevice, igPS3StorageDevice, etc but why bother
 	public class igWin32StorageDevice : igPhysicalStorageDevice
 	{
-		private string getPath(igFileWorkItem workItem) => Path.Combine(igFileContext.Singleton._root, workItem._path);
+		private string getPath(igFileWorkItem workItem)
+		{
+			if(workItem._path[0] == '/' || workItem._path[0] == '\\')
+			{
+				return Path.Combine(igFileContext.Singleton._root, workItem._path.Substring(1));
+			}
+			return Path.Combine(igFileContext.Singleton._root, workItem._path);
+		}
 		public override void Close(igFileWorkItem workItem)
 		{
 			((FileStream)workItem._file._handle).Close();

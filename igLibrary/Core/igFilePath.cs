@@ -68,7 +68,7 @@ namespace igLibrary.Core
 			if(extensionStart >= 0)
 			{
 				_file = path.Substring(fileStart, extensionStart - fileStart);
-				_extension = path.Substring(extensionStart);
+				_extension = path.Substring(extensionStart + 1);
 			}
 			else
 			{
@@ -79,7 +79,7 @@ namespace igLibrary.Core
 			_fileExtension = string.Empty;
 			if(_extension.Length > 0)
 			{
-				if(_extension[0] != '.') _fileExtension += '.';
+				_fileExtension += '.';
 				_fileExtension += _extension;
 			}
 			
@@ -106,5 +106,6 @@ namespace igLibrary.Core
 			nativePath = nativePath.Replace('\\', '/');
 			return nativePath;
 		}
+		public string getNativePath() => _nativePath;
 	}
 }

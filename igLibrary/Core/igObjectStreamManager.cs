@@ -26,7 +26,8 @@ namespace igLibrary.Core
 			igFilePath fp = new igFilePath();
 			fp.Set(filePath);
 
-			if(fp._fileExtension == ".igz" || fp._fileExtension == ".lng")
+			string ext = fp._extension;
+			if(ext == "igz" || ext == "lng")
 			{
 				igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
 				AddObjectDirectory(objDir);
@@ -36,7 +37,7 @@ namespace igLibrary.Core
 			}
 			else
 			{
-				if(fp._fileExtension == ".bk2")
+				if(ext == "bk2")
 				{
 					try
 					{

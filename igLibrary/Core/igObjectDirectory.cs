@@ -89,12 +89,12 @@ namespace igLibrary.Core
 		{
 			igFilePath path = new igFilePath();
 			path.Set(filePath);
-			switch(path._fileExtension)
+			switch(path._extension.ToString())
 			{
-				case ".igz":
-				case ".lng":
-				case ".pak":	//not to be confused with the archive extension
-				case ".bld":	//not to be confused with the archive extension
+				case "igz":
+				case "lng":
+				case "pak":	//not to be confused with the archive extension
+				case "bld":	//not to be confused with the archive extension
 					return FileType.kIGZ;
 				default:
 					return FileType.kInvalid;

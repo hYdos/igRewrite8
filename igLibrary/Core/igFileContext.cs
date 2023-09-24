@@ -56,10 +56,11 @@ namespace igLibrary.Core
 			_archiveManager._nextProcessor = new igWin32StorageDevice();
 		}
 
+		public string GetVirtualStorageDevicePath(string virtualDeviceName) => GetMediaDirectory(virtualDeviceName);
 		//Rename to GetVirtualStorageDevicePath
 		public string GetMediaDirectory(string media)
 		{
-			string lower = media.ToLower();
+			string lower = media.ToLower().TrimEnd(':');
 			if(_virtualDevices.ContainsKey(lower))
 			{
 				return _virtualDevices[lower];
@@ -110,7 +111,9 @@ namespace igLibrary.Core
 		}
 		public void InitializeUpdate(string updatePath)
 		{
-			_archiveManager._patchArchives.Append(new igArchive(updatePath));
+			igArchive arc = new igArchive();
+			arc.Open(updatePath, igBlockingType.kMayBlock);
+			_archiveManager._patchArchives.Append(arc);
 		}
 
 		public igArchive LoadArchive(string path) => _archiveManager.LoadArchive(path);
@@ -123,19 +126,19 @@ namespace igLibrary.Core
 		{
 			igFilePath fp = new igFilePath();
 			fp.Set(path);
-			int fdIndex = _fileDescriptorPool.FindIndex(x => x._path == fp._path);
+			int fdIndex = _fileDescriptorPool.FindIndex(x => x._path == fp._path.ToString());
 
 			if(fdIndex >= 0) return _fileDescriptorPool[fdIndex];
 			else
 			{
 				Stream? ms = null;
-				if(File.Exists($"{_root}/{fp._path}"))
+				if(File.Exists(fp.getNativePath()))
 				{
-					ms = File.Open(_root + "/" + fp._path, FileMode.Open);
+					ms = File.Open(fp.getNativePath(), FileMode.Open);
 				}
 				else
 				{
-					uint hash = igHash.Hash(fp._path);
+					uint hash = igHash.Hash(fp._path.ToString());
 					for(int i = 0; i < _devices.Count; i++)
 					{
 						if(_devices[i] is igArchive iga)
@@ -143,13 +146,13 @@ namespace igLibrary.Core
 							if(iga.HasFile(hash))
 							{
 								ms = new MemoryStream();
-								iga.ExtractFile(hash, ms);
+								iga.Decompress(hash, ms);
 							}
 						}
 					}
 					if(ms == null) throw new FileNotFoundException($"Failed to find file {fp._path}");
 				}
-				_fileDescriptorPool.Add(new igFileDescriptor(ms, fp._path));
+				_fileDescriptorPool.Add(new igFileDescriptor(ms, fp._path.ToString()));
 				return _fileDescriptorPool.Last();
 			}
 		}
