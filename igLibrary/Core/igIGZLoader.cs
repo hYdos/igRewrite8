@@ -25,6 +25,7 @@
 		public igMemoryPool[] _loadedPools = new igMemoryPool[0x1F];
 		public ulong nameListOffset;
 		private bool _readDependancies;
+		public igFileDescriptor _fd;
 
 		public igIGZLoader(igObjectDirectory dir, Stream stream, bool readDependancies)
 		{
@@ -35,6 +36,7 @@
 		{
 			igFile file = new igFile();
 			file.Open(path);
+			_fd = file._file;
 			_stream = new StreamHelper(file._file._handle);
 		}
 
@@ -88,7 +90,10 @@
 
 				_stream.Seek(0x224 + memPoolName);
 				string memoryPoolName = _stream.ReadString();
-				_loadedPools[i] = igMemoryContext.Singleton.GetMemoryPoolByName(memoryPoolName);				
+				if(i > 0)
+				{
+					_loadedPools[i - 1] = igMemoryContext.Singleton.GetMemoryPoolByName(memoryPoolName);
+				}
 
 				if(i > 0) _loadedPointers[i - 1] = offset;
 				else      _fixups = offset;
