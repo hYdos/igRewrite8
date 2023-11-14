@@ -9,6 +9,7 @@ namespace igLibrary.Core
 		public bool _useNameList = false;
 		public igNameList? _nameList = null;
 		public igIGZLoader _loader;
+		public igFileDescriptor _fd;
 		public static Func<string, igName, igBlockingType, igObjectDirectory?> _loadDependancyFunction = igObjectDirectory.LoadDependancyDefault;
 
 		public enum FileType : uint
@@ -56,26 +57,33 @@ namespace igLibrary.Core
 				case FileType.kIGZ:
 					_loader = new igIGZLoader(this, _path, readDependancies);
 					_loader.Read(this, readDependancies);
+					_fd = _loader._fd;
 					break;
 				default:
 					Console.WriteLine($"WARNING: {_path} IS NOT AN IGOBJECT STREAM, SKIPPING...");
 					break;
 			}
 		}
-		public void WriteFile(string path, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
+		public void WriteFile(Stream dst, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 		{
 			if(type == FileType.kIGZ)
 			{
 				igIGZSaver saver = new igIGZSaver();
 				if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 				{
-					saver.WriteFile(this, path, _loader._platform);
+					saver.WriteFile(this, dst, _loader._platform);
 				}
 				else
 				{
-					saver.WriteFile(this, path, platform);
+					saver.WriteFile(this, dst, platform);
 				}
 			}
+		}
+		public void WriteFile(string path, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
+		{
+			FileStream fs = File.Create(path);
+			WriteFile(path, platform);
+			fs.Close();
 		}
 		public static igObjectDirectory? LoadDependancyDefault(string path, igName name, igBlockingType idk)
 		{

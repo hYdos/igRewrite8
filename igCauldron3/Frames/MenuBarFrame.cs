@@ -1,5 +1,6 @@
 using ImGuiNET;
 using igCauldron3.Utils;
+using igLibrary.Core;
 
 namespace igCauldron3
 {
@@ -14,10 +15,14 @@ namespace igCauldron3
 				{
 					if(ImGui.MenuItem("Save As"))
 					{
-						string savePath = CrossFileDialog.SaveFile("Save IGZ", ".igz;.lng");
-						if(!string.IsNullOrWhiteSpace(savePath))
+						MemoryStream ms = new MemoryStream();
+						igObjectDirectory target = ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir];
+						if(target._fd._device is igArchive arc)
 						{
-							ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir].WriteFile(savePath);
+							target.WriteFile(ms, igRegistry.GetRegistry()._platform);
+							arc.Compress(target._path, ms);
+							ms.Close();
+							arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
 						}
 					}
 					ImGui.EndMenu();

@@ -57,22 +57,20 @@ namespace igLibrary.Core
 					igArchive archive = _patchArchives[i];
 					try
 					{
-						if(archive.HasFile(workItem._path))
-						{
-							archive.Process(workItem);
-							return;
-						}
+						archive.Process(workItem);
+						return;
 					}
 					catch(IOException){}
 				}
 				for(int i = 0; i < _archiveList._count; i++)
 				{
 					igArchive archive = _archiveList[i];
-					if(archive.HasFile(workItem._path))
+					try
 					{
 						archive.Process(workItem);
 						return;
 					}
+					catch(IOException){}
 				}
 			}
 

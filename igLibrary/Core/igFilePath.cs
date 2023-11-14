@@ -104,6 +104,7 @@ namespace igLibrary.Core
 			nativePath += _file;
 			nativePath += _fileExtension;
 			nativePath = nativePath.Replace('\\', '/');
+			nativePath = nativePath.TrimStart('/');
 			return nativePath;
 		}
 		public string getNativePath() => _nativePath;

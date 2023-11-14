@@ -64,9 +64,15 @@ namespace igLibrary.Core
 		}
 		public void WriteFile(igObjectDirectory dir, string path, IG_CORE_PLATFORM platform)
 		{
+			FileStream fs = File.Create(path);
+			WriteFile(dir, fs, platform);
+			fs.Close();
+		}
+		public void WriteFile(igObjectDirectory dir, Stream dst, IG_CORE_PLATFORM platform)
+		{
 			_platform = platform;
 			_version = 0x09;
-			_stream = new StreamHelper(File.Create(path), igAlchemyCore.isPlatformBigEndian(platform) ? StreamHelper.Endianness.Big : StreamHelper.Endianness.Little);
+			_stream = new StreamHelper(dst, igAlchemyCore.isPlatformBigEndian(platform) ? StreamHelper.Endianness.Big : StreamHelper.Endianness.Little);
 			_dir = dir;
 
 			SaverSection rootSection = GetSaverSection(dir._objectList.internalMemoryPool);
@@ -99,7 +105,7 @@ namespace igLibrary.Core
 
 			WriteOutSections();
 
-			_stream.BaseStream.Close();
+			_stream.Seek(0);
 		}
 
 		public ulong SaveObject(igObject? obj)

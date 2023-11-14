@@ -23,7 +23,7 @@ namespace igCauldron3
 					for(int i = 0; i < _allowedArchives.Length; i++)
 					{
 						_allowedArchives[i] = Path.GetFileName(_allowedArchives[i]);
-						if(archives.Any(x => x._name.ToLower() == _allowedArchives[i].ToLower()))
+						if(archives.Any(x => x._path.ToLower() == _allowedArchives[i].ToLower()))
 						{
 							_allowedArchives[i] = null;
 						}

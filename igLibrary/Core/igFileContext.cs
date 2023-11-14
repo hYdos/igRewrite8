@@ -174,5 +174,10 @@ namespace igLibrary.Core
 			fd = Prepare(path, flags);
 			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, flags, fd._path, blockingType, priority, null, null);
 		}
+		public void Close(igFileDescriptor fd, igBlockingType blockingType, igFileWorkItem.Priority priority)
+		{
+			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeClose, null, 0, 0, 0, null, blockingType, priority, null, null);
+			_fileDescriptorPool.Remove(fd);
+		}
 	}
 }

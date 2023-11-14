@@ -5,20 +5,21 @@ namespace igLibrary.Core
 	{
 		private string getPath(igFileWorkItem workItem)
 		{
-			if(workItem._path[0] == '/' || workItem._path[0] == '\\')
+			if(workItem._path[1] != ':')
 			{
-				return Path.Combine(igFileContext.Singleton._root, workItem._path.Substring(1));
+				return Path.Combine(igFileContext.Singleton._root, workItem._path);
 			}
 			return Path.Combine(igFileContext.Singleton._root, workItem._path);
 		}
 		public override void Close(igFileWorkItem workItem)
 		{
 			((FileStream)workItem._file._handle).Close();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
 		}
 
 		public override void Commit(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Exists(igFileWorkItem workItem)
@@ -35,22 +36,22 @@ namespace igLibrary.Core
 
 		public override void Format(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void GetFileList(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void GetFileListWithSizes(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Mkdir(igFileWorkItem workItem)
 		{
-			Directory.CreateDirectory(getPath(workItem));
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Open(igFileWorkItem workItem)
@@ -97,7 +98,7 @@ namespace igLibrary.Core
 
 		public override void Prefetch(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Read(igFileWorkItem workItem)
@@ -145,7 +146,7 @@ namespace igLibrary.Core
 
 		public override void Rename(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Rmdir(igFileWorkItem workItem)
@@ -155,17 +156,17 @@ namespace igLibrary.Core
 
 		public override void Truncate(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Unlink(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 
 		public override void Write(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 	}
 }

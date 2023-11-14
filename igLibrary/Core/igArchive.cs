@@ -231,6 +231,8 @@ namespace igLibrary.Core
 				_files[i]._blocks = fixedBlocks;
 				_files[i]._compressedData = sh.ReadBytes(numSectors * _archiveHeader._sectorSize);
 			}
+			igFileContext.Singleton.Close(_fileDescriptor, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			_fileDescriptor = null;
 		}
 		public void Save(string filePath)
 		{
@@ -262,19 +264,23 @@ namespace igLibrary.Core
 			sh.Align(_archiveHeader._sectorSize);
 			uint currentOffset = sh.Tell();
 
+			IOrderedEnumerable<FileInfo> orderedFiles = _files.OrderBy(x => x._ordinal);
+			for(int i = 0; i < _files.Count; i++)
+			{
+				orderedFiles.ElementAt(i)._offset = currentOffset = sh.Tell();
+				sh.Seek(currentOffset);
+				sh.BaseStream.Write(orderedFiles.ElementAt(i)._compressedData);
+				sh.Align(_archiveHeader._sectorSize);
+			}
+
 			for(int i = 0; i < _files.Count; i++)
 			{
 				sh.Seek(fileHeaderOffset + i * GetFileInfoSize());
 
 				sh.WriteUInt32(_files[i]._ordinal);
-				sh.WriteUInt32(currentOffset);
+				sh.WriteUInt32(_files[i]._offset);
 				sh.WriteUInt32(_files[i]._length);
 				sh.WriteUInt32(_files[i]._blockIndex);
-
-				sh.Seek(currentOffset);
-				sh.BaseStream.Write(_files[i]._compressedData);
-				sh.Align(_archiveHeader._sectorSize);
-				currentOffset = sh.Tell();
 			}
 
 			_archiveHeader._nameTableOffset = currentOffset;
@@ -383,7 +389,7 @@ namespace igLibrary.Core
 						{
 							smallBlockTable.Add((byte)((file._blocks[j] >> 24) | (file._blocks[j] & 0x7F)));
 						}
-						smallBlockTable.Add((byte)(file._compressedData.Length / _archiveHeader._sectorSize));
+						smallBlockTable.Add((byte)(StreamHelper.Align((uint)file._compressedData.Length, _archiveHeader._sectorSize) / _archiveHeader._sectorSize));
 						break;
 					case EBlockType.kMedium:
 						file._blockIndex |= (uint)mediumBlockTable.Count;
@@ -392,7 +398,7 @@ namespace igLibrary.Core
 						{
 							mediumBlockTable.Add((ushort)((file._blocks[j] >> 16) | (file._blocks[j] & 0x7FFF)));
 						}
-						mediumBlockTable.Add((ushort)(file._compressedData.Length / _archiveHeader._sectorSize));
+						mediumBlockTable.Add((ushort)(StreamHelper.Align((uint)file._compressedData.Length, _archiveHeader._sectorSize) / _archiveHeader._sectorSize));
 						break;
 					case EBlockType.kLarge:
 						file._blockIndex |= (uint)largeBlockTable.Count;
@@ -401,7 +407,7 @@ namespace igLibrary.Core
 						{
 							largeBlockTable.Add(file._blocks[j]);
 						}
-						largeBlockTable.Add((uint)(file._compressedData.Length / _archiveHeader._sectorSize));
+						largeBlockTable.Add((uint)(StreamHelper.Align((uint)file._compressedData.Length, _archiveHeader._sectorSize) / _archiveHeader._sectorSize));
 						break;
 #pragma warning restore CS8602
 					case EBlockType.kNone:
@@ -426,6 +432,7 @@ namespace igLibrary.Core
 				default: throw new NotSupportedException($"IGA version {_archiveHeader._version} is unsupported");
 			}
 		}
+		public void Decompress(string path, Stream src) => Decompress(HashFilePath(path), src);
 		public void Decompress(uint hash, Stream dst) => Decompress(_files[HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, hash)], dst);
 		public void Decompress(FileInfo fileInfo, Stream dst)
 		{
@@ -482,6 +489,8 @@ namespace igLibrary.Core
 			dst.Flush();
 			dst.Seek(0, SeekOrigin.Begin);
 		}
+		public void Compress(string path, Stream src) => Compress(HashFilePath(path), src);
+		public void Compress(uint hash, Stream src) => Compress(_files[HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, hash)], src);
 		public void Compress(FileInfo fileInfo, Stream src)
 		{
 			src.Seek(0, SeekOrigin.Begin);
@@ -502,8 +511,9 @@ namespace igLibrary.Core
 				if(decompressedSize > 0x8000) decompressedSize = 0x8000;
 				ushort compressedSize;
 				MemoryStream tempMs = new MemoryStream();
+				src.Seek(processedBytes, SeekOrigin.Begin);
 				dst.Position = StreamHelper.Align((uint)dst.Position, _archiveHeader._sectorSize);
-				fileInfo._blocks[blockI] = 0x80000000u | ((uint)dst.Position / _archiveHeader._sectorSize); 
+				fileInfo._blocks[blockI] = 0x80000000u | ((uint)dst.Position / _archiveHeader._sectorSize);
 				switch(type)
 				{
 					case CompressionType.kLzma:
@@ -516,16 +526,17 @@ namespace igLibrary.Core
 					default:
 						throw new NotImplementedException($"Compression for type {type} is not supported");
 				}
-				tempMs.Seek(0, SeekOrigin.Begin);
 				dst.WriteByte((byte)(compressedSize & 0xFF));
 				dst.WriteByte((byte)(compressedSize >> 8));
+				tempMs.Seek(0, SeekOrigin.Begin);
 				tempMs.WriteTo(dst);
 				tempMs.Close();
 			}
 			//The memory stream buffer has extra zeroes at the end
 			fileInfo._compressedData = new byte[dst.Length];
+			dst.Flush();
 			Array.Copy(dst.GetBuffer(), fileInfo._compressedData, fileInfo._compressedData.Length);
-			
+			File.WriteAllBytes("debugiga.dat", dst.GetBuffer());
 		}
 		//Reverse engineered by DTZxPorter
 		private void CalculateHashSearchProperties()
@@ -601,6 +612,11 @@ namespace igLibrary.Core
 		public override void Open(igFileWorkItem workItem)
 		{
 			int fileId = HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, HashFilePath(workItem._path));
+			if(fileId == -1)
+			{
+				workItem.SetStatus(igFileWorkItem.Status.kStatusInvalidPath);
+				return;
+			}
 			workItem._file._path = workItem._path;
 			workItem._file._size = _files[fileId]._length;
 			workItem._file._position = 0;
@@ -611,27 +627,27 @@ namespace igLibrary.Core
 		}
 		public override void Close(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();			
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Read(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Write(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Truncate(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Mkdir(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Rmdir(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void GetFileList(igFileWorkItem workItem)
 		{
@@ -645,27 +661,27 @@ namespace igLibrary.Core
 		}
 		public override void GetFileListWithSizes(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Unlink(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Rename(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Prefetch(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Format(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 		public override void Commit(igFileWorkItem workItem)
 		{
-			throw new NotImplementedException();
+			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
 		}
 	}
 	public class igArchiveList : igTObjectList<igArchive> {}
