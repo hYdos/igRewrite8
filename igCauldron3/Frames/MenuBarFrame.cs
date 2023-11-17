@@ -20,6 +20,11 @@ namespace igCauldron3
 						if(target._fd._device is igArchive arc)
 						{
 							target.WriteFile(ms, igRegistry.GetRegistry()._platform);
+							ms.Seek(0, SeekOrigin.Begin);
+							FileStream fs = File.Create("test.igz");
+							ms.CopyTo(fs);
+							fs.Close();
+							ms.Seek(0, SeekOrigin.Begin);
 							arc.Compress(target._path, ms);
 							ms.Close();
 							arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");

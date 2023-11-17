@@ -528,6 +528,7 @@ namespace igLibrary.Core
 				}
 				dst.WriteByte((byte)(compressedSize & 0xFF));
 				dst.WriteByte((byte)(compressedSize >> 8));
+				tempMs.Flush();
 				tempMs.Seek(0, SeekOrigin.Begin);
 				tempMs.WriteTo(dst);
 				tempMs.Close();
