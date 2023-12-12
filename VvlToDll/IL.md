@@ -6,6 +6,7 @@ I've been looking into the IL bytecode for a few days now and I've learned that 
 
 | Bytes     | ECMA-335 Name                              | ECMA-335 differences                                           | Notes                
 |-----------|--------------------------------------------|----------------------------------------------------------------|----------------------
+|      0x00 | nop                                        |                                                                | 
 |      0x01 | break                                      |                                                                | 
 |      0x02 | ldarg.0                                    |                                                                | 
 |      0x03 | ldarg.1                                    |                                                                | 
@@ -69,7 +70,7 @@ I've been looking into the IL bytecode for a few days now and I've learned that 
 |      0x3E | ble <i32 target>                           |                                                                | `target` possibly always little endian
 |      0x3F | blt <i32 target>                           |                                                                | `target` possibly always little endian
 |      0x40 | bne.un <i32 target>                        |                                                                | `target` possibly always little endian
-|      0x41 | bge_un                                     | Removed                                                        | 
+|      0x41 | bge.un                                     | Removed                                                        | 
 |      0x42 | bgt.un <i32 target>                        |                                                                | `target` possibly always little endian
 |      0x43 | ble.un <i32 target>                        |                                                                | `target` possibly always little endian
 |      0x44 | blt.un <i32 target>                        |                                                                | `target` possibly always little endian
@@ -202,8 +203,8 @@ I've been looking into the IL bytecode for a few days now and I've learned that 
 |      0xF3 | ldloc.1                                    | This alias doesn't exist in ECMA-335                           | 
 |      0xF4 | ldloc.2                                    | This alias doesn't exist in ECMA-335                           | 
 |      0xF5 | ldloc.3                                    | This alias doesn't exist in ECMA-335                           | 
-|      0xF6 | adddel <methodtkn>                         | This is a fully custom instruction                             | Stack transformation: `..., method, target, delegate -> ..., delegate`. Desc: Creates a delegate from the `igObject` `target` and the `DotNetMethodDefinition` `method` and combines it with the `Delegate` `delegate`. the declaring type of `methodtkn` must be the same as the method definition on the stack, the one on the stack is combined with the delegate
-|      0xF7 | remdel <9 bytes>                           | This is a fully custom instruction                             | Stack transformation: `..., method, target, delegate -> ..., delegate`. Desc: removes the delegate matching that method and target
+|      0xF6 | adddel <methodtkn>                         | This is a fully custom instruction                             | Stack transformation: `..., delegate, target, method -> ..., delegate`. Desc: Creates a delegate from the `igObject` `target` and the `DotNetMethodDefinition` `method` and combines it with the `Delegate` `delegate`. the declaring type of `methodtkn` must be the same as the method definition on the stack, the one on the stack is combined with the delegate. Also skip the next instruction
+|      0xF7 | remdel <9 bytes>                           | This is a fully custom instruction                             | Stack transformation: `..., delegate, target, method -> ..., delegate`. Desc: removes the delegate matching that method and target. Also skip the next instruction
 |      0xF8 | ????                                       |                                                                | 
 | 0xFE 0x00 | arglist                                    | Removed                                                        | 
 | 0xFE 0x01 | ceq                                        |                                                                | 

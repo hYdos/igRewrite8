@@ -247,7 +247,7 @@ namespace igLibrary.DotNet
 					}
 					if(baseType._baseMeta is not igMetaObject baseMetaObject)
 					{
-						throw new TypeLoadException($"Somehow didn't get a metaobject for the parent of {baseType._baseMeta}, instead got {baseType._baseMeta._name}");
+						throw new TypeLoadException($"Somehow didn't get a metaobject for the parent of {meta._name}, instead got {baseType._baseMeta._name}");
 					}
 					else
 					{
@@ -277,13 +277,28 @@ namespace igLibrary.DotNet
 				dntr._elementType = (ElementType)bTypeDetails.ReadUInt32();
 				dntr._isArray = bTypeDetails.ReadUInt32() == 1;
 				resolver._stringTable.Seek(bTypeDetails.ReadUInt32());
-				dntr._name = resolver._stringTable.ReadString();
+				string typeName = dntr._name = resolver._stringTable.ReadString();
 
 				DotNetType dnt = new DotNetType();
 
 				if(dntr._elementType == ElementType.kElementTypeObject && !dntr._isArray)
 				{
-					dntr.TryResolveObject(out dnt);
+					bool escape = false;
+					while(!escape)
+					{
+						if(!dntr.TryResolveObject(out dnt))
+						{
+							int nsIndex = dntr._name.IndexOf('.');
+							if(nsIndex >= 0) dntr._name = dntr._name.Substring(nsIndex+1);
+							else
+							{
+								library._referencedTypes.Append(new DotNetType());
+								escape = true;
+							}
+						}
+						else break;
+					}
+					if(escape) continue;
 				}
 				else
 				{
@@ -353,8 +368,7 @@ namespace igLibrary.DotNet
 					{
 						int nsIndex = typeRef._name.IndexOf('.');
 						if(nsIndex >= 0) typeRef._name = typeRef._name.Substring(nsIndex+1);
-						//else throw new TypeLoadException($"Failed to find class {typeName}");
-						else break;
+						else throw new TypeLoadException($"Failed to find class {typeName}");
 					}
 					else
 					{
@@ -371,7 +385,11 @@ namespace igLibrary.DotNet
 				{
 					fieldName = fieldName.Substring(1, fieldName.LastIndexOf('>') - 1);
 				}
-				igMetaField field = dnt._baseMeta.GetFieldByName(fieldName);
+				igMetaField? field = dnt._baseMeta.GetFieldByName(fieldName);
+				if(field == null)
+				{
+					throw new MissingFieldException($"{dnt._baseMeta._name}.{fieldName} (from {fieldHandle}) could not be loaded!");
+				}
 				library._fields.Append(field);
 			}
 
@@ -690,7 +708,8 @@ namespace igLibrary.DotNet
 			metaField._name = ReadVvlString(strings, field._name);
 			if(metaField._name[0] == '<')	//Why would this happen??
 			{
-				metaField._name = metaField._name.Substring(1);
+				int endIndex = metaField._name.IndexOf('>');
+				metaField._name = metaField._name.Substring(1, endIndex-1);
 				//Ignoring the rest for now
 			}
 
