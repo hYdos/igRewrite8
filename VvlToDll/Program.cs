@@ -30,7 +30,7 @@ namespace VvlToDll
 			//PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_PS3");
 			PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd");
 
-			//PackagePrecacher.PrecachePackage("data:/archives/ChopChop.pak");
+			PackagePrecacher.PrecachePackage("generated/characters/ChopChop");
 
 			//DotNetRuntime runtime = new DotNetRuntime();
 

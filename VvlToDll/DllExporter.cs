@@ -107,9 +107,10 @@ namespace VvlToDll
 				}
 			}
 		}
-		public MethodReference ImportVvlMethodRef(uint callToken)
+		public MethodReference? ImportVvlMethodRef(uint callToken)
 		{
 			DotNetMethodDefinition dnMethod = _library.LookupMethod(callToken);
+			if(dnMethod == null) return null;
 			if((callToken & 1) == 0)
 			{
 				return _methodLookup[dnMethod];
@@ -203,14 +204,14 @@ namespace VvlToDll
 				TypeDefinition td = _metaTypeLookup[dnMethodDef._declaringType._baseMeta];
 				MethodDefinition md = new MethodDefinition(dnMethodDef._name, MethodAttributes.Public, ImportVvlTypeRef(dnMethodDef._retType));
 				
-				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.Constructor) != 0) md.Attributes |= MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig;
-				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.StaticMethod) != 0) md.Attributes |= MethodAttributes.Static;
-				if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.AbstractMethod) != 0) md.Attributes |= MethodAttributes.Abstract;
+				if(dnMethodDef.isConstructor) md.Attributes |= MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig;
+				if(dnMethodDef.isStatic)      md.Attributes |= MethodAttributes.Static;
+				if(dnMethodDef.isAbstract)    md.Attributes |= MethodAttributes.Abstract;
 				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.RuntimeImplMethod) != 0) md.Attributes |= MethodAttributes.;
 				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.NoSpecializationCopyMethod) != 0) md.Attributes |= MethodAttributes.;
 
 				//If it's not static then param 1 is "this"
-				for(int i = 0; i < dnMethodDef._parameters._count; i++)
+				for(int i = dnMethodDef.isStatic ? 0 : 1; i < dnMethodDef._parameters._count; i++)
 				{
 					ParameterDefinition pd = new ParameterDefinition(ImportVvlTypeRef(dnMethodDef._parameters[i]));
 					pd.Name = dnMethodDef._methodMeta._parameters[i]._name;
@@ -224,8 +225,6 @@ namespace VvlToDll
 					{
 						md.Body.Variables.Add(new VariableDefinition(ImportVvlTypeRef(dnMethodDef._locals[i])));
 					}
-					ILProcessor il = md.Body.GetILProcessor();
-					il.Append(il.Create(OpCodes.Ret));
 				}
 
 				_methodLookup.Add(dnMethodDef, md);
@@ -294,6 +293,13 @@ namespace VvlToDll
 		}
 		private void DumpOpCodes(igVector<byte> il, MethodDefinition method)
 		{
+#if DEBUG
+			StringBuilder methodBody = new StringBuilder((int)il._count * 2);
+			for(int i = 0; i < il._count; i++)
+			{
+				methodBody.Append(il[i].ToString("X02"));
+			}
+#endif
 			StreamHelper ilStream = new StreamHelper(il._data.ToArray(), _library._isLittleEndian ? StreamHelper.Endianness.Little : StreamHelper.Endianness.Big);
 			Dictionary<int, InstructionPlaceholder> instructions = new Dictionary<int, InstructionPlaceholder>();
 			while(ilStream.Tell() < ilStream.BaseStream.Length)
@@ -306,12 +312,11 @@ namespace VvlToDll
 				}
 				catch(InvalidDataException e)
 				{
-					StringBuilder methodBody = new StringBuilder((int)il._count * 2);
-					for(int i = 0; i < il._count; i++)
-					{
-						methodBody.Append(il[i].ToString("X02"));
-					}
-					throw new Exception($"Failed to disassemble method {method.Name} due to {e.GetType().Name} due to \"{e.Message}\"\n\nMethod Body:\n{methodBody}\n\nOpCode Position: {debugpos.ToString("X08")}", e);
+#if DEBUG
+					throw new Exception($"Failed to disassemble method {method.DeclaringType.FullName}::{method.Name} due to {e.GetType().Name} due to \"{e.Message}\"\n\nMethod Body:\n{methodBody}\n\nOpCode Position: {debugpos.ToString("X08")}", e);
+#else
+					throw e;
+#endif
 				}
 			}
 			ILProcessor ilProcessor = method.Body.GetILProcessor();
@@ -335,7 +340,15 @@ namespace VvlToDll
 						inst = Instruction.Create(kvp.Value._opcode, (long)kvp.Value._operand);
 						break;
 					case OperandType.InlineMethod:
-						inst = Instruction.Create(kvp.Value._opcode, (MethodReference)kvp.Value._operand);
+						if(kvp.Value._operand == null)
+						{
+							Console.WriteLine($"WARNING: FAILED TO FIND A METHOD REFERENCE FOR {method.DeclaringType.FullName}::{method.Name}, DEFAULTING TO NOP");
+							inst = Instruction.Create(OpCodes.Nop);
+						}
+						else
+						{
+							inst = Instruction.Create(kvp.Value._opcode, (MethodReference)kvp.Value._operand);
+						}
 						break;
 					case OperandType.InlineNone:
 						inst = Instruction.Create(kvp.Value._opcode);
@@ -434,12 +447,12 @@ namespace VvlToDll
 				case 0x20: return OpCodes.Ldc_I4;
 				case 0x21: return OpCodes.Ldc_I8;
 				case 0x22: return OpCodes.Ldc_R4;
-				case 0x23: throw GetRemovedOpCodeException("ldc.r8");
+				case 0x23: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldc.r8");
 				case 0x25: return OpCodes.Dup;
 				case 0x26: return OpCodes.Pop;
-				case 0x27: throw GetRemovedOpCodeException("jmp");
+				case 0x27: return OpCodes.Nop;//throw GetRemovedOpCodeException("jmp");
 				case 0x28: return OpCodes.Call;
-				case 0x29: throw GetRemovedOpCodeException("calli");
+				case 0x29: return OpCodes.Nop;//throw GetRemovedOpCodeException("calli");
 				case 0x2A: return OpCodes.Ret;
 				case 0x2B: return OpCodes.Br_S;
 				case 0x2C: return OpCodes.Brfalse_S;
@@ -463,7 +476,7 @@ namespace VvlToDll
 				case 0x3E: return OpCodes.Ble;
 				case 0x3F: return OpCodes.Blt;
 				case 0x40: return OpCodes.Bne_Un;
-				case 0x41: throw GetRemovedOpCodeException("bge.un");
+				case 0x41: return OpCodes.Nop;//throw GetRemovedOpCodeException("bge.un");
 				case 0x42: return OpCodes.Bgt_Un;
 				case 0x43: return OpCodes.Ble_Un;
 				case 0x44: return OpCodes.Blt_Un;
@@ -477,7 +490,7 @@ namespace VvlToDll
 				case 0x4C: return OpCodes.Ldind_I8;
 				case 0x4D: return OpCodes.Ldind_I;
 				case 0x4E: return OpCodes.Ldind_R4;
-				case 0x4F: throw GetRemovedOpCodeException("ldind.r8");
+				case 0x4F: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldind.r8");
 				case 0x50: return OpCodes.Ldind_Ref;
 				case 0x51: return OpCodes.Stind_Ref;
 				case 0x52: return OpCodes.Stind_I1;
@@ -485,7 +498,7 @@ namespace VvlToDll
 				case 0x54: return OpCodes.Stind_I4;
 				case 0x55: return OpCodes.Stind_I8;
 				case 0x56: return OpCodes.Stind_R4;
-				case 0x57: throw GetRemovedOpCodeException("stind.r8");
+				case 0x57: return OpCodes.Nop;//throw GetRemovedOpCodeException("stind.r8");
 				case 0x58: return OpCodes.Add;
 				case 0x59: return OpCodes.Sub;
 				case 0x5A: return OpCodes.Mul;
@@ -506,36 +519,36 @@ namespace VvlToDll
 				case 0x69: return OpCodes.Conv_I4;
 				case 0x6A: return OpCodes.Conv_I8;
 				case 0x6B: return OpCodes.Conv_R4;
-				case 0x6C: throw GetRemovedOpCodeException("conv.r8");
+				case 0x6C: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.r8");
 				case 0x6D: return OpCodes.Conv_U4;
 				case 0x6E: return OpCodes.Conv_U8;
 				case 0x6F: return OpCodes.Callvirt;
-				case 0x70: throw GetRemovedOpCodeException("cpobj");
-				case 0x71: throw GetRemovedOpCodeException("ldobj");
+				case 0x70: return OpCodes.Nop;//throw GetRemovedOpCodeException("cpobj");
+				case 0x71: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldobj");
 				case 0x72: return OpCodes.Ldstr;
 				case 0x73: return OpCodes.Newobj;
 				case 0x74: return OpCodes.Castclass;
 				case 0x75: return OpCodes.Isinst;
-				case 0x76: throw GetRemovedOpCodeException("conv.r.un");
-				case 0x79: throw GetRemovedOpCodeException("unbox");
-				case 0x7A: throw GetRemovedOpCodeException("throw");
+				case 0x76: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.r.un");
+				case 0x79: return OpCodes.Nop;//throw GetRemovedOpCodeException("unbox");
+				case 0x7A: return OpCodes.Nop;//throw GetRemovedOpCodeException("throw");
 				case 0x7B: return OpCodes.Ldfld;
 				case 0x7C: return OpCodes.Ldflda;
 				case 0x7D: return OpCodes.Stfld;
 				case 0x7E: return OpCodes.Ldsfld;
 				case 0x7F: return OpCodes.Ldsflda;
 				case 0x80: return OpCodes.Stsfld;
-				case 0x81: throw GetRemovedOpCodeException("stobj");
-				case 0x82: throw GetRemovedOpCodeException("conv.ovf.i1.un");
-				case 0x83: throw GetRemovedOpCodeException("conv.ovf.i2.un");
-				case 0x84: throw GetRemovedOpCodeException("conv.ovf.i4.un");
-				case 0x85: throw GetRemovedOpCodeException("conv.ovf.i8.un");
-				case 0x86: throw GetRemovedOpCodeException("conv.ovf.u1.un");
-				case 0x87: throw GetRemovedOpCodeException("conv.ovf.u2.un");
-				case 0x88: throw GetRemovedOpCodeException("conv.ovf.u4.un");
-				case 0x89: throw GetRemovedOpCodeException("conv.ovf.u8.un");
-				case 0x8A: throw GetRemovedOpCodeException("conv.ovf.i.un");
-				case 0x8B: throw GetRemovedOpCodeException("conv.ovf.u.un");
+				case 0x81: return OpCodes.Nop;//throw GetRemovedOpCodeException("stobj");
+				case 0x82: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i1.un");
+				case 0x83: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i2.un");
+				case 0x84: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i4.un");
+				case 0x85: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i8.un");
+				case 0x86: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u1.un");
+				case 0x87: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u2.un");
+				case 0x88: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u4.un");
+				case 0x89: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u8.un");
+				case 0x8A: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i.un");
+				case 0x8B: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u.un");
 				case 0x8C: return OpCodes.Box;									//box is effectively a nop
 				case 0x8D: return OpCodes.Newarr;
 				case 0x8E: return OpCodes.Ldlen;
@@ -549,7 +562,7 @@ namespace VvlToDll
 				case 0x96: return OpCodes.Ldelem_I8;
 				case 0x97: return OpCodes.Ldelem_I;
 				case 0x98: return OpCodes.Ldelem_R4;
-				case 0x99: throw GetRemovedOpCodeException("ldelem.r8");
+				case 0x99: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldelem.r8");
 				case 0x9A: return OpCodes.Ldelem_Ref;
 				case 0x9B: return OpCodes.Stelem_I;
 				case 0x9C: return OpCodes.Stelem_I1;
@@ -557,39 +570,39 @@ namespace VvlToDll
 				case 0x9E: return OpCodes.Stelem_I4;
 				case 0x9F: return OpCodes.Stelem_I8;
 				case 0xA0: return OpCodes.Stelem_R4;
-				case 0xA1: throw GetRemovedOpCodeException("stelem.r8");
+				case 0xA1: return OpCodes.Nop;//throw GetRemovedOpCodeException("stelem.r8");
 				case 0xA2: return OpCodes.Stelem_Ref;
 				case 0xA3: return OpCodes.Ldelem_Any;
 				case 0xA4: return OpCodes.Stelem_Any;
 				case 0xA5: return OpCodes.Unbox;								//unbox is ffectively a nop
-				case 0xB3: throw GetRemovedOpCodeException("conv.ovf.i1");
-				case 0xB4: throw GetRemovedOpCodeException("conv.ovf.u1");
-				case 0xB5: throw GetRemovedOpCodeException("conv.ovf.i2");
-				case 0xB6: throw GetRemovedOpCodeException("conv.ovf.u2");
-				case 0xB7: throw GetRemovedOpCodeException("conv.ovf.i4");
-				case 0xB8: throw GetRemovedOpCodeException("conv.ovf.u4");
-				case 0xB9: throw GetRemovedOpCodeException("conv.ovf.i8");
-				case 0xBA: throw GetRemovedOpCodeException("conv.ovf.u8");
-				case 0xC2: throw GetRemovedOpCodeException("refanyval");
-				case 0xC3: throw GetRemovedOpCodeException("ckfinite");
-				case 0xC6: throw GetRemovedOpCodeException("mkrefany");
+				case 0xB3: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i1");
+				case 0xB4: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u1");
+				case 0xB5: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i2");
+				case 0xB6: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u2");
+				case 0xB7: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i4");
+				case 0xB8: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u4");
+				case 0xB9: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i8");
+				case 0xBA: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u8");
+				case 0xC2: return OpCodes.Nop;//throw GetRemovedOpCodeException("refanyval");
+				case 0xC3: return OpCodes.Nop;//throw GetRemovedOpCodeException("ckfinite");
+				case 0xC6: return OpCodes.Nop;//throw GetRemovedOpCodeException("mkrefany");
 				case 0xD0: return OpCodes.Ldtoken;
 				case 0xD1: return OpCodes.Conv_U2;
 				case 0xD2: return OpCodes.Conv_U1;
-				case 0xD3: throw GetRemovedOpCodeException("conv.i");
-				case 0xD4: throw GetRemovedOpCodeException("conv.ovf.i");
-				case 0xD5: throw GetRemovedOpCodeException("conv.ovf.u");
-				case 0xD6: throw GetRemovedOpCodeException("add.ovf");
-				case 0xD7: throw GetRemovedOpCodeException("add.ovf.un");
-				case 0xD8: throw GetRemovedOpCodeException("mul.ovf");
-				case 0xD9: throw GetRemovedOpCodeException("mul.ovf.un");
-				case 0xDA: throw GetRemovedOpCodeException("sub.ovf");
-				case 0xDB: throw GetRemovedOpCodeException("sub.ovf.un");
-				case 0xDC: throw GetRemovedOpCodeException("endfinally");
+				case 0xD3: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.i");
+				case 0xD4: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i");
+				case 0xD5: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u");
+				case 0xD6: return OpCodes.Nop;//throw GetRemovedOpCodeException("add.ovf");
+				case 0xD7: return OpCodes.Nop;//throw GetRemovedOpCodeException("add.ovf.un");
+				case 0xD8: return OpCodes.Nop;//throw GetRemovedOpCodeException("mul.ovf");
+				case 0xD9: return OpCodes.Nop;//throw GetRemovedOpCodeException("mul.ovf.un");
+				case 0xDA: return OpCodes.Nop;//throw GetRemovedOpCodeException("sub.ovf");
+				case 0xDB: return OpCodes.Nop;//throw GetRemovedOpCodeException("sub.ovf.un");
+				case 0xDC: return OpCodes.Nop;//throw GetRemovedOpCodeException("endfinally");
 				case 0xDD: return OpCodes.Leave;
 				case 0xDE: return OpCodes.Leave_S;
 				case 0xDF: return OpCodes.Stind_I;
-				case 0xE0: throw GetRemovedOpCodeException("conv.u");
+				case 0xE0: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.u");
 				//Custom instructions/aliases
 				case 0xF0: throw new NotImplementedException("ldfld but with a pointer is not implemented");
 				case 0xF1: return OpCodes.Ldloc_S;
@@ -599,15 +612,16 @@ namespace VvlToDll
 				case 0xF5: return OpCodes.Ldloc_3;
 				case 0xF6: //throw new NotImplementedException("add delegate is not implemented");
 				case 0xF7: //throw new NotImplementedException("remove delegate is not implemented");
+				case 0xF8: //throw new NotImplementedException("add delegate in place is not implemented");
+				case 0xF9: //throw new NotImplementedException("remove delegate in place is not implemented");
 					ilStream.Seek(4, SeekOrigin.Current);
 					return OpCodes.Nop;
-				case 0xF8: throw new NotImplementedException("replace delegate is not implemented");
 				//End of custom instructions/aliases
 				case 0xFE:
 					op = ilStream.ReadByte();
 					switch(op)
 					{
-						case 0x00: throw GetRemovedOpCodeException("arglist");
+						case 0x00: return OpCodes.Nop;//throw GetRemovedOpCodeException("arglist");
 						case 0x01: return OpCodes.Ceq;
 						case 0x02: return OpCodes.Cgt;
 						case 0x03: return OpCodes.Cgt_Un;
@@ -615,24 +629,24 @@ namespace VvlToDll
 						case 0x05: return OpCodes.Clt_Un;
 						case 0x06: return OpCodes.Ldftn;
 						case 0x07: return OpCodes.Ldvirtftn;
-						case 0x09: throw GetRemovedOpCodeException("ldarg");
-						case 0x0A: throw GetRemovedOpCodeException("ldarga");
+						case 0x09: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldarg");
+						case 0x0A: return OpCodes.Nop;//throw GetRemovedOpCodeException("ldarga");
 						case 0x0B: return OpCodes.Starg;
 						case 0x0C: return OpCodes.Ldloc;
 						case 0x0D: return OpCodes.Ldloca;
 						case 0x0E: return OpCodes.Stloc;
-						case 0x0F: throw GetRemovedOpCodeException("localloc");
-						case 0x13: throw GetRemovedOpCodeException("endfilter");
-						case 0x14: throw GetRemovedOpCodeException("unaligned");
-						case 0x15: throw GetRemovedOpCodeException("volatile");
-						case 0x16: throw GetRemovedOpCodeException("tail");
-						case 0x17: throw GetRemovedOpCodeException("initobj");
+						case 0x0F: return OpCodes.Nop;//throw GetRemovedOpCodeException("localloc");
+						case 0x13: return OpCodes.Nop;//throw GetRemovedOpCodeException("endfilter");
+						case 0x14: return OpCodes.Nop;//throw GetRemovedOpCodeException("unaligned");
+						case 0x15: return OpCodes.Nop;//throw GetRemovedOpCodeException("volatile");
+						case 0x16: return OpCodes.Nop;//throw GetRemovedOpCodeException("tail");
+						case 0x17: return OpCodes.Nop;//throw GetRemovedOpCodeException("initobj");
 						case 0x18: return OpCodes.Constrained;						//Effectively a nop
-						case 0x19: throw GetRemovedOpCodeException("no");
-						case 0x1A: throw GetRemovedOpCodeException("rethrow");
-						case 0x1C: throw GetRemovedOpCodeException("sizeof");
-						case 0x1D: throw GetRemovedOpCodeException("refanytype");
-						case 0x1E: throw GetRemovedOpCodeException("readonly");
+						case 0x19: return OpCodes.Nop;//throw GetRemovedOpCodeException("no");
+						case 0x1A: return OpCodes.Nop;//throw GetRemovedOpCodeException("rethrow");
+						case 0x1C: return OpCodes.Nop;//throw GetRemovedOpCodeException("sizeof");
+						case 0x1D: return OpCodes.Nop;//throw GetRemovedOpCodeException("refanytype");
+						case 0x1E: return OpCodes.Nop;//throw GetRemovedOpCodeException("readonly");
 						default: throw new InvalidDataException($"Instruction 0xFE {op.ToString("X08")} does not exist");
 					}
 				default: throw new InvalidDataException($"Instruction {op.ToString("X08")} does not exist");
@@ -685,7 +699,7 @@ namespace VvlToDll
 					inst._operand = method.Body.Variables[ilStream.ReadUInt16()];
 					break;
 				case OperandType.InlineArg:
-					inst._operand = method.Parameters[ilStream.ReadUInt16()];
+					inst._operand = GetParameter(method, ilStream.ReadUInt16());
 					break;
 				case OperandType.ShortInlineBrTarget:
 					inst._operand = (int)(ilStream.ReadSByte() + ilStream.Tell());
@@ -701,231 +715,22 @@ namespace VvlToDll
 					inst._operand = method.Body.Variables[ilStream.ReadByte()];
 					break;
 				case OperandType.ShortInlineArg:
-					inst._operand = method.Parameters[ilStream.ReadByte()];
+					inst._operand = GetParameter(method, ilStream.ReadByte());
 					break;
 				default:
 					//InlineSig doesn't need to be implemented as Calli isn't a valid instruction in a vvl
 					throw new NotSupportedException($"OperandType \"{op.OperandType}\" for OpCode {op} in not supported.");
 			}
 			return inst;
-			/*switch(op)
+		}
+		private ParameterDefinition GetParameter(MethodDefinition method, int index)
+		{
+			if(method.HasThis)
 			{
-				case 0x00:	//nop
-					return Instruction.Create(OpCodes.Nop);
-				case 0x01:	//break
-					return Instruction.Create(OpCodes.Break);
-				case 0x02: //ldarg.0
-					return Instruction.Create(OpCodes.Ldarg_0);
-				case 0x03: //ldarg.1
-					return Instruction.Create(OpCodes.Ldarg_1);
-				case 0x04: //ldarg.2
-					return Instruction.Create(OpCodes.Ldarg_2);
-				case 0x05: //ldarg.3
-					return Instruction.Create(OpCodes.Ldarg_3);
-				case 0x06: //ldloc.0
-					return Instruction.Create(OpCodes.Ldloc_0);
-				case 0x07: //ldloc.1
-					return Instruction.Create(OpCodes.Ldloc_1);
-				case 0x08: //ldloc.2
-					return Instruction.Create(OpCodes.Ldloc_2);
-				case 0x09: //ldloc.3
-					return Instruction.Create(OpCodes.Ldloc_3);
-				case 0x0A:	//stloc.0
-					return Instruction.Create(OpCodes.Stloc_0);
-				case 0x0B:	//stloc.1
-					return Instruction.Create(OpCodes.Stloc_1);
-				case 0x0C:	//stloc.2
-					return Instruction.Create(OpCodes.Stloc_2);
-				case 0x0D:	//stloc.3
-					return Instruction.Create(OpCodes.Stloc_3);
-				case 0x0E: //ldarg.s
-					return Instruction.Create(OpCodes.Ldarg_S, *bytecode++);
-				case 0x0F: //ldarga.s
-					return Instruction.Create(OpCodes.Ldarga_S, *bytecode++);
-				case 0x10: //starg.s
-					return Instruction.Create(OpCodes.Starg_S, *bytecode++);
-				case 0x11: //ldloc.s
-					return Instruction.Create(OpCodes.Ldloc_S, *bytecode++);
-				case 0x12: //ldloca.s
-					return Instruction.Create(OpCodes.Ldloca_S, *bytecode++);
-				case 0x13: //stloc.s
-					return Instruction.Create(OpCodes.Stloc_S, *bytecode++);
-				case 0x14: //ldnull
-					return Instruction.Create(OpCodes.Ldnull);
-				case 0x15: //ldc.i4.m1
-					return Instruction.Create(OpCodes.Ldc_I4_M1);
-				case 0x16: //ldc.i4.0
-					return Instruction.Create(OpCodes.Ldc_I4_0);
-				case 0x17: //ldc.i4.1
-					return Instruction.Create(OpCodes.Ldc_I4_1);
-				case 0x18: //ldc.i4.2
-					return Instruction.Create(OpCodes.Ldc_I4_2);
-				case 0x19: //ldc.i4.3
-					return Instruction.Create(OpCodes.Ldc_I4_3);
-				case 0x1A: //ldc.i4.4
-					return Instruction.Create(OpCodes.Ldc_I4_4);
-				case 0x1B: //ldc.i4.5
-					return Instruction.Create(OpCodes.Ldc_I4_5);
-				case 0x1C: //ldc.i4.6
-					return Instruction.Create(OpCodes.Ldc_I4_6);
-				case 0x1D: //ldc.i4.7
-					return Instruction.Create(OpCodes.Ldc_I4_7);
-				case 0x1E: //ldc.i4.8
-					return Instruction.Create(OpCodes.Ldc_I4_8);
-				case 0x1F: //ldc.i4.s
-					inst = Instruction.Create(OpCodes.Ldc_I4_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x20: //ldc.i4
-					inst = Instruction.Create(OpCodes.Ldc_I4, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x21: //ldc.i8
-					inst = Instruction.Create(OpCodes.Ldc_I8, GetI8FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 8;
-					return inst;
-				case 0x22: //ldc.r4
-					inst = Instruction.Create(OpCodes.Ldc_R4, GetR4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x23: //ldc.r8
-					inst = Instruction.Create(OpCodes.Ldc_R8, GetR8FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 8;
-					return inst;
-				case 0x24: //Does not exist
-				case 0x27: //jmp isn't implemented
-				case 0x29: //calli isn't implemented
-					throw new NotSupportedException("Failed reading IL stream");
-				case 0x25: //dup
-					return Instruction.Create(OpCodes.Dup);
-				case 0x26: //pop
-					return Instruction.Create(OpCodes.Pop);
-				case 0x28: //call
-					inst = Instruction.Create(OpCodes.Call, ImportVvlMethodRef(GetU4FromIl(_library._isLittleEndian, bytecode)));
-					bytecode += 4;
-					return inst;
-				case 0x2A: //ret
-					return Instruction.Create(OpCodes.Ret);
-				case 0x2B: //br.s
-					inst = Instruction.Create(OpCodes.Br_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x2C: //brfalse.s, brnull.s, brzero.s
-					inst = Instruction.Create(OpCodes.Brfalse_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x2D: //brtrue.s, brinst.s
-					inst = Instruction.Create(OpCodes.Brtrue_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x2E: //beq.s
-					inst = Instruction.Create(OpCodes.Beq_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x2F: //bge.s
-					inst = Instruction.Create(OpCodes.Bge_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x30: //bgt.s
-					inst = Instruction.Create(OpCodes.Bgt_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x31: //ble.s
-					inst = Instruction.Create(OpCodes.Ble_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x32: //blt.s
-					inst = Instruction.Create(OpCodes.Blt_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x33: //bne.un.s
-					inst = Instruction.Create(OpCodes.Bne_Un_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x34: //bge.un.s
-					inst = Instruction.Create(OpCodes.Bge_Un_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x35: //bgt.un.s
-					inst = Instruction.Create(OpCodes.Bgt_Un_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x36: //ble.un.s
-					inst = Instruction.Create(OpCodes.Ble_Un_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x37: //blt.un.s
-					inst = Instruction.Create(OpCodes.Blt_Un_S, *(sbyte*)bytecode);
-					bytecode++;
-					return inst;
-				case 0x38: //br
-					inst = Instruction.Create(OpCodes.Br, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x39: //brfalse
-					inst = Instruction.Create(OpCodes.Brfalse, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3A: //brtrue
-					inst = Instruction.Create(OpCodes.Brtrue, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3B: //beq
-					inst = Instruction.Create(OpCodes.Beq, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3C: //bge
-					inst = Instruction.Create(OpCodes.Bge, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3D: //bgt
-					inst = Instruction.Create(OpCodes.Bgt, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3E: //ble
-					inst = Instruction.Create(OpCodes.Ble, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x3F: //blt
-					inst = Instruction.Create(OpCodes.Blt, GetI4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x40: //bne.un
-					inst = Instruction.Create(OpCodes.Bne_Un, GetU4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x41: //bge.un
-					inst = Instruction.Create(OpCodes.Bge_Un, GetU4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x42: //bgt.un
-					inst = Instruction.Create(OpCodes.Bgt_Un, GetU4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x43: //ble.un
-					inst = Instruction.Create(OpCodes.Ble_Un, GetU4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x44: //blt.un
-					inst = Instruction.Create(OpCodes.Blt_Un, GetU4FromIl(_library._isLittleEndian, bytecode));
-					bytecode += 4;
-					return inst;
-				case 0x45: //switch
-					inst = Instruction.Create(OpCodes.Switch);
-					int switch_length = GetI4FromIl(_library._isLittleEndian, bytecode);
-					int[] branches = new int[switch_length];
-					int switch_base_offset = switch_length * 4;
-					for(int i = 0; i < switch_length; i++)
-					{
-						branches[i] = GetI4FromIl(_library._isLittleEndian, bytecode);
-					}
-					inst.Operand = branches;	//This is a hack I stole from Mono.Cecil hahah
-					bytecode += (switch_length + 1) * 4;
-					return inst;
-				case 0x46:
-					
-					break;
-			}*/
+				if(index == 0) return method.Body.ThisParameter;
+				index--;
+			}
+			return method.Parameters[index];
 		}
 		public void Finish()
 		{

@@ -7,6 +7,12 @@ namespace igLibrary.DotNet
 		public DotNetTypeList _parameters = new DotNetTypeList();
 		public DotNetMethodMeta _methodMeta = new DotNetMethodMeta();
 
+		public bool isStatic => (_flags & (uint)FlagTypes.StaticMethod) != 0;
+		public bool isConstructor => (_flags & (uint)FlagTypes.Constructor) != 0;
+		public bool isAbstract => (_flags & (uint)FlagTypes.AbstractMethod) != 0;
+		public bool isRuntimeImpl => (_flags & (uint)FlagTypes.RuntimeImplMethod) != 0;
+		public bool IsNoSpecializationCopy => (_flags & (uint)FlagTypes.NoSpecializationCopyMethod) != 0;
+
 		public enum FlagTypes
 		{
 			StaticMethod = 0x04,

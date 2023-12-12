@@ -205,7 +205,8 @@ I've been looking into the IL bytecode for a few days now and I've learned that 
 |      0xF5 | ldloc.3                                    | This alias doesn't exist in ECMA-335                           | 
 |      0xF6 | adddel <methodtkn>                         | This is a fully custom instruction                             | Stack transformation: `..., delegate, target, method -> ..., delegate`. Desc: Creates a delegate from the `igObject` `target` and the `DotNetMethodDefinition` `method` and combines it with the `Delegate` `delegate`. the declaring type of `methodtkn` must be the same as the method definition on the stack, the one on the stack is combined with the delegate. Also skip the next instruction
 |      0xF7 | remdel <9 bytes>                           | This is a fully custom instruction                             | Stack transformation: `..., delegate, target, method -> ..., delegate`. Desc: removes the delegate matching that method and target. Also skip the next instruction
-|      0xF8 | ????                                       |                                                                | 
+|      0xF8 | adddelinplace                              |                                                                | 
+|      0xF9 | remdelinplace                              |                                                                | 
 | 0xFE 0x00 | arglist                                    | Removed                                                        | 
 | 0xFE 0x01 | ceq                                        |                                                                | 
 | 0xFE 0x02 | cgt                                        |                                                                | 
