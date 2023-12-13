@@ -5,9 +5,20 @@ namespace igLibrary.DotNet
 	public struct DotNetType
 	{
 		public igBaseMeta? _baseMeta;
-		public uint _flags;
-		//public ElementType _elementType;
+		public uint _flags;		//Consider making this private
 
+		public ElementType _elementType {
+			get => (ElementType)(_flags & (uint)Flags.kTypeMask);
+			set => _flags = (_flags & ~(uint)Flags.kTypeMask) | (uint)value;
+		}
+		public bool _isSimple {
+			get => (_flags & (uint)Flags.kIsSimple) != 0;
+			set => _flags = (_flags & ~(uint)Flags.kIsSimple) | (value ? 0u : 1u);
+		}
+		public bool _isArray {
+			get => (_flags & (uint)Flags.kIsArray) != 0;
+			set => _flags = (_flags & ~(uint)Flags.kIsArray) | (value ? 0u : 1u);
+		}
 		public enum Flags : uint
 		{
 			kIsSimple = 0x40000000,

@@ -5,6 +5,7 @@ using igLibrary.DotNet;
 using igLibrary;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using Mono.Cecil.Rocks;
 
 namespace VvlToDll
 {
@@ -55,19 +56,11 @@ namespace VvlToDll
 			foreach(igBaseMeta meta in _library._ownedTypes)
 			{
 				if(meta == null) continue;
-				GetNsAndName(in meta._name, out string ns, out string name);
+				GetNsAndName(in meta._name, out string? ns, out string name);
 				TypeDefinition td = new TypeDefinition(ns, name, TypeAttributes.Public);
 				if(!_metaTypeLookup.TryAdd(meta, td) && meta is not igMetaEnum) throw new ArgumentException("Type exists boss."); 	//So many enums are called just "Flags" or "Mode" that I had to make this 
 				_module.Types.Add(td);
 			}
-		}
-		public TypeReference GetTypeFromMeta(igBaseMeta meta)
-		{
-			//return _module.ImportReference(typeof(object));
-			if(ArkDllExport._metaTypeLookup.TryGetValue(meta, out TypeDefinition td)) return _module.ImportReference(td);
-			if(_metaTypeLookup.TryGetValue(meta, out td)) return _module.ImportReference(td);
-			else return ImportVvlClassRef(meta);
-			throw new KeyNotFoundException("Failed to load type");
 		}
 		public void DefineEnums()
 		{
@@ -94,7 +87,7 @@ namespace VvlToDll
 				TypeDefinition td = kvp.Value;
 				if(metaObject._parent != null)
 				{
-					td.BaseType = GetTypeFromMeta(metaObject._parent);
+					td.BaseType = ImportVvlClassRef(metaObject._parent);
 				}
 				else continue;
 
@@ -103,7 +96,7 @@ namespace VvlToDll
 					//FieldDefinition fd = new FieldDefinition(metaObject._metaFields[i]._name, FieldAttributes.Public, _module.ImportReference(typeof(object)));
 					//td.Fields.Add(fd);
 
-					ArkDllExport.AddField(_module, td, metaObject, metaObject._metaFields[i], GetTypeFromMeta);
+					ArkDllExport.AddField(_module, td, metaObject, metaObject._metaFields[i], ImportVvlClassRef);
 				}
 			}
 		}
@@ -123,45 +116,38 @@ namespace VvlToDll
 		public FieldReference ImportVvlFieldRef(int fieldToken)
 		{
 			igMetaField field = _library._fields[fieldToken];
-			return _module.ImportReference(new FieldReference(field._name, ArkDllExport.GetFieldTypeRef(_module, field, GetTypeFromMeta), ImportVvlClassRef(field._parentMeta)));
+			return _module.ImportReference(new FieldReference(field._name, ArkDllExport.GetFieldTypeRef(_module, field, ImportVvlClassRef), ImportVvlClassRef(field._parentMeta)));
 		}
-		public TypeReference ImportVvlTypeRef(DotNetType dnTypeRef)
+		public TypeReference ImportVvlTypeRef(DotNetType dnTypeRef, bool isReturn = false)
 		{
-			switch((ElementType)(dnTypeRef._flags & (uint)DotNetType.Flags.kTypeMask))
+			TypeReference tr = null;
+			switch(dnTypeRef._elementType)
 			{
 				default:
 					throw new ArgumentException("Yo what???");
-				case ElementType.kElementTypeVoid:
-					return _module.TypeSystem.Void;
-				case ElementType.kElementTypeBoolean:
-					return _module.TypeSystem.Boolean;
-				case ElementType.kElementTypeChar:
-					return _module.TypeSystem.Char;
-				case ElementType.kElementTypeI1:
-					return _module.TypeSystem.SByte;
-				case ElementType.kElementTypeU1:
-					return _module.TypeSystem.Byte;
-				case ElementType.kElementTypeI2:
-					return _module.TypeSystem.Int16;
-				case ElementType.kElementTypeU2:
-					return _module.TypeSystem.UInt16;
-				case ElementType.kElementTypeI4:
-					return _module.TypeSystem.Int32;
-				case ElementType.kElementTypeU4:
-					return _module.TypeSystem.UInt32;
-				case ElementType.kElementTypeI8:
-					return _module.TypeSystem.Int64;
-				case ElementType.kElementTypeU8:
-					return _module.TypeSystem.UInt64;
-				case ElementType.kElementTypeR4:
-					return _module.TypeSystem.Single;
-				case ElementType.kElementTypeR8:
-					return _module.TypeSystem.Double;
-				case ElementType.kElementTypeString:
-					return _module.TypeSystem.String;
-				case ElementType.kElementTypeObject:
-					return ImportVvlClassRef(dnTypeRef._baseMeta);
+				case ElementType.kElementTypeVoid: 		tr = _module.TypeSystem.Void; break;
+				case ElementType.kElementTypeBoolean: 	tr = _module.TypeSystem.Boolean; break;
+				case ElementType.kElementTypeChar: 		tr = _module.TypeSystem.Char; break;
+				case ElementType.kElementTypeI1: 		tr = _module.TypeSystem.SByte; break;
+				case ElementType.kElementTypeU1: 		tr = _module.TypeSystem.Byte; break;
+				case ElementType.kElementTypeI2: 		tr = _module.TypeSystem.Int16; break;
+				case ElementType.kElementTypeU2: 		tr = _module.TypeSystem.UInt16; break;
+				case ElementType.kElementTypeI4: 		tr = _module.TypeSystem.Int32; break;
+				case ElementType.kElementTypeU4: 		tr = _module.TypeSystem.UInt32; break;
+				case ElementType.kElementTypeI8: 		tr = _module.TypeSystem.Int64; break;
+				case ElementType.kElementTypeU8: 		tr = _module.TypeSystem.UInt64; break;
+				case ElementType.kElementTypeR4: 		tr = _module.TypeSystem.Single; break;
+				case ElementType.kElementTypeR8: 		tr = _module.TypeSystem.Double; break;
+				case ElementType.kElementTypeString: 	tr = _module.TypeSystem.String; break;
+				case ElementType.kElementTypeObject: 	tr = ImportVvlClassRef(dnTypeRef._baseMeta); break;
 			}
+			if(!isReturn && !dnTypeRef._isSimple && dnTypeRef._elementType == ElementType.kElementTypeVoid)
+				tr = tr.MakePointerType();
+
+			if(!dnTypeRef._isSimple && dnTypeRef._isArray)
+				tr = tr.MakeArrayType();
+
+			return tr;
 		}
 		private TypeReference ImportVvlClassRef(igBaseMeta meta)
 		{
@@ -174,26 +160,37 @@ namespace VvlToDll
 			{
 				owner = dndmo._owner;
 			}
-			else if(meta is igMetaObject || meta is igMetaEnum)
+			else if(meta is igDotNetMetaObject dnmo)
+			{
+				owner = dnmo._wrappedIn;
+			}
+			if(owner != null)
+			{
+				if(!_dependencies.Contains(owner))
+				{
+					_dependencies.Add(owner);
+				}
+				DllExporter dependentExporter = DllExportManager._libExporterLookup[owner];
+				return _module.ImportReference(dependentExporter._metaTypeLookup[meta]);
+			}
+
+			if(meta is igMetaObject || meta is igMetaEnum)
 			{
 				return _module.ImportReference(ArkDllExport._metaTypeLookup[meta]);
 			}
-			if(owner == null) return _module.TypeSystem.Object;	//This is bad, this happening indicates that the vvls were not loaded properly
 
-			if(!_dependencies.Contains(owner))
-			{
-				_dependencies.Add(owner);
-			}
-
-			DllExporter dependentExporter = DllExportManager._libExporterLookup[owner];
-			return _module.ImportReference(dependentExporter._metaTypeLookup[meta]);
+			return _module.TypeSystem.Object;	//This is bad, this happening indicates that the vvls were not loaded properly
 		}
 		public void DeclareMethods()
 		{
 			foreach(DotNetMethodDefinition? dnMethodRef in _library._methodRefs)
 			{
 				if(dnMethodRef == null) continue;
-				MethodReference mr = new MethodReference(dnMethodRef._name, ImportVvlTypeRef(dnMethodRef._retType), ImportVvlTypeRef(dnMethodRef._declaringType));
+				MethodReference mr = new MethodReference(dnMethodRef._name, ImportVvlTypeRef(dnMethodRef._retType, true), ImportVvlTypeRef(dnMethodRef._declaringType));
+				for(int i = dnMethodRef.isStatic ? 0 : 1; i < dnMethodRef._parameters._count; i++)
+				{
+					mr.Parameters.Add(new ParameterDefinition(ImportVvlTypeRef(dnMethodRef._parameters[i])));
+				}
 				_module.ImportReference(mr);
 				_methodRefLookup.Add(dnMethodRef, mr);
 			}
@@ -202,7 +199,7 @@ namespace VvlToDll
 				if(dnMethodDef == null) continue;
 
 				TypeDefinition td = _metaTypeLookup[dnMethodDef._declaringType._baseMeta];
-				MethodDefinition md = new MethodDefinition(dnMethodDef._name, MethodAttributes.Public, ImportVvlTypeRef(dnMethodDef._retType));
+				MethodDefinition md = new MethodDefinition(dnMethodDef._name, MethodAttributes.Public, ImportVvlTypeRef(dnMethodDef._retType, true));
 				
 				if(dnMethodDef.isConstructor) md.Attributes |= MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig;
 				if(dnMethodDef.isStatic)      md.Attributes |= MethodAttributes.Static;
@@ -241,7 +238,7 @@ namespace VvlToDll
 				}
 			}
 		}
-		private static void GetNsAndName(in string qualifiedName, out string ns, out string name)
+		private static void GetNsAndName(in string qualifiedName, out string? ns, out string name)
 		{
 			int checkGeneric = qualifiedName.IndexOf('`');
 			int genericTestIndex = checkGeneric < 0 ? qualifiedName.Length-1 : checkGeneric;	//Poorly named
@@ -253,7 +250,7 @@ namespace VvlToDll
 			}
 			else
 			{
-				ns = "-";
+				ns = null;
 				name = qualifiedName;
 			}
 		}

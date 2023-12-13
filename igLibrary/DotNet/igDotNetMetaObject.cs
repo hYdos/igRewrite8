@@ -8,6 +8,7 @@ namespace igLibrary.DotNet
 		public igMetaObject _boundMeta;
 		public DotNetTypeList _templateParameters;
 		public igMetaObject _patchMeta;
+		public DotNetLibrary? _wrappedIn;	//Added to aid with interop types
 		public bool _isInterface;
 		public bool _baseMethodsInherited;
 		public static igMetaObjectBindingTable _bindings;
@@ -18,21 +19,21 @@ namespace igLibrary.DotNet
 		{
 			if(string.IsNullOrEmpty(name)) return null;
 			string typeName = runtime._prefix + name;
-			if(!_aliases.TryGetValue(typeName, out igBaseMeta meta))
+			if(!_aliases.TryGetValue(typeName, out igBaseMeta? meta))
 			{
 				meta = igArkCore.GetObjectMeta(name);
 			}
-			return (igMetaObject)meta;
+			return (igMetaObject?)meta;
 		}
 		public static igMetaEnum? FindEnum(string name, DotNetRuntime runtime)
 		{
 			if(string.IsNullOrEmpty(name)) return null;
 			string typeName = runtime._prefix + name;
-			if(!_aliases.TryGetValue(typeName, out igBaseMeta meta))
+			if(!_aliases.TryGetValue(typeName, out igBaseMeta? meta))
 			{
 				meta = igArkCore.GetMetaEnum(name);
 			}
-			return (igMetaEnum)meta;
+			return (igMetaEnum?)meta;
 		}
 	}
 	public class igDotNetMetaObjectList : igTObjectList<igDotNetMetaObject>{}

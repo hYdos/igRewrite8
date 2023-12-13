@@ -168,11 +168,12 @@ namespace igLibrary.DotNet
 				}
 				else
 				{
-					if(typeDetails[i]._targetMeta is igDotNetDynamicMetaEnum dndme)
+					igBaseMeta targetMeta = typeDetails[i]._targetMeta;
+					if(targetMeta is igDotNetDynamicMetaEnum dndme)
 					{
 						dndme._owner = library;
 					}
-					library._ownedTypes.Append(typeDetails[i]._targetMeta);
+					library._ownedTypes.Append(targetMeta);
 				}
 			}
 
@@ -264,6 +265,10 @@ namespace igLibrary.DotNet
 						}
 						((igDotNetDynamicMetaObject)meta)._owner = library;
 					}
+				}
+				else if(meta is igDotNetMetaObject dnmo)
+				{
+					dnmo._wrappedIn = library;
 				}
 				library._ownedTypes.Append(meta);
 			}
@@ -762,47 +767,23 @@ namespace igLibrary.DotNet
 		}
 		public static DotNetMethodDefinition? ConvertMethodDef(igDotNetLoadResolver resolver, VvlMethodDef methodDef, StreamHelper strings, out int methodIndex, DotNetLibrary library, StreamHelper? IL)
 		{
-			igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, false, ElementType.kElementTypeObject, ReadVvlString(strings, methodDef._declaringTypeName));
-			DotNetType declaringType;
-			while(true)
+			if(!TypeResolverHelper(resolver, false, ElementType.kElementTypeObject, ReadVvlString(strings, methodDef._declaringTypeName), out DotNetType declaringType))
 			{
-				if(!dntr.TryResolveObject(out declaringType))
-				{
-					int nsIndex = dntr._name.IndexOf('.');
-					if(nsIndex >= 0) dntr._name = dntr._name.Substring(nsIndex+1);
-					//else throw new TypeLoadException($"Failed to find class {typeName}");
-					else
-					{
-						methodIndex = 0;
-						return null;
-					}
-				}
-				else break;
+				methodIndex = 0;
+				return null;
 			}
 
 			DotNetMethodDefinition dnMethodDef = new DotNetMethodDefinition();
 			dnMethodDef._name = ReadVvlString(strings, methodDef._methodName);
 			dnMethodDef._declaringType = declaringType;
 
-			dntr._isArray = methodDef._isReturnArray != 0;
-			dntr._elementType = methodDef._returnElementType;
-			dntr._name = ReadVvlString(resolver._stringTable, methodDef._returnTypeName);
+			if(dnMethodDef._declaringType._baseMeta._name == "Delegate" && dnMethodDef._name == "Combine")
+			;
 
-			if(dntr._elementType == ElementType.kElementTypeObject && !dntr._isArray)
+			if(!TypeResolverHelper(resolver, methodDef._isReturnArray != 0, methodDef._returnElementType, ReadVvlString(resolver._stringTable, methodDef._returnTypeName), out dnMethodDef._retType))
 			{
-				if(!dntr.TryResolveObject(out dnMethodDef._retType))
-				{
-					dnMethodDef._retType._baseMeta = igArkCore.GetObjectMeta("Object");
-					dnMethodDef._retType._flags = (uint)ElementType.kElementTypeObject;
-				}
-			}
-			else
-			{
-				if(dntr._elementType != ElementType.kElementTypeObject)
-				{
-					dnMethodDef._retType._flags = (uint)DotNetType.Flags.kIsSimple;
-				}
-				dnMethodDef._retType._flags |= (uint)dntr._elementType | (dntr._isArray ? 0 : (uint)DotNetType.Flags.kIsArray);
+				dnMethodDef._retType._baseMeta = igArkCore.GetObjectMeta("Object");
+				dnMethodDef._retType._flags = (uint)ElementType.kElementTypeObject;
 			}
 
 			dnMethodDef._stackHeight = methodDef._stackHeight;
@@ -831,6 +812,40 @@ namespace igLibrary.DotNet
 				dnMethodDef._locals.Append(library._referencedTypes[methodDef._localStartIndex + i]);
 			}
 			return dnMethodDef;
+		}
+		public static bool TypeResolverHelper(igDotNetLoadResolver resolver, bool isArray, ElementType elementType, string name, out DotNetType dnt)
+		{
+			if(elementType != ElementType.kElementTypeObject || isArray)
+			{
+				dnt = new DotNetType();
+				dnt._flags = 0;
+				if(elementType != ElementType.kElementTypeObject)
+				{
+					dnt._flags = (uint)DotNetType.Flags.kIsSimple;
+				}
+				dnt._flags |= (uint)elementType | (isArray ? 0 : (uint)DotNetType.Flags.kIsArray);
+				return true;
+			}
+			igDotNetTypeReference dntr = new igDotNetTypeReference(resolver, isArray, elementType, name);
+			while(true)
+			{
+				if(!dntr.TryResolveObject(out dnt))
+				{
+					int nsIndex = dntr._name.IndexOf('.');
+					if(nsIndex >= 0) dntr._name = dntr._name.Substring(nsIndex+1);
+					//else throw new TypeLoadException($"Failed to find class {typeName}");
+					else
+					{
+						return false;
+					}
+				}
+				else break;
+			}
+			if(dntr._name != name)
+			{
+				dntr._resolver._aliases.TryAdd(name, dntr._name);
+			}
+			return true;
 		}
 
 		[StructLayout(LayoutKind.Explicit, Size = 0x28)]

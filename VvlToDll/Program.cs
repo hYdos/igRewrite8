@@ -13,7 +13,7 @@ namespace VvlToDll
 			igFileContext.Singleton.Initialize(args[0]);
 
 			//CRenderBase<CRender>::initializeEarly
-			PackagePrecacher.PrecachePackage("generated/shaders/shaders_ps3");
+			//PackagePrecacher.PrecachePackage("generated/shaders/shaders_ps3");
 
 			//CClient::loadGameStartupPackages
 			//PackagePrecacher.PrecachePackage("data:/archives/languagestartup");
@@ -27,7 +27,7 @@ namespace VvlToDll
 			PackagePrecacher.PrecachePackage("generated/packageXmls/permanent");
 			PackagePrecacher.PrecachePackage("generated/maps/zoneinfos");
 			PackagePrecacher.PrecachePackage("generated/packageXmls/permanent_2015");
-			//PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_PS3");
+			PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile");
 			PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd");
 
 			PackagePrecacher.PrecachePackage("generated/characters/ChopChop");
