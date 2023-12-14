@@ -101,7 +101,8 @@ namespace VvlToDll
 			else if(field is igMemoryRefMetaField mrmf)        return CreateMemoryRefType(md, GetFieldTypeRef(md, mrmf._memType, resolver));
 			else if(field is igMemoryRefHandleMetaField mrhmf) return CreateMemoryRefType(md, GetFieldTypeRef(md, mrhmf._memType, resolver));
 			else if(field is igObjectRefMetaField ormf)        return resolver.Invoke(ormf._metaObject);
-			else if(field is igHandleMetaField hmf)            return CreateHandleType(md, resolver.Invoke(hmf._metaObject));
+			else if(field is igHandleMetaField hmf)            return resolver.Invoke(hmf._metaObject);
+			else if(field is igStaticMetaField smf)            return GetFieldTypeRef(md, smf._storageMetaField, resolver);
 			else                                               return md.TypeSystem.Object;
 		}
 		private static TypeReference CreateMemoryRefType(ModuleDefinition md, TypeReference typeRef)

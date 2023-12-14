@@ -611,8 +611,7 @@ namespace VvlToDll
 				case 0xF7: //throw new NotImplementedException("remove delegate is not implemented");
 				case 0xF8: //throw new NotImplementedException("add delegate in place is not implemented");
 				case 0xF9: //throw new NotImplementedException("remove delegate in place is not implemented");
-					ilStream.Seek(4, SeekOrigin.Current);
-					return OpCodes.Nop;
+					return OpCodes.Newobj;
 				//End of custom instructions/aliases
 				case 0xFE:
 					op = ilStream.ReadByte();
