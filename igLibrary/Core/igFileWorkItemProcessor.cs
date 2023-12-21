@@ -15,8 +15,14 @@ namespace igLibrary.Core
 		public void SendToNextProcessor(igFileWorkItem workItem)
 		{
 			if(workItem._status == igFileWorkItem.Status.kStatusComplete) return;
-			if(_nextProcessor == null) throw new IOException($"Ran out of file processors trying to do work of type {workItem._type}, path {workItem._path}");
-			_nextProcessor.Process(workItem);
+			if(_nextProcessor != null)
+			{
+				_nextProcessor.Process(workItem);
+			}
+			/*else
+			{
+ 				throw new IOException($"Ran out of file processors trying to do work of type {workItem._type}, path {workItem._path}");
+ 			}*/
 		}
 	}
 }
