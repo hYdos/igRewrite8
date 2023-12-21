@@ -2,7 +2,7 @@ namespace igLibrary.Core
 {
 	public class igLibraryLoader : igObjectLoader
 	{
-		public virtual string GetType() => "Library";
-		public virtual string GetName() => "Dynamically Loaded Library";
+		public override string GetLoaderType() => "Library";
+		public override string GetLoaderName() => "Dynamically Loaded Library";
 	}
 }

@@ -2,14 +2,14 @@ namespace igLibrary.Core
 {
 	public class igFilePath
 	{
-		public string _media { get; private set; }
-		public string _directory { get; private set; }
-		public string _file { get; private set; }
-		public string _extension { get; private set; }
-		public string _mediaDirectory { get; private set; }
-		public string _fileExtension { get; private set; }
-		public string _path { get; private set; }
-		public string _nativePath { get; private set; }
+		public string _media;
+		public string _directory;
+		public string _file;
+		public string _extension;
+		public string _mediaDirectory;
+		public string _fileExtension;
+		public string _path;
+		public string _nativePath;
 		public static string _defaultMedia = "isHostFileSystemMountedInternal";
 
 		public string NativePrefix => string.Empty;

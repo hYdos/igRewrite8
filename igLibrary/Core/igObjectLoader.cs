@@ -4,14 +4,35 @@ namespace igLibrary.Core
 	{
 		public static Dictionary<string, igObjectLoader> _loaders = new Dictionary<string, igObjectLoader>();
 		static uint _testFileMaxSize;
-		public static void RegisterLoader<T>() where T : igObjectLoader, new()
+		public static void RegisterClass<T>() where T : igObjectLoader, new()
 		{
 			T loader = new T();
+			string extension = loader.GetLoaderExtension().ToLower();
 			_loaders.TryAdd(loader.GetLoaderType(), loader);
+			uint testFileMemorySize = loader.GetTestFileMemorySize();
+			RegisterLoader(loader, extension);
+			if(testFileMemorySize > _testFileMaxSize)
+			{
+				_testFileMaxSize = testFileMemorySize;
+			}
 		}
+		public static void RegisterLoader(igObjectLoader loader, string extension)
+		{
+			_loaders.Add(extension, loader);
+		}
+		public static igObjectLoader FindLoader(string filePath)
+		{
+			igFilePath path = new igFilePath();
+			path.Set(filePath);
+			_loaders.TryGetValue(path._extension, out igObjectLoader? loader);
+			if(loader == null) throw new KeyNotFoundException($"Loader for {filePath} files missing.");
+			return loader;
+		}
+		//Technically these are called GetExtension, GetType, and GetName. GetType is defined in System.Object so I've added Loader in all of the names
 		public virtual string GetLoaderExtension() => "";
 		public virtual string GetLoaderType() => "";
 		public virtual string GetLoaderName() => "";
-		public virtual void ReadFile(string filePath, igBlockingType blockingType){}
+		public virtual uint GetTestFileMemorySize() => 0;
+		public virtual void ReadFile(igObjectDirectory dir, string filePath, igBlockingType blockingType){}
 	}
 }

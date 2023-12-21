@@ -52,7 +52,7 @@ namespace igCauldron3
 						{
 							if(loaded._files[j]._logicalName.EndsWith("_pkg.igz"))
 							{
-								PackagePrecacher.PrecachePackage(loaded._files[j]._logicalName);
+								CPrecacheManager._Instance.PrecachePackage(loaded._files[j]._logicalName, EMemoryPoolID.MP_DEFAULT);
 							}
 						}
 						CDotNetaManager cdnm = CDotNetaManager._Instance;

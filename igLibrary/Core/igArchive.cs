@@ -234,6 +234,10 @@ namespace igLibrary.Core
 			igFileContext.Singleton.Close(_fileDescriptor, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 			_fileDescriptor = null;
 		}
+		public void Close(igBlockingType blockingType)
+		{
+			//igFileContext.Singleton._archiveMountManager.UnmountArchive(this);
+		}
 		public void Save(string filePath)
 		{
 			FileStream fs = File.Create(filePath);

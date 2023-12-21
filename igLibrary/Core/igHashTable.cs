@@ -107,6 +107,8 @@ namespace igLibrary.Core
 
         public static uint HashString(string name, uint basis)
         {
+            if(name == null) return basis;
+
             for (int i = 0; i < name.Length; i++)
             {
                 basis = (basis ^ name[i]) * 0x1000193;
@@ -163,9 +165,9 @@ namespace igLibrary.Core
 			if(key is ushort kus)  return HashInt(kus);
 			if(key is long ksl)    return HashLong(ksl);
 			if(key is ulong kul)   return HashLong(kul);
-			if(key is string ks)   return HashString(ks);
-			if(key is igObject ko) return HashInt(ko.GetHashCode());	//I hash the hash
 			if(typeof(U).IsEnum)   return HashInt((int)(object)key);
+			if(typeof(U).IsAssignableTo(typeof(string)))   return HashString((string)(object)key);
+			if(typeof(U).IsAssignableTo(typeof(igObject))) return HashInt(key.GetHashCode());	//I hash the hash
 			else throw new NotImplementedException($"Unimplemented key type {typeof(U)}");
 		}
 		private bool KeyTraitsEqual(U key1, U key2)

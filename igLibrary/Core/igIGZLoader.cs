@@ -207,13 +207,9 @@
 							depHandleName._name.SetString(_stringList[(int)(nameStrIndex & 0x7FFFFFFF)]);
 
 							igObject? obj = null;
-							if(!dir._dependancies.Any(x => x._name._hash == depHandleName._ns._hash))
+							if(dir._dependancies.Any(x => x._name._hash == depHandleName._ns._hash))
 							{
-								Console.WriteLine($"igIGZ EXNM load: Failed to find namespace {depHandleName._ns._string}, referenced in {_dir._path}");
-							}
-							else
-							{
-								Console.WriteLine($"igIGZ EXNM load: Successfully found namespace {depHandleName._ns._string}, referenced in {_dir._path}");
+								//Console.WriteLine($"igIGZ EXNM load: Successfully found namespace {depHandleName._ns._string}, referenced in {_dir._path}");
 								igObjectDirectory dependantDir = dir._dependancies.First(x => x._name._hash == depHandleName._ns._hash);
 								if(dependantDir._useNameList)
 								{

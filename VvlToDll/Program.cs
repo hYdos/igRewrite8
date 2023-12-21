@@ -1,4 +1,5 @@
-﻿using igLibrary.Core;
+﻿using igLibrary;
+using igLibrary.Core;
 using igLibrary.DotNet;
 
 namespace VvlToDll
@@ -13,24 +14,24 @@ namespace VvlToDll
 			igFileContext.Singleton.Initialize(args[0]);
 
 			//CRenderBase<CRender>::initializeEarly
-			//PackagePrecacher.PrecachePackage("generated/shaders/shaders_ps3");
+			CPrecacheManager._Instance.PrecachePackage("generated/shaders/shaders_ps3", EMemoryPoolID.MP_DEFAULT);
 
 			//CClient::loadGameStartupPackages
-			//PackagePrecacher.PrecachePackage("data:/archives/languagestartup");
-			PackagePrecacher.PrecachePackage("generated/packageXmls/permanent_ps3");
-			PackagePrecacher.PrecachePackage("generated/packageXmls/essentialui");
-			PackagePrecacher.PrecachePackage("generated/UI/legal");
-			PackagePrecacher.PrecachePackage("generated/packageXmls/gamestartup");
-			PackagePrecacher.PrecachePackage("generated/packageXmls/permanentdeveloper");
+			//CPrecacheManager._Instance.PrecachePackage("data:/archives/languagestartup", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_ps3", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/essentialui", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper", EMemoryPoolID.MP_DEFAULT);
 
 			//CClient::loadDeferredPackages
-			PackagePrecacher.PrecachePackage("generated/packageXmls/permanent");
-			PackagePrecacher.PrecachePackage("generated/maps/zoneinfos");
-			PackagePrecacher.PrecachePackage("generated/packageXmls/permanent_2015");
-			PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile");
-			PackagePrecacher.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd");
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/maps/zoneinfos", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_2015", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 
-			PackagePrecacher.PrecachePackage("generated/characters/ChopChop");
+			CPrecacheManager._Instance.PrecachePackage("generated/characters/ChopChop", EMemoryPoolID.MP_DEFAULT);
 
 			//DotNetRuntime runtime = new DotNetRuntime();
 

@@ -13,7 +13,7 @@ namespace igLibrary.Core
 		}
 		public override void Close(igFileWorkItem workItem)
 		{
-			((FileStream)workItem._file._handle).Close();
+			workItem._file._handle.Close();
 			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
 		}
 

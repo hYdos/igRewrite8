@@ -4,12 +4,19 @@ namespace igLibrary.Core
 	{
 		public static void InitializeSystems()
 		{
+			CClient.Singleton.AddManager<CPrecacheManager>();
+			CClient.Singleton.AddManager<CDotNetaManager>();
+
 			Gfx.igGfx.Initialize();
 			
-			igObjectLoader.RegisterLoader<DotNet.igDotNetMetaOnlyLibraryLoader>();
+			igObjectLoader.RegisterClass<igIGZObjectLoader>();
+			igObjectLoader.RegisterClass<CLngObjectLoader>();
+			igObjectLoader.RegisterClass<DotNet.igDotNetMetaOnlyLibraryLoader>();
 
 			igExternalReferenceSystem.Singleton._globalSet.Add("metaobject", new igMetaObjectReferenceResolver());
 			igExternalReferenceSystem.Singleton._globalSet.Add("metafield", new igMetaFieldReferenceResolver());
+
+			CArchive.s_bCacheEnabled = igRegistry.GetRegistry()._platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN || igRegistry.GetRegistry()._platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64;
 		}
 		public static bool isPlatform64Bit(IG_CORE_PLATFORM platform)
 		{

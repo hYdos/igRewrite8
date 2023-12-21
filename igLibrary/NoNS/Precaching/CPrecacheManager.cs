@@ -1,0 +1,125 @@
+using System.Text;
+using igLibrary.Gfx;
+
+namespace igLibrary
+{
+	public class CPrecacheManager : CManager
+	{
+		public igVector<igVector<string>> _packagesPerPool;
+		//public CZone _currentlyLoadingZone;
+		//public igVector<CAsynchronousLoadingModelRecord> _asynchronousLoadingModelRecords;
+		public igVector<igObjectDirectoryList> mObjectDirectoryLists;
+		//public igVector<CAssetList> mAssetLists;
+		public CResourcePrecacherList _resourcePrecachers;
+		public CStringResourcePrecacherHashTable _resourcePrecacherLookup;
+		public string _packageName;
+		//public CPrecacheMemoryTracker mpPrecacheMemoryTracker;
+		public bool mReportHeroPrecacheMemory;
+		public bool mReportVehiclePrecacheMemory;
+		public bool mReportMapPrecacheMemory;
+		public bool mReportAllPrecacheMemory;
+		public bool _loadTextures = true;
+		public EMemoryPoolID _currentUncachingPool;
+		//public CPrecacheManagerExcludeRuleSetHandleList _exclusionRuleSetList;
+		public static CPrecacheManager _Instance;
+
+        public override void Intialize()
+        {
+            _resourcePrecachers = new CResourcePrecacherList();
+			_resourcePrecachers.SetCapacity(0x24);
+			_resourcePrecacherLookup = new CStringResourcePrecacherHashTable();
+			_resourcePrecacherLookup.Activate(0x24);
+			RegisterResourcePrecacher(               "pkg", new COtherPackagePrecacher());
+			RegisterResourcePrecacher(    "character_data", new CCharacterDataPrecacher());
+			RegisterResourcePrecacher(         "actorskin", new CSkinPrecacher());
+			RegisterResourcePrecacher(       "havokanimdb", new CHavokAnimDBPrecacher());
+			RegisterResourcePrecacher(    "havokrigidbody", new CHavokPhysicsSystemPrecacher());
+			RegisterResourcePrecacher("havokphysicssystem", new CHavokPhysicsSystemPrecacher());
+			RegisterResourcePrecacher(           "texture", new CTexturePrecacher());
+			RegisterResourcePrecacher(            "effect", new CVfxPrecacher());
+			RegisterResourcePrecacher(            "shader", new CShaderPrecacher());
+			RegisterResourcePrecacher(        "motionpath", new CMotionPathPrecacher());
+			RegisterResourcePrecacher(          "igx_file", new CIgFilePrecacher());
+			RegisterResourcePrecacher("material_instances", new CMaterialPrecacher());
+			RegisterResourcePrecacher(      "igx_entities", new CEntityPrecacher());
+			RegisterResourcePrecacher(       "gui_project", new CGuiProjectPrecacher());
+			RegisterResourcePrecacher(              "font", new CFontPrecacher());
+			RegisterResourcePrecacher(         "lang_file", new CLanguageFilePrecacher());
+			RegisterResourcePrecacher(         "spawnmesh", new CIgFilePrecacher());
+			RegisterResourcePrecacher(             "model", new CModelPrecacher());
+			RegisterResourcePrecacher(         "sky_model", new CModelPrecacher());
+			RegisterResourcePrecacher(          "behavior", new CBehaviorPrecacher());
+			RegisterResourcePrecacher("graphdata_behavior", new CBehaviorGraphDataPrecacher());
+			RegisterResourcePrecacher(   "events_behavior", new CBehaviorEventPrecacher());
+			RegisterResourcePrecacher(    "asset_behavior", new CBehaviorAssetPrecacher());
+			RegisterResourcePrecacher(      "hkb_behavior", new CBehaviorAssetPrecacher());
+			RegisterResourcePrecacher(      "hkc_behavior", new CBehaviorAssetPrecacher());
+			RegisterResourcePrecacher(           "navmesh", new CNavMeshPrecacher());
+			RegisterResourcePrecacher(            "script", new CScriptPrecacher());
+			//...
+
+			_packagesPerPool = new igVector<igVector<string>>();
+			_packagesPerPool.SetCapacity((int)EMemoryPoolID.MP_MAX_POOL);
+			mObjectDirectoryLists = new igVector<igObjectDirectoryList>();
+			mObjectDirectoryLists.SetCapacity((int)EMemoryPoolID.MP_MAX_POOL);
+			for(int i = 0; i < (int)EMemoryPoolID.MP_MAX_POOL; i++)
+			{
+				_packagesPerPool.Append(new igVector<string>());
+				mObjectDirectoryLists.Append(new igObjectDirectoryList());
+			}
+
+        }
+		private void RegisterResourcePrecacher(string name, CResourcePrecacher precacher)
+		{
+			_resourcePrecachers.Append(precacher);
+			_resourcePrecacherLookup.Add(name, precacher);
+		}
+        public bool IsPackageCached(string packageName, EMemoryPoolID poolId)
+		{
+			string packagePathToCheck = packageName.ToLower();
+			igVector<string> packages = _packagesPerPool[(int)poolId];
+			return packages.Contains(packagePathToCheck);
+		}
+		public bool PrecachePackage(string packageName, EMemoryPoolID poolID)
+		{
+			if(IsPackageCached(packageName, poolID)) return true;
+
+			string packagePath = packageName.ToLower();
+
+			//CEntityPrecacher._currentlyLoadingZone = _currentlyLoadingZone;
+			CResourcePrecacher.mDestMemoryPoolId = poolID;
+
+			if(!packagePath.StartsWith("packages"))
+			{
+				packagePath = "packages/" + packagePath;
+			}
+			if(!packagePath.EndsWith("_pkg.igz"))
+			{
+				packagePath += "_pkg.igz";
+			}
+
+			CArchive.Open(Path.GetFileNameWithoutExtension(packagePath.ReplaceEnd("_pkg.igz", "")), out igArchive? arc, EMemoryPoolID.MP_TEMPORARY, 0);
+
+			igObjectDirectory? pkgDir = igObjectStreamManager.Singleton.Load(packagePath);
+			if(pkgDir == null)
+			{
+				CArchive.Close(arc);
+				return false;
+			}
+			igStringRefList list = (igStringRefList)pkgDir._objectList[0];
+			CleanupDeadRules();
+			for(int i = 0; i < list._count; i += 2)
+			{
+				_packageName = packagePath;
+				string type = list[i];
+				string file = list[i+1];
+				_resourcePrecacherLookup[type].Precache(file);
+			}
+			return true;
+		}
+		public void CleanupDeadRules()
+		{
+
+		}
+	}
+}

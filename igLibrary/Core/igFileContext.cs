@@ -37,6 +37,7 @@ namespace igLibrary.Core
 			{"ui", "ui"},
 			{"vfx", "vfx"},
 			{"cwd", ""},
+			{"app", ""},
 		};
 
 		public string _root { get; private set;}

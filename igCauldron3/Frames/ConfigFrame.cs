@@ -1,5 +1,6 @@
 using ImGuiNET;
 using igLibrary.Core;
+using igLibrary;
 
 namespace igCauldron3
 {
@@ -52,22 +53,20 @@ namespace igCauldron3
 						IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
 
 						igFileContext.Singleton.LoadArchive("data:/archives/loosefiles.pak");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}");
-						PackagePrecacher.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/essentialui");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/gamestartup");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanentdeveloper");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/languagestartup");
-						PackagePrecacher.PrecachePackage($"generated/UI/legal");
-						PackagePrecacher.PrecachePackage($"generated/maps/zoneinfos");
-						PackagePrecacher.PrecachePackage($"generated/packageXmls/permanent_2015");
-						if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN || platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)
-						{
-							PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_Mobile");
-						}
-						PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_FrontEnd");
-						PackagePrecacher.PrecachePackage($"generated/UI/Domains/JuiceDomain_FrontEnd");
+
+						CPrecacheManager._Instance.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
+
+						CPrecacheManager._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/essentialui", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper", EMemoryPoolID.MP_DEFAULT);
+
+						CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/maps/zoneinfos", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_2015", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
+						CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 
 						_wnd.frames.Remove(this);
 						_wnd.frames.Add(new ObjectManagerFrame(_wnd));

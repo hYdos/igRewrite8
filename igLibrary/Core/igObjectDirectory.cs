@@ -35,34 +35,10 @@ namespace igLibrary.Core
 			_path = path;
 			_name = new igName(Path.GetFileNameWithoutExtension(path).ToLower());
 		}
-		
-		public void ReadFile(FileType type, Stream stream, bool readDependancies = true)
+		public void ReadFile()
 		{
-			switch(type)
-			{
-				case FileType.kIGZ:
-					_loader = new igIGZLoader(this, stream, readDependancies);
-					break;
-				default:
-					Console.WriteLine($"WARNING: {_path} IS NOT AN IGOBJECT STREAM, SKIPPING...");
-					break;
-			}
-		}
-		public void ReadFile(bool readDependancies = true)
-		{
-			//change this to happen in igObjectLoader once that exists
-			type = GetLoader(_path);
-			switch(type)
-			{
-				case FileType.kIGZ:
-					_loader = new igIGZLoader(this, _path, readDependancies);
-					_loader.Read(this, readDependancies);
-					_fd = _loader._fd;
-					break;
-				default:
-					Console.WriteLine($"WARNING: {_path} IS NOT AN IGOBJECT STREAM, SKIPPING...");
-					break;
-			}
+			igObjectLoader loader = igObjectLoader.FindLoader(_path);
+			loader.ReadFile(this, _path, igBlockingType.kMayBlock);
 		}
 		public void WriteFile(Stream dst, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 		{
@@ -84,6 +60,14 @@ namespace igLibrary.Core
 			FileStream fs = File.Create(path);
 			WriteFile(path, platform);
 			fs.Close();
+		}
+		public void AddObject(igObject obj, igName ns, igName name)
+		{
+			_objectList.Append(obj);
+			if(_useNameList)
+			{
+				_nameList.Append(name);
+			}
 		}
 		public static igObjectDirectory? LoadDependancyDefault(string path, igName name, igBlockingType idk)
 		{
@@ -114,4 +98,5 @@ namespace igLibrary.Core
 			
 		}
 	}
+	public class igObjectDirectoryList : igTObjectList<igObjectDirectory> {}
 }

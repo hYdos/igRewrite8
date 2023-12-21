@@ -1,6 +1,8 @@
+using System.Collections;
+
 namespace igLibrary.Core
 {
-	public class igVector<T> : igVectorCommon
+	public class igVector<T> : igVectorCommon, IEnumerable<T>
 	{
 		public long _count;
 		public igMemory<T> _data;
@@ -38,6 +40,14 @@ namespace igLibrary.Core
 			_count++;
 		}
 		public IigMemory GetData() => _data;
+		public IEnumerator<T> GetEnumerator()
+		{
+			for(int i = 0; i < _count; i++)
+			{
+				yield return _data[i];
+			}
+		}
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 	}
 	public interface igVectorCommon
 	{
