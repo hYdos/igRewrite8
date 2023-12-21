@@ -25,23 +25,20 @@ namespace igLibrary.Core
 		{
 			if(workItem._type == igFileWorkItem.WorkType.kTypeFileList)
 			{
+				uint pathHash = igHash.Hash(workItem._file._path);
 				for(int i = 0; i < _patchArchives._count; i++)
 				{
 					igArchive archive = _patchArchives[i];
-					try
+					if(igHash.Hash(archive._nativePath) == pathHash)
 					{
-						if(archive._nativePath == workItem._file._path)
-						{
-							archive.Process(workItem);						
-							return;
-						}
+						archive.Process(workItem);
+						return;
 					}
-					catch(IOException){}
 				}
 				for(int i = 0; i < _archiveList._count; i++)
 				{
 					igArchive archive = _archiveList[i];
-					if(archive._nativePath == workItem._file._path)
+					if(igHash.Hash(archive._nativePath) == pathHash)
 					{
 						archive.Process(workItem);
 						return;
@@ -55,22 +52,14 @@ namespace igLibrary.Core
 				for(int i = 0; i < _patchArchives._count; i++)
 				{
 					igArchive archive = _patchArchives[i];
-					try
-					{
-						archive.Process(workItem);
-						return;
-					}
-					catch(IOException){}
+					archive.Process(workItem);
+					if(workItem._status == igFileWorkItem.Status.kStatusComplete) return;
 				}
 				for(int i = 0; i < _archiveList._count; i++)
 				{
 					igArchive archive = _archiveList[i];
-					try
-					{
-						archive.Process(workItem);
-						return;
-					}
-					catch(IOException){}
+					archive.Process(workItem);
+					if(workItem._status == igFileWorkItem.Status.kStatusComplete) return;
 				}
 			}
 
