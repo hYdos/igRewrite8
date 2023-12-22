@@ -138,7 +138,7 @@ namespace igLibrary.Core
 		public static igMetaObject? GetObjectMeta(string name)
 		{
 			if(name == null) return null;
-			
+			//TODO: Optimise this
 			int index = _metaObjects.FindIndex(x => x._name == name);
 			if(index < 0) return null;
 			else return _metaObjects[index];

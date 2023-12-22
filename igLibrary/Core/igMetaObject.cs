@@ -39,7 +39,7 @@ namespace igLibrary.Core
 
 			_vTablePointer = igArkCore.GetNewTypeBuilder(_name);
 
-			igArkCore._pendingTypes.Add(this);
+			_parent.DeclareType();
 
 			for(int i = 0; i < _metaFields.Count; i++)
 			{
@@ -47,7 +47,7 @@ namespace igLibrary.Core
 				else if(_metaFields[i] != _parent._metaFields[i]) ReadyFieldDependancy(_metaFields[i]);
 			}
 
-			_parent.DeclareType();
+			igArkCore._pendingTypes.Add(this);
 		}
 		public override void DefineType()
 		{
@@ -157,7 +157,7 @@ namespace igLibrary.Core
 			if(_vTablePointer is not null) return;
 			_vTablePointer = igArkCore.GetNewTypeBuilder(_name);
 
-			_parent.GatherDependancies();
+			_parent!.GatherDependancies();
 
 			for(int i = 0; i < _metaFields.Count; i++)
 			{
@@ -169,6 +169,9 @@ namespace igLibrary.Core
 			}
 
 			igArkCore._pendingTypes.Add(this);
+
+			if(_name == "igSplineEventTrack")
+			;
 
 			for(int i = _parent._metaFields.Count; i < _metaFields.Count; i++)
 			{
@@ -224,13 +227,13 @@ namespace igLibrary.Core
 			{
 				_beganFinalization = true;
 
-				Console.WriteLine($"Finalizing {_name}");
+				Console.Write($"Finalizing {_name}... ");
 				
 				Type testType = tb.CreateType();
 				igArkCore.AddDynamicTypeToCache(testType);
 				_vTablePointer = testType;
 
-				Console.WriteLine($"Finalized {_name}");
+				Console.Write("Finalized!\n");
 
 				_finishedFinalization = true;
 			}

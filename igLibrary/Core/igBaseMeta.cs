@@ -33,7 +33,14 @@ namespace igLibrary.Core
 		}
 		protected void ReadyCompoundFieldDependancy(igMetaField field)
 		{
-			if(field is igCompoundMetaField compoundField) compoundField._compoundFieldInfo.GatherDependancies();
+			if(field is igOrderedMapMetaField omField)
+			{
+				ReadyCompoundFieldDependancy(omField._t);
+				ReadyFieldDependancy2(omField._t);
+				ReadyCompoundFieldDependancy(omField._u);
+				ReadyFieldDependancy2(omField._u);
+			}
+			else if(field is igCompoundMetaField compoundField) compoundField._compoundFieldInfo.GatherDependancies();
 			else if(field is igMemoryRefMetaField memField) ReadyCompoundFieldDependancy(memField._memType);
 			else if(field is igMemoryRefHandleMetaField memHndField) ReadyCompoundFieldDependancy(memHndField._memType);
 			else if(field is igStaticMetaField staticField) ReadyCompoundFieldDependancy(staticField._storageMetaField);

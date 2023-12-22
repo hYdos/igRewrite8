@@ -23,6 +23,7 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
+			//TODO: Optimise this
 			bool isExid = loader._runtimeFields._externals.Any(x => x == (ulong)loader._stream.BaseStream.Position);
 			bool isOffset = loader._runtimeFields._offsets.Any(x => x == (ulong)loader._stream.BaseStream.Position);
 			bool isNamedExternal = loader._runtimeFields._namedExternals.Any(x => x == (ulong)loader._stream.BaseStream.Position);

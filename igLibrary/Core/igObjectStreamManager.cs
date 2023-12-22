@@ -23,30 +23,11 @@ namespace igLibrary.Core
 			}
 			Console.Write($"was not previously loaded.\n");
 
-			igFilePath fp = new igFilePath();
-			fp.Set(filePath);
-
-			string ext = fp._extension;
-			if(ext == "igz" || ext == "lng")
-			{
-				igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
-				AddObjectDirectory(objDir);
-				objDir.ReadFile();
-				igObjectHandleManager.Singleton.AddDirectory(objDir);
-				return objDir;
-			}
-			else
-			{
-				if(ext == "bk2")
-				{
-					try
-					{
-						//igArchiveManager.Singleton.AddArchiveToPool($"{fp._file}.pak");
-					}
-					catch(Exception){}
-				}
-				return null;
-			}
+			igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
+			AddObjectDirectory(objDir);
+			objDir.ReadFile();
+			igObjectHandleManager.Singleton.AddDirectory(objDir);
+			return objDir;
 		}
 	}
 }
