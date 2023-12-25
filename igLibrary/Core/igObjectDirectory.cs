@@ -97,6 +97,22 @@ namespace igLibrary.Core
 		{
 			
 		}
+		public igObject? GetObjectByType(Type t)
+		{
+			for(int i = 0; i < _objectList._count; i++)
+			{
+				if(_objectList[i].GetType().IsAssignableTo(t)) return _objectList[i];
+			}
+			return null;
+		}
+		public T? GetObjectByType<T>() where T : igObject
+		{
+			for(int i = 0; i < _objectList._count; i++)
+			{
+				if(_objectList[i] is T) return (T)_objectList[i];
+			}
+			return null;
+		}
 	}
 	public class igObjectDirectoryList : igTObjectList<igObjectDirectory> {}
 }

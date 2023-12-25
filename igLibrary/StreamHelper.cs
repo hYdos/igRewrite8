@@ -43,14 +43,14 @@ namespace igLibrary
 
 		public override string ReadString()
 		{
-			var sb = new StringBuilder();
+			List<byte> bytes = new List<byte>();
 			while (true)
 			{
-				var newByte = ReadByte();
-				if (newByte == 0) break;
-				sb.Append((char)newByte);
+				byte b = ReadByte();
+				if (b == 0) break;
+				bytes.Add(b);
 			}
-			return sb.ToString();
+			return Encoding.UTF8.GetString(bytes.ToArray());
 		}
 		public string ReadStringUntil(char character)
 		{
