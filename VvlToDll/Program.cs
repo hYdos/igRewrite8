@@ -12,6 +12,7 @@ namespace VvlToDll
 			ArkDllExport.Create();
 			igAlchemyCore.InitializeSystems();
 			igFileContext.Singleton.Initialize(args[0]);
+			igFileContext.Singleton.InitializeUpdate(args[1]);
 
 			//CRenderBase<CRender>::initializeEarly
 			CPrecacheManager._Instance.PrecachePackage("generated/shaders/shaders_ps3", EMemoryPoolID.MP_DEFAULT);
@@ -31,7 +32,7 @@ namespace VvlToDll
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 
-			CPrecacheManager._Instance.PrecachePackage("generated/characters/ChopChop", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/characters/BeeTree", EMemoryPoolID.MP_DEFAULT);
 
 			//DotNetRuntime runtime = new DotNetRuntime();
 

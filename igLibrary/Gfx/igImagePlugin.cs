@@ -1,0 +1,225 @@
+namespace igLibrary.Gfx
+{
+	public class igImagePlugin : igObject
+	{
+		public static void RegisterPlugin()
+		{
+			igMetaImage a8                        = igMetaImageInfo.FindFormat("a8");							//Registered r8g8b8a8 func
+			igMetaImage atitc                     = igMetaImageInfo.FindFormat("atitc");
+			igMetaImage atitc_alpha               = igMetaImageInfo.FindFormat("atitc_alpha");
+			igMetaImage b5g5r5a1                  = igMetaImageInfo.FindFormat("b5g5r5a1");
+			igMetaImage b5g6r5                    = igMetaImageInfo.FindFormat("b5g6r5");
+			igMetaImage b8g8r8                    = igMetaImageInfo.FindFormat("b8g8r8");
+			igMetaImage b8g8r8a8                  = igMetaImageInfo.FindFormat("b8g8r8a8");						//Registered r8g8b8a8 func
+			igMetaImage b8g8r8x8                  = igMetaImageInfo.FindFormat("b8g8r8x8");
+			igMetaImage d15s1                     = igMetaImageInfo.FindFormat("d15s1");
+			igMetaImage d16                       = igMetaImageInfo.FindFormat("d16");
+			igMetaImage d24                       = igMetaImageInfo.FindFormat("d24");
+			igMetaImage d24fs8                    = igMetaImageInfo.FindFormat("d24fs8");
+			igMetaImage d24s4x4                   = igMetaImageInfo.FindFormat("d24s4x4");
+			igMetaImage d24s8                     = igMetaImageInfo.FindFormat("d24s8");
+			igMetaImage d24x8                     = igMetaImageInfo.FindFormat("d24x8");
+			igMetaImage d32                       = igMetaImageInfo.FindFormat("d32");
+			igMetaImage d32f                      = igMetaImageInfo.FindFormat("d32f");
+			igMetaImage d32fs8                    = igMetaImageInfo.FindFormat("d32fs8");
+			igMetaImage d8                        = igMetaImageInfo.FindFormat("d8");
+			igMetaImage dxn                       = igMetaImageInfo.FindFormat("dxn");
+			igMetaImage dxt1                      = igMetaImageInfo.FindFormat("dxt1");
+			igMetaImage dxt1_srgb                 = igMetaImageInfo.FindFormat("dxt1_srgb");
+			igMetaImage dxt3                      = igMetaImageInfo.FindFormat("dxt3");
+			igMetaImage dxt3_srgb                 = igMetaImageInfo.FindFormat("dxt3_srgb");
+			igMetaImage dxt5                      = igMetaImageInfo.FindFormat("dxt5");
+			igMetaImage dxt5_srgb                 = igMetaImageInfo.FindFormat("dxt5_srgb");
+			igMetaImage etc1                      = igMetaImageInfo.FindFormat("etc1");
+			igMetaImage etc2                      = igMetaImageInfo.FindFormat("etc2");
+			igMetaImage etc2_alpha                = igMetaImageInfo.FindFormat("etc2_alpha");
+			igMetaImage g8b8                      = igMetaImageInfo.FindFormat("g8b8");
+			igMetaImage gas                       = igMetaImageInfo.FindFormat("gas");
+			igMetaImage l16                       = igMetaImageInfo.FindFormat("l16");
+			igMetaImage l4                        = igMetaImageInfo.FindFormat("l4");
+			igMetaImage l4a4                      = igMetaImageInfo.FindFormat("l4a4");
+			igMetaImage l8                        = igMetaImageInfo.FindFormat("l8");
+			igMetaImage l8a8                      = igMetaImageInfo.FindFormat("l8a8");
+			igMetaImage p4_r4g4b4a3x1             = igMetaImageInfo.FindFormat("p4_r4g4b4a3x1");
+			igMetaImage p4_r8g8b8a8               = igMetaImageInfo.FindFormat("p4_r8g8b8a8");
+			igMetaImage p8_r4g4b4a3x1             = igMetaImageInfo.FindFormat("p8_r4g4b4a3x1");
+			igMetaImage p8_r8g8b8a8               = igMetaImageInfo.FindFormat("p8_r8g8b8a8");
+			igMetaImage pvrtc2                    = igMetaImageInfo.FindFormat("pvrtc2");
+			igMetaImage pvrtc2_alpha              = igMetaImageInfo.FindFormat("pvrtc2_alpha");
+			igMetaImage pvrtc2_alpha_srgb         = igMetaImageInfo.FindFormat("pvrtc2_alpha_srgb");
+			igMetaImage pvrtc2_srgb               = igMetaImageInfo.FindFormat("pvrtc2_srgb");
+			igMetaImage pvrtc4                    = igMetaImageInfo.FindFormat("pvrtc4");
+			igMetaImage pvrtc4_alpha              = igMetaImageInfo.FindFormat("pvrtc4_alpha");
+			igMetaImage pvrtc4_alpha_srgb         = igMetaImageInfo.FindFormat("pvrtc4_alpha_srgb");
+			igMetaImage pvrtc4_srgb               = igMetaImageInfo.FindFormat("pvrtc4_srgb");
+			igMetaImage r16_float                 = igMetaImageInfo.FindFormat("r16_float");
+			igMetaImage r16g16                    = igMetaImageInfo.FindFormat("r16g16");
+			igMetaImage r16g16_float              = igMetaImageInfo.FindFormat("r16g16_float");
+			igMetaImage r16g16_signed             = igMetaImageInfo.FindFormat("r16g16_signed");
+			igMetaImage r16g16b16                 = igMetaImageInfo.FindFormat("r16g16b16");
+			igMetaImage r16g16b16a16              = igMetaImageInfo.FindFormat("r16g16b16a16");
+			igMetaImage r16g16b16a16_expand_float = igMetaImageInfo.FindFormat("r16g16b16a16_expand_float");
+			igMetaImage r16g16b16a16_float        = igMetaImageInfo.FindFormat("r16g16b16a16_float");
+			igMetaImage r16g16b16x16              = igMetaImageInfo.FindFormat("r16g16b16x16");
+			igMetaImage r32_float                 = igMetaImageInfo.FindFormat("r32_float");
+			igMetaImage r32g32_float              = igMetaImageInfo.FindFormat("r32g32_float");
+			igMetaImage r32g32b32a32_float        = igMetaImageInfo.FindFormat("r32g32b32a32_float");
+			igMetaImage r4g4b4a3x1                = igMetaImageInfo.FindFormat("r4g4b4a3x1");
+			igMetaImage r4g4b4a4                  = igMetaImageInfo.FindFormat("r4g4b4a4");
+			igMetaImage r5g5b5a1                  = igMetaImageInfo.FindFormat("r5g5b5a1");						//Registered r8g8b8a8 func
+			igMetaImage r5g6b5                    = igMetaImageInfo.FindFormat("r5g6b5");						//Registered r8g8b8a8 func
+			igMetaImage r6g6b6a6                  = igMetaImageInfo.FindFormat("r6g6b6a6");
+			igMetaImage r8g8                      = igMetaImageInfo.FindFormat("r8g8");
+			igMetaImage r8g8b8                    = igMetaImageInfo.FindFormat("r8g8b8");
+			igMetaImage r8g8b8_framebuffer        = igMetaImageInfo.FindFormat("r8g8b8_framebuffer");
+			igMetaImage r8g8b8_srgb               = igMetaImageInfo.FindFormat("r8g8b8_srgb");
+			igMetaImage r8g8b8a8                  = igMetaImageInfo.FindFormat("r8g8b8a8");
+			igMetaImage r8g8b8a8_srgb             = igMetaImageInfo.FindFormat("r8g8b8a8_srgb");
+			igMetaImage r8g8b8x8                  = igMetaImageInfo.FindFormat("r8g8b8x8");
+			igMetaImage r8g8b8x8_srgb             = igMetaImageInfo.FindFormat("r8g8b8x8_srgb");
+			igMetaImage shadow                    = igMetaImageInfo.FindFormat("shadow");
+
+			r8g8b8a8.AppendConvertFunction(b8g8r8a8, igGfx.Convert_r8g8b8a8_to_b8g8r8a8);
+			r8g8b8a8_srgb.AppendConvertFunction(b8g8r8a8, igGfx.Convert_r8g8b8a8_to_b8g8r8a8);
+			b8g8r8a8.AppendConvertFunction(r8g8b8a8, igGfx.Convert_b8g8r8a8_to_r8g8b8a8);
+			r5g5b5a1.AppendConvertFunction(r8g8b8a8, igGfx.Convert_r5g5b5a1_to_r8g8b8a8);
+			r5g6b5.AppendConvertFunction(r8g8b8a8, igGfx.Convert_r5g6b5_to_r8g8b8a8);
+			a8.AppendConvertFunction(r8g8b8a8, igGfx.Convert_a8_to_r8g8b8a8);
+
+			CreateAndRegisterPlatformMetaImages(a8);
+			CreateAndRegisterPlatformMetaImages(atitc);
+			CreateAndRegisterPlatformMetaImages(atitc_alpha);
+			CreateAndRegisterPlatformMetaImages(b5g5r5a1);
+			CreateAndRegisterPlatformMetaImages(b5g6r5);
+			CreateAndRegisterPlatformMetaImages(b8g8r8);
+			CreateAndRegisterPlatformMetaImages(b8g8r8a8);
+			CreateAndRegisterPlatformMetaImages(b8g8r8x8);
+			CreateAndRegisterPlatformMetaImages(d15s1);
+			CreateAndRegisterPlatformMetaImages(d16);
+			CreateAndRegisterPlatformMetaImages(d24);
+			CreateAndRegisterPlatformMetaImages(d24fs8);
+			CreateAndRegisterPlatformMetaImages(d24s4x4);
+			CreateAndRegisterPlatformMetaImages(d24s8);
+			CreateAndRegisterPlatformMetaImages(d24x8);
+			CreateAndRegisterPlatformMetaImages(d32);
+			CreateAndRegisterPlatformMetaImages(d32f);
+			CreateAndRegisterPlatformMetaImages(d32fs8);
+			CreateAndRegisterPlatformMetaImages(d8);
+			CreateAndRegisterPlatformMetaImages(dxn);
+			CreateAndRegisterPlatformMetaImages(dxt1);
+			CreateAndRegisterPlatformMetaImages(dxt1_srgb);
+			CreateAndRegisterPlatformMetaImages(dxt3);
+			CreateAndRegisterPlatformMetaImages(dxt3_srgb);
+			CreateAndRegisterPlatformMetaImages(dxt5);
+			CreateAndRegisterPlatformMetaImages(dxt5_srgb);
+			CreateAndRegisterPlatformMetaImages(etc1);
+			CreateAndRegisterPlatformMetaImages(etc2);
+			CreateAndRegisterPlatformMetaImages(etc2_alpha);
+			CreateAndRegisterPlatformMetaImages(g8b8);
+			CreateAndRegisterPlatformMetaImages(gas);
+			CreateAndRegisterPlatformMetaImages(l16);
+			CreateAndRegisterPlatformMetaImages(l4);
+			CreateAndRegisterPlatformMetaImages(l4a4);
+			CreateAndRegisterPlatformMetaImages(l8);
+			CreateAndRegisterPlatformMetaImages(l8a8);
+			CreateAndRegisterPlatformMetaImages(p4_r4g4b4a3x1);
+			CreateAndRegisterPlatformMetaImages(p4_r8g8b8a8);
+			CreateAndRegisterPlatformMetaImages(p8_r4g4b4a3x1);
+			CreateAndRegisterPlatformMetaImages(p8_r8g8b8a8);
+			CreateAndRegisterPlatformMetaImages(pvrtc2);
+			CreateAndRegisterPlatformMetaImages(pvrtc2_alpha);
+			CreateAndRegisterPlatformMetaImages(pvrtc2_alpha_srgb);
+			CreateAndRegisterPlatformMetaImages(pvrtc2_srgb);
+			CreateAndRegisterPlatformMetaImages(pvrtc4);
+			CreateAndRegisterPlatformMetaImages(pvrtc4_alpha);
+			CreateAndRegisterPlatformMetaImages(pvrtc4_alpha_srgb);
+			CreateAndRegisterPlatformMetaImages(pvrtc4_srgb);
+			CreateAndRegisterPlatformMetaImages(r16_float);
+			CreateAndRegisterPlatformMetaImages(r16g16);
+			CreateAndRegisterPlatformMetaImages(r16g16_float);
+			CreateAndRegisterPlatformMetaImages(r16g16_signed);
+			CreateAndRegisterPlatformMetaImages(r16g16b16);
+			CreateAndRegisterPlatformMetaImages(r16g16b16a16);
+			CreateAndRegisterPlatformMetaImages(r16g16b16a16_expand_float);
+			CreateAndRegisterPlatformMetaImages(r16g16b16a16_float);
+			CreateAndRegisterPlatformMetaImages(r16g16b16x16);
+			CreateAndRegisterPlatformMetaImages(r32_float);
+			CreateAndRegisterPlatformMetaImages(r32g32_float);
+			CreateAndRegisterPlatformMetaImages(r32g32b32a32_float);
+			CreateAndRegisterPlatformMetaImages(r4g4b4a3x1);
+			CreateAndRegisterPlatformMetaImages(r4g4b4a4);
+			CreateAndRegisterPlatformMetaImages(r5g5b5a1);
+			CreateAndRegisterPlatformMetaImages(r5g6b5);
+			CreateAndRegisterPlatformMetaImages(r6g6b6a6);
+			CreateAndRegisterPlatformMetaImages(r8g8);
+			CreateAndRegisterPlatformMetaImages(r8g8b8);
+			CreateAndRegisterPlatformMetaImages(r8g8b8_framebuffer);
+			CreateAndRegisterPlatformMetaImages(r8g8b8_srgb);
+			CreateAndRegisterPlatformMetaImages(r8g8b8a8);
+			CreateAndRegisterPlatformMetaImages(r8g8b8a8_srgb);
+			CreateAndRegisterPlatformMetaImages(r8g8b8x8);
+			CreateAndRegisterPlatformMetaImages(r8g8b8x8_srgb);
+			CreateAndRegisterPlatformMetaImages(shadow);
+		}
+		private static void CreateAndRegisterPlatformMetaImages(igMetaImage canonical)
+		{
+			RegisterPlatformMetaImage(                $"{canonical._name}_dx", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX);
+			RegisterPlatformMetaImage(           $"{canonical._name}_tile_dx", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX);
+			RegisterPlatformMetaImage(               $"{canonical._name}_wii", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_WII);
+			RegisterPlatformMetaImage(          $"{canonical._name}_tile_wii", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_WII);
+			RegisterPlatformMetaImage(           $"{canonical._name}_durango", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_DURANGO);
+			RegisterPlatformMetaImage(      $"{canonical._name}_tile_durango", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_DURANGO);
+			RegisterPlatformMetaImage(             $"{canonical._name}_aspen", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_ASPEN);
+			RegisterPlatformMetaImage(        $"{canonical._name}_tile_aspen", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_ASPEN);
+			RegisterPlatformMetaImage(         $"{canonical._name}_big_xenon", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_XENON);
+			RegisterPlatformMetaImage(    $"{canonical._name}_tile_big_xenon", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_XENON);
+			RegisterPlatformMetaImage(           $"{canonical._name}_big_ps3", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS3);
+			RegisterPlatformMetaImage(      $"{canonical._name}_tile_big_ps3", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS3);
+			RegisterPlatformMetaImage(               $"{canonical._name}_osx", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_OSX);
+			RegisterPlatformMetaImage(          $"{canonical._name}_tile_osx", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_OSX);
+			RegisterPlatformMetaImage(              $"{canonical._name}_dx11", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX11);
+			RegisterPlatformMetaImage(         $"{canonical._name}_tile_dx11", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX11);
+			RegisterPlatformMetaImage(              $"{canonical._name}_cafe", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage(         $"{canonical._name}_tile_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle1_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle2_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle3_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle4_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle5_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle6_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage($"{canonical._name}_tile_swizzle7_cafe", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE);
+			RegisterPlatformMetaImage(             $"{canonical._name}_raspi", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_RASPI);
+			RegisterPlatformMetaImage(        $"{canonical._name}_tile_raspi", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_RASPI);
+			RegisterPlatformMetaImage(              $"{canonical._name}_null", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_NULL);
+			RegisterPlatformMetaImage(         $"{canonical._name}_tile_null", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_NULL);
+			RegisterPlatformMetaImage(           $"{canonical._name}_android", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_ANDROID);
+			RegisterPlatformMetaImage(      $"{canonical._name}_tile_android", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_ANDROID);
+			RegisterPlatformMetaImage(             $"{canonical._name}_metal", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_METAL);
+			RegisterPlatformMetaImage(        $"{canonical._name}_tile_metal", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_METAL);
+			RegisterPlatformMetaImage(               $"{canonical._name}_wgl", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_WGL);
+			RegisterPlatformMetaImage(          $"{canonical._name}_tile_wgl", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_WGL);
+			RegisterPlatformMetaImage(              $"{canonical._name}_lgtv", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_LGTV);
+			RegisterPlatformMetaImage(         $"{canonical._name}_tile_lgtv", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_LGTV);
+			RegisterPlatformMetaImage(               $"{canonical._name}_ps4", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS4);
+			RegisterPlatformMetaImage(          $"{canonical._name}_tile_ps4", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS4);
+			RegisterPlatformMetaImage(             $"{canonical._name}_linux", canonical, false, IG_GFX_PLATFORM.IG_GFX_PLATFORM_LINUX);
+			RegisterPlatformMetaImage(        $"{canonical._name}_tile_linux", canonical, true,  IG_GFX_PLATFORM.IG_GFX_PLATFORM_LINUX);
+		}
+		private static igPlatformMetaImage RegisterPlatformMetaImage(string name, igMetaImage canonical, bool isTile, IG_GFX_PLATFORM platform)
+		{
+			igPlatformMetaImage metaimage = new igPlatformMetaImage();
+			metaimage._canonical = canonical;
+			metaimage._bitsPerPixel = canonical._bitsPerPixel;
+			metaimage._functions = canonical._functions;
+			metaimage._hasPalette = canonical._hasPalette;
+			metaimage._isCompressed = canonical._isCompressed;
+			metaimage._isFloatingPoint = canonical._isFloatingPoint;
+			metaimage._isSrgb = canonical._isSrgb;
+			metaimage._isTile = isTile;
+			metaimage._name = name;
+			metaimage._platform = platform;
+			igMetaImageInfo.RegisterFormat(metaimage);
+			return metaimage;
+		}
+	}
+}

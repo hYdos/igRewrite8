@@ -9,7 +9,7 @@ namespace igLibrary.Core
 			_directories.Add(dir._name._hash, dir);
 			igObjectHandleManager.Singleton.AddDirectory(dir);
 		}
-		public igObjectDirectory? Load(string path)
+		public igObjectDirectory Load(string path)
 		{
 			return Load(path, new igName(Path.GetFileNameWithoutExtension(path)));
 		}
@@ -22,8 +22,6 @@ namespace igLibrary.Core
 				return _directories[nameSpace._hash];
 			}
 			Console.Write($"was not previously loaded.\n");
-
-			if(!igFileContext.Singleton.Exists(filePath, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal)) return null;
 
 			igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
 			AddObjectDirectory(objDir);

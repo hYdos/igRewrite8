@@ -43,14 +43,14 @@ namespace igLibrary
 
 		public override string ReadString()
 		{
-			List<byte> bytes = new List<byte>();
+			var sb = new StringBuilder();
 			while (true)
 			{
-				byte b = ReadByte();
-				if (b == 0) break;
-				bytes.Add(b);
+				var newByte = ReadByte();
+				if (newByte == 0) break;
+				sb.Append((char)newByte);
 			}
-			return Encoding.UTF8.GetString(bytes.ToArray());
+			return sb.ToString();
 		}
 		public string ReadStringUntil(char character)
 		{
@@ -174,6 +174,10 @@ namespace igLibrary
 		}
 
 		public byte[] ReadBytes(uint count) => ReadBytes((int)count);
+		public void WriteBytes(byte[] data)
+		{
+			BaseStream.Write(data);
+		}
 		public byte[] ReadFromOffset(int count, uint offset)
 		{
 			BaseStream.Seek(offset, SeekOrigin.Begin);
@@ -223,7 +227,7 @@ namespace igLibrary
 			}
 
 			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			T read = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(),typeof(T));
+			T read = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
 			handle.Free();
 
 			return read;
@@ -240,6 +244,52 @@ namespace igLibrary
 				items[i] = ReadStruct<T>();
 			}
 			return items;
+		}
+		public unsafe void WriteStruct<T>(T data)
+		{
+			byte[] bytes = new byte[Marshal.SizeOf<T>()];
+			IntPtr ptr = IntPtr.Zero;
+			ptr = Marshal.AllocHGlobal(Marshal.SizeOf<T>());
+			Marshal.StructureToPtr(data, ptr, false);
+			Marshal.Copy(ptr, bytes, 0, bytes.Length);
+			Marshal.FreeHGlobal(ptr);
+
+			if((_endianness == StreamHelper.Endianness.Big && BitConverter.IsLittleEndian) || (_endianness == StreamHelper.Endianness.Little && !BitConverter.IsLittleEndian))
+			{
+				foreach (var field in typeof(T).GetFields())
+				{
+					var fieldType = field.FieldType;
+					if (field.IsStatic)
+						// don't process static fields
+						continue;
+
+					if (fieldType == typeof(string))
+						// don't swap bytes for strings
+						continue;
+
+					var offset = Marshal.OffsetOf(typeof(T), field.Name).ToInt32();
+
+					// handle enums
+					if (fieldType.IsEnum)
+						fieldType = Enum.GetUnderlyingType(fieldType);
+
+					// check for sub-fields to recurse if necessary
+					var subFields = fieldType.GetFields().Where(subField => subField.IsStatic == false).ToArray();
+
+					var effectiveOffset = offset;
+
+					if (subFields.Length == 0)
+					{
+						Array.Reverse(bytes, effectiveOffset, Marshal.SizeOf(fieldType));
+					}
+				}
+				if(typeof(T).IsPrimitive)
+				{
+					Array.Reverse(bytes, 0, bytes.Length);
+				}
+			}
+
+			WriteBytes(bytes);
 		}
 		public override float ReadSingle() => ReadSingle(_endianness);
 		public float ReadSingle(Endianness endianness) => BitConverter.ToSingle(ReadForEndianness(sizeof(float), endianness), 0);

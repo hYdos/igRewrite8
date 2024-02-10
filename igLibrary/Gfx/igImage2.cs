@@ -15,13 +15,19 @@ namespace igLibrary.Gfx
 		public ushort _paddingDeprecated;
 		public igMemory<byte> _data;
 		public int _lockCount;
-		public int _texHandle;
+		public int _texHandle = -1;
 		public ulong _lockedMemory;
-		public bool _oglDiscardOriginalImage;
+		public bool _oglDiscardOriginalImage = true;
 		public static bool _makeAbstract;
 		public static bool _makeConcrete;
-		public igVec4f _colorScale;
+		public igVec4f _colorScale = new igVec4f(1, 1, 1, 1);
 		public igVec4f _colorBias;
-		public igObject _graphicsHelper;
+		public igObject? _graphicsHelper = null;
+
+		public uint GetTextureLevelOffset(int targetLevel, int targetImage)
+		{
+			if(_format == null) return 0xFFFFFFFF;
+			return _format.GetTextureLevelOffset(_width, _height, _depth, _levelCount, _imageCount, targetLevel, targetImage);
+		}
 	}
 }

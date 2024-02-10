@@ -68,7 +68,7 @@ namespace igLibrary.Core
 			}
 			else return media;
 		}
-		private igFileWorkItem.Status CreateWorkItem(igFileDescriptor fd, igFileWorkItem.WorkType workType, object buffer, ulong offset, ulong size, uint flags, string path, igBlockingType blockingType, igFileWorkItem.Priority priority, Action callback, object[] callbackData)
+		private void CreateWorkItem(igFileDescriptor fd, igFileWorkItem.WorkType workType, object buffer, ulong offset, ulong size, uint flags, string path, igBlockingType blockingType, igFileWorkItem.Priority priority, Action callback, object[] callbackData)
 		{
 			igFileWorkItem workItem = AllocateWorkItem();
 
@@ -86,7 +86,6 @@ namespace igLibrary.Core
 			workItem._status = igFileWorkItem.Status.kStatusActive;
 
 			_processorStack.Process(workItem);
-			return workItem._status;
 		}
 
 		public igFileWorkItem AllocateWorkItem()
@@ -175,11 +174,6 @@ namespace igLibrary.Core
 		{
 			fd = Prepare(path, flags);
 			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, flags, fd._path, blockingType, priority, null, null);
-		}
-		public bool Exists(string path, igBlockingType blockingType, igFileWorkItem.Priority priority)
-		{
-			igFileDescriptor fd = Prepare(path, 0);
-			return CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, 0, fd._path, blockingType, priority, null, null) == igFileWorkItem.Status.kStatusComplete;
 		}
 		public void Close(igFileDescriptor fd, igBlockingType blockingType, igFileWorkItem.Priority priority)
 		{

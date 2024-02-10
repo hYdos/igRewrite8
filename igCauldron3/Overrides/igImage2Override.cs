@@ -1,7 +1,9 @@
+using igCauldron3.Utils;
 using igLibrary.Core;
 using igLibrary.Gfx;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
+using SixLabors.ImageSharp;
 
 namespace igCauldron3
 {
@@ -21,16 +23,17 @@ namespace igCauldron3
 
 			if(!previouslyAdded)
 			{
+				if(image._format == null)
+				{
+					Console.WriteLine($"{image._name} has Unsupported Texture Format");
+					GL.DeleteTexture(tex);
+					return;
+				}
+
 				tex = GL.GenTexture();
 
 				GL.ActiveTexture(TextureUnit.Texture0);
 				GL.BindTexture(TextureTarget.Texture2D, tex);
-				
-				if(image._format == null)
-				{
-					Console.WriteLine($"{image._name} has Unsupported Texture Format");
-					return;
-				}
 
 				uint offset = 0;
 				int width = image._width;
@@ -100,6 +103,19 @@ namespace igCauldron3
 			}
 
 			objFrame.RenderFieldWithName(image, meta.GetFieldByName("_name"));
+			if(ImGui.Button("Extract"))
+			{
+				string filePath = CrossFileDialog.SaveFile("Save Image...", ".dds");
+				if(!string.IsNullOrWhiteSpace(filePath))
+				{
+					FileStream fs = File.Create(filePath);
+					igImage2Exporter.ExportToDds(image, fs);
+					fs.Close();
+				}
+			}
+			if(ImGui.Button("Replace"))
+			{
+			}
 			ImGui.Image((IntPtr)tex, new System.Numerics.Vector2(image._width, image._height), System.Numerics.Vector2.UnitY, System.Numerics.Vector2.UnitX);
 		}
 	}

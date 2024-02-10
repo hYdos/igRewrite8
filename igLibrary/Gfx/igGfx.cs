@@ -4,54 +4,550 @@ namespace igLibrary.Gfx
 {
 	public static class igGfx
 	{
-		private enum Props
+		public struct igMetaImageCompressedInfo
 		{
-			Tile			= 0b000001,
-			Canonical		= 0b000010,
-			Compressed		= 0b000100,
-			Palette			= 0b001000,
-			Srgb			= 0b010000,
-			FloatingPoint	= 0b100000
+			public string _name;
+			public byte _bpp;
+			public byte _blockWidth;
+			public byte _blockHeight;
+			public igMetaImageCompressedInfo(string name, byte bpp, byte blockWidth, byte blockHeight)
+			{
+				_name = name;
+				_bpp = bpp;
+				_blockWidth = blockWidth;
+				_blockHeight = blockHeight;
+			}
 		}
+		public struct igMetaImagePixelInfo
+		{
+			public string _name;
+			public byte _rBits;
+			public byte _gBits;
+			public byte _bBits;
+			public byte _aBits;
+			public igMetaImagePixelInfo(string name, byte rBits, byte gBits, byte bBits, byte aBits)
+			{
+				_name = name;
+				_rBits = rBits;
+				_gBits = gBits;
+				_bBits = bBits;
+				_aBits = aBits;
+			}
+		}
+		public struct igMetaImageLInfo
+		{
+			public string _name;
+			public byte _lBits;
+			public igMetaImageLInfo(string name, byte lBits)
+			{
+				_name = name;
+				_lBits = lBits;
+			}
+		}
+		public struct igMetaImageDepthStencilInfo
+		{
+			public string _name;
+			public byte _depthBits;
+			public byte _stencilBits;
+			public igMetaImageDepthStencilInfo(string name, byte depthBits, byte stencilBits)
+			{
+				_name = name;
+				_depthBits = depthBits;
+				_stencilBits = stencilBits;
+			}
+		}
+		public struct igMetaImageXInfo
+		{
+			public string _name;
+			public byte _xBits;
+			public igMetaImageXInfo(string name, byte xBits)
+			{
+				_name = name;
+				_xBits = xBits;
+			}
+		}
+		public struct igMetaImagePalletteInfo
+		{
+			public string _name;
+			public ushort _unk1;
+			public byte _unk2;
+			public igMetaImagePalletteInfo(string name, ushort unk1, byte unk2)
+			{
+				_name = name;
+				_unk1 = unk1;
+				_unk2 = unk2;
+			}
+		}
+		public struct igMetaImageTileInfo
+		{
+			public string _name;
+			public byte _tileWidth;
+			public byte _tileHeight;
+			public igMetaImageTileInfo(string name, byte tileWidth, byte tileHeight)
+			{
+				_name = name;
+				_tileWidth = tileWidth;
+				_tileHeight = tileHeight;
+			}
+		}
+		public static readonly string[] canonicalMetaImages = new string[]
+		{
+			"a8",
+			"atitc",
+			"atitc_alpha",
+			"b5g5r5a1",
+			"b5g6r5",
+			"b8g8r8",
+			"b8g8r8a8",
+			"b8g8r8x8",
+			"d15s1",
+			"d16",
+			"d24",
+			"d24fs8",
+			"d24s4x4",
+			"d24s8",
+			"d24x8",
+			"d32",
+			"d32f",
+			"d32fs8",
+			"d8",
+			"dxn",
+			"dxt1",
+			"dxt1_srgb",
+			"dxt3",
+			"dxt3_srgb",
+			"dxt5",
+			"dxt5_srgb",
+			"etc1",
+			"etc2",
+			"etc2_alpha",
+			"g8b8",
+			"gas",
+			"l16",
+			"l4",
+			"l4a4",
+			"l8",
+			"l8a8",
+			"p4_r4g4b4a3x1",
+			"p4_r8g8b8a8",
+			"p8_r4g4b4a3x1",
+			"p8_r8g8b8a8",
+			"pvrtc2",
+			"pvrtc2_alpha",
+			"pvrtc2_alpha_srgb",
+			"pvrtc2_srgb",
+			"pvrtc4",
+			"pvrtc4_alpha",
+			"pvrtc4_alpha_srgb",
+			"pvrtc4_srgb",
+			"r16_float",
+			"r16g16",
+			"r16g16_float",
+			"r16g16_signed",
+			"r16g16b16",
+			"r16g16b16a16",
+			"r16g16b16a16_expand_float",
+			"r16g16b16a16_float",
+			"r16g16b16x16",
+			"r32_float",
+			"r32g32_float",
+			"r32g32b32a32_float",
+			"r4g4b4a3x1",
+			"r4g4b4a4",
+			"r5g5b5a1",
+			"r5g6b5",
+			"r6g6b6a6",
+			"r8g8",
+			"r8g8b8",
+			"r8g8b8_framebuffer",
+			"r8g8b8_srgb",
+			"r8g8b8a8",
+			"r8g8b8a8_srgb",
+			"r8g8b8x8",
+			"r8g8b8x8_srgb",
+			"shadow"
+		};
+		public static readonly igMetaImageCompressedInfo[] compressedInfos = new igMetaImageCompressedInfo[]
+		{
+			new igMetaImageCompressedInfo(            "atitc", 0x04, 0x04, 0x04),
+			new igMetaImageCompressedInfo(      "atitc_alpha", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(              "dxn", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(             "dxt1", 0x04, 0x04, 0x04),
+			new igMetaImageCompressedInfo(        "dxt1_srgb", 0x04, 0x04, 0x04),
+			new igMetaImageCompressedInfo(             "dxt3", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(        "dxt3_srgb", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(             "dxt5", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(        "dxt5_srgb", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(             "etc1", 0x04, 0x04, 0x04),
+			new igMetaImageCompressedInfo(             "etc2", 0x04, 0x04, 0x04),
+			new igMetaImageCompressedInfo(       "etc2_alpha", 0x08, 0x04, 0x04),
+			new igMetaImageCompressedInfo(           "pvrtc2", 0x02, 0x10, 0x08),
+			new igMetaImageCompressedInfo(     "pvrtc2_alpha", 0x02, 0x10, 0x08),
+			new igMetaImageCompressedInfo("pvrtc2_alpha_srgb", 0x02, 0x10, 0x08),
+			new igMetaImageCompressedInfo(      "pvrtc2_srgb", 0x02, 0x10, 0x08),
+			new igMetaImageCompressedInfo(           "pvrtc4", 0x04, 0x08, 0x08),
+			new igMetaImageCompressedInfo(     "pvrtc4_alpha", 0x04, 0x08, 0x08),
+			new igMetaImageCompressedInfo("pvrtc4_alpha_srgb", 0x04, 0x08, 0x08),
+			new igMetaImageCompressedInfo(      "pvrtc4_srgb", 0x04, 0x08, 0x08)
+		};
+		public static readonly igMetaImagePixelInfo[] pixelInfos = new igMetaImagePixelInfo[]
+		{
+			new igMetaImagePixelInfo(                       "a8", 0x00, 0x00, 0x00, 0x08),
+			new igMetaImagePixelInfo(                 "b5g5r5a1", 0x05, 0x05, 0x05, 0x01),
+			new igMetaImagePixelInfo(                   "b5g6r5", 0x05, 0x06, 0x05, 0x00),
+			new igMetaImagePixelInfo(                   "b8g8r8", 0x08, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(                 "b8g8r8a8", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(                 "b8g8r8x8", 0x08, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(                      "dxn", 0x08, 0x08, 0x00, 0x00),
+			new igMetaImagePixelInfo(                     "dxt1", 0x05, 0x06, 0x05, 0x01),
+			new igMetaImagePixelInfo(                "dxt1_srgb", 0x05, 0x06, 0x05, 0x01),
+			new igMetaImagePixelInfo(                     "dxt3", 0x05, 0x06, 0x05, 0x04),
+			new igMetaImagePixelInfo(                "dxt3_srgb", 0x05, 0x06, 0x05, 0x04),
+			new igMetaImagePixelInfo(                     "dxt5", 0x05, 0x06, 0x05, 0x04),
+			new igMetaImagePixelInfo(                "dxt5_srgb", 0x05, 0x06, 0x05, 0x04),
+			new igMetaImagePixelInfo(                     "g8b8", 0x00, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(                      "gas", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(                     "l4a4", 0x00, 0x00, 0x00, 0x04),
+			new igMetaImagePixelInfo(                     "l8a8", 0x00, 0x00, 0x00, 0x08),
+			new igMetaImagePixelInfo(            "p4_r4g4b4a3x1", 0x04, 0x04, 0x04, 0x03),
+			new igMetaImagePixelInfo(              "p4_r8g8b8a8", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(            "p8_r4g4b4a3x1", 0x04, 0x04, 0x04, 0x03),
+			new igMetaImagePixelInfo(              "p8_r8g8b8a8", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(                "r16_float", 0x10, 0x00, 0x00, 0x00),
+			new igMetaImagePixelInfo(                   "r16g16", 0x10, 0x10, 0x00, 0x00),
+			new igMetaImagePixelInfo(             "r16g16_float", 0x10, 0x10, 0x00, 0x00),
+			new igMetaImagePixelInfo(            "r16g16_signed", 0x10, 0x10, 0x00, 0x00),
+			new igMetaImagePixelInfo(                "r16g16b16", 0x10, 0x10, 0x10, 0x00),
+			new igMetaImagePixelInfo(             "r16g16b16a16", 0x10, 0x10, 0x10, 0x10),
+			new igMetaImagePixelInfo("r16g16b16a16_expand_float", 0x10, 0x10, 0x10, 0x10),
+			new igMetaImagePixelInfo(       "r16g16b16a16_float", 0x10, 0x10, 0x10, 0x10),
+			new igMetaImagePixelInfo(       "r16g16b16x16_float", 0x10, 0x10, 0x10, 0x00),
+			new igMetaImagePixelInfo(                "r32_float", 0x20, 0x00, 0x00, 0x00),
+			new igMetaImagePixelInfo(             "r32g32_float", 0x20, 0x20, 0x00, 0x00),
+			new igMetaImagePixelInfo(       "r32g32b32a32_float", 0x20, 0x20, 0x20, 0x20),
+			new igMetaImagePixelInfo(               "r4g4b4a3x1", 0x04, 0x04, 0x04, 0x03),
+			new igMetaImagePixelInfo(                 "r5g5b5a1", 0x05, 0x05, 0x05, 0x01),
+			new igMetaImagePixelInfo(                   "r5g6b5", 0x05, 0x06, 0x05, 0x00),
+			new igMetaImagePixelInfo(                 "r6g6b6a6", 0x06, 0x06, 0x06, 0x06),
+			new igMetaImagePixelInfo(                     "r8g8", 0x08, 0x08, 0x00, 0x00),
+			new igMetaImagePixelInfo(                   "r8g8b8", 0x08, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(       "r8g8b8_framebuffer", 0x08, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(                 "r8g8b8a8", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(            "r8g8b8a8_srgb", 0x08, 0x08, 0x08, 0x08),
+			new igMetaImagePixelInfo(                 "r8g8b8x8", 0x08, 0x08, 0x08, 0x00),
+			new igMetaImagePixelInfo(                   "shadow", 0x08, 0x08, 0x08, 0x08)
+		};
+		public static readonly igMetaImageLInfo[] lInfo = new igMetaImageLInfo[]
+		{
+			new igMetaImageLInfo( "l16", 0x10),
+			new igMetaImageLInfo(  "l4", 0x04),
+			new igMetaImageLInfo("l4a4", 0x04),
+			new igMetaImageLInfo(  "l8", 0x08),
+			new igMetaImageLInfo("l8a8", 0x08)
+		};
+		public static readonly igMetaImageDepthStencilInfo[] dsInfo = new igMetaImageDepthStencilInfo[]
+		{
+			new igMetaImageDepthStencilInfo(  "d15s1", 0x0F, 0x01),
+			new igMetaImageDepthStencilInfo(    "d16", 0x10, 0x00),
+			new igMetaImageDepthStencilInfo(    "d24", 0x18, 0x00),
+			new igMetaImageDepthStencilInfo( "d24fs8", 0x18, 0x08),
+			new igMetaImageDepthStencilInfo("d24s4x8", 0x18, 0x04),
+			new igMetaImageDepthStencilInfo(  "d24s8", 0x18, 0x08),
+			new igMetaImageDepthStencilInfo(  "d24x8", 0x18, 0x00),
+			new igMetaImageDepthStencilInfo(    "d32", 0x20, 0x00),
+			new igMetaImageDepthStencilInfo(   "d32f", 0x20, 0x00),
+			new igMetaImageDepthStencilInfo( "d32fs8", 0x20, 0x08),
+			new igMetaImageDepthStencilInfo(     "d8", 0x08, 0x00),
+		};
+		public static readonly igMetaImageXInfo[] xInfo = new igMetaImageXInfo[]
+		{
+			new igMetaImageXInfo(     "b8g8r8x8", 0x10),
+			new igMetaImageXInfo(      "d24s4x4", 0x04),
+			new igMetaImageXInfo(        "d24x8", 0x08),
+			new igMetaImageXInfo("p4_r4g4b4a3x1", 0x01),
+			new igMetaImageXInfo("p8_r4g4b4a3x1", 0x01),
+			new igMetaImageXInfo( "r16g16b16x16", 0x10),
+			new igMetaImageXInfo(   "r4g4b4a3x1", 0x01),
+			new igMetaImageXInfo(     "r8g8b8x8", 0x08),
+			new igMetaImageXInfo("r8g8b8x8_srgb", 0x08)
+		};
+		public static readonly igMetaImagePalletteInfo[] palletteInfo = new igMetaImagePalletteInfo[]
+		{
+			new igMetaImagePalletteInfo("p4_r4g4b4a3x1", 0x0020, 0x04),
+			new igMetaImagePalletteInfo(  "p4_r8g8b8a8", 0x0040, 0x04),
+			new igMetaImagePalletteInfo("p8_r4g4b4a3x1", 0x0200, 0x08),
+			new igMetaImagePalletteInfo(  "p8_r8g8b8a8", 0x0400, 0x08)
+		};
+		public static readonly igMetaImageTileInfo[] tileInfo = new igMetaImageTileInfo[]
+		{
+			new igMetaImageTileInfo(         "a4l4_tile_big_wii", 0x08, 0x04),
+			new igMetaImageTileInfo(   "b4g4r4a3x1_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(       "b5g6r5_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(     "b6g6r6a6_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(       "b8g8r8_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(     "b8g8r8a8_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(         "dxt1_tile_big_wii", 0x08, 0x08),
+			new igMetaImageTileInfo(           "l4_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo(           "l8_tile_big_wii", 0x08, 0x04),
+			new igMetaImageTileInfo(         "l8a8_tile_big_wii", 0x04, 0x04),
+			new igMetaImageTileInfo("p4_b4g4r4a3x1_tile_big_wii", 0x08, 0x08),
+			new igMetaImageTileInfo("p8_b4g4r4a3x1_tile_big_wii", 0x08, 0x04)
+		};
 		public static void Initialize()
 		{
 			igObjectDirectory metaimages = new igObjectDirectory();
 			metaimages._name = new igName("metaimages");
 			metaimages._useNameList = true;
 			metaimages._nameList = new igNameList();
-
-			AppendMetaImage(metaimages, "dxt1", 4, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt1_tile_big_ps3", 4, Props.Compressed | Props.Tile);
-			AppendMetaImage(metaimages, "dxt1_big_ps3", 4, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt1_srgb_big_ps3", 4, Props.Compressed | Props.Srgb);
-			AppendMetaImage(metaimages, "dxt1_srgb_tile_big_ps3", 4, Props.Compressed | Props.Srgb | Props.Tile);
-
-			AppendMetaImage(metaimages, "dxt3", 8, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt3_tile_big_ps3", 8, Props.Compressed | Props.Tile);
-			AppendMetaImage(metaimages, "dxt3_big_ps3", 8, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt3_srgb_big_ps3", 8, Props.Compressed | Props.Srgb);
-			AppendMetaImage(metaimages, "dxt3_srgb_tile_big_ps3", 8, Props.Compressed | Props.Srgb | Props.Tile);
-
-			AppendMetaImage(metaimages, "dxt5", 8, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt5_tile_big_ps3", 8, Props.Compressed | Props.Tile);
-			AppendMetaImage(metaimages, "dxt5_big_ps3", 8, Props.Compressed);
-			AppendMetaImage(metaimages, "dxt5_srgb_big_ps3", 8, Props.Compressed | Props.Srgb);
-			AppendMetaImage(metaimages, "dxt5_srgb_tile_big_ps3", 8, Props.Compressed | Props.Srgb | Props.Tile);
-
 			igObjectStreamManager.Singleton.AddObjectDirectory(metaimages);
 			igObjectHandleManager.Singleton.AddSystemNamespace("metaimages");
+
+			for(int i = 0; i < canonicalMetaImages.Length; i++)
+			{
+				igCanonicalMetaImage canonMeta = new igCanonicalMetaImage();
+				canonMeta._canonical = canonMeta;
+				canonMeta._isCanonical = true;
+				canonMeta._name = canonicalMetaImages[i];
+				igMetaImageInfo.RegisterFormat(canonMeta);
+
+				canonMeta._bitsPerPixel = 0;
+				int pixelIndex = Array.FindIndex<igMetaImagePixelInfo>(pixelInfos, x => x._name == canonMeta._name);
+				if(pixelIndex >= 0)
+				{
+					canonMeta._bitsPerPixel = (byte)(pixelInfos[pixelIndex]._rBits + pixelInfos[pixelIndex]._gBits + pixelInfos[pixelIndex]._bBits + pixelInfos[pixelIndex]._aBits);
+				}
+				int lIndex = Array.FindIndex<igMetaImageLInfo>(lInfo, x => x._name == canonMeta._name);
+				if(lIndex >= 0)
+				{
+					canonMeta._bitsPerPixel += lInfo[lIndex]._lBits;
+				}
+				int dsIndex = Array.FindIndex<igMetaImageDepthStencilInfo>(dsInfo, x => x._name == canonMeta._name);
+				if(dsIndex >= 0)
+				{
+					canonMeta._bitsPerPixel += (byte)(dsInfo[dsIndex]._depthBits + dsInfo[dsIndex]._stencilBits);
+				}
+				int xIndex = Array.FindIndex<igMetaImageXInfo>(xInfo, x => x._name == canonMeta._name);
+				if(xIndex >= 0)
+				{
+					canonMeta._bitsPerPixel += xInfo[xIndex]._xBits;
+				}
+
+				int palletteIndex = Array.FindIndex<igMetaImagePalletteInfo>(palletteInfo, x => x._name == canonMeta._name);
+				if(palletteIndex >= 0)
+				{
+					canonMeta._hasPalette = true;
+				}
+
+				int compressedIndex = Array.FindIndex<igMetaImageCompressedInfo>(compressedInfos, x => x._name == canonMeta._name);
+				if(compressedIndex >= 0)
+				{
+					canonMeta._isCompressed = true;
+				}
+
+				if(canonMeta._name.EndsWith("_srgb")) canonMeta._isSrgb = true;
+				else
+				{
+					//was quicker to write than a whole lot of if-elses
+					switch(canonMeta._name)
+					{
+						case "d24fs8":
+						case "d32f":
+						case "d32fs8":
+						case "r16_float":
+						case "r16g16_float":
+						case "r16g16b16a16_expand_float":
+						case "r16g16b16a16_float":
+						case "r32_float":
+						case "r32g32_float":
+						case "r32g32b32a32_float":
+							canonMeta._isFloatingPoint = true;
+							break;
+					}
+				}
+				for(uint p = (uint)IG_GFX_PLATFORM.IG_GFX_PLATFORM_DEFAULT + 1; p < (uint)IG_GFX_PLATFORM.IG_GFX_PLATFORM_MAX; p++)
+				{
+					string? platformString = GetPlatformString((IG_GFX_PLATFORM)p);
+					if(platformString == null) continue;
+					igPlatformMetaImage platformMeta = new igPlatformMetaImage();
+					platformMeta._properties = canonMeta._properties;
+					platformMeta._name = canonMeta._name + "_" + platformString;
+					platformMeta._canonical = canonMeta;
+					platformMeta._bitsPerPixel = canonMeta._bitsPerPixel;
+					platformMeta._functions = canonMeta._functions;
+					platformMeta._platform = (IG_GFX_PLATFORM)p;
+					igPlatformMetaImage platformTileMeta = new igPlatformMetaImage();
+					platformTileMeta._properties = canonMeta._properties;
+					platformTileMeta._isTile = true;
+					platformTileMeta._name = canonMeta._name + "_tile_" + platformString;
+					platformTileMeta._canonical = canonMeta;
+					platformTileMeta._bitsPerPixel = canonMeta._bitsPerPixel;
+					platformTileMeta._functions = canonMeta._functions;
+					platformTileMeta._platform = (IG_GFX_PLATFORM)p;
+					canonMeta._formats.Append(platformMeta);
+					canonMeta._formats.Append(platformTileMeta);
+					igMetaImageInfo.RegisterFormat(platformMeta);
+					igMetaImageInfo.RegisterFormat(platformTileMeta);
+				}
+			}
+
+			igMetaImageInfo.Debug();
+			//igImagePlugin.RegisterPlugin();
 		}
-		private static igMetaImage AppendMetaImage(igObjectDirectory metaimages, string name, byte bpp, Props properties)
+		public static void Convert_r8g8b8a8_to_b8g8r8a8(igImageLevel source, igImageLevel target)
 		{
-			igMetaImage meta = new igMetaImage();
-			meta._name = name;
-			meta._bitsPerPixel = bpp;
-			meta._properties = (byte)properties;
+			for(uint i = 0; i < source._imageData.Length; i += 4)
+			{
+				target._imageData[i + 0] = source._imageData[i + 2];
+				target._imageData[i + 1] = source._imageData[i + 1];
+				target._imageData[i + 2] = source._imageData[i + 0];
+				target._imageData[i + 3] = source._imageData[i + 3];
+			}
+		}
+		public static void Convert_b8g8r8a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			for(uint i = 0; i < source._imageData.Length; i += 4)
+			{
+				target._imageData[i + 0] = source._imageData[i + 2];
+				target._imageData[i + 1] = source._imageData[i + 1];
+				target._imageData[i + 2] = source._imageData[i + 0];
+				target._imageData[i + 3] = source._imageData[i + 3];
+			}
+		}
+		public static bool IsPlatformLittleEndian(IG_GFX_PLATFORM platform)
+		{
+			switch(platform)
+			{
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DEFAULT:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DURANGO:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_ASPEN:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_OSX:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX11:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_RASPI:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_NULL:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_ANDROID:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_METAL:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_WGL:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_LGTV:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS4:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_LINUX:
+					return true;
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_WII:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_XENON:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS3:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE:
+				default:
+					return false;
+			}
+		}
+		public static string GetPlatformString(IG_GFX_PLATFORM platform)
+		{
+			switch(platform)
+			{
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DEFAULT:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_NULL:
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_MAX:
+				default:
+					return null;
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX:
+					return "dx";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_WII:
+					return "big_wii";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DURANGO:
+					return "durango";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_ASPEN:
+					return "aspen";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_XENON:
+					return "big_xenon";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS3:
+					return "big_ps3";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_OSX:
+					return "osx";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_DX11:
+					return "dx11";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_CAFE:
+					return "cafe";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_RASPI:
+					return "raspi";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_ANDROID:
+					return "android";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_METAL:
+					return "metal";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_WGL:
+					return "wgl";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_LGTV:
+					return "lgtv";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_PS4:
+					return "ps4";
+				case IG_GFX_PLATFORM.IG_GFX_PLATFORM_LINUX:
+					return "linux";
+			}
+		}
+		public static bool shouldEndianSwap(igImageLevel source, igImageLevel target)
+		{
+			bool sourceEndian = false;
+			bool targetEndian = false;
+			if(source._targetMeta is igPlatformMetaImage platSource) sourceEndian = IsPlatformLittleEndian(platSource._platform);
+			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
+			return sourceEndian ^ targetEndian;
+		}
+		public static void Convert_r5g5b5a1_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			bool sourceEndian = false;
+			if(source._targetMeta is igPlatformMetaImage platSource) sourceEndian = IsPlatformLittleEndian(platSource._platform);
+			bool targetEndian = false;
+			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
 
-			metaimages._objectList.Append(meta);
-			metaimages._nameList.Append(new igName(name));
+			for(uint i = 0, j = 0; i < source._imageData.Length; i += 2, j += 4)
+			{
+				ushort rgba;
+				if(sourceEndian)
+				{
+					rgba = (ushort)((source._imageData[i + 1] << 8) | source._imageData[i + 0]);
+				}
+				else
+				{
+					rgba = (ushort)((source._imageData[i + 0] << 8) | source._imageData[i + 1]);
+				}
+				target._imageData[i + 0] = (byte)(((rgba >> 11) & 0x1F) << 3);
+				target._imageData[i + 1] = (byte)(((rgba >> 06) & 0x1F) << 3);
+				target._imageData[i + 2] = (byte)(((rgba >> 01) & 0x1F) << 3);
+				target._imageData[i + 3] = (byte)(((rgba >> 00) & 0x01) << 7);
+			}
+		}
+		public static void Convert_r5g6b5_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			bool sourceEndian = false;
+			if(source._targetMeta is igPlatformMetaImage platSource) sourceEndian = IsPlatformLittleEndian(platSource._platform);
+			bool targetEndian = false;
+			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
 
-			return meta;
+			for(uint i = 0, j = 0; i < source._imageData.Length; i += 2, j += 4)
+			{
+				ushort rgba;
+				if(sourceEndian)
+				{
+					rgba = (ushort)((source._imageData[i + 1] << 8) | source._imageData[i + 0]);
+				}
+				else
+				{
+					rgba = (ushort)((source._imageData[i + 0] << 8) | source._imageData[i + 1]);
+				}
+				target._imageData[i + 0] = (byte)(((rgba >> 11) & 0x1F) << 3);
+				target._imageData[i + 1] = (byte)(((rgba >> 05) & 0x1F) << 2);
+				target._imageData[i + 2] = (byte)(((rgba >> 00) & 0x1F) << 3);
+				target._imageData[i + 3] = 0xFF;
+			}
+		}
+		public static void Convert_a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			for(uint i = 0; i < source._imageData.Length; i++)
+			{
+				target._imageData[(i << 2) + 0] = 0;
+				target._imageData[(i << 2) + 1] = 0;
+				target._imageData[(i << 2) + 2] = 0;
+				target._imageData[(i << 2) + 3] = source._imageData[i];
+			}
 		}
 	}
 }

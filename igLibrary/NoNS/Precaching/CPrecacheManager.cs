@@ -53,7 +53,7 @@ namespace igLibrary
 			RegisterResourcePrecacher(   "events_behavior", new CBehaviorEventPrecacher());
 			RegisterResourcePrecacher(    "asset_behavior", new CBehaviorAssetPrecacher());
 			RegisterResourcePrecacher(      "hkb_behavior", new CBehaviorAssetPrecacher());
-			RegisterResourcePrecacher(      "hkc_behavior", new CBehaviorAssetPrecacher());
+			RegisterResourcePrecacher(     "hkc_character", new CBehaviorAssetPrecacher());
 			RegisterResourcePrecacher(           "navmesh", new CNavMeshPrecacher());
 			RegisterResourcePrecacher(            "script", new CScriptPrecacher());
 			//...
@@ -113,7 +113,14 @@ namespace igLibrary
 				_packageName = packagePath;
 				string type = list[i];
 				string file = list[i+1];
-				_resourcePrecacherLookup[type].Precache(file);
+				if(_resourcePrecacherLookup.TryGetValue(type, out CResourcePrecacher precacher))
+				{
+					precacher.Precache(file);
+				}
+				else
+				{
+					throw new NotImplementedException($"file type {type} has no registered loader");
+				}
 			}
 			return true;
 		}

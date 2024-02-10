@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace igLibrary.Core
 {
-    //God bless LG-RZ
-	public abstract class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>, IigHashTable//, IDictionary<U, T>
+	//God bless LG-RZ
+	public abstract class igTUHashTable<T, U> : igContainer, IEnumerable<KeyValuePair<U, T>>, IigHashTable, IDictionary<U, T>
 	{
 		public igMemory<T> _values;
 		public igMemory<U> _keys;
 		public int _hashItemCount;
 		public bool _autoRehash;
 		public float _loadFactor;
+		public ICollection<U> Keys => _keys.Buffer;
+		public ICollection<T> Values => _values.Buffer;
+		public int Count => _hashItemCount;
+		public bool IsReadOnly => false;
 
 		public virtual T this[U key]
 		{
@@ -86,7 +91,7 @@ namespace igLibrary.Core
 		}
 		public virtual U KeyTraitsInvalid()
 		{
-			     if(!typeof(U).IsValueType)      return default(U);
+				 if(!typeof(U).IsValueType)      return default(U);
 			else if(typeof(U) == typeof(uint))   return (U)(object)0xFAFAFAFA;
 			else if(typeof(U) == typeof(int))    return (U)(object)-84215046;
 			else if(typeof(U) == typeof(ulong))  return (U)(object)0xFAFAFAFAFAFAFAFA;
@@ -100,63 +105,63 @@ namespace igLibrary.Core
 			}
 			else throw new NotImplementedException("Key type " + typeof(U).Name + " is not implemented.");
 		}
-        public static uint HashString(string name)
-        {
-            return HashString(name, 0x811c9dc5);
-        }
+		public static uint HashString(string name)
+		{
+			return HashString(name, 0x811c9dc5);
+		}
 
-        public static uint HashString(string name, uint basis)
-        {
-            if(name == null) return basis;
+		public static uint HashString(string name, uint basis)
+		{
+			if(name == null) return basis;
 
-            for (int i = 0; i < name.Length; i++)
-            {
-                basis = (basis ^ name[i]) * 0x1000193;
-            }
+			for (int i = 0; i < name.Length; i++)
+			{
+				basis = (basis ^ name[i]) * 0x1000193;
+			}
 
-            return basis;
-        }
+			return basis;
+		}
 
-        public static uint HashStringi(string name)
-        {
-            return HashStringi(name, 0x811c9dc5);
-        }
+		public static uint HashStringi(string name)
+		{
+			return HashStringi(name, 0x811c9dc5);
+		}
 
-        public static uint HashStringi(string name, uint basis)
-        {
-            for (int i = 0; i < name.Length; i++)
-            {
-                basis = (basis ^ char.ToLower(name[i])) * 0x1000193;
-            }
+		public static uint HashStringi(string name, uint basis)
+		{
+			for (int i = 0; i < name.Length; i++)
+			{
+				basis = (basis ^ char.ToLower(name[i])) * 0x1000193;
+			}
 
-            return basis;
-        }
+			return basis;
+		}
 
-        public static uint HashInt(uint integer) => HashInt(unchecked((int)integer));
-        public static uint HashInt(int integer)
-        {
-            uint hash = (uint)(integer + (integer << 0xf));
-            hash = (hash >> 10 ^ hash) * 9;
-            hash = hash ^ hash >> 6;
-            hash = hash + ~(hash << 0xb);
-            return hash >> 0x10 ^ hash;
-        }
+		public static uint HashInt(uint integer) => HashInt(unchecked((int)integer));
+		public static uint HashInt(int integer)
+		{
+			uint hash = (uint)(integer + (integer << 0xf));
+			hash = (hash >> 10 ^ hash) * 9;
+			hash = hash ^ hash >> 6;
+			hash = hash + ~(hash << 0xb);
+			return hash >> 0x10 ^ hash;
+		}
 
-        public static uint HashLong(long integer)
-        {
-            ulong hash = (ulong)(integer * 0x40000 + ~integer);
-            hash = (hash >> 0x1f ^ hash) * 0x15;
-            hash = (hash >> 0xb ^ hash) * 0x41;
-            return (uint)(hash >> 0x16) ^ (uint)hash;
-        }
+		public static uint HashLong(long integer)
+		{
+			ulong hash = (ulong)(integer * 0x40000 + ~integer);
+			hash = (hash >> 0x1f ^ hash) * 0x15;
+			hash = (hash >> 0xb ^ hash) * 0x41;
+			return (uint)(hash >> 0x16) ^ (uint)hash;
+		}
 
-        public static uint HashLong(ulong integer)
-        {
-            ulong hash = integer * 0x40000 + ~integer;
-            hash = (hash >> 0x1f ^ hash) * 0x15;
-            hash = (hash >> 0xb ^ hash) * 0x41;
-            return (uint)(hash >> 0x16) ^ (uint)hash;
-        }
+		public static uint HashLong(ulong integer)
+		{
+			ulong hash = integer * 0x40000 + ~integer;
+			hash = (hash >> 0x1f ^ hash) * 0x15;
+			hash = (hash >> 0xb ^ hash) * 0x41;
+			return (uint)(hash >> 0x16) ^ (uint)hash;
+		}
 		private uint KeyTraitsHash(U key)
 		{
 			if(key is int ksi)     return HashInt(ksi);
@@ -174,116 +179,116 @@ namespace igLibrary.Core
 		{
 			return KeyTraitsHash(key1) == KeyTraitsHash(key2);
 		}
-        public int FindSlot(int count, uint hash, U key)
-        {
-            if (count != 0)
-            {
-                uint remainder = hash % (uint)count;
-                uint keyIndex = remainder;
-                for (int i = 0; i < count; i++)
-                {
-                    var key1 = _keys[keyIndex];
+		public int FindSlot(int count, uint hash, U key)
+		{
+			if (count != 0)
+			{
+				uint remainder = hash % (uint)count;
+				uint keyIndex = remainder;
+				for (int i = 0; i < count; i++)
+				{
+					var key1 = _keys[keyIndex];
 
-                    remainder = keyIndex;
+					remainder = keyIndex;
 
-                    if (KeyTraitsEqual(key1, key))
-                        return (int)keyIndex;
+					if (KeyTraitsEqual(key1, key))
+						return (int)keyIndex;
 
-                    if (KeyTraitsEqual(key1, KeyTraitsInvalid()))
-                        return (int)keyIndex;
+					if (KeyTraitsEqual(key1, KeyTraitsInvalid()))
+						return (int)keyIndex;
 
-                    keyIndex = 0;
+					keyIndex = 0;
 
-                    if ((remainder + 1) != count)
-                        keyIndex = remainder + 1;
-                }
+					if ((remainder + 1) != count)
+						keyIndex = remainder + 1;
+				}
 
-            }
-            return -1;
-        }
-        public bool IsValidKey(U key)
-        {
-            return !KeyTraitsEqual(key, KeyTraitsInvalid());
-        }
+			}
+			return -1;
+		}
+		public bool IsValidKey(U key)
+		{
+			return !KeyTraitsEqual(key, KeyTraitsInvalid());
+		}
 		private void SetInternal(int index, U key, T value)
 		{
 			_keys[index] = key;
 			_values[index] = value;
 		}
-        public void SetCapacity(int count)
-        {
-            igMemory<U> keys = _keys;
-            igMemory<T> values = _values;
-            int length = _keys.Length;
-            if (length == count)
-            {
-                keys = _keys.CreateCopy(); // make a backup
-                values = _values.CreateCopy(); // make a backup
-                KeyTraitsInvalidateAll();
-            }
-            else
-            {
-                keys = _keys.CreateCopy();
-                values = _values.CreateCopy();
-                _keys = new igMemory<U>();
-                _values = new igMemory<T>();
-            }
-            _hashItemCount = 0;
-            if (length != 0)
-            {
-                for (int i = 0; i < length; i++)
-                {
-                    U key = keys[i];
-                    bool isEqual = KeyTraitsEqual(key, KeyTraitsInvalid());
-                    if (!isEqual)
-                    {
-                        uint hash = KeyTraitsHash(key);
+		public void SetCapacity(int count)
+		{
+			igMemory<U> keys = _keys;
+			igMemory<T> values = _values;
+			int length = _keys.Length;
+			if (length == count)
+			{
+				keys = _keys.CreateCopy(); // make a backup
+				values = _values.CreateCopy(); // make a backup
+				KeyTraitsInvalidateAll();
+			}
+			else
+			{
+				keys = _keys.CreateCopy();
+				values = _values.CreateCopy();
+				_keys = new igMemory<U>();
+				_values = new igMemory<T>();
+			}
+			_hashItemCount = 0;
+			if (length != 0)
+			{
+				for (int i = 0; i < length; i++)
+				{
+					U key = keys[i];
+					bool isEqual = KeyTraitsEqual(key, KeyTraitsInvalid());
+					if (!isEqual)
+					{
+						uint hash = KeyTraitsHash(key);
 
-                        if (!InsertInternal(key, values[i], hash))
-                        {
-                            return;
-                        }
-                    }
-                }
-            }
-            KeyTraitsInvalidateAll();
-            //ValueTraitsInvalidate(values);
-        }
-        public bool InsertInternal(U key, T value, uint hash)
-        {
-            int slot = FindSlot(_keys.Length, hash, key);
-            if (slot == -1)
-            {
-                if (!_autoRehash)
-                    return false;
-            }
-            else
-            {
-                if (!IsValidKey(_keys[slot]))
-                    _hashItemCount++;
+						if (!InsertInternal(key, values[i], hash))
+						{
+							return;
+						}
+					}
+				}
+			}
+			KeyTraitsInvalidateAll();
+			//ValueTraitsInvalidate(values);
+		}
+		public bool InsertInternal(U key, T value, uint hash)
+		{
+			int slot = FindSlot(_keys.Length, hash, key);
+			if (slot == -1)
+			{
+				if (!_autoRehash)
+					return false;
+			}
+			else
+			{
+				if (!IsValidKey(_keys[slot]))
+					_hashItemCount++;
 
-                SetInternal(slot, key, value);
+				SetInternal(slot, key, value);
 
-                if (!_autoRehash)
-                    return true;
-            }
+				if (!_autoRehash)
+					return true;
+			}
 
-            if (slot == -1 || _keys.Length == 0)
-            {
-                SetCapacity(_keys.Length * 2);
+			if (slot == -1 || _keys.Length == 0)
+			{
+				SetCapacity(_keys.Length == 0 ? 4 : _keys.Length * 2);
 
-                if (slot == -1)
-                {
-                    _autoRehash = false;
-                    bool inserted = InsertInternal(key, value, hash);
-                    _autoRehash = true;
+				if (slot == -1)
+				{
+					_autoRehash = false;
+					bool inserted = InsertInternal(key, value, hash);
+					_autoRehash = true;
 
-                    return inserted;
-                }
-            }
+					return inserted;
+				}
+			}
 
-            return true;
-        }
+			return true;
+		}
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -293,14 +298,31 @@ namespace igLibrary.Core
 			if(index >= 0) throw new ArgumentException($"Key {key} already exists");
 			InsertInternal(key, value, KeyTraitsHash(key));
 		}
-        public void Remove(U key) 
-        {
-            throw new NotImplementedException("Removing items from hash tables is not implemented");
-        }
+		public void Add(KeyValuePair<U, T> kvp) => Add(kvp.Key, kvp.Value);
+		public void Clear() => throw new NotImplementedException("Clearing hash tables is not implemented");
+		public void CopyTo(KeyValuePair<U, T>[] arr, int num) => throw new NotImplementedException("CopyTo is not implemented");
+		public bool Remove(U key) => throw new NotImplementedException("Removing items from hash tables is not implemented");
+		public bool Remove(KeyValuePair<U, T> kvp) => Remove(kvp.Key);
 		public bool ContainsKey(U key)
 		{
 			int index = GetKeyIndex(key);
 			return index >= 0;
+		}
+		public bool Contains(KeyValuePair<U, T> kvp)
+		{
+			if(!TryGetValue(kvp.Key, out T tester)) return false;
+			return EqualityComparer<T>.Default.Equals(kvp.Value, tester);
+		}
+		public bool TryGetValue(U key, out T value)
+		{
+			int index = GetKeyIndex(key);
+			if(index < 0)
+			{
+				value = default;
+				return false;
+			}
+			value = _values[index];
+			return true;
 		}
 
 	}
