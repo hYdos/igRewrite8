@@ -371,6 +371,7 @@ namespace igLibrary.Gfx
 					igPlatformMetaImage platformMeta = new igPlatformMetaImage();
 					platformMeta._properties = canonMeta._properties;
 					platformMeta._name = canonMeta._name + "_" + platformString;
+					platformMeta._isCanonical = false;
 					platformMeta._canonical = canonMeta;
 					platformMeta._bitsPerPixel = canonMeta._bitsPerPixel;
 					platformMeta._functions = canonMeta._functions;
@@ -378,6 +379,7 @@ namespace igLibrary.Gfx
 					igPlatformMetaImage platformTileMeta = new igPlatformMetaImage();
 					platformTileMeta._properties = canonMeta._properties;
 					platformTileMeta._isTile = true;
+					platformTileMeta._isCanonical = false;
 					platformTileMeta._name = canonMeta._name + "_tile_" + platformString;
 					platformTileMeta._canonical = canonMeta;
 					platformTileMeta._bitsPerPixel = canonMeta._bitsPerPixel;

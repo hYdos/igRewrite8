@@ -1,3 +1,4 @@
+using igLibrary;
 using igLibrary.Gfx;
 using igLibrary.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -123,27 +124,49 @@ namespace igCauldron3.Graphics
 			image._texHandle = GL.GenTexture();
 			GL.ActiveTexture(TextureUnit.Texture0);
 			GL.BindTexture(TextureTarget.Texture2D, image._texHandle);
-
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureBaseLevel, 0);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, image._levelCount - 1);
 
 			fixed(byte* data = image._data.Buffer)
 			{
 				if(image._format._isCompressed)
 				{
 					int formatIndex = Array.FindIndex<compressedMetaimage>(_compressedPlatformEnums, x => x._name == image._format._canonical._name);
-					if(formatIndex < 0) throw new NotImplementedException($"format {image._format._name} is not implemented!");
+					if(formatIndex < 0)
+					{
+						GL.DeleteTexture(image._texHandle);
+						throw new NotImplementedException($"format {image._format._name} is not implemented!");
+					}
+					uint mipWidth = (image._width + 3u) & ~3u;
+					uint mipHeight = (image._height + 3u) & ~3u;
+					uint blockWidth = image._format.GetBlockWidth();
+					uint blockHeight = image._format.GetBlockHeight();
+					uint cumSize = 0;
 					for(int i = 0; i < image._levelCount; i++)
 					{
+						cumSize += image._format.GetTextureSize((int)mipWidth, (int)mipHeight, image._depth, 1, image._imageCount);
 						GL.CompressedTexImage2D(TextureTarget.Texture2D, i, _compressedPlatformEnums[formatIndex]._format,
-							image._width, image._height, 0,
-							(int)image._format.GetTextureSize(image._width, image._height, image._depth, i, image._imageCount),
+							(int)mipWidth, (int)mipHeight, 0, (int)image._format.GetTextureSize((int)mipWidth, (int)mipHeight, image._depth, 1, image._imageCount),
 							(IntPtr)(data + image._format.GetTextureLevelOffset(image._width, image._height, image._depth, image._levelCount, image._imageCount, i, 0))
 						);
+						mipWidth >>= 1;     if(mipWidth < blockWidth)   mipWidth = blockWidth;
+						mipHeight >>= 1;    if(mipHeight < blockHeight) mipHeight = blockHeight;
+					}
+					if(StreamHelper.Align(cumSize, image._data._alignmentMultiple) != image._data.Length)
+					{
+						throw new InvalidDataException("Image size doesn't match processed bytes");
 					}
 				}
 				else
 				{
 					int formatIndex = Array.FindIndex<pixelMetaimage>(_pixelPlatformEnums, x => x._name == image._format._canonical._name);
-					if(formatIndex < 0) throw new NotImplementedException($"format {image._format._name} is not implemented!");
+					if(formatIndex < 0)
+					{
+						GL.DeleteTexture(image._texHandle);
+						throw new NotImplementedException($"format {image._format._name} is not implemented!");
+					}
 					for(int i = 0; i < image._levelCount; i++)
 					{
 						GL.TexImage2D(TextureTarget.Texture2D, i, _pixelPlatformEnums[formatIndex]._internalFormat,

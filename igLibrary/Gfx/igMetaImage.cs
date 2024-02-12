@@ -55,6 +55,7 @@ namespace igLibrary.Gfx
 		public byte GetBlockWidth()
 		{
 			if(!_isCompressed) return 1;
+			if(!_isCanonical) return _canonical.GetBlockWidth();
 			for(int i = 0; i < igGfx.compressedInfos.Length; i++)
 			{
 				if(igGfx.compressedInfos[i]._name != _name) continue;
@@ -65,6 +66,7 @@ namespace igLibrary.Gfx
 		public byte GetBlockHeight()
 		{
 			if(!_isCompressed) return 1;
+			if(!_isCanonical) return _canonical.GetBlockHeight();
 			for(int i = 0; i < igGfx.compressedInfos.Length; i++)
 			{
 				if(igGfx.compressedInfos[i]._name != _name) continue;
@@ -75,6 +77,7 @@ namespace igLibrary.Gfx
 		public byte GetBitsCompressed()
 		{
 			if(!_isCompressed) return 1;
+			if(!_isCanonical) return _canonical.GetBitsCompressed();
 			for(int i = 0; i < igGfx.compressedInfos.Length; i++)
 			{
 				if(igGfx.compressedInfos[i]._name != _name) continue;
@@ -85,6 +88,7 @@ namespace igLibrary.Gfx
 		public byte GetBitsRed()
 		{
 			if(_isCompressed) return 0;
+			if(!_isCanonical) return _canonical.GetBitsRed();
 			for(int i = 0; i < igGfx.pixelInfos.Length; i++)
 			{
 				if(igGfx.pixelInfos[i]._name != _name) continue;
@@ -95,6 +99,7 @@ namespace igLibrary.Gfx
 		public byte GetBitsGreen()
 		{
 			if(_isCompressed) return 0;
+			if(!_isCanonical) return _canonical.GetBitsGreen();
 			for(int i = 0; i < igGfx.pixelInfos.Length; i++)
 			{
 				if(igGfx.pixelInfos[i]._name != _name) continue;
@@ -105,6 +110,7 @@ namespace igLibrary.Gfx
 		public byte GetBitsBlue()
 		{
 			if(_isCompressed) return 0;
+			if(!_isCanonical) return _canonical.GetBitsBlue();
 			for(int i = 0; i < igGfx.pixelInfos.Length; i++)
 			{
 				if(igGfx.pixelInfos[i]._name != _name) continue;
@@ -115,6 +121,7 @@ namespace igLibrary.Gfx
 		public byte GetBitsAlpha()
 		{
 			if(_isCompressed) return 0;
+			if(!_isCanonical) return _canonical.GetBitsAlpha();
 			for(int i = 0; i < igGfx.pixelInfos.Length; i++)
 			{
 				if(igGfx.pixelInfos[i]._name != _name) continue;
@@ -124,6 +131,7 @@ namespace igLibrary.Gfx
 		}
 		public byte GetTileWidth()
 		{
+			if(!_isCanonical) return _canonical.GetTileWidth();
 			for(int i = 0; i < igGfx.tileInfo.Length; i++)
 			{
 				if(igGfx.tileInfo[i]._name != _name) continue;
@@ -133,6 +141,7 @@ namespace igLibrary.Gfx
 		}
 		public byte GetTileHeight()
 		{
+			if(!_isCanonical) return _canonical.GetTileHeight();
 			for(int i = 0; i < igGfx.tileInfo.Length; i++)
 			{
 				if(igGfx.tileInfo[i]._name != _name) continue;

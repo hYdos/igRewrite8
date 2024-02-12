@@ -5,6 +5,8 @@ using OpenTK;
 using ImGuiNET;
 using OpenTK.Graphics.OpenGL4;
 using igLibrary.Core;
+using igCauldron3.Graphics;
+using igLibrary.Graphics;
 
 namespace igCauldron3
 {
@@ -26,6 +28,7 @@ namespace igCauldron3
 			Title = "igCauldron";
 
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
+			igTContext<igBaseGraphicsDevice>._instance = new igOpenGLGraphicsDevice();
 
 			frames.Add(new ConfigFrame(this));
 		}
