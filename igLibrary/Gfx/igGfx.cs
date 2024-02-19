@@ -393,11 +393,11 @@ namespace igLibrary.Gfx
 			}
 
 			igMetaImageInfo.Debug();
-			//igImagePlugin.RegisterPlugin();
+			igImagePlugin.RegisterPlugin();
 		}
-		public static void Convert_r8g8b8a8_to_b8g8r8a8(igImageLevel source, igImageLevel target)
+		public static unsafe void Convert_r8g8b8a8_to_b8g8r8a8(igImageLevel source, igImageLevel target)
 		{
-			for(uint i = 0; i < source._imageData.Length; i += 4)
+			for(uint i = 0; i < source._imageSize; i += 4)
 			{
 				target._imageData[i + 0] = source._imageData[i + 2];
 				target._imageData[i + 1] = source._imageData[i + 1];
@@ -405,9 +405,9 @@ namespace igLibrary.Gfx
 				target._imageData[i + 3] = source._imageData[i + 3];
 			}
 		}
-		public static void Convert_b8g8r8a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		public static unsafe void Convert_b8g8r8a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
 		{
-			for(uint i = 0; i < source._imageData.Length; i += 4)
+			for(uint i = 0; i < source._imageSize; i += 4)
 			{
 				target._imageData[i + 0] = source._imageData[i + 2];
 				target._imageData[i + 1] = source._imageData[i + 1];
@@ -493,14 +493,14 @@ namespace igLibrary.Gfx
 			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
 			return sourceEndian ^ targetEndian;
 		}
-		public static void Convert_r5g5b5a1_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		public static unsafe void Convert_r5g5b5a1_to_r8g8b8a8(igImageLevel source, igImageLevel target)
 		{
 			bool sourceEndian = false;
 			if(source._targetMeta is igPlatformMetaImage platSource) sourceEndian = IsPlatformLittleEndian(platSource._platform);
 			bool targetEndian = false;
 			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
 
-			for(uint i = 0, j = 0; i < source._imageData.Length; i += 2, j += 4)
+			for(uint i = 0, j = 0; i < source._imageSize; i += 2, j += 4)
 			{
 				ushort rgba;
 				if(sourceEndian)
@@ -517,14 +517,14 @@ namespace igLibrary.Gfx
 				target._imageData[i + 3] = (byte)(((rgba >> 00) & 0x01) << 7);
 			}
 		}
-		public static void Convert_r5g6b5_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		public static unsafe void Convert_r5g6b5_to_r8g8b8a8(igImageLevel source, igImageLevel target)
 		{
 			bool sourceEndian = false;
 			if(source._targetMeta is igPlatformMetaImage platSource) sourceEndian = IsPlatformLittleEndian(platSource._platform);
 			bool targetEndian = false;
 			if(target._targetMeta is igPlatformMetaImage targSource) targetEndian = IsPlatformLittleEndian(targSource._platform);
 
-			for(uint i = 0, j = 0; i < source._imageData.Length; i += 2, j += 4)
+			for(uint i = 0, j = 0; i < source._imageSize; i += 2, j += 4)
 			{
 				ushort rgba;
 				if(sourceEndian)
@@ -541,14 +541,89 @@ namespace igLibrary.Gfx
 				target._imageData[i + 3] = 0xFF;
 			}
 		}
-		public static void Convert_a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		public static unsafe void Convert_a8_to_r8g8b8a8(igImageLevel source, igImageLevel target)
 		{
-			for(uint i = 0; i < source._imageData.Length; i++)
+			for(uint i = 0; i < source._imageSize; i++)
 			{
 				target._imageData[(i << 2) + 0] = 0;
 				target._imageData[(i << 2) + 1] = 0;
 				target._imageData[(i << 2) + 2] = 0;
 				target._imageData[(i << 2) + 3] = source._imageData[i];
+			}
+		}
+		public static unsafe void Convert_dxt1_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			uint numBlocks = source._imageSize / 0x08;
+			uint blockWidth = (source._width + 3) >> 2;
+			uint blockHeight = (source._height + 3) >> 2;
+			byte* sourceData = source._imageData;
+			for(uint i = 0; i < numBlocks; i++, sourceData += 0x08)
+			{
+				ushort col0 = (ushort)((sourceData[0x01] << 8) | (sourceData[0x00]));
+				ushort col1 = (ushort)((sourceData[0x03] << 8) | (sourceData[0x02]));
+				uint codes = (uint)((sourceData[0x04] << 24) | (sourceData[0x05] << 16) | (sourceData[0x06] << 8) | sourceData[0x07]);
+				byte r0 = (byte)(((col0 >> 11) & 0x1F) << 3);
+				byte r1 = (byte)(((col1 >> 11) & 0x1F) << 3);
+				byte g0 = (byte)(((col0 >>  5) & 0x3F) << 2);
+				byte g1 = (byte)(((col1 >>  5) & 0x3F) << 2);
+				byte b0 = (byte)((col0 & 0x1F) << 3);
+				byte b1 = (byte)((col1 & 0x1F) << 3);
+				uint pixelX = (i % blockWidth) << 2;	//Multiply by 4 cos block size
+				uint pixelY = (i / blockWidth) << 2;
+				for(uint j = 0; j < 16; j++)
+				{
+					uint pixelOffset = ((pixelY + 3 - (j >> 2)) * target._width + pixelX + (j & 3)) << 2;	//Multiply by 4 cos r8g8b8a8 pixel size
+					byte code = (byte)((codes >> (int)(j * 2)) & 0x03);
+					//Could potentially cause an IndexOutOfBoundsException when the target width or height is not a multiple of 4
+					if(col0 > col1) switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 0] = r0;
+							target._imageData[pixelOffset + 1] = g0;
+							target._imageData[pixelOffset + 2] = b0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 0] = r1;
+							target._imageData[pixelOffset + 1] = g1;
+							target._imageData[pixelOffset + 2] = b1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 0] = (byte)((2 * r0 + r1) / 3);
+							target._imageData[pixelOffset + 1] = (byte)((2 * g0 + g1) / 3);
+							target._imageData[pixelOffset + 2] = (byte)((2 * b0 + b1) / 3);
+							break;
+						case 3:
+							target._imageData[pixelOffset + 0] = (byte)((r0 + 2 * r1) / 3);
+							target._imageData[pixelOffset + 1] = (byte)((g0 + 2 * g1) / 3);
+							target._imageData[pixelOffset + 2] = (byte)((b0 + 2 * b1) / 3);
+							break;
+					}
+					else switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 0] = r0;
+							target._imageData[pixelOffset + 1] = g0;
+							target._imageData[pixelOffset + 2] = b0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 0] = r1;
+							target._imageData[pixelOffset + 1] = g1;
+							target._imageData[pixelOffset + 2] = b1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 0] = (byte)((r0 + r1) / 2);
+							target._imageData[pixelOffset + 1] = (byte)((g0 + g1) / 2);
+							target._imageData[pixelOffset + 2] = (byte)((b0 + b1) / 2);
+							break;
+						case 3:
+							target._imageData[pixelOffset + 0] = 0;
+							target._imageData[pixelOffset + 1] = 0;
+							target._imageData[pixelOffset + 2] = 0;
+							break;
+					}
+
+					target._imageData[pixelOffset + 3] = 0xFF;
+				}
 			}
 		}
 	}

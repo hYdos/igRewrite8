@@ -162,6 +162,20 @@ namespace igLibrary.Gfx
 			convertFunction._function = function;
 			_functions.Append(convertFunction);
 		}
+		public bool TryGetConvertFunction(igMetaImage target, out Action<igImageLevel, igImageLevel>? function)
+		{
+			if(!_isCanonical) return _canonical.TryGetConvertFunction(target, out function);
+			for(int i = 0; i < _functions._count; i++)
+			{
+				if(target == _functions[i]._targetMeta)
+				{
+					function = _functions[i]._function;
+					return true;
+				}
+			}
+			function = null;
+			return false;
+		}
 	}
 	public class igMetaImageList : igTObjectList<igMetaImage>{}
 }

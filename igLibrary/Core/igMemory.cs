@@ -34,6 +34,15 @@ namespace igLibrary.Core
 			_optimalGPURead = false;
 			_alignmentMultiple = 1;
  		}
+		public igMemory(igMemoryPool pool, uint size)
+		{
+			_memoryPool = pool;
+			_data = new T[size];
+			_implicitMemoryPool = true;
+			_optimalCPUReadWrite = false;
+			_optimalGPURead = false;
+			_alignmentMultiple = 1;
+		}
 		public igMemory<T> CreateCopy()
 		{
 			igMemory<T> copy = (igMemory<T>)this.MemberwiseClone();

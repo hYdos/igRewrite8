@@ -1,3 +1,4 @@
+using igCauldron3.Conversion;
 using igCauldron3.Graphics;
 using igCauldron3.Utils;
 using igLibrary.Core;
@@ -34,11 +35,13 @@ namespace igCauldron3
 			objFrame.RenderFieldWithName(image, meta.GetFieldByName("_name"));
 			if(ImGui.Button("Extract"))
 			{
-				string filePath = CrossFileDialog.SaveFile("Save Image...", ".dds");
+				string filePath = CrossFileDialog.SaveFile("Save Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");
 				if(!string.IsNullOrWhiteSpace(filePath))
 				{
 					FileStream fs = File.Create(filePath);
-					igImage2Exporter.ExportToDds(image, fs);
+					string ext = Path.GetExtension(filePath);
+					if(ext == ".dds") igImage2Exporter.ExportToDds(image, fs);
+					else              TextureConversion.Export(image, fs, ext);
 					fs.Close();
 				}
 			}
