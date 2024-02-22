@@ -176,6 +176,11 @@ namespace igLibrary.Gfx
 			function = null;
 			return false;
 		}
+		public igMetaImage MakePlatformFormat(IG_GFX_PLATFORM platform)
+		{
+			if(!_isCanonical) return _canonical.MakePlatformFormat(platform);
+			return igMetaImageInfo.FindFormat(_name + "_" + igGfx.GetPlatformString(platform));
+		}
 	}
 	public class igMetaImageList : igTObjectList<igMetaImage>{}
 }

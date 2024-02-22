@@ -178,5 +178,9 @@ namespace igCauldron3.Graphics
 			}
 			return image._texHandle;
         }
+		public override void FreeTexture(int texture)
+		{
+			GL.DeleteTexture(texture);
+		}
     }
 }

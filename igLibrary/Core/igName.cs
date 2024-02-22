@@ -10,6 +10,10 @@ namespace igLibrary.Core
 		{
 			SetString(name);
 		}
+		public igName(uint hash)
+		{
+			_hash = hash;
+		}
 		public void SetString(string newString)
 		{
 			_string = newString;

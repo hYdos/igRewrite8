@@ -71,6 +71,10 @@ namespace igLibrary.Core
 				_data = data.Cast<T>().ToArray();
 			}
 		}
+		public void Alloc(int itemCount)
+		{
+			_data = new T[itemCount];
+		}
 		public void Realloc(int itemCount)
 		{
 			Array.Resize<T>(ref _data, itemCount);

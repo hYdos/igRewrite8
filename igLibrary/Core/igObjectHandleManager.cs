@@ -56,5 +56,15 @@ namespace igLibrary.Core
 				_objectToHandleTable.Add(dir._objectList[i], hnd);
 			}
 		}
+		public void AddObject(igObjectDirectory dir, igObject obj, igName name)
+		{
+			igHandle hnd = new igHandle();
+			hnd._object = obj;
+			hnd._namespace = dir._name;
+			hnd._alias = name;
+			_objectToHandleTable.Add(obj, hnd);
+		}
+		public void AddObject(igObjectDirectory dir, igObject obj, uint hash) => AddObject(dir, obj, new igName(hash));
+		public void AddObject(igObjectDirectory dir, igObject obj, string name) => AddObject(dir, obj, new igName(name));
 	}
 }

@@ -22,7 +22,7 @@ namespace igLibrary.Core
 			kInvalid,	//This isn't real
 		}
 
-		FileType type;
+		public FileType _type;
 
 		public igObjectDirectory(){}
 		public igObjectDirectory(string path, igName nameSpace)
@@ -42,7 +42,7 @@ namespace igLibrary.Core
 		}
 		public void WriteFile(Stream dst, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 		{
-			if(type == FileType.kIGZ)
+			if(_type == FileType.kIGZ)
 			{
 				igIGZSaver saver = new igIGZSaver();
 				if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
@@ -67,6 +67,7 @@ namespace igLibrary.Core
 			if(_useNameList)
 			{
 				_nameList.Append(name);
+				igObjectHandleManager.Singleton.AddObject(this, obj, name);
 			}
 		}
 		public static igObjectDirectory? LoadDependancyDefault(string path, igName name, igBlockingType idk)

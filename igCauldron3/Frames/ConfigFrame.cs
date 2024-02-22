@@ -1,6 +1,7 @@
 using ImGuiNET;
 using igLibrary.Core;
 using igLibrary;
+using igLibrary.Gfx;
 
 namespace igCauldron3
 {
@@ -49,6 +50,7 @@ namespace igCauldron3
 							igFileContext.Singleton.InitializeUpdate(game._updatePath);
 						}
 						igRegistry.GetRegistry()._platform = game._platform;
+						igRegistry.GetRegistry()._gfxPlatform = igGfx.GetGfxPlatformFromCore(game._platform);
 						igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 						IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
 

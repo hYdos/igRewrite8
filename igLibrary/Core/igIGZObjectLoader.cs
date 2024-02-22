@@ -10,6 +10,7 @@ namespace igLibrary.Core
         public override void ReadFile(igObjectDirectory dir, string filePath, igBlockingType blockingType)
         {
             igIGZLoader loader = new igIGZLoader(dir, filePath, true);
+            dir._type = igObjectDirectory.FileType.kIGZ;
             loader.Read(dir, true);
             dir._fd = loader._fd;
         }

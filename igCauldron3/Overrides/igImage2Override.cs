@@ -47,6 +47,17 @@ namespace igCauldron3
 			}
 			if(ImGui.Button("Replace"))
 			{
+				string filePath = CrossFileDialog.OpenFile("Open Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");
+				if(!string.IsNullOrWhiteSpace(filePath))
+				{
+					FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read);
+					TextureConversion.Import(image, fs);
+					fs.Close();
+
+					igTContext<igBaseGraphicsDevice>._instance.FreeTexture(image._texHandle);
+					image._texHandle = -1;
+					igTContext<igBaseGraphicsDevice>._instance.CreateTexture(igResourceUsage.kUsageDefault, image);
+				}
 			}
 			ImGui.Image((IntPtr)image._texHandle, new System.Numerics.Vector2(image._width, image._height), System.Numerics.Vector2.UnitY, System.Numerics.Vector2.UnitX);
 		}
