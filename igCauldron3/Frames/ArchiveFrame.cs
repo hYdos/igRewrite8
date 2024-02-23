@@ -28,6 +28,7 @@ namespace igCauldron3
 							_allowedArchives[i] = null;
 						}
 					}
+					Array.Sort(_allowedArchives);
 				}
 				for(int i = 0; i < archives._count; i++)
 				{
