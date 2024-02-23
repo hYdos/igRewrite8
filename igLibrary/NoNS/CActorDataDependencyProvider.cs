@@ -16,8 +16,9 @@ namespace igLibrary
 			}
 			else if(_directory._path.StartsWith("maps:/") && !string.IsNullOrWhiteSpace(actorData._characterAnimations))
 			{
-				throw new NotImplementedException();
-				//string animsPath = string.Format("data:/anims/{0}+{1}.hka", actorData._characterAnimations, )
+				//throw new NotImplementedException();
+				output.Append(string.Format("data:/anims/{0}.hka", actorData._characterAnimations));
+				//string animsPath = string.Format("data:/anims/{0}+{1}.hka", actorData._characterAnimations, "this should be the zone name!");
 			}
 
 		}

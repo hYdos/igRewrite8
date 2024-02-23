@@ -25,7 +25,9 @@ namespace igCauldron3
 							ms.CopyTo(fs);
 							fs.Close();
 							ms.Seek(0, SeekOrigin.Begin);
-							arc.Compress(target._path, ms);
+							igFilePath fp = new igFilePath();
+							fp.Set(target._path);
+							arc.Compress(fp._path, ms);
 							ms.Close();
 							arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
 						}

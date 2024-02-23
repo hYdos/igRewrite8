@@ -15,7 +15,7 @@ namespace igLibrary.Core
 
 			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
 
-			object compoundData = Activator.CreateInstance(_compoundFieldInfo._vTablePointer);
+			object compoundData = Activator.CreateInstance(GetOutputType());	//grab the type like this becuase igOrderedMapMetaField<T, U>
 
 			_compoundFieldInfo.CalculateOffsetForPlatform(loader._platform);
 
@@ -30,7 +30,7 @@ namespace igLibrary.Core
 
 				object? data = metaFields[i].ReadIGZField(loader);
 
-				FieldInfo? field = _compoundFieldInfo._vTablePointer.GetField(metaFields[i]._name);
+				FieldInfo? field = GetOutputType().GetField(metaFields[i]._name);
 				if(field != null)
 				{
 					field.SetValue(compoundData, data);
@@ -58,7 +58,7 @@ namespace igLibrary.Core
 
 				section._sh.Seek(objectOffset + metaFields[i]._offsets[saver._platform]);
 
-				FieldInfo? fi = _compoundFieldInfo._vTablePointer.GetField(metaFields[i]._name);
+				FieldInfo? fi = GetOutputType().GetField(metaFields[i]._name);
 				metaFields[i].WriteIGZField(saver, section, fi.GetValue(value));
 			}
 		}
