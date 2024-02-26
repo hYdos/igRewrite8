@@ -15,7 +15,7 @@ namespace igLibrary.Core
 
 			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
 
-			object compoundData = Activator.CreateInstance(GetOutputType());	//grab the type like this becuase igOrderedMapMetaField<T, U>
+			object compoundData = Activator.CreateInstance(GetOutputTypeInternal());	//grab the type like this becuase igOrderedMapMetaField<T, U>
 
 			_compoundFieldInfo.CalculateOffsetForPlatform(loader._platform);
 
@@ -30,7 +30,7 @@ namespace igLibrary.Core
 
 				object? data = metaFields[i].ReadIGZField(loader);
 
-				FieldInfo? field = GetOutputType().GetField(metaFields[i]._name);
+				FieldInfo? field = GetOutputTypeInternal().GetField(metaFields[i]._name);
 				if(field != null)
 				{
 					field.SetValue(compoundData, data);
@@ -58,7 +58,7 @@ namespace igLibrary.Core
 
 				section._sh.Seek(objectOffset + metaFields[i]._offsets[saver._platform]);
 
-				FieldInfo? fi = GetOutputType().GetField(metaFields[i]._name);
+				FieldInfo? fi = GetOutputTypeInternal().GetField(metaFields[i]._name);
 				metaFields[i].WriteIGZField(saver, section, fi.GetValue(value));
 			}
 		}
@@ -66,6 +66,13 @@ namespace igLibrary.Core
 		{
 			if(_compoundFieldInfo._vTablePointer == null) return typeof(object);
 			else return _compoundFieldInfo._vTablePointer;
+		}
+		//Exists to deal with both igOrderedMap<T, U> being annoying and also needing to handle array metafields
+		private Type GetOutputTypeInternal()
+		{
+			Type t = GetOutputType();
+			if(t.IsArray) return t.GetElementType();
+			else return t;
 		}
 
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._alignments[platform];
@@ -333,4 +340,34 @@ namespace igLibrary.Core
 	}
 
 	public class igStruct : Attribute{}
+
+	public class igCompoundArrayMetaField : igCompoundMetaField
+	{
+		public short _num;
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			Array data = Array.CreateInstance(base.GetOutputType(), _num);
+			for(int i = 0; i < _num; i++)
+			{
+				data.SetValue(base.ReadIGZField(loader), i);
+			}
+			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Array data = (Array)value;
+			for(int i = 0; i < _num; i++)
+			{
+				base.WriteIGZField(saver, section, data.GetValue(i));
+			}
+		}
+		public override uint GetSize(IG_CORE_PLATFORM platform)
+		{
+			return base.GetSize(platform) * (uint)_num;
+		}
+		public override Type GetOutputType()
+		{
+			return base.GetOutputType().MakeArrayType();
+		}
+	}
 }

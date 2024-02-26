@@ -340,13 +340,19 @@ namespace igLibrary.Core
 			if(t == null)
 			{
 				compoundFieldInfo = igArkCore.GetCompoundFieldInfo(typeName);
+				t = typeof(igPlaceHolderMetaField);
 				if(compoundFieldInfo != null)
 				{
 					t = typeof(igCompoundMetaField);
 				}
-				else
+				else if(typeName.EndsWith("ArrayMetaField"))
 				{
-					t = typeof(igPlaceHolderMetaField);
+					//This is a hack
+					compoundFieldInfo = igArkCore.GetCompoundFieldInfo(typeName.Replace("ArrayMetaField", "MetaField"));
+					if(compoundFieldInfo != null)
+					{
+						t = typeof(igCompoundArrayMetaField);
+					}
 				}
 			}
 			igMetaField metaField = (igMetaField)Activator.CreateInstance(t);

@@ -219,5 +219,14 @@ namespace igLibrary.Core
 		{
 			return base.GetOutputType().MakeArrayType();
 		}
+		public override object? GetDefault(igObject target)
+		{
+			Array arr = Array.CreateInstance(base.GetOutputType(), _num);
+			for(int i = 0; i < _num; i++)
+			{
+				arr.SetValue(base.GetDefault(target), i);
+			}
+			return arr;
+		}
 	}
 }

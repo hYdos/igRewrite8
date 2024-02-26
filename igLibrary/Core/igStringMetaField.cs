@@ -45,7 +45,7 @@ namespace igLibrary.Core
 
 				//why use string refs when you can use the string table
 				//Because alchemy sucks
-				if(igAlchemyCore.isPlatform64Bit(saver._platform))
+				if(!igAlchemyCore.isPlatform64Bit(saver._platform))
 				{
 					int index = saver._stringList.FindIndex(x => x == (string)value);
 					if(index < 0)
