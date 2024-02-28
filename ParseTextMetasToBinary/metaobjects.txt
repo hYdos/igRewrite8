@@ -589,7 +589,7 @@ igIntMetaField 3333310001 0x00 0x0018 _hashItemCount 0000
 igBoolMetaField 3333310001 0x00 0x001C _autoRehash 0000 1 
 igFloatMetaField 3333310001 0x00 0x0020 _loadFactor 0000 0.500000 
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableIntTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableIntTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -696,7 +696,7 @@ igTimeMetaField 3333310001 0x00 0x0000 _when 0000
 igHandleMetaField 3333310001 0x00 0001 igObject 0x0004 _recipient 0000
 igObjectRefMetaField 3333310001 0x00 0001 igMessage 0x0008 _message 0000
 igEndCompoundField
-igMetaObject igMetaObject CCharacterHashTable igHashTable 0000
+igMetaObject igMetaObject CCharacterHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -1139,7 +1139,7 @@ igMetaEndObject
 igMetaObject igMetaObject igPS3FenceHandlePool igHandlePool 0000
 p 0x0002 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0010 _data 0000
 igMetaEndObject
-igMetaObject igMetaObject CTeleportTable igHashTable 0000
+igMetaObject igMetaObject CTeleportTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -1270,7 +1270,7 @@ igHandleMetaField 3333310001 0x00 0001 CEntity 0x0010 _rootAnchor 0000
 igHandleMetaField 3333310001 0x00 0001 CEntity 0x0014 _startAnchor 0000
 igIntMetaField 3333310001 0x00 0x0018 _maxAnchorsFromRoot 0000 4 
 igMetaEndObject
-igMetaObject igMetaObject CControllerTypeToGuiInputSignalIconMaterialTable igHashTable 0000
+igMetaObject igMetaObject CControllerTypeToGuiInputSignalIconMaterialTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EControllerType 0x0010 _keys 0000
 igMetaEndObject
@@ -1333,7 +1333,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CInteraction 0x000C _interaction 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CInteractionFromNotInteractableStateTransition CInteractionBaseTransition 0000
 igMetaEndObject
-igMetaObject igMetaObject CInstanceIdBoolHashTable igHashTable 0000
+igMetaObject igMetaObject CInstanceIdBoolHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igShortMetaField 3333310000 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -1373,7 +1373,7 @@ igEndCompoundField
 igMetaObject igDotNetMetaObject CGhostRacerComponent CEntityComponent 0000
 igObjectRefMetaField 3333310001 0x00 1011 CFxMaterialRedirectTable 0x001C _overrideTable 0000
 igMetaEndObject
-igMetaObject igMetaObject CQueryDumpHelperTable igHashTable 0000
+igMetaObject igMetaObject CQueryDumpHelperTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 SQueryDumpHelperMetaField 3333310000 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -1413,7 +1413,7 @@ igBoolMetaField 3333300001 0x00 0x0060 _hasEnabledListNavigation 0000
 igBoolMetaField 3333300001 0x00 0x0061 _option1ExitAllowed 0000 1 
 igBoolMetaField 3333300001 0x00 0x0062 _returnToAcademy 0000
 igMetaEndObject
-igMetaObject igMetaObject CXButtonStringTable igHashTable 0000
+igMetaObject igMetaObject CXButtonStringTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 XBUTTON 0x0010 _keys 0000
 igMetaEndObject
@@ -1561,7 +1561,7 @@ igBoolMetaField 3333310000 0x00 0x0061 _visible 0000
 igEndCompoundField
 igMetaObject igMetaObject CControllerList igObjectList CController 0000
 igMetaEndObject
-igMetaObject igMetaObject igNonRefCountedObjectStringIntHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefCountedObjectStringIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -1839,7 +1839,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CEmblemTierGameStateList 0x0020 _emble
 igMetaEndObject
 igMetaObject igMetaObject CAccoladeList igObjectList CAccolade 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntityTagSet igHashTable 0000
+igMetaObject igMetaObject CEntityTagSet igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -1875,7 +1875,7 @@ igBitFieldMetaField 3333310000 0x00 _modelFlags igBoolMetaField 3333310001 0x00 
 igBitFieldMetaField 3333310000 0x00 _modelFlags igBoolMetaField 3333310001 0x00 0x04 0x01 0x0018 _useAlphaForFade 0000 1 
 igBitFieldMetaField 3333310000 0x00 _modelFlags igEnumMetaField 3333310000 0x00 DrawMode 0x05 0x02 0x0018 _drawMode 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntVec4fHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntVec4fHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igVec4fMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -2014,7 +2014,7 @@ igMetaEndObject
 igMetaObject igMetaObject igHandleMetaField igRefMetaField 0000
 igObjectRefMetaField 1333310001 0x00 0000 igMetaObject 0x002C _metaObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CNetworkDisableDefaultReplicationTable igHashTable 0000
+igMetaObject igMetaObject CNetworkDisableDefaultReplicationTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EReplication 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -2538,7 +2538,7 @@ igBoolMetaField 3333310001 0x00 0x0025 _raceFinishedOnHost 0000
 igBoolMetaField 3333310001 0x00 0x0026 _showEndRaceUI 0000
 igObjectRefMetaField 3333310001 0x00 1011 CTimer 0x0028 _onlineAutoEndRaceTimer 0000
 igMetaEndObject
-igMetaObject igMetaObject CModLocationStringHashTable igHashTable 0000
+igMetaObject igMetaObject CModLocationStringHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EModLocation 0x0010 _keys 0000
 igMetaEndObject
@@ -2568,7 +2568,7 @@ igMetaObject igMetaObject igBaseDependenciesAttribute igObject 0000
 igEnumMetaField 3333310001 0x00 IG_CORE_PLATFORM 0x0008 _platform 0000
 igObjectRefMetaField 3333310001 0x00 0000 igObjectDirectory 0x000C _directory 0000
 igMetaEndObject
-igMetaObject igMetaObject CActionPackGameModeStringHashTable igHashTable 0000
+igMetaObject igMetaObject CActionPackGameModeStringHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EActionPackGameMode 0x0010 _keys 0000
 igMetaEndObject
@@ -3024,7 +3024,7 @@ igBoolMetaField 3333300001 0x00 0x000C _convergeCompleted 0000
 igFloatMetaField 3333300001 0x00 0x0010 _startVelocity 0000
 igFloatMetaField 3333300001 0x00 0x0014 _currentVelocity 0000
 igMetaEndObject
-igMetaObject igMetaObject igGuiEventActionTable igHashTable 0001 igMigrateFromAttribute 69674A756963654576656E74416374696F6E5461626C65
+igMetaObject igMetaObject igGuiEventActionTable igHashTable NA 0001 igMigrateFromAttribute 69674A756963654576656E74416374696F6E5461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -3247,7 +3247,7 @@ igSizeTypeArrayMetaField 3333310000 0x00 [0x00000008] 0x0000 _colorTargets 0000
 igUnsignedIntMetaField 3333310000 0x00 0x0020 _colorCount 0000
 igSizeTypeMetaField 3333310000 0x00 0x0024 _depthTarget 0000
 igEndCompoundField
-igMetaObject igMetaObject CToyTypeVariantIndexListHashTable igHashTable 0000
+igMetaObject igMetaObject CToyTypeVariantIndexListHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -3261,7 +3261,7 @@ igVec3fMetaField 3333310001 0x00 0x0018 _endPosition 0000
 igVec3fMetaField 3333310001 0x00 0x0024 _startAngles 0000
 igVec3fMetaField 3333310001 0x00 0x0030 _endAngles 0000
 igMetaEndObject
-igMetaObject igMetaObject CSoundGroupStringHashTable igHashTable 0000
+igMetaObject igMetaObject CSoundGroupStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -3279,7 +3279,7 @@ igRangedFloatMetaField 3333310001 0x00 0x0014 _dragFactorRange 0000 5000.000000
 igFloatMetaField 3333310001 0x00 0x001C _minRaceEpicJumpTime 0000 1.000000 
 igObjectRefMetaField 3333310001 0x00 0001 CVehicleCollisionResponseCriteriaTable 0x0020 _additionalCollisionCriteriaTable 0000
 igMetaEndObject
-igMetaObject igMetaObject CControllerToButtonAnalogStickTable igHashTable 0000
+igMetaObject igMetaObject CControllerToButtonAnalogStickTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -3596,7 +3596,7 @@ igMetaObject igDotNetMetaObject CButterflyCollectibleTracker CPurchaseableCollec
 p 0x0000 igEnumMetaField 3333310001 0x00 ECollectibleType 0x0008 _type 0000 2 
 p 0x0016 igVec3fMetaField 3333310001 0x00 0x0060 _overridePositionOffset 0000 0.000000,0.000000,75.000000 
 igMetaEndObject
-igMetaObject igMetaObject CCollectibleTypeHandleHashTable igHashTable 0000
+igMetaObject igMetaObject CCollectibleTypeHandleHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECollectibleType 0x0010 _keys 0000
 igMetaEndObject
@@ -3986,7 +3986,7 @@ igEndCompoundField
 igMetaObject igMetaObject igCommandCopyTextureParametersArrayMetaField igCommandCopyTextureParametersMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CWorldCollectibleModifierTable igHashTable 0000
+igMetaObject igMetaObject CWorldCollectibleModifierTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECollectibleWorldModifierCategory 0x0010 _keys 0000
 igMetaEndObject
@@ -4067,7 +4067,7 @@ igObjectRefMetaField 3333310001 0x00 0001 igStringRefList 0x000C _juiceProjectLi
 igObjectRefMetaField 3333310001 0x00 0001 igStringRefList 0x0010 _soundBankList 0001 CBuildDependencyAttribute 646174613A2F2573
 igObjectRefMetaField 3333310001 0x00 0001 igStringRefList 0x0014 _materialList 0001 CBuildDependencyAttribute 646174613A2F25732E69677A
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorVariableNameToDataFieldPairMap igHashTable 0000
+igMetaObject igMetaObject CBehaviorVariableNameToDataFieldPairMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 BehaviorDataMetaFieldPairMetaField 3333310000 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -4212,7 +4212,7 @@ igMetaObject igMetaObject igAnimationBinding2List igObjectList igAnimationBindin
 igMetaEndObject
 igMetaObject igDotNetMetaObject CInteractionButtonPressedCondition CInteractionBaseCondition 0000
 igMetaEndObject
-igMetaObject igMetaObject CMaterialSoundHashTable igHashTable 0000
+igMetaObject igMetaObject CMaterialSoundHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -4273,7 +4273,7 @@ igMetaObject igMetaObject CGuiEventConfigureNewGameDifficulty igGuiEvent 0000
 igMetaEndObject
 igMetaObject igMetaObject CBodyCollisionInfoList igObjectList CBodyCollisionInfo 0000
 igMetaEndObject
-igMetaObject igMetaObject CAnimationSubStatesDataTable igHashTable 0000
+igMetaObject igMetaObject CAnimationSubStatesDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -4656,7 +4656,7 @@ igVec3fMetaField 3333310001 0x00 0x0008 _center 0000
 igFloatMetaField 3333310001 0x00 0x0014 _radius 0000 -1.000000 
 igMetaEndObject
 igMetaObject igMetaObject igFullScreenRenderPass igSceneRenderPass 0000
-p 0x0018 igStringMetaField 3333310001 0x00 0101 0x007C _cameraName 0000 736861646572733A2F54696C65644C696768745F30705F30622E6678
+p 0x0018 igStringMetaField 3333310001 0x00 0101 0x007C _cameraName 0000 
 p 0x0019 igBoolMetaField 3333310001 0x00 0x0080 _updateProjectionOnSizeChange 0000 1 
 p 0x001A igBoolMetaField 3333310001 0x00 0x0081 _updateViewportOnSizeChange 0000 1 
 p 0x0037 igObjectRefMetaField 3333310001 0x00 1011 igStringRefList 0x00F0 _modelClasses 0000
@@ -4727,7 +4727,7 @@ igHandleMetaField 3333310001 0x00 0001 CSound 0x0008 _alertVO 0000
 igStringMetaField 3333310001 0x00 0101 0x000C _alertAnimation 0000
 igFloatMetaField 3333310001 0x00 0x0010 _alertPeriod 0000 20.000000 
 igMetaEndObject
-igMetaObject igMetaObject CStringToHavokAllocationTable igHashTable 0000
+igMetaObject igMetaObject CStringToHavokAllocationTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igObjectRefMetaField 3333310001 0x00 1011 igStringRefList 0x0024 _allocationOrder 0000
@@ -4869,7 +4869,7 @@ igMetaObject igMetaObject igVec3fMetaField igMetaField 0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiEventObjectiveHudDrawOff igGuiEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorClipMap igHashTable 0000
+igMetaObject igMetaObject CBehaviorClipMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -4912,7 +4912,7 @@ igIntMetaField 3333300001 0x00 0x0058 _splineIndex 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject COnTauntTriggeredDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject igRawRefUnsignedIntHashTable igHashTable 0000
+igMetaObject igMetaObject igRawRefUnsignedIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -4988,7 +4988,7 @@ p 0x0002 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 
 igMetaEndObject
 igMetaObject igDotNetMetaObject CAnimationNodes igObject 0000
 igMetaEndObject
-igMetaObject igMetaObject igGuiAnimationTable igHashTable 0001 igMigrateFromAttribute 69674A75696365416E696D6174696F6E5461626C65
+igMetaObject igMetaObject igGuiAnimationTable igHashTable NA 0001 igMigrateFromAttribute 69674A75696365416E696D6174696F6E5461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -5043,7 +5043,7 @@ igStringMetaField 3333300001 0x00 0101 0x0010 _ownerType 0000
 igStringMetaField 3333300001 0x00 0101 0x0014 _description 0000
 igBoolMetaField 3333300001 0x00 0x0018 _validated 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringVisualizationInfoTable igHashTable 0000
+igMetaObject igMetaObject CStringVisualizationInfoTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -5507,7 +5507,7 @@ igFloatMetaField 3333310001 0x00 0x0010 _endDistance 0000
 igMetaEndObject
 igMetaObject igMetaObject igVfxCameraFadeShrinkOperator igVfxCameraBaseOperator 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpdateNodeEventListTable igHashTable 0000
+igMetaObject igMetaObject CUpdateNodeEventListTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -5542,7 +5542,7 @@ igHandleMetaField 3333310001 0x00 0001 CDriverChallengeTimer 0x001C _timer 0000
 igMetaEndObject
 igMetaObject igMetaObject CCutsceneStageList igNonRefCountedObjectList CCutsceneStage 0000
 igMetaEndObject
-igMetaObject igMetaObject CModDriftDataTable igHashTable 0000
+igMetaObject igMetaObject CModDriftDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -5554,7 +5554,7 @@ igMetaEndObject
 igMetaObject igMetaObject CHavokAllocationPool igPool 0000
 igRawRefMetaField 3333310001 0x00 0001 0x002C _resetCallback 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorNodeToEventRecordsTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorNodeToEventRecordsTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -5563,7 +5563,7 @@ igFloatMetaField 3333310001 0x00 0x0028 _updateInterval 0000 0.100000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CProjectileLaunchMessage CEntityMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject CStatStatItemTable2 igHashTable 0000
+igMetaObject igMetaObject CStatStatItemTable2 igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EPortalMasterStat 0x0010 _keys 0000
 igMetaEndObject
@@ -6211,7 +6211,7 @@ igHandleMetaField 3333310001 0x00 0001 igMaterial 0x0008 _icon 0001 igAddDepende
 igMetaEndObject
 igMetaObject igDotNetMetaObject CBossPursuitPrepareCaptureSequenceMessage CEntityMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject CPortalMasterCategoryHandleTable igHashTable 0000
+igMetaObject igMetaObject CPortalMasterCategoryHandleTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPortalMasterStarCategory 0x0010 _keys 0000
 igMetaEndObject
@@ -7455,7 +7455,7 @@ igStructMetaField 3333310000 0x00 0x0004 0x0004 0x0000 _bodyId 0000
 igRawRefMetaField 3333310000 0x00 0001 0x0004 _world 0000
 igRawRefMetaField 3333310000 0x00 0001 0x0000 _defaultWorld 0000
 igEndCompoundField
-igMetaObject igMetaObject CMinigameCompletionAccoladeStringHashTable igHashTable 0000
+igMetaObject igMetaObject CMinigameCompletionAccoladeStringHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECompletionAccolade 0x0010 _keys 0000
 igMetaEndObject
@@ -7976,7 +7976,7 @@ igBoolMetaField 3333310001 0x00 0x0010 _objectsEnabled 0000
 igObjectRefMetaField 3333310001 0x00 0001 CCollectibleWaypointList 0x0014 _spawnedCollectibles 0000
 igStaticMetaField 3333300000 0x00 igObjectRefMetaField 3333300100 0x00 0000 CPowerZoneManager 0x0000 _Instance 0000
 igMetaEndObject
-igMetaObject igMetaObject igNonRefStringObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefStringObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -8112,7 +8112,7 @@ igMetaObject igDotNetMetaObject CGuiEventAllowRankup igGuiEvent 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CVehiclePowerUpLaunchMessage CVehiclePowerUpVehicleBehaviorMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringToMultiplierDataHashTable igHashTable 0000
+igMetaObject igMetaObject CStringToMultiplierDataHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -8133,7 +8133,7 @@ igMetaObject igMetaObject igVfxAccelerateDirectionSpeedRangeOperator igVfxAccele
 igVec3fAlignedMetaField 3333310001 0x00 0x0010 _direction 0000 0.000000,0.000000,1.000000 
 igRangedFloatMetaField 3333310001 0x00 0x0020 _acceleration 0000 0.000000,0.000000,1.000000 
 igMetaEndObject
-igMetaObject igMetaObject CGuiProjectOnClosedEventListTable igHashTable 0000
+igMetaObject igMetaObject CGuiProjectOnClosedEventListTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -8247,7 +8247,7 @@ igUnsignedIntMetaField 3333310001 0x00 0x0050 _tag 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CAccoladeHornEvent CAccoladeEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject igComponentMessageFunctionMap igHashTable 0000
+igMetaObject igMetaObject igComponentMessageFunctionMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -8603,7 +8603,7 @@ igObjectRefMetaField 3333310001 0x00 0000 CUniqueToy 0x000C _vehicleToy 0000
 igMetaEndObject
 igMetaObject igMetaObject CLevelSummaryInfoList igObjectList CLevelSummaryInfo 0000
 igMetaEndObject
-igMetaObject igMetaObject CModLocationIntHashTable igHashTable 0000
+igMetaObject igMetaObject CModLocationIntHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EModLocation 0x0010 _keys 0000
 igMetaEndObject
@@ -8687,11 +8687,11 @@ igMetaObject igMetaObject CHavokQueryPool igPool 0000
 igStaticMetaField 3333300000 0x00 igUnsignedLongMetaField 3333310101 0x00 0x0000 _nextAllocatedQueryID 0000
 igRawRefMetaField 3333310001 0x00 0001 0x002C _resetCallback 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleScheduledFunctionHashTable igHashTable 0000
+igMetaObject igMetaObject CVehicleScheduledFunctionHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringStringHashTable igHashTable 0000
+igMetaObject igMetaObject igStringStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -8795,7 +8795,7 @@ igFloatMetaField 3333310001 0x00 0x0018 _distanceCullFadeRange 0000 500.000000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CTriggerLightCoreBlastMessage CEntityMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject igConstNonRefCountedObjectNonRefCountedObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igConstNonRefCountedObjectNonRefCountedObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -8858,7 +8858,7 @@ igHandleMetaField 3333310001 0x00 0001 CEntity 0x0030 EndMessageTarget 0000
 igFloatMetaField 3333310001 0x00 0x0034 EndMessageMinDelay 0000 1.000000 
 igFloatMetaField 3333310001 0x00 0x0038 EndMessageMaxDelay 0000 3.000000 
 igMetaEndObject
-igMetaObject igMetaObject CZoneNameCollectibleTrackerHandleListHashTable igHashTable 0000
+igMetaObject igMetaObject CZoneNameCollectibleTrackerHandleListHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -9720,7 +9720,7 @@ igFloatMetaField 3333310001 0x00 0x067C _maxKnockawayAngularSpeed 0000 450.00000
 igFloatMetaField 3333310001 0x00 0x0680 _knockawayAirDistanceThreshold 0000 100.000000 
 igMetaEndObject
 igMetaObject igDotNetMetaObject CBaseAirControllerComponentData CBaseVehicleControllerComponentData 0000
-igHandleMetaField 3333310001 0x00 0001 CCollisionMaterial 0x0684 _softCollisionMaterial 0000  
+igHandleMetaField 3333310001 0x00 0001 CCollisionMaterial 0x0684 _softCollisionMaterial 0000 1.00�W4�������� 
 igFloatMetaField 3333310001 0x00 0x0688 _softCollisionRadius 0000 1000.000000 
 igFloatMetaField 3333310001 0x00 0x068C _softCollisionSpeedDivider 0000 200.000000 
 igFloatMetaField 3333310001 0x00 0x0690 _softCollisionImpulse 0000 350.000000 
@@ -9891,7 +9891,7 @@ igHandleMetaField 3333310001 0x00 0001 CActor 0x0050 _activeVehicleOnHalfPipe 00
 igMetaEndObject
 igMetaObject igMetaObject CPlayerList igObjectList CPlayer 0000
 igMetaEndObject
-igMetaObject igMetaObject COnlyOneBehaviorLogicTable igHashTable 0000
+igMetaObject igMetaObject COnlyOneBehaviorLogicTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -9931,7 +9931,7 @@ igMetaEndObject
 igMetaObject igMetaObject igEntityBolt igObject 0000
 igHandleMetaField 3333311001 0x00 0001 igEntity 0x0008 _entityToBoltTo 0000
 igMetaEndObject
-igMetaObject igMetaObject CContactEventTable igHashTable 0000
+igMetaObject igMetaObject CContactEventTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0010 _keys 0000
 igMetaEndObject
@@ -10046,7 +10046,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CVehicleToyData 0x0020 _debugStartupVe
 igObjectRefMetaField 3333310001 0x00 0001 CVehicleToyData 0x0024 _debugOldStartupVehicle 0000
 igHandleMetaField 3333310001 0x00 0001 CPlayer 0x0028 _lastKnownDriver 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringUnsignedIntHashTable igHashTable 0000
+igMetaObject igMetaObject igStringUnsignedIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -10084,7 +10084,7 @@ igEnumMetaField 3333310001 0x00 IG_GFX_DRAW 0x000C _primitiveType 0000
 igUnsignedIntMetaField 3333310001 0x00 0x0010 _componentFlags 0000
 igIntArrayMetaField 3333310001 0x00 [0x00000008] 0x0014 _iteratorIndex 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleCollisionResponseCriteriaTable igHashTable 0000
+igMetaObject igMetaObject CVehicleCollisionResponseCriteriaTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -10343,7 +10343,7 @@ igEndCompoundField
 igMetaObject igMetaObject CPathDifficultyFunctorArrayMetaField CPathDifficultyFunctorMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CActorDataNameToyIdHashTable igHashTable 0000
+igMetaObject igMetaObject CActorDataNameToyIdHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -10413,7 +10413,7 @@ igHandleMetaField 3333300001 0x00 0001 CEntity 0x0020 _entity 0000
 igVec3fMetaField 3333300001 0x00 0x0024 _startingPosition 0000
 igVec3fMetaField 3333300001 0x00 0x0030 _endingPosition 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringBaseMetaHashTable igHashTable 0000
+igMetaObject igMetaObject igStringBaseMetaHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -10482,7 +10482,7 @@ igHandleMetaField 3333310001 0x00 0001 CVehiclePersonalizationNeonData 0x0020 _d
 igMetaEndObject
 igMetaObject igDotNetMetaObject CGuiEventAPMatchmakingHideMoreInfo igGuiEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntAttrPoolHashTable igHashTable 0000
+igMetaObject igMetaObject igIntAttrPoolHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -10905,7 +10905,7 @@ igMetaEndObject
 igMetaObject igMetaObject CObjectInOrderChooser CObjectChooser 0000
 igIntMetaField 3333310001 0x00 0x0010 _indexOfCurrentObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CMapToEnemyTable igHashTable 0000
+igMetaObject igMetaObject CMapToEnemyTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -10961,7 +10961,7 @@ igMetaObject igDotNetMetaObject CTurretPivotBehaviorData CBehaviorData 0000
 igFloatMetaField 3333310001 0x00 0x0014 _turretYaw 0001 BehaviorVariable MISSING_ATTR
 igFloatMetaField 3333310001 0x00 0x0018 _turretPitch 0001 BehaviorVariable MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject igObjectObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igObjectObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -10989,7 +10989,7 @@ igEndCompoundField
 igMetaObject igMetaObject igPS3BufferResourceArrayMetaField igPS3BufferResourceMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CGameVariableValueTable igHashTable 0000
+igMetaObject igMetaObject CGameVariableValueTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -11016,7 +11016,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CVehiclePersonalizationBaseSharedData 
 igMetaEndObject
 igMetaObject igMetaObject CVehiclePersonalizationBoostItemList CVehiclePersonalizationBaseItemList 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntityTagQuerySet igHashTable 0000
+igMetaObject igMetaObject CEntityTagQuerySet igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -11137,7 +11137,7 @@ igIntMetaField 3333300001 0x00 0x0024 _visualScriptSyncWaitRequestCounter 0000
 igObjectRefMetaField 3333310001 0x00 0001 CChangeRequest 0x0028 _visualScriptSyncWaitRequest 0000
 igStaticMetaField 3333300000 0x00 igObjectRefMetaField 3333300100 0x00 0000 CSyncStateManager 0x0000 _Instance 0000
 igMetaEndObject
-igMetaObject igMetaObject igOpCodeReplacementHashTable igHashTable 0000
+igMetaObject igMetaObject igOpCodeReplacementHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -11610,7 +11610,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CEncounterDecrementSpawnedEntityMessage CEntityMessage 0000
 igHandleMetaField 3333310001 0x00 0001 CEntity 0x001C _entity 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringInsensitiveEMemoryPoolIDHashTable igHashTable 0000
+igMetaObject igMetaObject CStringInsensitiveEMemoryPoolIDHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EMemoryPoolID 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -11681,7 +11681,7 @@ igMetaObject igMetaObject CGuiBehaviorLevelSelectMinimap CGuiBehavior 0000
 igObjectRefMetaField 1333310001 0x00 0001 igNonRefCountedGuiPlaceableList 0x005C _levelPlaceables 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0060 _cursorPlaceable 0000
 igMetaEndObject
-igMetaObject igMetaObject CSplinePointEventHashTable igHashTable 0000
+igMetaObject igMetaObject CSplinePointEventHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -12079,7 +12079,7 @@ igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0074 _progressBarPlac
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0078 _progressBarText 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x007C _progressBarAnim 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorStateGroupDelegateTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorStateGroupDelegateTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -12404,7 +12404,7 @@ igHandleMetaField 3333310001 0x00 0001 CRaceAITacticalComponent 0x0024 _tactical
 igBoolMetaField 3333310001 0x00 0x0028 _previousUseSmartNav 0000 1 
 igBoolMetaField 3333310001 0x00 0x0029 _isBoostActive 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igStringObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -12413,7 +12413,7 @@ igMetaEndObject
 igMetaObject igMetaObject CGuiEventBossHealthBarFade igGuiEvent 0001 igMigrateFromAttribute 434A756963654576656E74426F73734865616C746842617246616465
 igBoolMetaField 3333310001 0x00 0x0008 _fadeOut 0000 1 
 igMetaEndObject
-igMetaObject igMetaObject CAIAttackDataTable igHashTable 0000
+igMetaObject igMetaObject CAIAttackDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -12713,7 +12713,7 @@ igMetaObject igMetaObject igMemoryCommandStreamList igObjectList igMemoryCommand
 igMetaEndObject
 igMetaObject igMetaObject CAccoladeMessageGoalData CAccoladeGoalData 0000
 igMetaEndObject
-igMetaObject igMetaObject CPoolIDToHavokAllocationListTable igHashTable 0000
+igMetaObject igMetaObject CPoolIDToHavokAllocationListTable igHashTable 256 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EMemoryPoolID 0x0010 _keys 0000
 igMetaEndObject
@@ -12786,7 +12786,7 @@ igFloatMetaField 3333310001 0x00 0x0054 _driftDurationForBoostLevel3 0000 3.0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiEventRacingSubMenuClosed igGuiEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject NameDotNetMethodDefinitionHashTable igHashTable 0000
+igMetaObject igMetaObject NameDotNetMethodDefinitionHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igNameMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -13215,7 +13215,7 @@ igBoolMetaField 3333310001 0x00 0x0048 _active 0000
 igObjectRefMetaField 3333310001 0x00 1011 igStringObjectHashTable 0x004C _cameras 0000
 igBoolMetaField 3333310001 0x00 0x0050 _useGlobalSurfaceMemory 0000
 igMetaEndObject
-igMetaObject igMetaObject CAIEngagedEnemyDataTable igHashTable 0000
+igMetaObject igMetaObject CAIEngagedEnemyDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -13325,7 +13325,6 @@ igBitFieldMetaField 3333310000 0x00 _flags igBoolMetaField 3333310001 0x00 0x09 
 igBitFieldMetaField 3333310000 0x00 _flags igBoolMetaField 3333310001 0x00 0x0A 0x01 0x0070 _useBothPitchAndYaw 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CBehaviorComponentData CEntityComponentData 0001 igDependenciesAttribute CBehaviorComponentDataDependencyProvider
-p 0x0000 igObjectRefMetaField 2333300001 0x00 0000 igMetaObject 0x0008 _meta 0000 6967436F6D706F6E656E7444617461
 igStringMetaField 3333310001 0x00 0101 0x0010 _behaviorFile 0001 igBuildDependencyAttribute 1
 igStringMetaField 3333310001 0x00 0101 0x0014 _characterName 0000
 igStringMetaField 3333310001 0x00 0101 0x0018 _behaviorEventsFile 0002 igBuildDependencyAttribute 1 igInstalledExtensionAttribute 2E69677A
@@ -13376,7 +13375,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CDriverChallengeSetResultMessage CEntityMessage 0000
 igEnumMetaField 3333310001 0x00 EDriverChallengeResult 0x001C _result 0000 -1 
 igMetaEndObject
-igMetaObject igMetaObject CEntityMessageEventListTable igHashTable 0000
+igMetaObject igMetaObject CEntityMessageEventListTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -13449,7 +13448,7 @@ igEnumMetaField 3333310001 0x00 kTfbSpyroTag_ToyType 0x0020 _vehicleToyId 0000 -
 igMetaEndObject
 igMetaObject igMetaObject CAccoladeDataHandleList igSmartHandleList 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringRefCountedObjectDirectoryHashTable igHashTable 0000
+igMetaObject igMetaObject CStringRefCountedObjectDirectoryHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -13584,7 +13583,7 @@ igEndCompoundField
 igMetaObject igDotNetMetaObject CGuiEventDriverChallengeConfigureButton igGuiEvent 0000
 igHandleMetaField 3333310001 0x00 0001 CDriverChallengeData 0x0008 _driverChallengeData 0000
 igMetaEndObject
-igMetaObject igMetaObject CMaterialNameHashTable igHashTable 0000
+igMetaObject igMetaObject CMaterialNameHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -13691,7 +13690,7 @@ igFloatMetaField 3333310001 0x00 0x0010 _alpha 0000 1.000000
 igMetaEndObject
 igMetaObject igMetaObject CGuiBehaviorRacingBackToMenuButton CGuiBehaviorListNavigationItem 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlatformControllerVfxTable igHashTable 0000
+igMetaObject igMetaObject CPlatformControllerVfxTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 IG_CORE_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -13772,7 +13771,7 @@ igEndCompoundField
 igMetaObject igMetaObject igVfxTranslateOperator igVfxFrameOperator 0000
 igVec3fAlignedMetaField 3333310001 0x00 0x0010 _offset 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringStringCaseInsensitiveHashTable igHashTable 0000
+igMetaObject igMetaObject CStringStringCaseInsensitiveHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -14045,7 +14044,7 @@ igIntMetaField 3333310001 0x00 0x000C _unitID 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CGuiEventLeaderboardOpenedFromLobby igGuiEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorLogicDataTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorLogicDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -14103,7 +14102,7 @@ igCharArrayMetaField 3333310000 0x00 [0x00000019] 0x0000 _consoleIdBase64 0000
 igEndCompoundField
 igMetaObject igMetaObject COnEntityRemovedFromWorldEventList igEventLinkedList 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntPS3RasterizerStateHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntPS3RasterizerStateHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -14441,7 +14440,7 @@ igMetaEndObject
 igMetaObject igMetaObject CVfxMaterialOverrideAuxiliaryData igVfxBoltAuxiliaryData 0000
 igObjectRefMetaField 3333310001 0x00 0001 CFxMaterialRedirectTable 0x000C _materialOverrideTable 0000
 igMetaEndObject
-igMetaObject igMetaObject CUnsignedIntActionPackGoalRaceDifficultyHashTable igHashTable 0000
+igMetaObject igMetaObject CUnsignedIntActionPackGoalRaceDifficultyHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceDifficultyLevel 0x0010 _keys 0000
 igMetaEndObject
@@ -14658,7 +14657,7 @@ igMetaObject igMetaObject igDataPumpList igObjectList igDataPump 0000
 igMetaEndObject
 igMetaObject igMetaObject CAudioBinkSettingsList igObjectList CAudioBinkSettings 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntitySoundHashTable igHashTable 0000
+igMetaObject igMetaObject CEntitySoundHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0010 _keys 0000
 igMetaEndObject
@@ -14805,7 +14804,7 @@ igFloatMetaField 3333310001 0x00 0x0008 _duration 0000
 igFloatMetaField 3333310001 0x00 0x000C _easeIn 0000
 igFloatMetaField 3333310001 0x00 0x0010 _easeOut 0000
 igMetaEndObject
-igMetaObject igMetaObject CCollectibleTypeStringHashTable igHashTable 0000
+igMetaObject igMetaObject CCollectibleTypeStringHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECollectibleType 0x0010 _keys 0000
 igMetaEndObject
@@ -15000,7 +14999,7 @@ igMetaEndObject
 igMetaObject igMetaObject CGuiSurvivalTextData igObject 0000
 igStringMetaField 3333310001 0x00 0101 0x0008 _objectiveDescription 0001 igLocalizeAttribute 1
 igMetaEndObject
-igMetaObject igMetaObject igNonRefCountedMetaObjectSpawnGroupPassDataHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefCountedMetaObjectSpawnGroupPassDataHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -15079,7 +15078,7 @@ igHandleMetaField 3333310001 0x00 0001 CEntity 0x0008 _entity 0001 igNetReplicat
 igEnumMetaField 3333310001 0x00 EMagnetPolarity 0x000C _polarity 0001 igNetReplicateAttribute MISSING_ATTR
 igHandleMetaField 3333310001 0x00 0001 CMagnetComponent 0x0010 _magnetComponent 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlayerEnableRequestManagerNodeTrackerTable igHashTable 0000
+igMetaObject igMetaObject CPlayerEnableRequestManagerNodeTrackerTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -15088,7 +15087,7 @@ p 0x0000 igFloatMetaField 3333310001 0x00 0x0008 _defaultValue 0000 100.000000
 igMetaEndObject
 igMetaObject igMetaObject CWaterVehicleSourceData CSourceData 0000
 igMetaEndObject
-igMetaObject igMetaObject CStaticCollisionHashInstanceIdHashTable igHashTable 0000
+igMetaObject igMetaObject CStaticCollisionHashInstanceIdHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igShortMetaField 3333310000 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -15874,7 +15873,7 @@ igStaticMetaField 3333300000 0x00 igEnumMetaField 3333310100 0x00 EModLocation 0
 igPropertyFieldMetaField 3333300000 0x00 igEnumMetaField 3333310000 0x00 EModLocation 0x0000 _netModLocation 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
 igMetaObject igDotNetMetaObject CPhysicsShapeComponentData CPhysicsComponentData 0000
-p 0x0007 igHandleMetaField 3333310001 0x00 0001 CCollisionMaterial 0x001C _collisionMaterial 0001 igAddDependencyAttribute 1  
+p 0x0007 igHandleMetaField 3333310001 0x00 0001 CCollisionMaterial 0x001C _collisionMaterial 0001 igAddDependencyAttribute 1 -1 
 igMetaEndObject
 igMetaObject igDotNetMetaObject CPhysicsBoundingBoxComponentData CPhysicsShapeComponentData 0000
 igMetaEndObject
@@ -16214,7 +16213,7 @@ igVec3fMetaField 3333310001 0x00 0x0020 _mostRecentSuccessPosition 0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiEventSkystonesSmashBeginTurn igGuiEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject igNonRefCountedMemoryPoolNonRefCountedMemoryPoolHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefCountedMemoryPoolNonRefCountedMemoryPoolHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -16301,7 +16300,7 @@ igMetaObject igDotNetMetaObject CGuiEventRacingOptionToggled igGuiEvent 0000
 igIntMetaField 3333310001 0x00 0x0008 _oldState 0000
 igIntMetaField 3333310001 0x00 0x000C _newState 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleTypeStringTable igHashTable 0000
+igMetaObject igMetaObject CVehicleTypeStringTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -16593,7 +16592,7 @@ igMetaObject igDotNetMetaObject CWavePoolNodes igObject 0000
 igMetaEndObject
 igMetaObject igMetaObject CVehiclePersonalizationTauntItemList CVehiclePersonalizationBaseItemList 0000
 igMetaEndObject
-igMetaObject igMetaObject CIntPortalMasterPerkHandleListDictionary igHashTable 0000
+igMetaObject igMetaObject CIntPortalMasterPerkHandleListDictionary igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -17208,7 +17207,7 @@ igVectorMetaField 3133310001 0x01 igObjectRefMetaField 3333310001 0x00 0001 igGu
 igTimeMetaField 3333310001 0x00 0x001C _previousTime 0000
 igBoolMetaField 3333310001 0x00 0x0020 _firstFrame 0000
 igMetaEndObject
-igMetaObject igMetaObject CTagSet igHashTable 0000
+igMetaObject igMetaObject CTagSet igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -17387,7 +17386,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CVehiclePowerUpHiddenMessage CVehiclePowerUpMessage 0000
 igBoolMetaField 3333310001 0x00 0x001C _isHidden 0000
 igMetaEndObject
-igMetaObject igMetaObject CCameraSystemInstanceHashTable igHashTable 0000
+igMetaObject igMetaObject CCameraSystemInstanceHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -17554,7 +17553,7 @@ igObjectRefMetaField 3333310001 0x00 1011 igUnsignedIntPS3RasterizerStateHashTab
 igObjectRefMetaField 3333310001 0x00 0001 igMutex 0x0034 _stateLock 0000
 igRawRefMetaField 3333310001 0x00 0001 0x002C _resetCallback 0000
 igMetaEndObject
-igMetaObject igMetaObject CZoneInfoActionPackLocksTable igHashTable 0000
+igMetaObject igMetaObject CZoneInfoActionPackLocksTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -17798,7 +17797,7 @@ igMetaObject igMetaObject CDamageInvulnerabilityFilter igObject 0000
 igBoolMetaField 3333310001 0x00 0x0008 _invertFilter 0000
 igMetaEndObject
 igMetaObject igMetaObject CDamageInvulnerabilityFilterByAttackIdentifier CDamageInvulnerabilityFilter 0000
-igStringMetaField 3333310001 0x00 0101 0x000C _attackIdentifier 0000 426F6F73745F426567696E6E696E67
+igStringMetaField 3333310001 0x00 0101 0x000C _attackIdentifier 0000 
 igMetaEndObject
 igMetaObject igMetaObject CTiledLight12p3bMaterial igFxMaterial 0001 igDataInheritanceAttribute 1
 p 0x0024 igStringMetaField 3333311001 0x00 0101 0x0028 _fxFilename 0000 736861646572733A2F54696C65644C696768745F3132705F33622E6678
@@ -17878,7 +17877,7 @@ igMetaObject igMetaObject igRenderTraversalJobWeights igObject 0000
 igIntMetaField 3333310001 0x00 0x0008 _minWeight 0000 100 
 igIntMetaField 3333310001 0x00 0x000C _maxWeight 0000 200 
 igMetaEndObject
-igMetaObject igMetaObject CCharacterAttributePortalMasterPerkHandleDictionary igHashTable 0000
+igMetaObject igMetaObject CCharacterAttributePortalMasterPerkHandleDictionary igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 ECharacterAttribute 0x0010 _keys 0000
 igMetaEndObject
@@ -17916,7 +17915,7 @@ igObjectRefMetaField 2333300001 0x00 1011 igGuiInstanceMap 0x0014 _instanceMap 0
 igMetaEndObject
 igMetaObject igMetaObject igSplineEventList igObjectList igSplineEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject igObjectIntHashTable igHashTable 0000
+igMetaObject igMetaObject igObjectIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -17972,7 +17971,7 @@ igVectorMetaField 3333310001 0x01 igIntMetaField 3333310001 0x00 0000 0x000C _va
 igMetaEndObject
 igMetaObject igDotNetMetaObject CEntityGroupComponent CEntityComponent 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableFloatTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableFloatTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -18075,7 +18074,7 @@ igBoolMetaField 3333300001 0x00 0x004C _queuedStatBoostAnimation 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject igStringNodes igObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CElementalTypeHandlePool igHashTable 0000
+igMetaObject igMetaObject CElementalTypeHandlePool igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -18249,7 +18248,7 @@ igObjectRefMetaField 3333300001 0x00 1011 igPlane 0x0030 _bottomPlane 0000
 igObjectRefMetaField 3333300001 0x00 1011 igPlane 0x0034 _topPlane 0000
 igObjectRefMetaField 3333300001 0x00 1011 igRay 0x0038 _ray 0000
 igMetaEndObject
-igMetaObject igMetaObject CModelAnimationHashTable igHashTable 0000
+igMetaObject igMetaObject CModelAnimationHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -18393,7 +18392,7 @@ igUnsignedIntMetaField 3333310000 0x00 0x0004 _value 0000
 igEnumMetaField 3333310000 0x00 LabelType 0x0008 _type 0000
 igRawRefMetaField 3333310000 0x00 0001 0x000C _label 0000
 igEndCompoundField
-igMetaObject igMetaObject CVehiclePhysicsMotionPropertiesHandleHashTable igHashTable 0000
+igMetaObject igMetaObject CVehiclePhysicsMotionPropertiesHandleHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -18504,7 +18503,7 @@ igMetaObject igDotNetMetaObject CBoltOnMessage CEntityMessage 0000
 igBoolMetaField 3333310001 0x00 0x001C _bolt 0000
 igEnumMetaField 3333310001 0x00 EBoltonModels 0x0020 _boltonModels 0000 -1 
 igMetaEndObject
-igMetaObject igMetaObject CGuiMenuSoundTable igHashTable 0001 igMigrateFromAttribute 434A756963654D656E75536F756E645461626C65
+igMetaObject igMetaObject CGuiMenuSoundTable igHashTable 0 0001 igMigrateFromAttribute 434A756963654D656E75536F756E645461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EGuiMenuSound 0x0010 _keys 0000
 igMetaEndObject
@@ -18518,7 +18517,7 @@ igEndCompoundField
 igMetaObject igMetaObject CHavokConstraintArrayMetaField CHavokConstraintMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableStringTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableStringTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -18890,7 +18889,7 @@ igIntMetaField 3333300001 0x00 0x00E8 _dirtyCount 0000
 igHandleMetaField 3333310001 0x00 0001 CVehicleRubberBurningMeterComponent 0x00EC _rubberBurningMeterComponent 0000
 igStructMetaField 3333300000 0x00 0x0030 0x0010 0x00F0 _lastBehaviorPoseRoot 0000
 igMetaEndObject
-igMetaObject igMetaObject CCollectibleTypeEntityDataHashTable igHashTable 0000
+igMetaObject igMetaObject CCollectibleTypeEntityDataHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 ECollectibleType 0x0010 _keys 0000
 igMetaEndObject
@@ -18934,7 +18933,7 @@ igMetaObject igMetaObject CDspList igObjectList CDsp 0000
 igMetaEndObject
 igMetaObject igMetaObject igGroupList igObjectList igGroup 0000
 igMetaEndObject
-igMetaObject igMetaObject CDotNetLibraryHashTable igHashTable 0000
+igMetaObject igMetaObject CDotNetLibraryHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -19162,7 +19161,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CTimeManipulatorComponent CEntityComponent 0000
 igObjectRefMetaField 3333310001 0x00 1011 CEntityHandleList 0x001C _entities 0001 igCapacityAttribute 00000008
 igMetaEndObject
-igMetaObject igMetaObject igNonRefCountedObjectIntHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefCountedObjectIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -19235,7 +19234,7 @@ igRangedFloatMetaField 3333310001 0x00 0x0018 _jitterIntensityNoTarget 0000
 igFloatMetaField 3333310001 0x00 0x0020 _jitterDelay 0000 0.130000 
 igFloatMetaField 3333310001 0x00 0x0024 _maxRange 0000 1000.000000 
 igMetaEndObject
-igMetaObject igMetaObject CPoolToActorArchetypeListMap igHashTable 0000
+igMetaObject igMetaObject CPoolToActorArchetypeListMap igHashTable 256 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EMemoryPoolID 0x0010 _keys 0000
 igMetaEndObject
@@ -19331,7 +19330,7 @@ igEndCompoundField
 igMetaObject igDotNetMetaObject CCustomEventInt CCustomEvent 0000
 igIntMetaField 3333310001 0x00 0x0020 _int 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CControllerVfxTable igHashTable 0000
+igMetaObject igMetaObject CControllerVfxTable igHashTable 30 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 XBUTTON 0x0010 _keys 0000
 igMetaEndObject
@@ -19374,7 +19373,7 @@ igFloatMetaField 3333310001 0x00 0x0010 _fillPercent 0000
 igMetaEndObject
 igMetaObject igMetaObject CResourcePrecacherList igObjectList CResourcePrecacher 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringToBehaviorIdTable igHashTable 0000
+igMetaObject igMetaObject CStringToBehaviorIdTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -19708,7 +19707,7 @@ p 0x0002 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x
 igMetaEndObject
 igMetaObject igMetaObject CPrecacheManagerExcludeConditionSplitscreen CPrecacheManagerExcludeCondition 0000
 igMetaEndObject
-igMetaObject igMetaObject CDebugDrawBoltHashTable igHashTable 0000
+igMetaObject igMetaObject CDebugDrawBoltHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0010 _keys 0000
 igMetaEndObject
@@ -19768,7 +19767,7 @@ igFloatMetaField 3333310001 0x00 0x0024 _rayFractionToConsiderAsGlitch 0000 0.50
 igMetaEndObject
 igMetaObject igMetaObject CAccoladeVehicleFullyUpgradedGoalData CAccoladeGoalData 0000
 igMetaEndObject
-igMetaObject igMetaObject DotNetMethodStringHashTable igHashTable 0000
+igMetaObject igMetaObject DotNetMethodStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igNameMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -19812,7 +19811,7 @@ igTimeMetaField 3333310001 0x00 0x0010 _cutoff 0000 1.000000
 igEnumMetaField 3333310001 0x00 RepeatMode 0x0014 _repeatMode 0000
 igTimeMetaField 3333310001 0x00 0x0018 _initialTime 0000  
 igMetaEndObject
-igMetaObject igMetaObject CPlayerHistoryTable igHashTable 0000
+igMetaObject igMetaObject CPlayerHistoryTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -19837,14 +19836,14 @@ igMetaEndObject
 igMetaObject igMetaObject CDecalCostMaterial igFxMaterial 0001 igDataInheritanceAttribute 1
 p 0x0024 igStringMetaField 3333311001 0x00 0101 0x0028 _fxFilename 0000 736861646572733A2F446563616C436F73742E6678
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorSyncControllerTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorSyncControllerTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
 igMetaObject igMetaObject CCameraShakeList igDataList 0000
 p 0x0002 igMemoryRefMetaField 3223310001 0x00 0101 CCameraShakeMetaField 3333310001 0x00 0x0010 _data 0000
 igMetaEndObject
-igMetaObject igMetaObject CLeaderboardIdEntryListTable igHashTable 0000
+igMetaObject igMetaObject CLeaderboardIdEntryListTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -19933,7 +19932,7 @@ igMetaObject igDotNetMetaObject CMagnifyingBeamNodes igObject 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CInteractionStateInteracted CInteractionBaseState 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntityToPointOfInterestMap igHashTable 0000
+igMetaObject igMetaObject CEntityToPointOfInterestMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -20504,7 +20503,7 @@ igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0008 _listTitle 0000
 igStringMetaField 3333310001 0x00 0101 0x000C _titleText 0001 igLocalizeAttribute 1
 igObjectRefMetaField 3333310001 0x00 0001 igStringRefList 0x0010 _categoryStrings 0001 igLocalizeAttribute 1
 igMetaEndObject
-igMetaObject igMetaObject igGraphEventHandler igHashTable 0000
+igMetaObject igMetaObject igGraphEventHandler igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -20571,11 +20570,11 @@ igEndCompoundField
 igMetaObject igMetaObject COrgAnglesArrayMetaField COrgAnglesMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CUnsignedIntActionPackGoalStarHashTable igHashTable 0000
+igMetaObject igMetaObject CUnsignedIntActionPackGoalStarHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EActionPackStars 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject CActorReasonTimeTable igHashTable 0000
+igMetaObject igMetaObject CActorReasonTimeTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -20741,7 +20740,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CRiderSwapConfirmedEvent CNetworkEventObject 0000
 igHandleMetaField 3333310001 0x00 0001 CActor 0x0010 _vehicle 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CMultiplayerPlayerStatTable igHashTable 0000
+igMetaObject igMetaObject CMultiplayerPlayerStatTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -20758,9 +20757,9 @@ igMetaObject igMetaObject CRacingPackStateCallbackObject CStateCallbackObject 00
 igRawRefMetaField 3333310001 0x00 0001 0x000C _callback 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CAnimatedFloorTileComponentData CEntityComponentData 0000
-igStringMetaField 3333310001 0x00 0101 0x0010 _riseAnimName 0000 736861646572733A2F556E6C697452696D2E6678
-igStringMetaField 3333310001 0x00 0101 0x0014 _idleAnimName 0000 736861646572733A2F556E6C697452696D2E6678
-igStringMetaField 3333310001 0x00 0101 0x0018 _fallAnimName 0000 736861646572733A2F556E6C697452696D2E6678
+igStringMetaField 3333310001 0x00 0101 0x0010 _riseAnimName 0000 736861646572733A
+igStringMetaField 3333310001 0x00 0101 0x0014 _idleAnimName 0000 736861646572733A
+igStringMetaField 3333310001 0x00 0101 0x0018 _fallAnimName 0000 736861646572733A
 igFloatMetaField 3333310001 0x00 0x001C _lifeTime 0000 0.200000 
 igHandleMetaField 3333310001 0x00 0001 CSound 0x0020 _fallSound 0000
 igHandleMetaField 3333310001 0x00 0001 CSound 0x0024 _riseSound 0000
@@ -20791,7 +20790,7 @@ igBoolMetaField 3333310001 0x00 0x000A _hardKill 0000 1
 igBoolMetaField 3333310001 0x00 0x000B _drawDebugFrames 0000
 igEnumMetaField 3333310001 0x00 CullType 0x000C _forceCull 0000
 igUnsignedIntMetaField 3333310001 0x00 0x0010 _debugVisualizationLevel 0000
-igStringMetaField 3333310001 0x00 0101 0x0014 _debugBoltBoneName 0000 736861646572733A2F556E6C697452696D2E6678
+igStringMetaField 3333310001 0x00 0101 0x0014 _debugBoltBoneName 0000 736861646572733A
 igVec3fMetaField 3333310001 0x00 0x0018 _debugBoltOffset 0000
 igUnsignedShortMetaField 3333310001 0x00 0x0024 _spawnLayers 0000 65535 
 igMetaEndObject
@@ -20821,7 +20820,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CChangeRequest 0x0400 _lockedControls 
 igFloatMetaField 3333300001 0x00 0x0404 _netRollTwist 0001 igNetReplicateAttribute MISSING_ATTR
 igFloatMetaField 3333300001 0x00 0x0408 _netRollBlend 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject igHandleObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igHandleObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -21077,7 +21076,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CLightcoreBlastEvent CNetworkEventObject 0000
 igHandleMetaField 3333310001 0x00 0001 CActor 0x0010 _target 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CRacingRacingTypeMapsTable igHashTable 0000
+igMetaObject igMetaObject CRacingRacingTypeMapsTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceType 0x0010 _keys 0000
 igMetaEndObject
@@ -21233,7 +21232,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CLightStateMessage igMessage 0000
 igBoolMetaField 3333310001 0x00 0x0010 _enabled 0000
 igMetaEndObject
-igMetaObject igMetaObject CSplineMoverComponentEventDataEffectEventTable igHashTable 0000
+igMetaObject igMetaObject CSplineMoverComponentEventDataEffectEventTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -21241,7 +21240,7 @@ igMetaObject igDotNetMetaObject CGuiEventAPMatchmakingLobbyBecomePeer igGuiEvent
 igMetaEndObject
 igMetaObject igMetaObject CRaceParticipantSkylanderList igObjectList CRaceParticipantSkylander 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorEventRecordToBoolTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorEventRecordToBoolTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -21911,7 +21910,7 @@ igMetaObject igMetaObject CSharedGiantData igObject 0000
 igObjectRefMetaField 3333310001 0x00 0001 CTriggerVolumeCapsuleComponentData 0x0008 _touchDamageTrigger 0000
 igObjectRefMetaField 3333310001 0x00 0001 CDamageData 0x000C _touchDamage 0000
 igMetaEndObject
-igMetaObject igMetaObject CElementVehicleTrapInteractionTable igHashTable 0000
+igMetaObject igMetaObject CElementVehicleTrapInteractionTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -22029,7 +22028,7 @@ igUnsignedIntMetaField 3333310001 0x00 0x0030 _attacks 0000 7
 igMetaEndObject
 igMetaObject igMetaObject CFadeOutPresetList igObjectList CFadeOutPresetData 0000
 igMetaEndObject
-igMetaObject igMetaObject CMovieInfoTable igHashTable 0000
+igMetaObject igMetaObject CMovieInfoTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -22203,7 +22202,7 @@ igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x000C _gainFocusAni
 igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x0010 _loseFocusAnimation 0000
 igBoolMetaField 3333300001 0x00 0x0014 _isFocused 0000
 igMetaEndObject
-igMetaObject igMetaObject CAnalogStickDirectionToVfxAnalogStickTable igHashTable 0000
+igMetaObject igMetaObject CAnalogStickDirectionToVfxAnalogStickTable igHashTable 6 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EAnalogStickDirection 0x0010 _keys 0000
 igMetaEndObject
@@ -22226,7 +22225,7 @@ igObjectRefMetaField 3333310001 0x00 1011 CTimer 0x005C _respawnTimer 0000
 igStaticMetaField 3333300000 0x00 igBoolMetaField 3333310100 0x00 0x0000 _debugDrawEnabled 0000
 igStaticMetaField 3333300000 0x00 igObjectRefMetaField 3333300100 0x00 0000 CPlayerRespawnManager 0x0000 _Instance 0000
 igMetaEndObject
-igMetaObject igMetaObject CActionPackPlayerModeStringHashTable igHashTable 0000
+igMetaObject igMetaObject CActionPackPlayerModeStringHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPlayerMode 0x0010 _keys 0000
 igMetaEndObject
@@ -23206,7 +23205,7 @@ igBoolMetaField 3333310001 0x00 0x0008 _enabled 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CPhysicsBoundingSphereComponentData CPhysicsShapeComponentData 0000
 igMetaEndObject
-igMetaObject igMetaObject CCharacterAttributeStringHashTable igHashTable 0000
+igMetaObject igMetaObject CCharacterAttributeStringHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECharacterAttribute 0x0010 _keys 0000
 igMetaEndObject
@@ -23348,7 +23347,7 @@ igEnumMetaField 3333310000 0x00 ESoundInterpolatorType 0x0004 _type 0000
 igFloatMetaField 3333310000 0x00 0x0008 _startDuration 0000
 igFloatMetaField 3333310000 0x00 0x000C _duration 0000
 igEndCompoundField
-igMetaObject igMetaObject CSeaVehicleTypeCameraHashTable igHashTable 0000
+igMetaObject igMetaObject CSeaVehicleTypeCameraHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ESeaVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -23639,7 +23638,7 @@ igMetaObject igMetaObject CSkinPrecacher CResourcePrecacher 0000
 igMetaEndObject
 igMetaObject igMetaObject CVehiclePersonalizationPoolTrackerList igObjectList CVehiclePersonalizationPoolTracker 0000
 igMetaEndObject
-igMetaObject igMetaObject CGuiSoundEventTable igHashTable 0001 igMigrateFromAttribute 434A75696365536F756E644576656E745461626C65
+igMetaObject igMetaObject CGuiSoundEventTable igHashTable 0 0001 igMigrateFromAttribute 434A75696365536F756E644576656E745461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EGuiMenuSoundEvent 0x0010 _keys 0000
 igMetaEndObject
@@ -23685,7 +23684,7 @@ igMetaObject igDotNetMetaObject CGuiEventLiveOpsKitSalePurchaseFail igGuiEvent 0
 igStringMetaField 3333310001 0x00 0101 0x0008 _errorMsgTitle 0000
 igStringMetaField 3333310001 0x00 0101 0x000C _errorMsgBody 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlatformControllerToAnalogStickVfxTable igHashTable 0000
+igMetaObject igMetaObject CPlatformControllerToAnalogStickVfxTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 IG_CORE_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -23828,7 +23827,7 @@ igMetaObject igDotNetMetaObject CGroundDetectorComponentData CEntityComponentDat
 igFloatMetaField 3333310001 0x00 0x0010 _queryOffsetAbove 0000 12.000000 
 igFloatMetaField 3333310001 0x00 0x0014 _queryOffsetBelow 0000 50.000000 
 igMetaEndObject
-igMetaObject igMetaObject CVehicleCustomizationColorSchemeDataTable igHashTable 0000
+igMetaObject igMetaObject CVehicleCustomizationColorSchemeDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -23939,7 +23938,7 @@ igStaticMetaField 3333300000 0x00 igIntMetaField 3333310100 0x00 0x0000 _travers
 igStaticMetaField 3333300000 0x00 igBoolMetaField 3333310100 0x00 0x0000 _debugJobs 0000
 igStaticMetaField 3333300000 0x00 igObjectRefMetaField 3333310100 0x00 0001 igNode 0x0000 _arkRegOrder 0000
 igMetaEndObject
-igMetaObject igMetaObject CQuestRankAttributeTable igHashTable 0000
+igMetaObject igMetaObject CQuestRankAttributeTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EQuestRanks 0x0010 _keys 0000
 igMetaEndObject
@@ -24256,7 +24255,7 @@ igEndCompoundField
 igMetaObject igMetaObject igCommandSetConstantFloatParametersArrayMetaField igCommandSetConstantFloatParametersMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CRacingPackVillainsTable igHashTable 0000
+igMetaObject igMetaObject CRacingPackVillainsTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -24344,7 +24343,7 @@ igMetaObject igMetaObject CRenderDeferredUnload igObject 0000
 igObjectRefMetaField 3333310001 0x00 0001 igObjectDirectory 0x0008 _directory 0000
 igStringMetaField 3333310001 0x00 0101 0x000C _path 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableMaterialOverridesTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableMaterialOverridesTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -24614,7 +24613,7 @@ p 0x0002 igEnumMetaField 3333300001 0x00 EEnableStackMode 0x0010 _mode 0000 1
 igMetaEndObject
 igMetaObject igMetaObject CSkystonesSmashCardBuffList igObjectList CSkystonesSmashCardBuff 0000
 igMetaEndObject
-igMetaObject igMetaObject CSkyboxModelsHashTable igHashTable 0000
+igMetaObject igMetaObject CSkyboxModelsHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -24626,7 +24625,7 @@ igMetaEndObject
 igMetaObject igMetaObject igAuthorityOnlyAttribute igObject 0001 igRuntimeAttribute MISSING_ATTR
 igBoolMetaField 3333310001 0x00 0x0008 _value 0000 1 
 igMetaEndObject
-igMetaObject igMetaObject igDotNetDataDataHashTable igHashTable 0000
+igMetaObject igMetaObject igDotNetDataDataHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 DotNetDataMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 DotNetDataMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -24721,7 +24720,7 @@ igMetaEndObject
 igMetaObject igMetaObject CFxaaMaterial igFxMaterial 0001 igDataInheritanceAttribute 1
 p 0x0024 igStringMetaField 3333311001 0x00 0101 0x0028 _fxFilename 0000 736861646572733A2F467861612E6678
 igMetaEndObject
-igMetaObject igMetaObject CPortalMasterModeCategoryListTable igHashTable 0000
+igMetaObject igMetaObject CPortalMasterModeCategoryListTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPortalMasterMenuMode 0x0010 _keys 0000
 igMetaEndObject
@@ -24896,8 +24895,8 @@ igMetaObject igDotNetMetaObject CDialogBoxInfo igObject 0000
 igObjectRefMetaField 3333310001 0x00 0001 CUIDialogBoxOption 0x0008 _option1 0000
 igObjectRefMetaField 3333310001 0x00 0001 CUIDialogBoxOption 0x000C _option2 0000
 igEnumMetaField 3333310001 0x00 EGuiDialogBoxOption 0x0010 _optionToFocus 0000 2 
-igStringMetaField 3333310001 0x00 0101 0x0014 _title 0001 igLocalizeAttribute 1 736861646572733A2F467861612E6678
-igStringMetaField 3333310001 0x00 0101 0x0018 _body 0001 igLocalizeAttribute 1 736861646572733A2F467861612E6678
+igStringMetaField 3333310001 0x00 0101 0x0014 _title 0001 igLocalizeAttribute 1 736861646572733A
+igStringMetaField 3333310001 0x00 0101 0x0018 _body 0001 igLocalizeAttribute 1 736861646572733A
 igBoolMetaField 3333310001 0x00 0x001C _canAccept 0000 1 
 igBoolMetaField 3333310001 0x00 0x001D _canCancel 0000 1 
 igRawRefMetaField 3333310001 0x00 0001 0x0020 _updateCallback 0000
@@ -25215,7 +25214,7 @@ igMetaObject igMetaObject CGuiBehaviorAbilityShopUpgradeCost igGuiBehavior 0001 
 igMetaEndObject
 igMetaObject igDotNetMetaObject CCollectibleMoneyCollectedMessage CEntityMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorStateDelegateTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorStateDelegateTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -25677,7 +25676,7 @@ igObjectRefMetaField 3333310001 0x00 1011 COcclusionTriggerHandleList 0x0014 _oc
 igMetaEndObject
 igMetaObject igMetaObject igLocalizedStringDataList igObjectList igLocalizedStringData 0000
 igMetaEndObject
-igMetaObject igMetaObject igComponentTypeMap igHashTable 0000
+igMetaObject igMetaObject igComponentTypeMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -25720,7 +25719,7 @@ igIntMetaField 3333310001 0x00 0x000C _score 0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiListItemConverterAbilityShopUpgradePath CGuiListItemConverter 0001 igMigrateFromAttribute 434A756963654C6973744974656D436F6E7665727465724162696C69747953686F705570677261646550617468
 igMetaEndObject
-igMetaObject igMetaObject CCacheHandleTable igHashTable 0000
+igMetaObject igMetaObject CCacheHandleTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -25828,7 +25827,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CGuiBehaviorPauseMenuOption 0x0028 _be
 igMetaEndObject
 igMetaObject igDotNetMetaObject CPauseMenuOptionPortalMasterPowers CPauseMenuOption 0000
 igMetaEndObject
-igMetaObject igMetaObject CGuiProjectCloseCallbackTable igHashTable 0000
+igMetaObject igMetaObject CGuiProjectCloseCallbackTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -25938,7 +25937,7 @@ igFloatMetaField 3333310001 0x00 0x0020 _evadeMovingBlend 0001 BehaviorVariable 
 igMetaEndObject
 igMetaObject igMetaObject igUnsignedLongMetaField igMetaField 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableVfxTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableVfxTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -26045,7 +26044,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CMultiplayerRoundChangedMessage CEntityMessage 0000
 igIntMetaField 3333310001 0x00 0x001C _newRound 0001 igNetReplicateAttribute MISSING_ATTR 1 
 igMetaEndObject
-igMetaObject igMetaObject CEntityMessageCallbackTable igHashTable 0000
+igMetaObject igMetaObject CEntityMessageCallbackTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -26319,8 +26318,8 @@ p 0x000B igBoolMetaField 3333300001 0x00 0x0032 _runImmediately 0000 1
 igIntMetaField 3333310001 0x00 0x0034 _index 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
 igMetaObject igMetaObject igStatistic igObject 0000
-igStringMetaField 3233310001 0x00 0101 0x0008 _name 0000 74657874757265733A2F64656661756C745F632E706E67
-igStringMetaField 3233310001 0x00 0101 0x000C _threadName 0000 74657874757265733A2F64656661756C745F632E706E67
+igStringMetaField 3233310001 0x00 0101 0x0008 _name 0000 7465787475726573
+igStringMetaField 3233310001 0x00 0101 0x000C _threadName 0000 7465787475726573
 igIntMetaField 3333310001 0x00 0x0010 _current 0000
 igIntMetaField 3333310001 0x00 0x0014 _last 0000
 igIntMetaField 3333310001 0x00 0x0018 _currentFrameHitCount 0000
@@ -26423,7 +26422,7 @@ igEnumMetaField 3333310001 0x00 ESoundLoopEvent 0x0020 _loopEvent 0000
 igBoolMetaField 3333310001 0x00 0x0024 _findSoundOnThisVehicleDriver 0000
 igObjectRefMetaField 3333310001 0x00 1011 CSoundUpdateMethodList 0x0028 _updateMethodList 0000
 igMetaEndObject
-igMetaObject igMetaObject CCEAttackSelectorChoiceTable igHashTable 0000
+igMetaObject igMetaObject CCEAttackSelectorChoiceTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -26464,7 +26463,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CAudioGraphList 0x000C _affectedGraphs
 igObjectRefMetaField 3333300001 0x00 0000 CAudioGraphDriverMode 0x0010 _currentMode 0000
 igFloatMetaField 3333300001 0x00 0x0014 _lastInput 0000
 igMetaEndObject
-igMetaObject igMetaObject CPoolToStringListMap igHashTable 0000
+igMetaObject igMetaObject CPoolToStringListMap igHashTable 256 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EMemoryPoolID 0x0010 _keys 0000
 igMetaEndObject
@@ -26512,7 +26511,7 @@ igBoolMetaField 3333310001 0x00 0x0028 _looping 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CDebugAIComponent CEntityComponent 0000
 igMetaEndObject
-igMetaObject igMetaObject igObjectHandleTable igHashTable 0000
+igMetaObject igMetaObject igObjectHandleTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -26544,7 +26543,7 @@ igMetaObject igMetaObject CGuiBehaviorShopAbilityUpgradePathPreviewImage igGuiBe
 igIntMetaField 3333310001 0x00 0x0008 _upgradesIndex 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiSprite 0x000C _previewSprite 0000
 igMetaEndObject
-igMetaObject igMetaObject CNetworkEventFrequencyMap igHashTable 0000
+igMetaObject igMetaObject CNetworkEventFrequencyMap igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ENetworkEventCategory 0x0010 _keys 0000
 igMetaEndObject
@@ -26773,7 +26772,7 @@ igSizeTypeMetaField 3333310000 0x00 0x0000 _resource 0000
 igEnumMetaField 3333310000 0x00 IG_INDEX_TYPE 0x0004 _format 0000
 igIntMetaField 3333310000 0x00 0x0008 _offset 0000
 igEndCompoundField
-igMetaObject igMetaObject CPortalMasterCategoryStringTable igHashTable 0000
+igMetaObject igMetaObject CPortalMasterCategoryStringTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPortalMasterStarCategory 0x0010 _keys 0000
 igMetaEndObject
@@ -26903,7 +26902,7 @@ igMetaObject igMetaObject CSplineMoverMessageList igObjectList CSplineMoverMessa
 igMetaEndObject
 igMetaObject igMetaObject igInfoList igObjectList igInfo 0000
 igMetaEndObject
-igMetaObject igMetaObject igPlatformRenderTargetMap igHashTable 0000
+igMetaObject igMetaObject igPlatformRenderTargetMap igHashTable 18 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 IG_GFX_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -26922,7 +26921,7 @@ igMetaEndObject
 igMetaObject igMetaObject CGuiEventConfigureCRMMessageMenu igGuiEvent 0000
 igObjectRefMetaField 3333310001 0x00 0001 CCRMMessageMenuConfiguration 0x0008 _configuration 0000
 igMetaEndObject
-igMetaObject igMetaObject igSplineRotationKeyframeTrackTable igHashTable 0000
+igMetaObject igMetaObject igSplineRotationKeyframeTrackTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -26961,7 +26960,7 @@ igMetaObject igDotNetMetaObject CPlayerLaunchComponentData CEntityComponentData 
 igObjectRefMetaField 3333310001 0x00 1011 CEntityData 0x0010 _dummySplineEntityData 0000
 igFloatMetaField 3333310001 0x00 0x0014 _defaultVelocity 0000 2500.000000 
 igMetaEndObject
-igMetaObject igMetaObject igAliasTable igHashTable 0000
+igMetaObject igMetaObject igAliasTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -27103,7 +27102,7 @@ igBoolMetaField 3333310001 0x00 0x000C _countAnySoulGem 0000
 igBoolMetaField 3333310001 0x00 0x000D _countLastOptionalUpgrade 0000
 igHandleMetaField 3333310001 0x00 0001 CSkillUpgrade 0x0010 _upgradePurchased 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorLogicInfoTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorLogicInfoTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -27187,7 +27186,7 @@ igFloatMetaField 3333310001 0x00 0x0034 _delay 0001 igNetReplicateAttribute MISS
 igMetaEndObject
 igMetaObject igMetaObject CGuiListItemPopulatorElement igGuiListItemPopulator 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igIntObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -27291,7 +27290,7 @@ igMetaObject igMetaObject igVfxPrimitiveInstanceMetaField igCompoundMetaField 00
 igMetaEndObject
 igCompoundField
 igTimeMetaField 3333310000 0x00 0x0000 _life 0000
-igTimeMetaField 3333310000 0x00 0x0004 _lifeSpan 0000 5.000000 
+igTimeMetaField 3333310000 0x00 0x0004 _lifeSpan 0000 -3402823 
 igRandomMetaField 3333310000 0x00 0x0008 _rng 0000
 igCharMetaField 3333310000 0x00 0x0010 _primitiveFlags 0000
 igRawRefMetaField 3333310000 0x00 0001 0x0014 _next 0000
@@ -27610,7 +27609,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CGuiEventAPMatchmakingCurrentIndexNotification igGuiEvent 0000
 igIntMetaField 3333310001 0x00 0x0008 _slotIndex 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntIntHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -27864,7 +27863,7 @@ igEndCompoundField
 igMetaObject igMetaObject CComposeSceneMaterial igFxMaterial 0001 igDataInheritanceAttribute 1
 p 0x0024 igStringMetaField 3333311001 0x00 0101 0x0028 _fxFilename 0000 736861646572733A2F436F6D706F73655363656E652E6678
 igMetaEndObject
-igMetaObject igMetaObject CEntityHandleGuiMaterialHashTable igHashTable 0000
+igMetaObject igMetaObject CEntityHandleGuiMaterialHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -27989,7 +27988,7 @@ igEndCompoundField
 igMetaObject igMetaObject BodyInfoArrayMetaField BodyInfoMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CMotionPropertiesNameHashTable igHashTable 0000
+igMetaObject igMetaObject CMotionPropertiesNameHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -28093,7 +28092,7 @@ igMetaObject igMetaObject CGuiBehaviorRacingGameModeEndScreen CGuiBehavior 0000
 igMetaEndObject
 igMetaObject igMetaObject CGrindRailAttachment CAttachmentSplineAttachment 0000
 igMetaEndObject
-igMetaObject igMetaObject igNamespaceHashHandleTable igHashTable 0000
+igMetaObject igMetaObject igNamespaceHashHandleTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -28558,7 +28557,7 @@ igIntMetaField 3333310001 0x00 0x0004 _parentId 0000
 igShortMetaField 3333310001 0x00 0x0008 _traversalPriority 0000
 igStructMetaField 3333310000 0x00 0x0004 0x0004 0x000C _cpuFunction 0000
 igEndCompoundField
-igMetaObject igMetaObject CLandVehicleTypeCameraHashTable igHashTable 0000
+igMetaObject igMetaObject CLandVehicleTypeCameraHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ELandVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -28628,7 +28627,7 @@ igHandleMetaField 3333310001 0x00 0001 CEntity 0x0018 _lock 0001 igNetReplicateA
 igMetaEndObject
 igMetaObject igMetaObject CGameEntityNonRefCountedList igNonRefCountedObjectList CGameEntity 0000
 igMetaEndObject
-igMetaObject igMetaObject igMetaObjectVfxRuntimeObjectInfoHashTable igHashTable 0000
+igMetaObject igMetaObject igMetaObjectVfxRuntimeObjectInfoHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -28639,7 +28638,7 @@ igObjectRefMetaField 3333300001 0x00 1011 CPlayerStateCallbackObject 0x001C _upg
 igObjectRefMetaField 3333300001 0x00 1011 CPlayerStateCallbackObject 0x0020 _networkUpgradesCallback 0000
 igObjectRefMetaField 3333300001 0x00 1011 CPlayerStateCallbackObject 0x0024 _levelCallback 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlayerCharacterPortalDataTable igHashTable 0000
+igMetaObject igMetaObject CPlayerCharacterPortalDataTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EPlayerId 0x0010 _keys 0000
 igMetaEndObject
@@ -28675,7 +28674,7 @@ igHandleMetaField 3333310001 0x00 0001 CGameIntVariable 0x0080 _totalGearbits 00
 igHandleMetaField 3333310001 0x00 0001 CLevelGoal 0x0084 _coopObjective 0001 igAddDependencyAttribute 1
 igHandleMetaField 3333310001 0x00 0001 CRumbleData 0x0088 _rumblePreset 0001 igAddDependencyAttribute 1 180.000000 
 igMetaEndObject
-igMetaObject igMetaObject CRaceSplinesDataNodeListHashTable igHashTable 0000
+igMetaObject igMetaObject CRaceSplinesDataNodeListHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -28815,7 +28814,7 @@ igObjectRefMetaField 3333310000 0x00 0000 igMetaField 0x000C _objectFieldMeta 00
 igObjectRefMetaField 3333310000 0x00 0000 igNetReplicateAttribute 0x0010 _replicateAttr 0000
 igIntMetaField 3333310000 0x00 0x0014 _order 0000
 igEndCompoundField
-igMetaObject igMetaObject igObjectDirectoryBoolHashTable igHashTable 0000
+igMetaObject igMetaObject igObjectDirectoryBoolHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -29124,7 +29123,6 @@ igBoolMetaField 3333310001 0x00 0x0020 _areFieldsReplicationStatesInitialized 00
 igBoolMetaField 3333310001 0x00 0x0021 _hasEntityReplicatedOnce 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CBehaviorPhysicsPencilComponentData CBehaviorPhysicsComponentData 0000
-p 0x0000 igObjectRefMetaField 2333300001 0x00 0000 igMetaObject 0x0008 _meta 0000 6967436F6D706F6E656E7444617461
 igMetaEndObject
 igMetaObject igDotNetMetaObject Byte Object 0001 igDotNetElementTypeAttribute MISSING_ATTR
 igMetaEndObject
@@ -29194,7 +29192,7 @@ igIntMetaField 3333300001 0x00 0x0130 _outputSize 0000 1024
 igMetaEndObject
 igMetaObject igMetaObject CHealthStateDataList igObjectList CHealthStateData 0000
 igMetaEndObject
-igMetaObject igMetaObject CIntEElementTypeHashTable igHashTable 0000
+igMetaObject igMetaObject CIntEElementTypeHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -29920,7 +29918,7 @@ igObjectRefMetaField 3333300001 0x00 0001 CScopedScheduledFunction 0x006C _updat
 igBoolMetaField 3333310001 0x00 0x0070 _healOnDeath 0001 igNetReplicateAttribute MISSING_ATTR
 igBoolMetaField 3333310001 0x00 0x0071 _explodeOnDeath 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject igStringInsensitiveNonRefObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igStringInsensitiveNonRefObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -30026,7 +30024,7 @@ igMetaObject igMetaObject CTeamStateCallbackList igObjectList CTeamStateCallback
 igMetaEndObject
 igMetaObject igMetaObject CEntityAttachmentNodeList igObjectList CEntityAttachmentNode 0000
 igMetaEndObject
-igMetaObject igMetaObject CWavePoolComponentEntityHashTable igHashTable 0000
+igMetaObject igMetaObject CWavePoolComponentEntityHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -30055,7 +30053,7 @@ igMetaObject igMetaObject igTimeOfDayMetaField igMetaField 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject igGuiAnimationBindings igObject 0000
 igMetaEndObject
-igMetaObject igMetaObject DirectoryEnabledHashTable igHashTable 0000
+igMetaObject igMetaObject DirectoryEnabledHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igBoolMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -30464,7 +30462,7 @@ igMetaObject igDotNetMetaObject CEmblemNodes igObject 0000
 igMetaEndObject
 igMetaObject igMetaObject igDotNetMetaObjectList igObjectList igDotNetMetaObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableObjectTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableObjectTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -30478,7 +30476,7 @@ igMetaEndObject
 igMetaObject igMetaObject CMarketplacePlatformStoreProductInfo igObject 0000
 igObjectRefMetaField 3333310001 0x00 0000 CMarketplaceExchangeSkuData 0x0008 _exchangeSkuData 0000
 igMetaEndObject
-igMetaObject igMetaObject CDifficultyLevelFloatHashTable igHashTable 0000
+igMetaObject igMetaObject CDifficultyLevelFloatHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EDifficultyLevel 0x0010 _keys 0000
 igMetaEndObject
@@ -31240,7 +31238,7 @@ igMetaObject igMetaObject CSmokeTest CManager 0000
 igStaticMetaField 3333300000 0x00 igBoolMetaField 3333310100 0x00 0x0000 _Enabled 0000
 igStaticMetaField 3333300000 0x00 igObjectRefMetaField 3333300100 0x00 0000 CSmokeTest 0x0000 _Instance 0000
 igMetaEndObject
-igMetaObject igMetaObject CCloudInstanceListHashTable igHashTable 0000
+igMetaObject igMetaObject CCloudInstanceListHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -31336,7 +31334,7 @@ p 0x0024 igStringMetaField 3333311001 0x00 0101 0x0028 _fxFilename 0000 73686164
 igMetaEndObject
 igMetaObject igMetaObject CAudioGraphModuleList igObjectList CAudioGraphModule 0000
 igMetaEndObject
-igMetaObject igMetaObject CMarketplaceExchangeSkuDataPlatformTable igHashTable 0000
+igMetaObject igMetaObject CMarketplaceExchangeSkuDataPlatformTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -31489,7 +31487,7 @@ igEnumMetaField 3333300001 0x00 EVehicleType 0x001C _vehicleType 0000
 igMetaEndObject
 igMetaObject igMetaObject igVfxPoseBlendOperator igVfxOperator 0000
 igUnsignedIntMetaField 3333310001 0x00 0x000C _blendFlags 0000
-igVfxRangedCurveMetaField 3333310001 0x00 0x0010 _blend 0000 4 
+igVfxRangedCurveMetaField 3333310001 0x00 0x0010 _blend 0000  
 igEnumMetaField 3333310001 0x00 OperatorCurveInput 0x0064 _blendInput 0000
 igBitFieldMetaField 3333310000 0x00 _blendFlags igEnumMetaField 3333310000 0x00 ReferenceFrame 0x00 0x04 0x000C _endpoint1 0000 0 
 igBitFieldMetaField 3333310000 0x00 _blendFlags igEnumMetaField 3333310000 0x00 ReferenceFrame 0x04 0x04 0x000C _endpoint2 0000 0 
@@ -31527,7 +31525,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CWaypointMoverComponentPeachesCallback
 igVec3fMetaField 3333310001 0x00 0x008C _startMovingPosition 0000
 igVec3fMetaField 3333310001 0x00 0x0098 _startMovingAngles 0000
 igMetaEndObject
-igMetaObject igMetaObject CWaterSimulationManagerInstanceHashTable igHashTable 0000
+igMetaObject igMetaObject CWaterSimulationManagerInstanceHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -31655,7 +31653,7 @@ igBoolMetaField 3333300001 0x00 0x0019 _fullAltDeco 0000 1
 igBoolMetaField 3333300001 0x00 0x001A _lightCore 0000
 igBoolMetaField 3333300001 0x00 0x001B _wowPow 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntityPoolStorageTable igHashTable 0000
+igMetaObject igMetaObject CEntityPoolStorageTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -31731,7 +31729,7 @@ igFloatMetaField 3333310001 0x00 0x0028 _totalDurationElapsed 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject igBoolCallbackDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableModelTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableModelTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -31876,11 +31874,11 @@ igFloatMetaField 3333310001 0x00 0x000C lineWidth 0000 1.000000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_toonFade 0000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_toonLineWidth 0000
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableSkinTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableSkinTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject CGuiInputSignalToIconMaterialTable igHashTable 0000
+igMetaObject igMetaObject CGuiInputSignalToIconMaterialTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 Signal 0x0010 _keys 0000
 igMetaEndObject
@@ -31963,7 +31961,7 @@ igVfxRangedCurveMetaField 3333310001 0x00 0x0098 _rotationRadius 0000
 igMetaEndObject
 igMetaObject igMetaObject CRaceParticipantLesserVillainList igObjectList CRaceParticipantLesserVillain 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringIntHashTable igHashTable 0000
+igMetaObject igMetaObject igStringIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -31986,7 +31984,7 @@ igEnumMetaField 3333310001 0x00 VariableDirection 0x000C _direction 0000
 igStringMetaField 3333310001 0x00 0101 0x0010 Direction 0000
 igIntMetaField 3333310001 0x00 0x0014 _externalId 0000 -1 
 igMetaEndObject
-igMetaObject igMetaObject igStringFloatHashTable igHashTable 0000
+igMetaObject igMetaObject igStringFloatHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -32083,7 +32081,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CGuiVehicleCustomizationData 0x0038 _u
 igHandleMetaField 3333310001 0x00 0001 igGuiProject 0x003C _customizationUIInstance 0000
 igObjectRefMetaField 3333310001 0x00 1011 CTimer 0x0040 _customizationUICooldownTimer 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringToBehaviorReflectionDataMap igHashTable 0000
+igMetaObject igMetaObject CStringToBehaviorReflectionDataMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -32124,7 +32122,7 @@ igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0064 _lockIcon 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0068 _lockFade 0000
 igObjectRefMetaField 3333300001 0x00 0000 CGuiListItemPortalMasterCategory 0x006C _listItem 0000
 igMetaEndObject
-igMetaObject igMetaObject CRaceParticipantCategorySetupTypeHashTable igHashTable 0000
+igMetaObject igMetaObject CRaceParticipantCategorySetupTypeHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceParticipantSetupType 0x0010 _keys 0000
 igMetaEndObject
@@ -32244,11 +32242,11 @@ igMetaObject igMetaObject CEncounterWaveList igObjectList CEncounterWave 0000
 igMetaEndObject
 igMetaObject igMetaObject igRuntimeAttribute igObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlatformControllerTable igHashTable 0000
+igMetaObject igMetaObject CPlatformControllerTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject CTurboTypeMaterialTable igHashTable 0000
+igMetaObject igMetaObject CTurboTypeMaterialTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EShapeshifterTurboType 0x0010 _keys 0000
 igMetaEndObject
@@ -32460,7 +32458,7 @@ igBoolMetaField 3333310001 0x00 0x000C _awardedPreviously 0000
 igMetaEndObject
 igMetaObject igMetaObject CTreasureChestCollectibleTrackerHandleList igSmartHandleList 0000
 igMetaEndObject
-igMetaObject igMetaObject CAccoladeDataIntHashTable igHashTable 0000
+igMetaObject igMetaObject CAccoladeDataIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -32494,7 +32492,7 @@ igObjectRefMetaField 3333310001 0x00 1011 CVehicleVfxHandlerDataList 0x0028 _eff
 igMetaEndObject
 igMetaObject igDotNetMetaObject CUnitTestComponentData CEntityComponentData 0000
 igMetaEndObject
-igMetaObject igMetaObject CSpaceHandleTable igHashTable 0000
+igMetaObject igMetaObject CSpaceHandleTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -33090,7 +33088,7 @@ igVec3fMetaField 3333310001 0x00 0x0014 _tangentIn 0000 100.000000,0.000000,0.00
 igVec3fMetaField 3333310001 0x00 0x0020 _tangentOut 0000 100.000000,0.000000,0.000000 
 igBoolMetaField 3333310001 0x00 0x002C _smooth 0000 1 
 igMetaEndObject
-igMetaObject igMetaObject CElementRGBColorTable igHashTable 0000
+igMetaObject igMetaObject CElementRGBColorTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igVec3fMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -33126,7 +33124,7 @@ igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_cloud_use_far_player_origin 0000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_cloud_fade_minimum 0000
 igMetaEndObject
-igMetaObject igMetaObject igPlatformRenderPassMap igHashTable 0000
+igMetaObject igMetaObject igPlatformRenderPassMap igHashTable 18 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 IG_GFX_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -33378,7 +33376,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0010 VFXBoltPoint 0000
 igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0014 VFXBoltPoint2 0000
 igHandleMetaField 3333310001 0x00 0001 CSound 0x0018 SFX 0001 igAddDependencyAttribute 1
 igBoolMetaField 3333310001 0x00 0x001C SFXFireAndForget 0000
-igStringMetaField 3333310001 0x00 0101 0x0020 Anim 0000 20
+igStringMetaField 3333310001 0x00 0101 0x0020 Anim 0000 434566666563744576656E7444617461
 igBoolMetaField 3333310001 0x00 0x0024 AnimLooping 0000
 igObjectRefMetaField 3333310001 0x00 0001 CTelegramList 0x0028 TelegramList 0000
 igMetaEndObject
@@ -33399,7 +33397,7 @@ igMetaEndObject
 igMetaObject igMetaObject CNetworkSocket igNetSocket 0000
 igRawRefMetaField 3333310001 0x00 0001 0x0008 _session 0000
 igMetaEndObject
-igMetaObject igMetaObject CDebugCombatTargetCountTable igHashTable 0000
+igMetaObject igMetaObject CDebugCombatTargetCountTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -33508,7 +33506,7 @@ igMetaEndObject
 igMetaObject igMetaObject CVehiclePersonalizationNeonSharedData CVehiclePersonalizationBaseSharedData 0000
 p 0x0000 igEnumMetaField 3333300001 0x00 EVehiclePersonalizationType 0x0008 _type 0000 4 
 igMetaEndObject
-igMetaObject igMetaObject CUsedLatchPointTable igHashTable 0000
+igMetaObject igMetaObject CUsedLatchPointTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -33801,7 +33799,7 @@ igHandleMetaField 3333310001 0x00 0001 igVfxEffect 0x0020 _backEffect 0001 igAdd
 igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0024 _backBoltPoint 0000
 igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0028 _backBoltPoint2 0000
 igMetaEndObject
-igMetaObject igMetaObject CProjectAssetManagerHashTable igHashTable 0000
+igMetaObject igMetaObject CProjectAssetManagerHashTable igHashTable 256 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EMemoryPoolID 0x0010 _keys 0000
 igMetaEndObject
@@ -33959,7 +33957,7 @@ igObjectRefArrayMetaField 3333310001 0x00 1011 CToonConstantBundle [0x00000002] 
 igObjectRefArrayMetaField 3333310001 0x00 1011 CVfxQualityBundle [0x00000002] 0x00C0 _vfxQualityBundle 0000
 igObjectRefArrayMetaField 3333310001 0x00 1011 CLightRigConstantBundle [0x00000002] 0x00C8 _mobileLightRig 0000
 igMetaEndObject
-igMetaObject igMetaObject COnAddContactRegistrationTable igHashTable 0000
+igMetaObject igMetaObject COnAddContactRegistrationTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -34129,7 +34127,7 @@ igMetaObject igDotNetMetaObject CPhysicalEntityHandleListEnumerator IEnumerator 
 igObjectRefMetaField 3333310001 0x00 0001 CPhysicalEntityHandleList 0x000C _list 0000
 igIntMetaField 3333310001 0x00 0x0010 _index 0000 -1 
 igMetaEndObject
-igMetaObject igMetaObject CNavmeshCacheTable igHashTable 0000
+igMetaObject igMetaObject CNavmeshCacheTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -34153,7 +34151,7 @@ igMetaEndObject
 igMetaObject igMetaObject CVfxDrawBoxLightCommandArrayMetaField CVfxDrawBoxLightCommandMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CElementStringTable igHashTable 0000
+igMetaObject igMetaObject CElementStringTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -34205,7 +34203,7 @@ igFloatMetaField 3333310001 0x00 0x0020 _maxPitchOffset 0000
 igFloatMetaField 3333310001 0x00 0x0024 _minFovOffset 0000
 igFloatMetaField 3333310001 0x00 0x0028 _maxFovOffset 0000
 igMetaEndObject
-igMetaObject igMetaObject CSplinePointMapHashTable igHashTable 0000
+igMetaObject igMetaObject CSplinePointMapHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -34252,7 +34250,7 @@ igStringMetaField 3333310011 0x00 0101 0x0020 _shortPlatformString 0000
 igMetaEndObject
 igMetaObject igMetaObject CBuildOptions igBuildOptions 0000
 igMetaEndObject
-igMetaObject igMetaObject CLinkDestinationTable igHashTable 0000
+igMetaObject igMetaObject CLinkDestinationTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -34275,7 +34273,7 @@ igIntMetaField 3333310001 0x00 0x0008 _numStars 0000
 igIntMetaField 3333310001 0x00 0x000C _numAccolades 0000
 igStringMetaField 3333310001 0x00 0101 0x0010 _singleAccoladeText 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringNonRefObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igStringNonRefObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -34387,7 +34385,7 @@ igFloatMetaField 3333310001 0x00 0x0044 _reorientMagnitude 0000 1.000000
 igFloatMetaField 3333310001 0x00 0x0048 _reorientdecayDelay 0000 0.500000 
 igFloatMetaField 3333310001 0x00 0x004C _reorientdecayDuration 0000 0.500000 
 igMetaEndObject
-igMetaObject igMetaObject igVCConstantHashTable igHashTable 0000
+igMetaObject igMetaObject igVCConstantHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -34990,13 +34988,13 @@ igUnsignedLongMetaField 3333310001 0x00 0x0018 _elapsedTicks 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CInteractionInteractedCooldownCondition CInteractionBaseCondition 0000
 igMetaEndObject
-igMetaObject igMetaObject CToyDataTable igHashTable 0000
+igMetaObject igMetaObject CToyDataTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject COnVehicleStatsChangedDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject igComponentDataTable igHashTable 0001 igMigrateFromAttribute 43456E74697479436F6D706F6E656E74446174615461626C65
+igMetaObject igMetaObject igComponentDataTable igHashTable NA 0001 igMigrateFromAttribute 43456E74697479436F6D706F6E656E74446174615461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -35130,7 +35128,7 @@ igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiBehaviorButtonCustom CGuiBehavior 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x005C _label 0000
-igStringMetaField 3333310001 0x00 0101 0x0060 _labelText 0000 746F776E2F746F776E5F7374617465312F746F776E5F737461746531
+igStringMetaField 3333310001 0x00 0101 0x0060 _labelText 0000 746F776E2F746F77
 igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x0064 _focusOnAnim 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x0068 _focusedLoopAnim 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiAnimationTag 0x006C _focusOffAnim 0000
@@ -35196,7 +35194,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CQuestInteractionScriptedEvent CQuestInteraction 0000
 igStringMetaField 3333310001 0x00 0101 0x002C _customEventName 0000
 igMetaEndObject
-igMetaObject igMetaObject CSoundListIntHashTable igHashTable 0000
+igMetaObject igMetaObject CSoundListIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -35254,8 +35252,8 @@ igObjectRefMetaField 3333310001 0x00 0000 CGameEntity 0x003C _scrollEntity 0000
 igTimeMetaField 3333310001 0x00 0x0040 _phaseTime 0000
 igFloatMetaField 3333310001 0x00 0x0044 _frameDuration 0000
 igEnumMetaField 3333310001 0x00 ECaptureSequenceStates 0x0048 _currentState 0000 9 
-igStringMetaField 3333310001 0x00 0100 0x004C _currentTrophyAnimation 0000 746F776E2F746F776E5F7374617465312F746F776E5F737461746531
-igStringMetaField 3333310001 0x00 0100 0x0050 _currentScrollAnimation 0000 746F776E2F746F776E5F7374617465312F746F776E5F737461746531
+igStringMetaField 3333310001 0x00 0100 0x004C _currentTrophyAnimation 0000 434265686176696F
+igStringMetaField 3333310001 0x00 0100 0x0050 _currentScrollAnimation 0000 434265686176696F
 igBoolMetaField 3333310001 0x00 0x0054 _toyNameShown 0000
 igMetaEndObject
 igMetaObject igMetaObject CGuiEventLeaderBoardWidget igGuiEvent 0000
@@ -35615,7 +35613,7 @@ igMetaObject igMetaObject COverrideCameraBlendList igObjectList COverrideCameraB
 igMetaEndObject
 igMetaObject igDotNetMetaObject CScriptModel Object 0000
 igObjectRefMetaField 3333300001 0x00 0001 CRigidModelInstance 0x000C _model 0000
-igStringMetaField 3333310001 0x00 0101 0x0010 _modelName 0001 CBuildDependencyAttribute 6D6F64656C733A2F25732E69677A3B6D6F64656C733A2F25732E686B78 54686973206F626A656374206973206F62736F6C657465
+igStringMetaField 3333310001 0x00 0101 0x0010 _modelName 0001 CBuildDependencyAttribute 6D6F64656C733A2F25732E69677A3B6D6F64656C733A2F25732E686B78 54686973206F626A
 igMetaEndObject
 igMetaObject igMetaObject igExternalObjectEntry igDirEntry 0000
 igStringMetaField 3333310001 0x00 0101 0x0014 _resolveNamespace 0000
@@ -35651,7 +35649,7 @@ igUnsignedIntMetaField 3333310001 0x00 0x0018 _activeNodesHash 0001 igNetReplica
 igMetaEndObject
 igMetaObject igMetaObject igOverrideAttrSet igAttrSet 0000
 igMetaEndObject
-igMetaObject igMetaObject CElementMaterialTable igHashTable 0000
+igMetaObject igMetaObject CElementMaterialTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -35794,7 +35792,7 @@ igMetaEndObject
 igMetaObject igMetaObject igVfxCurveInputRandomOperator igVfxOperator 0000
 igEnumMetaField 3333310001 0x00 OperatorCurveOutput 0x000C _output 0000 4 
 igMetaEndObject
-igMetaObject igMetaObject CUpgradeableSoundTable igHashTable 0000
+igMetaObject igMetaObject CUpgradeableSoundTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -35991,7 +35989,7 @@ igObjectRefMetaField 3333310001 0x00 1011 CCutsceneStagingData 0x000C _stagingDa
 igMetaEndObject
 igMetaObject igMetaObject CWaypointList igObjectList CWaypoint 0000
 igMetaEndObject
-igMetaObject igMetaObject CPassIdsListHashTable igHashTable 0000
+igMetaObject igMetaObject CPassIdsListHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -36133,7 +36131,7 @@ igMetaEndObject
 igMetaObject igMetaObject igVfxRotateAxisAngleOperator igVfxRotateAxisAngleBaseOperator 0000
 igFloatMetaField 3333310001 0x00 0x0020 _angle 0000
 igMetaEndObject
-igMetaObject igMetaObject CVramBudgetMap igHashTable 0000
+igMetaObject igMetaObject CVramBudgetMap igHashTable 17 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 IG_CORE_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -36282,7 +36280,7 @@ igMetaObject igDotNetMetaObject CWavePoolSplashWaveInstance igObject 0000
 igHandleMetaField 3333310001 0x00 0001 CEntity 0x0008 _owner 0000
 igRawRefMetaField 3333310001 0x00 0001 0x000C _splashInstance 0000
 igMetaEndObject
-igMetaObject igMetaObject CButtonListenerInstanceTable igHashTable 0000
+igMetaObject igMetaObject CButtonListenerInstanceTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPlayerId 0x0010 _keys 0000
 igMetaEndObject
@@ -36471,7 +36469,7 @@ igMetaObject igDotNetMetaObject CGuiTimerComponentData CEntityComponentData 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject COnFirstMatchingPowerzoneEnteredDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject igNetAddressPeerTable igHashTable 0000
+igMetaObject igMetaObject igNetAddressPeerTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -36632,7 +36630,7 @@ igFloatMetaField 3333310001 0x00 0x0038 _transitionInTimeSecs 0000 0.500000
 igFloatMetaField 3333310001 0x00 0x003C _transitionOutTimeSecs 0000 1.500000 
 igHandleMetaField 3333310001 0x00 0001 igObjectPool 0x0040 _aiRespawnPositionsPool 0000
 igMetaEndObject
-igMetaObject igMetaObject CVfxCooldownTimestampTable igHashTable 0000
+igMetaObject igMetaObject CVfxCooldownTimestampTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igTimeMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -36659,7 +36657,7 @@ igHandleMetaField 3333310001 0x00 0001 igVfxEffect 0x0014 _partSnapEffect 0001 i
 igBoolMetaField 3333310001 0x00 0x0018 _sequential 0000
 igFloatMetaField 3333310001 0x00 0x001C _timeBetweenDummySpawnsSecs 0000 0.100000 
 igMetaEndObject
-igMetaObject igMetaObject CRaceParticipantHandlingHashTable igHashTable 0000
+igMetaObject igMetaObject CRaceParticipantHandlingHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -37001,7 +36999,7 @@ igMetaObject igDotNetMetaObject COnEnterInteractionRadius CEntityMessage 0000
 igMetaEndObject
 igMetaObject igMetaObject CCEShowComboHud CCombatNodeEvent 0000
 igMetaEndObject
-igMetaObject igMetaObject CIntCharacterAttributesMap igHashTable 0000
+igMetaObject igMetaObject CIntCharacterAttributesMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -37283,7 +37281,7 @@ igMetaObject igMetaObject MulticastDelegateHelper igObject 0000
 igStaticMetaField 3333300000 0x00 igUnsignedIntMetaField 3333310100 0x00 0x0000 _invokeMethodHash 0000
 igStaticMetaField 3333300000 0x00 igNameMetaField 3333310100 0x00 0x0000 _invokeMethodName 0000
 igMetaEndObject
-igMetaObject igMetaObject igRawRefStringHashTable igHashTable 0000
+igMetaObject igMetaObject igRawRefStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -37390,7 +37388,7 @@ igSizeTypeMetaField 3333310001 0x00 0x0014 _fileSizeMax 0000
 igRawRefMetaField 3333310001 0x00 0001 0x0018 _fileBuffer 0000
 igStructMetaField 3333310000 0x00 0x0004 0x0004 0x001C _downloadFileTask 0000
 igMetaEndObject
-igMetaObject igMetaObject CElementAnimationTagTable igHashTable 0000
+igMetaObject igMetaObject CElementAnimationTagTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -37450,7 +37448,7 @@ igEnumMetaField 3333310001 0x00 igGuiAnimationLoopMode 0x0030 _loopMode 0000
 igFloatMetaField 3333300001 0x00 0x0034 _frame 0000
 igFloatMetaField 3333300001 0x00 0x0038 _velocity 0000 1.000000 
 igMetaEndObject
-igMetaObject igMetaObject CStringResourcePrecacherHashTable igHashTable 0000
+igMetaObject igMetaObject CStringResourcePrecacherHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -37727,7 +37725,7 @@ igMetaObject igMetaObject CGuiListItemConverterPortalMasterPerkNavigator igGuiLi
 igMetaEndObject
 igMetaObject igMetaObject CVehicleGroundSuspensionDataList igObjectList CVehicleGroundSuspensionData 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehiclePersonalizationColorSchemeDataTable igHashTable 0000
+igMetaObject igMetaObject CVehiclePersonalizationColorSchemeDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -37834,7 +37832,7 @@ igStringMetaField 3333310001 0x00 0101 0x0018 _newStatisticString 0000
 igMetaEndObject
 igMetaObject igMetaObject CSkystonesSmashCardCollectibleTrackerHandleListList igObjectList CSkystonesSmashCardCollectibleTrackerHandleList 0000
 igMetaEndObject
-igMetaObject igMetaObject CCharacterNameToyDataTable igHashTable 0000
+igMetaObject igMetaObject CCharacterNameToyDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -37887,7 +37885,7 @@ igMetaObject igMetaObject igDebugGeometryDrawCall igDrawCall 0000
 igRawRefMetaField 3333310001 0x00 0001 0x000C _data 0000
 igObjectRefMetaField 3333310001 0x00 0000 igMemoryCommandStream 0x0010 _state 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorDataTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0010 _keys 0000
 igMetaEndObject
@@ -38018,7 +38016,7 @@ igBoolMetaField 3333310001 0x00 0x0008 _isSuperCharged 0000
 igBoolMetaField 3333310001 0x00 0x0009 _isInVehicleSection 0000
 igBoolMetaField 3333310001 0x00 0x000A _isDriver 0000
 igMetaEndObject
-igMetaObject igMetaObject CDebugProjectAssetManagerHashTable igHashTable 0000
+igMetaObject igMetaObject CDebugProjectAssetManagerHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -38063,7 +38061,7 @@ igVec4ucMetaField 3333310001 0x00 0x005C _valueColor 0000
 igObjectRefMetaField 3333310001 0x00 1011 igDebugUiInputDrag 0x0060 _drag 0000
 igFloatMetaField 3333310001 0x00 0x0064 _startValue 0000
 igMetaEndObject
-igMetaObject igMetaObject CZoneInfoMaterialLinkTable igHashTable 0000
+igMetaObject igMetaObject CZoneInfoMaterialLinkTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -38254,7 +38252,7 @@ igMetaEndObject
 igMetaObject igMetaObject CGuiEventInfoMessageSetSceneName igGuiEvent 0000
 igStringMetaField 3333310001 0x00 0101 0x0008 _cutsceneName 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntityGroupToEntityListHashTable igHashTable 0000
+igMetaObject igMetaObject CEntityGroupToEntityListHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EEntityGroup 0x0010 _keys 0000
 igMetaEndObject
@@ -38585,7 +38583,7 @@ igMetaObject igMetaObject CGuiEventRacingTeamOpenBoostUi igGuiEvent 0000
 igEnumMetaField 3333310001 0x00 EVehicleId 0x0008 _vehicleId 0000 -1 
 igEnumMetaField 3333310001 0x00 EPlayerId 0x000C _playerId 0000 -1 
 igMetaEndObject
-igMetaObject igMetaObject CPlayerAttackDataTable igHashTable 0000
+igMetaObject igMetaObject CPlayerAttackDataTable igHashTable 3 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EPlayerAttackType 0x0010 _keys 0000
 igMetaEndObject
@@ -38998,11 +38996,11 @@ igMetaEndObject
 igMetaObject igMetaObject CRaceAvoidanceDirectionList igDataList 0000
 p 0x0002 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceAiAvoidanceDirection 0x0010 _data 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringInsensitiveIntHashTable igHashTable 0000
+igMetaObject igMetaObject igStringInsensitiveIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject CPlatformMaterialTable igHashTable 0000
+igMetaObject igMetaObject CPlatformMaterialTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 IG_CORE_PLATFORM 0x0010 _keys 0000
 igMetaEndObject
@@ -39039,7 +39037,7 @@ igEnumMetaField 3333310001 0x00 EPlayerId 0x0038 _player 0000
 igObjectRefMetaField 3333300001 0x00 1011 CPlayerStateCallbackObject 0x003C _stateKeyCallback 0000
 igBoolMetaField 3333300001 0x00 0x0040 _prerequisiteRegistered 0000
 igMetaEndObject
-igMetaObject igMetaObject CTimeActionPackGoalStarHashTable igHashTable 0000
+igMetaObject igMetaObject CTimeActionPackGoalStarHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igTimeMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EActionPackStars 0x0010 _keys 0000
 igMetaEndObject
@@ -39166,7 +39164,7 @@ igMetaEndObject
 igMetaObject igMetaObject SOverrideSteeringDataArrayMetaField SOverrideSteeringDataMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntStringHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -39241,7 +39239,7 @@ igHandleMetaField 3333310001 0x00 0001 igMaterial 0x000C _portrait 0000
 igHandleMetaField 3333310001 0x00 0001 igMaterial 0x0010 _vehiclePortrait 0000
 igBoolMetaField 3333310001 0x00 0x0014 _isLocal 0000
 igMetaEndObject
-igMetaObject igMetaObject CChannelGroupStringHashTable igHashTable 0000
+igMetaObject igMetaObject CChannelGroupStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -39505,7 +39503,7 @@ igMetaObject igMetaObject CVolumeGroupOverride igObject 0000
 igHandleMetaField 3333311001 0x00 0001 CChannelGroup 0x0008 _channelGroup 0000
 igFloatMetaField 3333310001 0x00 0x000C _volume 0000 1.000000 
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedLongNonRefCountedObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedLongNonRefCountedObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -40257,7 +40255,7 @@ igStringMetaField 3333310001 0x00 0101 0x0020 _fieldName 0000
 igStringMetaField 3333310001 0x00 0101 0x0024 _fieldType 0000
 igStringMetaField 3333310001 0x00 0101 0x0028 _valueString 0000
 igMetaEndObject
-igMetaObject igMetaObject CStringToHavokAllocationListTable igHashTable 0000
+igMetaObject igMetaObject CStringToHavokAllocationListTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -40399,7 +40397,7 @@ igStringMetaField 3333310001 0x00 0101 0x0058 _bounceState 0000 57435F426F756E63
 igStringMetaField 3333310001 0x00 0101 0x005C _landState 0000 4C616E64
 igStringMetaField 3333310001 0x00 0101 0x0060 _landRunState 0000 4C616E6452756E
 igMetaEndObject
-igMetaObject igMetaObject igSplineFloatKeyframeTrackTable igHashTable 0000
+igMetaObject igMetaObject igSplineFloatKeyframeTrackTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -40409,7 +40407,7 @@ igMetaEndObject
 igMetaObject igMetaObject igDataPumpVec4fSource igDataPumpSource 0000
 igObjectRefMetaField 3333310001 0x00 0001 igVec4fList 0x001C _v4fList 0000
 igMetaEndObject
-igMetaObject igMetaObject CRacerDistanceNotifierLevelTable igHashTable 0000
+igMetaObject igMetaObject CRacerDistanceNotifierLevelTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -40624,7 +40622,7 @@ igMetaEndObject
 igMetaObject igMetaObject igVertexBlendStateAttr igVisualAttribute 0000
 igBoolMetaField 3333310001 0x00 0x000D _enabled 0000
 igMetaEndObject
-igMetaObject igMetaObject DotNetVTable igHashTable 0000
+igMetaObject igMetaObject DotNetVTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -40970,7 +40968,7 @@ igRangedFloatMetaField 3333310001 0x00 0x0080 _followRepositionDelay 0000 60.000
 igRangedFloatMetaField 3333310001 0x00 0x0088 _followRepositionTime 0000 60.000000 
 igEnumMetaField 3333310001 0x00 igEaseType 0x0090 _followRepositionEase 0000 2 
 igMetaEndObject
-igMetaObject igMetaObject igGuiEventTable igHashTable 0000
+igMetaObject igMetaObject igGuiEventTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -41572,7 +41570,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject igUpdater igObject 0000
 igObjectRefMetaField 3333300001 0x00 1011 igUpdateableList 0x0008 _items 0000
 igMetaEndObject
-igMetaObject igMetaObject CAttackNumberTimestampTable igHashTable 0000
+igMetaObject igMetaObject CAttackNumberTimestampTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igTimeMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -41738,7 +41736,7 @@ igMetaObject igMetaObject CGuiEventRacingCloseSubMenuDone igGuiEvent 0000
 igMetaEndObject
 igMetaObject igMetaObject COnTokenAcquiredEventList igEventLinkedList 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringObjectDirectoryHashTable igHashTable 0000
+igMetaObject igMetaObject igStringObjectDirectoryHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -41862,7 +41860,7 @@ igMetaObject igDotNetMetaObject CProjectileSpawnWithReticleEvent CProjectileSpaw
 igVec3fMetaField 3333310001 0x00 0x0038 _targetPosition 0001 igNetReplicateAttribute MISSING_ATTR
 igEnumMetaField 3333310001 0x00 ELobbedTargettingMode 0x0044 _lobbedTargetMode 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CControllerVibrationDataPresetTable igHashTable 0000
+igMetaObject igMetaObject CControllerVibrationDataPresetTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EControllerVibrationPreset 0x0010 _keys 0000
 igMetaEndObject
@@ -42035,11 +42033,11 @@ igFloatMetaField 3333310001 0x00 0x0024 _bias 0000 1.000000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_ig_ao_parameters 0000
 igStaticMetaField 3333300000 0x00 igStructMetaField 3333300100 0x00 0x0001 0x0000 0x0000 _resource_ig_ao_tuning_data 0000
 igMetaEndObject
-igMetaObject igMetaObject CCollectibleTypeFloatHashTable igHashTable 0000
+igMetaObject igMetaObject CCollectibleTypeFloatHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 ECollectibleType 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject igNonRefCountedConstObjectIntHashTable igHashTable 0000
+igMetaObject igMetaObject igNonRefCountedConstObjectIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -42138,7 +42136,7 @@ igObjectRefMetaField 3333310001 0x00 0001 igCallbackDelegate 0x0010 _onResultsSc
 igMetaEndObject
 igMetaObject igDotNetMetaObject COnVehicleSpawnedDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleStatStringHashTable igHashTable 0000
+igMetaObject igMetaObject CVehicleStatStringHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleStat 0x0010 _keys 0000
 igMetaEndObject
@@ -42151,7 +42149,7 @@ igMetaEndObject
 igMetaObject igMetaObject igAtomicSortKeyValueListArrayMetaField igAtomicSortKeyValueListMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CRacingRacingTypeZonesTable igHashTable 0000
+igMetaObject igMetaObject CRacingRacingTypeZonesTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceType 0x0010 _keys 0000
 igMetaEndObject
@@ -42162,7 +42160,7 @@ igMetaEndObject
 igMetaObject igMetaObject CGuiListItemLegendaryTreasure igGuiListItem 0000
 igHandleMetaField 3333310001 0x00 0001 CLegendaryTreasureCollectibleTracker 0x0038 _collectibleTracker 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleTypeCameraHashTable igHashTable 0000
+igMetaObject igMetaObject CVehicleTypeCameraHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -42277,7 +42275,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CEntityMessage 0x0040 HardKillMessage 
 igBoolMetaField 3333310001 0x00 0x0044 KillVfxOnDisable 0000
 igBoolMetaField 3333310001 0x00 0x0045 HardKillOnDisable 0000
 igMetaEndObject
-igMetaObject igMetaObject CMinigameCompletionAccoladeIntHashTable igHashTable 0000
+igMetaObject igMetaObject CMinigameCompletionAccoladeIntHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECompletionAccolade 0x0010 _keys 0000
 igMetaEndObject
@@ -42305,7 +42303,7 @@ igObjectRefMetaField 3333300001 0x00 0001 CEntityPositionSlider 0x0020 _teleport
 igBoolMetaField 3333300001 0x00 0x0024 _isTeleporting 0000
 igObjectRefMetaField 3333300001 0x00 0001 CChangeRequest 0x0028 _invulnerabilityRequest 0000
 igMetaEndObject
-igMetaObject igMetaObject CIntIgFxMaterialHandleHashTable igHashTable 0000
+igMetaObject igMetaObject CIntIgFxMaterialHandleHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -42353,8 +42351,8 @@ igRawRefMetaField 3333310001 0x00 0001 0x0008 _sound 0000
 igRawRefMetaField 3333310001 0x00 0001 0x000C _channel 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject KeyValuePair_2 ValueType 0000
-DotNetDataMetaField 3333310001 0x00 0x0010 _key 0000 0.000000,0.000000,1.0000 
-DotNetDataMetaField 3333310001 0x00 0x0028 _value 0000 0.000000,0.000000,1.0000 
+DotNetDataMetaField 3333310001 0x00 0x0010 _key 0000 0.000000,0.000000,1.000000 
+DotNetDataMetaField 3333310001 0x00 0x0028 _value 0000 0.000000,0.000000,1.000000 
 igMetaEndObject
 igMetaObject igMetaObject CDotNetEntityMessageComparerArrayMetaField CDotNetEntityMessageComparerMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
@@ -42382,7 +42380,7 @@ igObjectRefMetaField 3333310001 0x00 0001 CLocalizedLine 0x0008 _title 0000
 igObjectRefMetaField 3333310001 0x00 0001 CLocalizedLine 0x000C _description 0000
 igObjectRefMetaField 3333310001 0x00 0001 CEntityComponentData 0x0010 _dareComponent 0000
 igMetaEndObject
-igMetaObject igMetaObject igNameNonRefObjectHashTable igHashTable 0000
+igMetaObject igMetaObject igNameNonRefObjectHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igNameMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -42510,7 +42508,7 @@ igBitFieldMetaField 3333310000 0x00 _motionSpaceFlags igEnumMetaField 3333310000
 igMetaEndObject
 igMetaObject igDotNetMetaObject igGuiProjectCallbackDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject CButtonAliasMapping igHashTable 0000
+igMetaObject igMetaObject CButtonAliasMapping igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 XBUTTON 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 XBUTTON 0x0010 _keys 0000
 igMetaEndObject
@@ -42527,7 +42525,7 @@ igEnumMetaField 3333310001 0x00 ETargetableVehicleModes 0x001C _targetableVehicl
 igMetaEndObject
 igMetaObject igDotNetMetaObject Void Object 0001 igDotNetElementTypeAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CAttackImmunityTimestampTable igHashTable 0000
+igMetaObject igMetaObject CAttackImmunityTimestampTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igTimeMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -42546,7 +42544,7 @@ igMetaObject igDotNetMetaObject CBlendedTakeHitBehaviorData CBehaviorData 0000
 igFloatMetaField 3333310001 0x00 0x0014 _takeHitBlendWeight 0001 BehaviorVariable MISSING_ATTR
 igRawRefMetaField 3333310001 0x00 0001 0x0018 _blendClipGenerator 0000
 igMetaEndObject
-igMetaObject igMetaObject igComponentTable igHashTable 0000
+igMetaObject igMetaObject igComponentTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -42623,11 +42621,11 @@ igMetaObject igDotNetMetaObject CVfxWaypointSpawnMessage CEntityMessage 0000
 igObjectRefMetaField 3333310001 0x00 0001 CVfxWaypointHandleList 0x001C _waypointList 0000
 igHandleMetaField 3333310001 0x00 0001 igVfxEffect 0x0020 _vfx 0001 igAddDependencyAttribute 1
 igMetaEndObject
-igMetaObject igMetaObject igMetaObjectBindingTable igHashTable 0000
+igMetaObject igMetaObject igMetaObjectBindingTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntMatrix44fHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntMatrix44fHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igMatrix44fMetaField 3333310000 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -42905,7 +42903,7 @@ igIntMetaField 3333310001 0x00 0x0010 _tag 0000 -1
 igBoolMetaField 3333310001 0x00 0x0014 _breakOnToken 0000
 igStaticMetaField 3333300000 0x00 igIntMetaField 3333310100 0x00 0x0000 _currentTag 0000
 igMetaEndObject
-igMetaObject igMetaObject CPortalMasterPerkHandleFloatDictionary igHashTable 0000
+igMetaObject igMetaObject CPortalMasterPerkHandleFloatDictionary igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -42943,7 +42941,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CMatchmakingStartSearchEvent CNetworkEventObject 0000
 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _actionPacksManager 0001 igNetReplicateAttribute MISSING_ATTR
 igMetaEndObject
-igMetaObject igMetaObject CTimeActionPackGoalRaceDifficultyHashTable igHashTable 0000
+igMetaObject igMetaObject CTimeActionPackGoalRaceDifficultyHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igTimeMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceDifficultyLevel 0x0010 _keys 0000
 igMetaEndObject
@@ -43606,7 +43604,7 @@ igMetaEndObject
 igMetaObject igMetaObject CBoltedModelArrayMetaField CBoltedModelMetaField 0000
 igIntMetaField 3333300001 0x00 0x002C _num 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehicleTypeMaterialTable igHashTable 0000
+igMetaObject igMetaObject CVehicleTypeMaterialTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleType 0x0010 _keys 0000
 igMetaEndObject
@@ -43620,7 +43618,7 @@ igMetaEndObject
 igCompoundField
 igSizeTypeMetaField 3333310000 0x00 0x0000 _resource 0000
 igEndCompoundField
-igMetaObject igMetaObject CAICombatFormationDataTable igHashTable 0000
+igMetaObject igMetaObject CAICombatFormationDataTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -43815,7 +43813,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CAccoladeCompletionEvent CAccoladeEvent 0000
 igObjectRefMetaField 3333300001 0x00 0001 CAccolade 0x000C _accolade 0000
 igMetaEndObject
-igMetaObject igMetaObject CIntPortalMasterPerkHandleHashTable igHashTable 0000
+igMetaObject igMetaObject CIntPortalMasterPerkHandleHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -44009,7 +44007,7 @@ igBitFieldMetaField 3333311000 0x00 _surfaceFlags igBoolMetaField 3333310001 0x0
 igBitFieldMetaField 3333311000 0x00 _surfaceFlags igBoolMetaField 3333310001 0x00 0x06 0x01 0x0012 _forceVehicleBlockingContacts 0000
 igBitFieldMetaField 3333311000 0x00 _surfaceFlags igBoolMetaField 3333310001 0x00 0x07 0x01 0x0012 _actionPackGroundIgnoreBlocking 0000 1 
 igMetaEndObject
-igMetaObject igMetaObject CBaseStateTable igHashTable 0000
+igMetaObject igMetaObject CBaseStateTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -44132,7 +44130,7 @@ igBitFieldMetaField 3333310000 0x00 _cylinderFlags igEnumMetaField 3333310000 0x
 igBitFieldMetaField 3333310000 0x00 _cylinderFlags igEnumMetaField 3333310000 0x00 ReferenceFrame 0x07 0x04 0x002C _endpoint2 0000 0 
 igBitFieldMetaField 3333310000 0x00 _cylinderFlags igBoolMetaField 3333310001 0x00 0x0B 0x01 0x002C _alignNormalsToCap 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntGroupRefHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntGroupRefHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -44241,7 +44239,7 @@ igMetaObject igDotNetMetaObject CInteractionAlertedToIdleTransition CInteraction
 igMetaEndObject
 igMetaObject igMetaObject igGuiFloatTrack igGuiFieldTrack 0001 igMigrateFromAttribute 69674A75696365466C6F6174547261636B
 igMetaEndObject
-igMetaObject igMetaObject CStringPauseMenuConfigurationHashTable igHashTable 0000
+igMetaObject igMetaObject CStringPauseMenuConfigurationHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -44340,7 +44338,7 @@ igVectorMetaField 3333310001 0x01 igIntMetaField 3333310001 0x00 0000 0x0020 _se
 igVectorMetaField 3333310001 0x01 igIntMetaField 3333310001 0x00 0000 0x002C _receiveTotals 0000
 igVectorMetaField 3333310001 0x01 igStringMetaField 3333310001 0x00 0101 0001 0x0038 _filterKeys 0000
 igMetaEndObject
-igMetaObject igMetaObject CButtonToAnalogStickDirectionTable igHashTable 0000
+igMetaObject igMetaObject CButtonToAnalogStickDirectionTable igHashTable 30 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 XBUTTON 0x0010 _keys 0000
 igMetaEndObject
@@ -44394,7 +44392,7 @@ igMetaObject igMetaObject CStoryScrollCollectibleTrackerHandleList igSmartHandle
 igMetaEndObject
 igMetaObject igMetaObject CAccoladeGoalProgressList igObjectList CAccoladeGoalProgress 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedIntUnsignedIntHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedIntUnsignedIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -44553,7 +44551,7 @@ igFloatMetaField 3333310001 0x00 0x0034 _minAttackDistance 0000 1000.000000
 igStringMetaField 3333310001 0x00 0101 0x0038 _attackEvent 0000 41747461636B4172656E61
 igStringMetaField 3333310001 0x00 0101 0x003C _attackState 0000 41747461636B4172656E61
 igMetaEndObject
-igMetaObject igMetaObject CCharacterAttributeMaterialHashTable igHashTable 0000
+igMetaObject igMetaObject CCharacterAttributeMaterialHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ECharacterAttribute 0x0010 _keys 0000
 igMetaEndObject
@@ -44566,7 +44564,7 @@ igMetaObject igMetaObject CAccoladeGameStateGoalData CAccoladeGoalData 0000
 igObjectRefMetaField 3333310001 0x00 1011 CGameStateKeyValuePair 0x000C _keyValuePair 0000
 igEnumMetaField 3333310001 0x00 EStateValueCompare 0x0010 _compareType 0000
 igMetaEndObject
-igMetaObject igMetaObject CTargetLockReticleTable igHashTable 0000
+igMetaObject igMetaObject CTargetLockReticleTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -44678,7 +44676,7 @@ igObjectRefMetaField 3133310001 0x00 0000 igObject 0x0008 _object 0000
 igObjectRefMetaField 3133310001 0x00 0000 igGuiAnimation 0x000C _animation 0000
 igVectorMetaField 3333310001 0x01 igObjectRefMetaField 3333310001 0x00 0001 igGuiTrackBinding 0001 0x0010 _trackBindings 0000
 igMetaEndObject
-igMetaObject igMetaObject CTfbToyTypeTypeCSkystonesSmashCardCollectibleTrackerRefHashTable igHashTable 0000
+igMetaObject igMetaObject CTfbToyTypeTypeCSkystonesSmashCardCollectibleTrackerRefHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -44723,7 +44721,7 @@ igMetaObject igMetaObject CGuiBehaviorContentDeploymentDownloadScreen CGuiBehavi
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x005C _messageText 0000
 igObjectRefMetaField 1333310001 0x00 0000 igGuiPlaceable 0x0060 _progressText 0000
 igMetaEndObject
-igMetaObject igMetaObject CEntitySpawnedEffectTable igHashTable 0000
+igMetaObject igMetaObject CEntitySpawnedEffectTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -44993,7 +44991,7 @@ igFloatMetaField 3333310001 0x00 0x0020 _aiLookAheadDistance 0000 3000.000000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CMagnetNodes igObject 0000
 igMetaEndObject
-igMetaObject igMetaObject CPoolIDToHavokAllocationsTable igHashTable 0000
+igMetaObject igMetaObject CPoolIDToHavokAllocationsTable igHashTable 256 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EMemoryPoolID 0x0010 _keys 0000
 igMetaEndObject
@@ -45002,7 +45000,7 @@ igFloatMetaField 3333311001 0x00 0x0010 _accelerationTimeToMaxForwardSpeed 0000 
 igFloatMetaField 3333311001 0x00 0x0014 _airAccelerationTimeToMaxForwardSpeed 0000 1.000000 
 igFloatMetaField 3333310001 0x00 0x0018 _arenaModeAccelerationTimeScale 0000 1.000000 
 igMetaEndObject
-igMetaObject igMetaObject CVehicleStatMaterialHashTable igHashTable 0000
+igMetaObject igMetaObject CVehicleStatMaterialHashTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleStat 0x0010 _keys 0000
 igMetaEndObject
@@ -45255,7 +45253,7 @@ igMetaObject igDotNetMetaObject igGraphEventMessage igMessage 0000
 igUnsignedIntMetaField 3333310001 0x00 0x0010 _eventId 0000
 DotNetDataMetaField 3333310001 0x00 0x0018 _parameters 0000 1000.000000 
 igMetaEndObject
-igMetaObject igMetaObject CPowerUpGlobalTimerTable igHashTable 0000
+igMetaObject igMetaObject CPowerUpGlobalTimerTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehiclePowerUpElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -45277,11 +45275,11 @@ igStringMetaField 3333310001 0x00 0101 0x000C _abilityTreeTitle 0001 igLocalizeA
 igMetaEndObject
 igMetaObject igDotNetMetaObject igIntCallbackDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject CGuiButtonLegendTable igHashTable 0001 igMigrateFromAttribute 434A75696365427574746F6E4C6567656E645461626C65
+igMetaObject igMetaObject CGuiButtonLegendTable igHashTable 0 0001 igMigrateFromAttribute 434A75696365427574746F6E4C6567656E645461626C65
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EButtonLegendButton 0x0010 _keys 0000
 igMetaEndObject
-igMetaObject igMetaObject igObjectPoolManagerTable igHashTable 0000
+igMetaObject igMetaObject igObjectPoolManagerTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -45505,7 +45503,7 @@ igMetaEndObject
 igMetaObject igMetaObject CBehaviorDockingGenerator CBehaviorNode 0000
 igRawRefMetaField 3333300001 0x00 0001 0x000C _havokDockingGeneratorTemplate 0000
 igMetaEndObject
-igMetaObject igMetaObject CPointOfInterestTypeToComponentMap igHashTable 0000
+igMetaObject igMetaObject CPointOfInterestTypeToComponentMap igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EPointOfInterest 0x0010 _keys 0000
 igMetaEndObject
@@ -45538,7 +45536,7 @@ igMetaEndObject
 igMetaObject igMetaObject CStateValueFloat CStateValue 0000
 igFloatMetaField 3333310001 0x00 0x0008 _value 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorActivatorNodeMap igHashTable 0000
+igMetaObject igMetaObject CBehaviorActivatorNodeMap igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -45729,7 +45727,7 @@ igStringMetaField 3333310001 0x00 0101 0x0014 _price 0000
 igStringMetaField 3333310001 0x00 0101 0x0018 _productIdentifier 0000
 igStringMetaField 3333310001 0x00 0101 0x001C _sku 0000
 igMetaEndObject
-igMetaObject igMetaObject CDriverChallengeAiCountToyIdHashTable igHashTable 0000
+igMetaObject igMetaObject CDriverChallengeAiCountToyIdHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -45832,7 +45830,7 @@ igBoolMetaField 3333310001 0x00 0x0038 _initialState 0000
 igBoolMetaField 3333310001 0x00 0x0039 _lastInitialState 0000
 igBoolMetaField 3333310001 0x00 0x003A _state 0000
 igMetaEndObject
-igMetaObject igMetaObject CVehiclesStatsBySourceTable igHashTable 0000
+igMetaObject igMetaObject CVehiclesStatsBySourceTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EVehicleStatSource 0x0010 _keys 0000
 igMetaEndObject
@@ -45869,7 +45867,7 @@ igStringMetaField 3333310001 0x00 0101 0x0040 _impactEvent 0000 44726976655F496D
 igFloatMetaField 3333310001 0x00 0x0044 _impactSpeedThreshold 0000 300.000000 
 igFloatMetaField 3333310001 0x00 0x0048 _impactCooldown 0000 2.000000 
 igMetaEndObject
-igMetaObject igMetaObject CDriverChallengeActionPackGoalHashTable igHashTable 0000
+igMetaObject igMetaObject CDriverChallengeActionPackGoalHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 kTfbSpyroTag_ToyType 0x0010 _keys 0000
 igMetaEndObject
@@ -45987,7 +45985,7 @@ igMetaEndObject
 igMetaObject igMetaObject igVfxCylindricalSpawnLocationPool igPool 0000
 igRawRefMetaField 3333310001 0x00 0001 0x002C _resetCallback 0000
 igMetaEndObject
-igMetaObject igMetaObject CMobileGameStatBoostTable igHashTable 0000
+igMetaObject igMetaObject CMobileGameStatBoostTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EMobileGame 0x0010 _keys 0000
 igMetaEndObject
@@ -46230,7 +46228,7 @@ igSizeTypeMetaField 3333300001 0x00 0x0018 _resource 0000
 igMetaEndObject
 igMetaObject igMetaObject CToyUsageOnPlatformList igObjectList CToyUsageOnPlatform 0000
 igMetaEndObject
-igMetaObject igMetaObject igUnsignedLongRawRefHashTable igHashTable 0000
+igMetaObject igMetaObject igUnsignedLongRawRefHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedLongMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -46297,7 +46295,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CGuiEventConfigureQuestWidget igGuiEvent 0000
 igHandleMetaField 3333310001 0x00 0001 CQuest 0x0008 _quest 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntIntHashTable igHashTable 0000
+igMetaObject igMetaObject igIntIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -46312,7 +46310,7 @@ p 0x000F igFloatMetaField 3333310001 0x00 0x005C _cloudCoverTileSize 0000 10000.
 p 0x0010 igFloatMetaField 3333310001 0x00 0x0060 _cloudCoverSpeed 0000 30.000000 
 p 0x0011 igVec2fMetaField 3333310001 0x00 0x0064 _cloudCoverDirection 0000 1.000000,0.000000 
 igMetaEndObject
-igMetaObject igMetaObject CRaceTypeMaterialLinkTable igHashTable 0000
+igMetaObject igMetaObject CRaceTypeMaterialLinkTable igHashTable 0 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 ERaceType 0x0010 _keys 0000
 igMetaEndObject
@@ -46331,7 +46329,7 @@ igVfxRangedCurveMetaField 3333310001 0x00 0x00B8 _z 0000 1.000000,0.000000
 igEnumMetaField 3333310001 0x00 OperatorCurveInput 0x010C _eulerInput 0000
 igEnumMetaField 3333310001 0x00 igVfxCurveCorrelation 0x0110 _correlation 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntFloatHashTable igHashTable 0000
+igMetaObject igMetaObject igIntFloatHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -46466,7 +46464,7 @@ igHandleMetaField 3333310001 0x00 0001 igVfxEffect 0x001C _segmentVfx 0001 igAdd
 igMetaEndObject
 igMetaObject igDotNetMetaObject COnBehaviorUpdateDelegate MulticastDelegate 0000
 igMetaEndObject
-igMetaObject igMetaObject igObjectDirectoryReadParamsHashTable igHashTable 0000
+igMetaObject igMetaObject igObjectDirectoryReadParamsHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igReadParamsMetaField 3333310000 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -46511,7 +46509,7 @@ igMetaEndObject
 igMetaObject igDotNetMetaObject CEntityPoolOwnerComponent igComponent 0000
 igObjectRefMetaField 3333310001 0x00 1011 CEntityPoolStorageTable 0x0018 _storageTable 0001 igCapacityAttribute 00000008
 igMetaEndObject
-igMetaObject igMetaObject igSplineVec3fKeyframeTrackTable igHashTable 0000
+igMetaObject igMetaObject igSplineVec3fKeyframeTrackTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -46751,7 +46749,7 @@ igMetaObject igMetaObject CutsceneActionPlayMovie CCutsceneAction 0000
 igStringMetaField 3333310001 0x00 0101 0x000C _movieName 0001 CBuildDependencyAttribute 646174613A2F61726368697665732F25732E626B32
 igBoolMetaField 3333300001 0x00 0x0010 _startedPaused 0000
 igMetaEndObject
-igMetaObject igMetaObject CIgUnsignedIntIgIntHashTable igHashTable 0000
+igMetaObject igMetaObject CIgUnsignedIntIgIntHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igUnsignedIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -46888,7 +46886,7 @@ igMetaObject igMetaObject igVfxTranslateDistanceOperator igVfxFrameOperator 0000
 igVec3fAlignedMetaField 3333310001 0x00 0x0010 _direction 0000 0.000000,0.000000,1.000000 
 igFloatMetaField 3333310001 0x00 0x0020 _distance 0000
 igMetaEndObject
-igMetaObject igMetaObject CVfxBoltSharingHashTable igHashTable 0000
+igMetaObject igMetaObject CVfxBoltSharingHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStructMetaField 3333310000 0x00 0x0001 0x0000 0x0010 _keys 0000
 igMetaEndObject
@@ -47062,7 +47060,7 @@ igIntMetaField 3333310001 0x00 0x0018 _attackNumber 0000
 igMetaEndObject
 igMetaObject igMetaObject CMagicMomentShapeshifterSpawnEffectList igObjectList CMagicMomentShapeshifterSpawnEffect 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntRawRefHashTable igHashTable 0000
+igMetaObject igMetaObject igIntRawRefHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igRawRefMetaField 3333310001 0x00 0001 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -47105,7 +47103,7 @@ igBitFieldMetaField 3333311000 0x00 _textureBitfield igBoolMetaField 3333310001 
 igBitFieldMetaField 3333311000 0x00 _textureBitfield igBoolMetaField 3333310001 0x00 0x10 0x01 0x0050 _textureMips_backscatter 0000 1 
 igBitFieldMetaField 3333311000 0x00 _textureBitfield igBoolMetaField 3333310001 0x00 0x11 0x01 0x0050 _textureAllowDownsample_backscatter 0000 1 
 igMetaEndObject
-igMetaObject igMetaObject igObjectSaverTable igHashTable 0000
+igMetaObject igMetaObject igObjectSaverTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -47469,7 +47467,7 @@ igEnumMetaField 3333310001 0x00 igVfxCurveCorrelation 0x0070 _sizeCorrelation 00
 igMetaEndObject
 igMetaObject igMetaObject CDebugUIMessageList igObjectList CDebugUIMessage 0000
 igMetaEndObject
-igMetaObject igMetaObject CVisualDataManagerInstanceHashTable igHashTable 0000
+igMetaObject igMetaObject CVisualDataManagerInstanceHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -47511,7 +47509,7 @@ igBoolMetaField 3333310001 0x00 0x0034 _magicMomentDisablePushed 0000
 igMetaEndObject
 igMetaObject igMetaObject igSplineFloatKeyframeList igObjectList igSplineFloatKeyframe 0000
 igMetaEndObject
-igMetaObject igMetaObject igStringInsensitiveStringHashTable igHashTable 0000
+igMetaObject igMetaObject igStringInsensitiveStringHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igStringMetaField 3333310001 0x00 0101 0x0010 _keys 0000
 igMetaEndObject
@@ -47533,7 +47531,7 @@ igHandleMetaField 3333310001 0x00 0001 igVfxEffect 0x0020 _backEffect 0000
 igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0024 _backBoltPoint 0000
 igObjectRefMetaField 3333310001 0x00 0001 CBoltPoint 0x0028 _backBoltPoint2 0000
 igMetaEndObject
-igMetaObject igMetaObject CBoltPointLockTable igHashTable 0000
+igMetaObject igMetaObject CBoltPointLockTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -47606,7 +47604,7 @@ igBoolMetaField 3333310001 0x00 0x0008 _foundGround 0000
 igVec3fMetaField 3333310001 0x00 0x000C _position 0000
 igHandleMetaField 3333310001 0x00 0001 CHavokQuery 0x0018 _query 0000
 igMetaEndObject
-igMetaObject igMetaObject igIntIntPassThroughHashTable igHashTable 0000
+igMetaObject igMetaObject igIntIntPassThroughHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -47643,7 +47641,7 @@ igMetaObject igDotNetMetaObject COnReadyDelegate MulticastDelegate 0000
 igMetaEndObject
 igMetaObject igMetaObject CProbabilityEventPairList igObjectList CProbabilityEventPair 0000
 igMetaEndObject
-igMetaObject igMetaObject CActionPackPlayerTagTable igHashTable 0000
+igMetaObject igMetaObject CActionPackPlayerTagTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0100 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject
@@ -47675,7 +47673,6 @@ igMetaEndObject
 igMetaObject igMetaObject CAudioGraphHandleList igSmartHandleList 0000
 igMetaEndObject
 igMetaObject igDotNetMetaObject CPlayerRespawnComponentData CEntityComponentData 0000
-p 0x0000 igObjectRefMetaField 2333300001 0x00 0000 igMetaObject 0x0008 _meta 0000 6967436F6D706F6E656E7444617461
 igMetaEndObject
 igMetaObject igDotNetMetaObject CSoundUpdatePitchByTime CSoundUpdateTimeBased 0000
 igFloatMetaField 3333310001 0x00 0x0024 _pitchAtMinTime 0000
@@ -47869,7 +47866,7 @@ igMetaEndObject
 igMetaObject igMetaObject igVfxRotateAxisAngleRangeOperator igVfxRotateAxisAngleBaseOperator 0000
 igRangedFloatMetaField 3333310001 0x00 0x0020 _angle 0000  
 igMetaEndObject
-igMetaObject igMetaObject CEElementTypeIgFxMaterialHandleHashTable igHashTable 0000
+igMetaObject igMetaObject CEElementTypeIgFxMaterialHandleHashTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310000 0x00 EElementType 0x0010 _keys 0000
 igMetaEndObject
@@ -47928,7 +47925,7 @@ igObjectRefMetaField 3333300001 0x00 1011 CLeaderBoardUtils 0x00EC _leaderBoard 
 igObjectRefMetaField 3333300001 0x00 0000 CZoneInfo 0x00F0 _cachedZoneInfo 0000
 igObjectRefMetaField 3333300001 0x00 0001 CScopedScheduledFunction 0x00F4 _scheduledExitCheck 0000
 igMetaEndObject
-igMetaObject igMetaObject CStatStatItemTable igHashTable 0000
+igMetaObject igMetaObject CStatStatItemTable igHashTable -1 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igEnumMetaField 3333310001 0x00 EPortalMasterStat 0x0010 _keys 0000
 igMetaEndObject
@@ -47957,7 +47954,7 @@ igUnsignedIntMetaField 3333310001 0x00 0x0008 _easyValue 0000
 igUnsignedIntMetaField 3333310001 0x00 0x000C _mediumValue 0000
 igUnsignedIntMetaField 3333310001 0x00 0x0010 _hardValue 0000
 igMetaEndObject
-igMetaObject igMetaObject CBehaviorEventFilterTable igHashTable 0000
+igMetaObject igMetaObject CBehaviorEventFilterTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igObjectRefMetaField 3333310001 0x00 0001 igObject 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igIntMetaField 3333310001 0x00 0x0010 _keys 0000
 igMetaEndObject
@@ -48060,7 +48057,7 @@ igObjectRefMetaField 3333300001 0x00 1011 CTimer 0x0058 _inactiveTimer 0000
 igTimeMetaField 3333300001 0x00 0x005C _memoryTime 0000
 igBoolMetaField 3333300001 0x00 0x0060 _resetOnNextActivation 0000
 igMetaEndObject
-igMetaObject igMetaObject CAnimationTimeHashTable igHashTable 0000
+igMetaObject igMetaObject CAnimationTimeHashTable igHashTable NA 0000
 p 0x0000 igMemoryRefMetaField 3223310001 0x00 0101 igFloatMetaField 3333310001 0x00 0x0008 _values 0000
 p 0x0001 igMemoryRefMetaField 3223310001 0x00 0101 igHandleMetaField 3333310001 0x00 0001 igObject 0x0010 _keys 0000
 igMetaEndObject

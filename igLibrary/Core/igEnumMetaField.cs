@@ -48,7 +48,7 @@ namespace igLibrary.Core
 		{
 			_default = sh.ReadInt32();
 		}
-		public override object? GetDefault(igObject target)
+		public override object? GetDefault(igMemoryPool pool)
 		{
 			if(_metaEnum == null) return _default;
 			if(_default != null) return _metaEnum.GetEnumFromValue((int)_default);

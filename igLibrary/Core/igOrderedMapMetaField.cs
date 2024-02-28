@@ -22,6 +22,38 @@ namespace igLibrary.Core
 			if(index == 0) return _t;
 			else return _u;
 		}
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			igVectorMetaField _0 = (igVectorMetaField)_compoundFieldInfo._fieldList[0];
+			igVectorMetaField _1 = (igVectorMetaField)_compoundFieldInfo._fieldList[1];
+			_0._memType = _t;
+			_1._memType = _u;
+			object? data = base.ReadIGZField(loader);
+			_0._memType = null;
+			_1._memType = null;
+			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			igVectorMetaField _0 = (igVectorMetaField)_compoundFieldInfo._fieldList[0];
+			igVectorMetaField _1 = (igVectorMetaField)_compoundFieldInfo._fieldList[1];
+			_0._memType = _t;
+			_1._memType = _u;
+			base.WriteIGZField(saver, section, value);
+			_0._memType = null;
+			_1._memType = null;
+		}
+		public override object? GetDefault(igMemoryPool pool)
+		{
+			igVectorMetaField _0 = (igVectorMetaField)_compoundFieldInfo._fieldList[0];
+			igVectorMetaField _1 = (igVectorMetaField)_compoundFieldInfo._fieldList[1];
+			_0._memType = _t;
+			_1._memType = _u;
+			object? ret = base.GetDefault(pool);
+			_0._memType = null;
+			_1._memType = null;
+			return ret;
+		}
 		public override uint GetTemplateParameterCount() => 2;
 		public override Type GetOutputType()
 		{

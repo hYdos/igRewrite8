@@ -92,7 +92,7 @@ namespace igLibrary.Core
 				}
 				else
 				{
-					data = metaFields[i].GetDefault(this);
+					data = metaFields[i].GetDefault(internalMemoryPool);
 					if((metaFields[i].GetOutputType().IsValueType || metaFields[i].GetOutputType() == typeof(string)) && data == null) continue;
 				}
 				
@@ -110,7 +110,7 @@ namespace igLibrary.Core
 
 				FieldInfo? field = meta._vTablePointer.GetField(meta._metaFields[i]._name);
 
-				object? data = meta._metaFields[i].GetDefault(this);
+				object? data = meta._metaFields[i].GetDefault(internalMemoryPool);
 
 				if(meta._metaFields[i].GetOutputType().IsValueType && data == null) continue;
 

@@ -72,7 +72,7 @@ namespace igLibrary.Core
 		{
 			return typeof(igVector<>).MakeGenericType(_memType.GetOutputType());
 		}
-		public override object? GetDefault(igObject target)
+		public override object? GetDefault(igMemoryPool pool)
 		{
 			igVectorCommon vector = (igVectorCommon)Activator.CreateInstance(GetOutputType());
 			if(_initialCapacity > 0)
@@ -80,7 +80,7 @@ namespace igLibrary.Core
 				vector.SetCapacity(_initialCapacity);
 			}
 			IigMemory memory = vector.GetData();
-			memory.SetMemoryPool(target.internalMemoryPool);
+			memory.SetMemoryPool(pool);
 			vector.SetData(memory);
 			return vector;
 		}

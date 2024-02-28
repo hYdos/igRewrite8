@@ -159,11 +159,11 @@ namespace igLibrary.Core
 			if(_metaObject._vTablePointer == null) _metaObject.GatherDependancies();
 			return _metaObject._vTablePointer;
 		}
-		public override object? GetDefault(igObject target)
+		public override object? GetDefault(igMemoryPool pool)
 		{
 			if(_construct)
 			{
-				igObject obj = _metaObject.ConstructInstance(target.internalMemoryPool);
+				igObject obj = _metaObject.ConstructInstance(pool);
 				igCapacityAttribute? capacityAttr = GetAttribute<igCapacityAttribute>();
 				if(capacityAttr != null)
 				{
@@ -219,12 +219,12 @@ namespace igLibrary.Core
 		{
 			return base.GetOutputType().MakeArrayType();
 		}
-		public override object? GetDefault(igObject target)
+		public override object? GetDefault(igMemoryPool pool)
 		{
 			Array arr = Array.CreateInstance(base.GetOutputType(), _num);
 			for(int i = 0; i < _num; i++)
 			{
-				arr.SetValue(base.GetDefault(target), i);
+				arr.SetValue(base.GetDefault(pool), i);
 			}
 			return arr;
 		}

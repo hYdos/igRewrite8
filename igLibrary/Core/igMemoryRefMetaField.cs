@@ -88,28 +88,22 @@ namespace igLibrary.Core
 			{
 				ulong memOffset = memorySection.MallocAligned((uint)size, (ushort)memory.GetPlatformAlignment(this, saver._platform));
 				memorySection.PushAlignment(memory.GetPlatformAlignment(this, saver._platform));
-				/*if(_name == "_values" && _memType is igObjectRefMetaField objRefMf)
+				//this thing is a hack
+				bool oldRefCounted = true;
+				if(_memType is igRefMetaField)
 				{
-					(bool, ulong)[] objectOffsets = new (bool, ulong)[objects.Length];
-					for(int i = 0; i < objects.Length; i++)
-					{
-						memorySection._sh.Seek((long)memOffset + memSize * i);
-						objRefMf.WriteIGZFieldShallow(saver, memorySection, (igObject?)objects.GetValue(i), out objectOffsets[i].Item2, out objectOffsets[i].Item1);
-					}
-					for(int i = 0; i < objects.Length; i++)
-					{
-						if(!objectOffsets[i].Item1) continue;
-						saver.SaveObjectDeep(objectOffsets[i].Item2, (igObject)objects.GetValue(i));
-					}
+					oldRefCounted = ((igRefMetaField)_memType)._refCounted;
+					((igRefMetaField)_memType)._refCounted = _refCounted;
 				}
-				else
-				{*/
-					for(int i = 0; i < objects.Length; i++)
-					{
-						memorySection._sh.Seek((long)memOffset + memSize * i);
-						_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
-					}
-				//}
+				for(int i = 0; i < objects.Length; i++)
+				{
+					memorySection._sh.Seek((long)memOffset + memSize * i);
+					_memType.WriteIGZField(saver, memorySection, objects.GetValue(i));
+				}
+				if(_memType is igRefMetaField)
+				{
+					((igRefMetaField)_memType)._refCounted = oldRefCounted;
+				}
 
 				section._sh.Seek(start);
 				saver.WriteRawOffset(memory.GetFlags(this, saver._platform), section);
@@ -139,10 +133,10 @@ namespace igLibrary.Core
 			field._memType = field._memType.CreateFieldCopy();
 			return field;
 		}
-		public override object? GetDefault(igObject target)
+		public override object? GetDefault(igMemoryPool pool)
 		{
 			IigMemory mem = (IigMemory)Activator.CreateInstance(GetOutputType());
-			mem.SetMemoryPool(target.internalMemoryPool);
+			mem.SetMemoryPool(pool);
 			return mem;
 		}
 	}

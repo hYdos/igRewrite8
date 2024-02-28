@@ -109,7 +109,7 @@ namespace igLibrary.Core
 				igMetaField? templateParam = GetTemplateParameter(i);
 				saver.SaveMetaField(sh, templateParam);
 			}
-			saver.SaveString(sh, _name);
+			saver.SaveString(sh, _name == "0" ? null : _name);
 
 			FieldInfo? numField = GetType().GetField("_num");
 			if(numField != null)
@@ -165,7 +165,7 @@ namespace igLibrary.Core
 		public virtual igMetaField? GetTemplateParameter(uint index) => null;
 		public virtual uint GetTemplateParameterCount() => 0;
 
-		public virtual object? GetDefault(igObject target)
+		public virtual object? GetDefault(igMemoryPool pool)
 		{
 			FieldInfo? fi = GetType().GetField("_num");
 			if(fi != null)
