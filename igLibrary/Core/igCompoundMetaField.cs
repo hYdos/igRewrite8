@@ -362,14 +362,12 @@ namespace igLibrary.Core
 		}
 		public void ResetFields(Type t, object dat)
 		{
-			if(_name == "igOrderedMapMetaField")
-			;
 			for(int i = 0; i < _fieldList.Count; i++)
 			{
 				if(_fieldList[i] is igStaticMetaField || _fieldList[i] is igPropertyFieldMetaField || _fieldList[i] is igBitFieldMetaField) continue;
 
 				//Defaults not working cos they're not in the metadata iirc
-				string name = _fieldList[i]._name == "0" ? $"_unk{i}" : _fieldList[i]._name;
+				string name = _fieldList[i]._name ?? $"_unk{i}";
 				FieldInfo? field = t.GetField(name);
 
 				object? data = _fieldList[i].GetDefault(igMemoryContext.Singleton.GetMemoryPoolByName("Default"));
