@@ -499,6 +499,11 @@ namespace igLibrary.Core
 		{
 			src.Seek(0, SeekOrigin.Begin);
 			fileInfo._length = (uint)src.Length;
+
+			//Temp, for testing
+			fileInfo._blockIndex = 0xFFFFFFFF;
+			fileInfo._blocks = null;
+
 			//Add in setting the modification time for the funny
 			if(fileInfo._blockIndex == 0xFFFFFFFF)
 			{
