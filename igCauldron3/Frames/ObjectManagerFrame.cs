@@ -361,16 +361,29 @@ namespace igCauldron3
 			}
 			else if(field is igEnumMetaField enumMetaField)
 			{
-				string valueName = value.ToString();
-				int selectedItem = enumMetaField._metaEnum._names.FindIndex(x => x == valueName);
-				ImGui.Text(label);
-				ImGui.SameLine();
-				ImGui.PushID(label);
-				bool changed = ImGui.Combo(string.Empty, ref selectedItem, enumMetaField._metaEnum._names.ToArray(), enumMetaField._metaEnum._names.Count);
-				ImGui.PopID();
-				if(changed)
+				if(enumMetaField._metaEnum != null)
 				{
-					value = enumMetaField._metaEnum.GetEnumFromName(enumMetaField._metaEnum._names[selectedItem]);
+					string valueName = value.ToString();
+					int selectedItem = enumMetaField._metaEnum._names.FindIndex(x => x == valueName);
+					ImGui.Text(label);
+					ImGui.SameLine();
+					ImGui.PushID(label);
+					bool changed = ImGui.Combo(string.Empty, ref selectedItem, enumMetaField._metaEnum._names.ToArray(), enumMetaField._metaEnum._names.Count);
+					ImGui.PopID();
+					if(changed)
+					{
+						value = enumMetaField._metaEnum.GetEnumFromName(enumMetaField._metaEnum._names[selectedItem]);
+					}
+				}
+				else
+				{
+					int intValue = (int)value;
+					ImGui.Text(label);
+					ImGui.SameLine();
+					ImGui.PushID(label);
+					ImGui.InputInt(string.Empty, ref intValue);
+					ImGui.PopID();
+					value = (int)Math.Clamp(intValue, int.MinValue, int.MaxValue);
 				}
 			}
 			else if(field is igCompoundMetaField compoundMetaField)
