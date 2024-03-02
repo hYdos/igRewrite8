@@ -149,7 +149,7 @@
 						igArkCore.FlushPendingTypes();
 						break;
 					case 0x52545354:							//TSTR
-						_vtableList.Capacity = (int)count;
+						_stringList.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
 							long basePos = _stream.BaseStream.Position;

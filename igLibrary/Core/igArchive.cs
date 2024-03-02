@@ -149,8 +149,10 @@ namespace igLibrary.Core
 			}
 			for(int i = 0; i < _archiveHeader._numFiles; i++)
 			{
-				_files[i]._ordinal = sh.ReadUInt32();
-				_files[i]._offset = sh.ReadUInt32();
+				//technically the offset is 5 bytes and the ordinal is 3
+				ulong temp = sh.ReadUInt64();	//????
+				_files[i]._ordinal = (uint)(temp >> 32);
+				_files[i]._offset = (uint)(temp & 0xFFFFFFFF);
 				_files[i]._length = sh.ReadUInt32();
 				_files[i]._blockIndex = sh.ReadUInt32();
 			}
