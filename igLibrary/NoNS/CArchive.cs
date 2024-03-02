@@ -41,15 +41,18 @@ namespace igLibrary
 				if(res == 0 && ((flags & 4) != 0 || s_bDoPackages))
 				{
 					//should implement pools
-					igFilePath fp = new igFilePath();
-					fp.Set(filePath);
-					archive = new igArchive();
-					archive._enableCache = s_bCacheEnabled;
-					archive._loadNameTable = (flags & 1) != 0;
-					archive._override = (flags & 2) != 0;
-					archive._sequentialRead = fp._file == "loosefiles";
-					archive.Open(archivePath, igBlockingType.kBlocking);
-					igFileContext.Singleton._archiveManager._archiveList.Append(archive);
+					if(!igFileContext.Singleton._archiveManager.TryGetArchive(archivePath, out archive))
+					{
+						igFilePath fp = new igFilePath();
+						fp.Set(filePath);
+						archive = new igArchive();
+						archive._enableCache = s_bCacheEnabled;
+						archive._loadNameTable = (flags & 1) != 0;
+						archive._override = (flags & 2) != 0;
+						archive._sequentialRead = fp._file == "loosefiles";
+						archive.Open(archivePath, igBlockingType.kBlocking);
+						igFileContext.Singleton._archiveManager._archiveList.Append(archive);
+					}
 				}
 			}
 			return res;

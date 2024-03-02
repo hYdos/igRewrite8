@@ -110,7 +110,7 @@ namespace igLibrary.Core
 		public void Open(string filePath, igBlockingType blockingType)
 		{
 			igFileContext.Singleton.Open(filePath, igFileContext.GetOpenFlags(FileAccess.ReadWrite, FileMode.Open), out _fileDescriptor, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
-			_path = filePath;
+			_path = _fileDescriptor._path;
 			StreamHelper sh = new StreamHelper(_fileDescriptor._handle);
 			sh.Seek(0);
 			_archiveHeader._magicNumber = sh.ReadUInt32();

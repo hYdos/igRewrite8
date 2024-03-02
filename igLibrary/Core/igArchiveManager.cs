@@ -7,18 +7,26 @@ namespace igLibrary.Core
 
 		public igArchive LoadArchive(string path)
 		{
-			for(int i = 0; i < _archiveList._count; i++)
-			{
-				if(_archiveList[i]._path.ToLower() == path.ToLower())
-				{
-					return _archiveList[i];
-				}
-			}
-
-			igArchive loaded = new igArchive();
+			if(TryGetArchive(path, out igArchive? loaded)) return loaded;
+			loaded = new igArchive();
 			loaded.Open(path, igBlockingType.kMayBlock);
 			_archiveList.Append(loaded);
 			return loaded;
+		}
+		public bool TryGetArchive(string path, out igArchive? archive)
+		{
+			igFilePath fp = new igFilePath();
+			fp.Set(path);
+			for(int i = 0; i < _archiveList._count; i++)
+			{
+				if(_archiveList[i]._path.ToLower() == fp._path.ToLower())
+				{
+					archive = _archiveList[i];
+					return true;
+				}
+			}
+			archive = null;
+			return false;
 		}
 
 		public override void Process(igFileWorkItem workItem)

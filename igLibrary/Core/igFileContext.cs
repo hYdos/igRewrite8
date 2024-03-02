@@ -1,3 +1,5 @@
+using Microsoft.VisualBasic.FileIO;
+
 namespace igLibrary.Core
 {
 	public class igFileContext : igSingleton<igFileContext>
@@ -77,7 +79,9 @@ namespace igLibrary.Core
 			workItem._offset = offset;
 			workItem._size = (uint)size;
 			workItem._flags = flags;
-			workItem._path = path;
+			igFilePath fp = new igFilePath();
+			fp.Set(path);
+			workItem._path = fp._path;
 			workItem._type = workType;
 			workItem._blocking = blockingType;
 			workItem._priority = priority;
@@ -177,7 +181,7 @@ namespace igLibrary.Core
 		}
 		public void Close(igFileDescriptor fd, igBlockingType blockingType, igFileWorkItem.Priority priority)
 		{
-			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeClose, null, 0, 0, 0, null, blockingType, priority, null, null);
+			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeClose, null, 0, 0, 0, fd._path, blockingType, priority, null, null);
 			_fileDescriptorPool.Remove(fd);
 		}
 	}

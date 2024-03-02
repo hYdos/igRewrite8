@@ -54,7 +54,7 @@ namespace igCauldron3
 						igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 						IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
 
-						igFileContext.Singleton.LoadArchive("data:/archives/loosefiles.pak");
+						igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak");
 
 						CPrecacheManager._Instance.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
 

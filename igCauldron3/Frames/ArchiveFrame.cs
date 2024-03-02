@@ -23,7 +23,7 @@ namespace igCauldron3
 					for(int i = 0; i < _allowedArchives.Length; i++)
 					{
 						_allowedArchives[i] = Path.GetFileName(_allowedArchives[i]);
-						if(archives.Any(x => x._path.ToLower() == _allowedArchives[i].ToLower()))
+						if(archives.Any(x => Path.GetFileName(x._path).ToLower() == _allowedArchives[i].ToLower()))
 						{
 							_allowedArchives[i] = null;
 						}
@@ -48,7 +48,7 @@ namespace igCauldron3
 					if(ImGui.Button(_allowedArchives[i]))
 					{
 						_isChoosingArchive = false;
-						igArchive loaded = igFileContext.Singleton.LoadArchive("data:/archives/" + _allowedArchives[i]);
+						igArchive loaded = igFileContext.Singleton.LoadArchive("app:/archives/" + _allowedArchives[i]);
 						for(int j = 0; j < loaded._files.Count; j++)
 						{
 							if(loaded._files[j]._logicalName.EndsWith("_pkg.igz"))
