@@ -84,6 +84,16 @@ namespace igCauldron3
 				ImGui.Text($"{label}: null");
 				return;
 			}
+			else if(obj is igMetaField metaField)
+			{
+				ImGui.Text($"{label}: metafield.{metaField._parentMeta._name}::{metaField._name}");
+				return;
+			}
+			else if(obj is igMetaObject metaObject)
+			{
+				ImGui.Text($"{label}: metaobject.{metaObject._name}");
+				return;
+			}
 			igMetaObject meta = obj.GetMeta();
 			string objKey = obj.GetHashCode().ToString("X08");
 			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
