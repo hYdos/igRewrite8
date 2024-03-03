@@ -25,6 +25,22 @@ namespace igLibrary.Core
 			if(field == null) throw new InvalidOperationException($"{fieldName} was not added to the type!");
 			return field;
 		}
+		private static T InstantiateAndAppendMetaField<T>(igMetaObject meta, int index, ushort offset, string name, object? defaultValue, params IG_CORE_PLATFORM[] platforms) where T : igMetaField, new()
+		{
+			ErrorIfFieldExists(meta, name);
+			T metafield = new T();
+			metafield._attributes.SetCapacity(platforms.Length);
+			for(int i = 0; i < platforms.Length; i++)
+			{
+				metafield._attributes.Append(new igPlatformExclusiveAttribute(platforms[i]));
+			}
+			metafield._default = defaultValue;
+			metafield._name = name;
+			metafield._offset = offset;
+			metafield._parentMeta = meta;
+			meta._metaFields.Insert(index, metafield);
+			return metafield;
+		}
 		public static void SkylandersSuperchargers()
 		{
 			igMetaObject playerSystemDataMeta = GetMetaSafe("CPlayerSystemData", 22);
@@ -91,6 +107,69 @@ namespace igLibrary.Core
 			_virtualTagList._attributes.SetCapacity(2);
 			_virtualTagList._attributes.Append(new igPlatformExclusionAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_virtualTagList._attributes.Append(new igPlatformExclusionAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
+
+			igMetaObject guiBehaviorVehicleCustomizationMeta = GetMetaSafe("CGuiBehaviorVehicleCustomization", 111);
+			ErrorIfFieldExists(guiBehaviorVehicleCustomizationMeta, "_changeCategoryText");
+			igStringMetaField _changeCategoryText = new igStringMetaField();
+			_changeCategoryText._attributes.SetCapacity(3);
+			_changeCategoryText._attributes.Append(new igLocalizeAttribute());
+			_changeCategoryText._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
+			_changeCategoryText._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
+			_changeCategoryText._name = "_changeCategoryText";
+			_changeCategoryText._offset = 0xCD;	//in between the two surrounding fields
+			_changeCategoryText._parentMeta = guiBehaviorVehicleCustomizationMeta;
+			guiBehaviorVehicleCustomizationMeta._metaFields.Insert(29, _changeCategoryText);
+			ErrorIfFieldExists(guiBehaviorVehicleCustomizationMeta, "_dpadCycle");
+			igStringMetaField _dpadCycle = new igStringMetaField();
+			_dpadCycle._attributes.SetCapacity(2);
+			_dpadCycle._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
+			_dpadCycle._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
+			_dpadCycle._name = "_dpadCycle";
+			_dpadCycle._offset = 0x01A1;	//in between the two surrounding fields
+			_dpadCycle._parentMeta = guiBehaviorVehicleCustomizationMeta;
+			guiBehaviorVehicleCustomizationMeta._metaFields.Insert(85, _dpadCycle);
+
+			igMetaObject globalPlatformStrings = GetMetaSafe("CGlobalPlatformStrings", 221);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  53, 0x00, "_unableToConnectToCloud", "Unable to connect to iCloud. Retry or continue without saving.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  54, 0x00, "_unableToConnectToCloudTablet", "Unable to connect to iCloud. Retry or continue without iCloud.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  55, 0x00, "_continueWithoutCloudSave", "No iCloud", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  56, 0x00, "_iCloudTitle", "iCloud", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  57, 0x00, "_connectingToiCloud", "Connecting to iCloud", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  58, 0x00, "_conflictFromDeviceFormat", "From %s", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  59, 0x00, "_conflictPortalMasterRankFormat", "Portal Master Rank: %d", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  60, 0x00, "_conflictSaveSlotWithSaveFormat", "Save %d: Chapter %d", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  61, 0x00, "_conflictSaveSlotNoSaveFormat", "Save %d: -", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  62, 0x00, "_conflictPromptChooseCloud", "Use iCloud and overwrite local save?", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  63, 0x00, "_conflictPromptChooseLocal", "Use local save and overwrite iCloud?", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  73, 0x00, "_iCloudConflictSignInWarning", "Your iCloud account is unavailable. You need to be to signed in to save, load, and delete game files.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 203, 0x00, "_onlineMultiplayerOverCellularMessage", "Online multiplayer is not supported over cellular network.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 206, 0x00, "_contentDeploymentDownloadTitle", "Downloading Content", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 208, 0x00, "_contentDeploymentDownloadStartingTitle", "Preparing Download", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 212, 0x00, "_wifiConnectionRequiredTitle", "Network Error", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 213, 0x00, "_wifiConnectionRequiredMessage", "Wi-Fi required to download game content. (Error %d)", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 214, 0x00, "_contentDeploymentValidatingTitle", "Validating Content", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 215, 0x00, "_contentDeploymentValidatingMessage", "Validation %.2f %% complete", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 216, 0x00, "_contentDeploymentReservingTitle", "Reserving Cache Space", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 217, 0x00, "_contentDeploymentReservingMessage", "Reserve %.2f %% complete.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 218, 0x00, "_contentDeploymentOutOfDiskSpaceTitle", "Out of Storage", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 219, 0x00, "_contentDeploymentOutOfDiskSpaceMessage", "%llu more MB of storage\nrequired to install game.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 220, 0x00, "_contentDeploymentNeedMoreSpaceMessage", "There is not enough available storage to download game content. Please free up storage.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 221, 0x00, "_contentDeploymentRetryOption", "Retry", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 222, 0x00, "_contentDeploymentAbortOption", "Abort", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 223, 0x00, "_iCloudConflictSaveSlotTitle", "Save Slot Conflict!", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 224, 0x00, "_iCloudConflictOptionsTitle", "Player Stats Conflict!", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 240, 0x00, "_requiredUpdateTitle", "Update Required.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 241, 0x00, "_requiredUpdateMessage", "You must update your game before continuing.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 242, 0x00, "_useInstantTrophy", "Use Instant Trophy", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 243, 0x00, "_requiredGamepad", "Usage of ability upgrades requires an MFi game controller or Skylanders Game Controller.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings, 244, 0x00, "_comboOfTheDayCarouselItemName", "Daily Double", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			for(int i = 0; i < globalPlatformStrings._metaFields.Count; i++)
+			{
+				globalPlatformStrings._metaFields[i]._offset = (ushort)i;	//It's so complicated to manage these offsets that i might as well not bother
+			}
+
+			igMetaObject dialogBoxInfoMeta = GetMetaSafe("CDialogBoxInfo", 19);
+			igRawRefMetaField _inputCallback = InstantiateAndAppendMetaField<igRawRefMetaField>(dialogBoxInfoMeta, 10, 0x0029, "_inputCallback", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
 		}
 	}
 }

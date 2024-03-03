@@ -21,3 +21,15 @@ igObjectRefMetaField 3333310001 0x00 0001 CContentBlackList 0x0018 _contentBlack
 igStringMetaField 3333310001 0x00 0001 0x0020 _remoteServerDataURI 0000
 igObjectRefMetaField 3333300001 0x00 0001 igObjectDirectory 0x0028 _downloadedServerDataDirectory 0000
 igMetaEndObject
+igMetaObject igMetaObject CGuiBehaviorScreenSpaceGamerTag igGuiBehavior 0000
+igObjectRefMetaField 1333310001 0x00 0100 igGuiPlaceable 0x0008 _textItem 0000
+igFloatMetaField 3333310001 0x00 0x000C _onFootVerticalOffset 0000 200.000000
+igFloatMetaField 3333310001 0x00 0x0010 _drivingVerticalOffset 0000 320.000000
+igFloatMetaField 3333310001 0x00 0x0014 _screenEdgePadding 0000 0.200000
+igHandleMetaField 3333300001 0x00 0101 CPlayer 0x0018 _player 0000
+igMetaEndObject
+igMetaObject igMetaObject CGuiBehaviorGameUpsellButton igGuiBehavior 0000
+igBoolMetaField 3333310001 0x00 0x0008 _allwaysAllowPurchase 0000
+igBoolMetaField 3333300001 0x00 0x0009 _allowPurchases 0000
+igBoolMetaField 3333300001 0x00 0x000A _shouldRestartGame 0000
+igMetaEndObject
