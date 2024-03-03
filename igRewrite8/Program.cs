@@ -14,8 +14,8 @@ namespace igRewrite8
 		{
 			//DumpToyDataToRunes(args); return;
 			//DumpAllArchives(args); return;
-			//ReadFromTextFile(args); return;
-			TestArchives(args); return;
+			ReadFromTextFile(args); return;
+			//TestArchives(args); return;
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 
@@ -150,7 +150,8 @@ namespace igRewrite8
 			TextParser parser = new TextParser();
 			parser.ReadMetaEnumFile(args[0]);
 			parser.ReadMetaFieldFile(args[1]);
-			parser.ReadMetaObjectFile(args[2]);
+			parser.ReadMetaObjectFile(args[2]);	//regular one
+			parser.ReadMetaObjectFile(args[3]);	//extra one
 			
 			List<igMetaEnum> enums = igArkCore._metaEnums;
 			List<igMetaFieldPlatformInfo> platformInfos = igArkCore._metaFieldPlatformInfos;
