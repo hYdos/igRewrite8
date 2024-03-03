@@ -144,7 +144,7 @@
 							vtable.CalculateOffsetForPlatform(_platform);
 
 							int bits = (_version > 7) ? 2 : 1;
-							_stream.Seek(basePos + bits + (vtableName.Length & (uint)(-bits)));
+							_stream.Seek(basePos + bits + ((_stream.BaseStream.Position - basePos - 1) & (uint)(-bits)));
 						}
 						igArkCore.FlushPendingTypes();
 						break;
@@ -158,7 +158,7 @@
 							_stringList.Add(data);
 
 							int bits = (_version > 7) ? 2 : 1;
-							_stream.Seek(basePos + bits + (data.Length & (uint)(-bits)));
+							_stream.Seek(basePos + bits + ((_stream.BaseStream.Position - basePos - 1) & (uint)(-bits)));
 						}
 						break;
 					case 0x44495845:							//EXID
