@@ -85,8 +85,15 @@ namespace igLibrary.Core
 
 		public static List<igBaseMeta> _pendingTypes = new List<igBaseMeta>();
 
+		private static void FixupClasses(EGame game)
+		{
+			string funcName = game.ToString();
+			MethodInfo? func = typeof(igArkCoreFixups).GetMethod(funcName.ReplaceBeginning("EV_", ""));
+			func?.Invoke(null, null);
+		}
 		public static void WriteToFile(EGame game)
 		{
+			FixupClasses(game);
 			igArkCoreFile saver = new igArkCoreFile();
 			saver.BeginSave($"{ArkCoreFolder}/{game.ToString()}.ark");
 			for(int i = 0; i < _metaEnums.Count; i++)
@@ -132,8 +139,6 @@ namespace igLibrary.Core
 			stopwatch.Stop();
 
 			Console.WriteLine($"Loading and generating all types took {stopwatch.Elapsed.TotalSeconds} seconds");
-
-			return;
 		}
 		public static igMetaObject? GetObjectMeta(string name)
 		{

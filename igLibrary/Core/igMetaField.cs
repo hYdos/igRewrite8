@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace igLibrary.Core
 {
@@ -81,6 +82,16 @@ namespace igLibrary.Core
 		public igObjectList? _attributes = new igObjectList();
 		public object? _default;
 
+		public T[] GetAttributes<T>() where T : igObject
+		{
+			List<T> attrs = new List<T>();
+			if(_attributes == null) return attrs.ToArray();
+			for(int i = 0; i < _attributes._count; i++)
+			{
+				if(_attributes[i] is T attr) attrs.Add(attr);
+			}
+			return attrs.ToArray();
+		}
 		public T? GetAttribute<T>() where T : igObject
 		{
 			if(_attributes == null) return null;
@@ -89,6 +100,24 @@ namespace igLibrary.Core
 				if(_attributes[i] is T attr) return attr;
 			}
 			return null;
+		}
+		public bool IsApplicableForPlatform(IG_CORE_PLATFORM platform)
+		{
+			if(_attributes == null) return true;
+			bool foundPlatformAttribute = false;
+			for(int i = 0; i < _attributes._count; i++)
+			{
+				if(_attributes[i] is igPlatformExclusiveAttribute exclusiveAttr)
+				{
+					foundPlatformAttribute = true;
+					if(exclusiveAttr._value == platform) return true;
+				}
+				else if(_attributes[i] is igPlatformExclusionAttribute exclusionAttr)
+				{
+					if(exclusionAttr._value == platform) return false;
+				}
+			}
+			return !foundPlatformAttribute;
 		}
 
 		public virtual void DumpArkData(igArkCoreFile saver, StreamHelper sh)

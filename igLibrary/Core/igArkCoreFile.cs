@@ -291,6 +291,7 @@ namespace igLibrary.Core
 				else if(attrValue is string stringValue)   SaveString(sh, stringValue);
 				else if(attrValue is int intValue)         sh.WriteInt32(intValue);
 				else if(attrValue is igMetaObject moValue) SaveString(sh, moValue._name);
+				else if(valueField.FieldType.IsEnum)       sh.WriteInt32(Convert.ToInt32(attrValue));	//Never used by the game, only used by my own igPlatformExclusiveAttribute
 				else throw new NotSupportedException("Unsupported attribute value type");
 			}
 		}
@@ -314,6 +315,7 @@ namespace igLibrary.Core
 				else if(valueField.FieldType == typeof(string))       attrValue = ReadString(sh);
 				else if(valueField.FieldType == typeof(int))          attrValue = sh.ReadInt32();
 				else if(valueField.FieldType == typeof(igMetaObject)) attrValue = igArkCore.GetObjectMeta(ReadString(_shs[Section.ObjectInfo]));
+				else if(valueField.FieldType.IsEnum)                  attrValue = Enum.ToObject(valueField.FieldType, sh.ReadInt32());	//Never used by the game, only used by my own igPlatformExclusiveAttribute
 				else throw new NotSupportedException("Unsupported attribute value type");
 
 				valueField.SetValue(attr, attrValue);

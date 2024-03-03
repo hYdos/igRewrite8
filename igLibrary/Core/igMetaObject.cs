@@ -320,6 +320,7 @@ namespace igLibrary.Core
 			{
 				for(int i = 0; i < _parent._metaFields.Count; i++)
 				{
+					if(!_metaFields[i].IsApplicableForPlatform(platform)) continue;
 					if(maxOffset == null) maxOffset = _metaFields[i];
 					if(maxOffset._offset < _metaFields[i]._offset) maxOffset = _metaFields[i];
 				}
@@ -327,6 +328,8 @@ namespace igLibrary.Core
 			bool surpassedMaxOffset = false;
 			for(int i = 0; i < metaFieldsByOffset.Length; i++)
 			{
+				if(!metaFieldsByOffset[i].IsApplicableForPlatform(platform)) continue;
+
 				if(maxOffset != null && !surpassedMaxOffset && metaFieldsByOffset[i]._offset > maxOffset._offset && platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_CAFE)	//Dumb Wii U alignment rule
 				{
 					surpassedMaxOffset = true;

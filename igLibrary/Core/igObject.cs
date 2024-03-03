@@ -15,6 +15,7 @@ namespace igLibrary.Core
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
+				if(!metaFields[i].IsApplicableForPlatform(loader._platform)) continue;
 
 				//if(!metaFields[i]._properties._persistent) continue;
 
@@ -77,6 +78,7 @@ namespace igLibrary.Core
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
+				if(!metaFields[i].IsApplicableForPlatform(saver._platform)) continue;
 
 				section.PushAlignment(metaFields[i].GetAlignment(saver._platform));
 
