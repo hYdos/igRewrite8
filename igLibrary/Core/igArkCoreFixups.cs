@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace igLibrary.Core
 {
@@ -40,6 +41,17 @@ namespace igLibrary.Core
 			metafield._parentMeta = meta;
 			meta._metaFields.Insert(index, metafield);
 			return metafield;
+		}
+		private static igMetaField AddPlatformExclusionAttr(igMetaObject meta, string name, params IG_CORE_PLATFORM[] platforms)
+		{
+			igMetaField field = GetFieldSafe(meta, name);
+			if(field._attributes == null) field._attributes = new igObjectList();
+			field._attributes.SetCapacity(field._attributes._capacity + platforms.Length);
+			for(int i = 0; i < platforms.Length; i++)
+			{
+				field._attributes.Append(new igPlatformExclusionAttribute(platforms[i]));
+			}
+			return field;
 		}
 		public static void SkylandersSuperchargers()
 		{
@@ -170,6 +182,12 @@ namespace igLibrary.Core
 
 			igMetaObject dialogBoxInfoMeta = GetMetaSafe("CDialogBoxInfo", 19);
 			igRawRefMetaField _inputCallback = InstantiateAndAppendMetaField<igRawRefMetaField>(dialogBoxInfoMeta, 10, 0x0029, "_inputCallback", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+
+			igMetaObject guiBehaviorCollectionMeta = GetMetaSafe("CGuiBehaviorCollection", 39);
+			AddPlatformExclusionAttr(guiBehaviorCollectionMeta, "_collectionArchive", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+
+			igMetaObject cameraBaseMeta = GetMetaSafe("CCameraBase", 12);
+			InstantiateAndAppendMetaField<igBoolMetaField>(cameraBaseMeta, 12, 285, "_isSelected", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
 		}
 	}
 }

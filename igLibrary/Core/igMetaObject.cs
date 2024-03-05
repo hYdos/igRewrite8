@@ -170,9 +170,6 @@ namespace igLibrary.Core
 
 			igArkCore._pendingTypes.Add(this);
 
-			if(_name == "igSplineEventTrack")
-			;
-
 			for(int i = _parent._metaFields.Count; i < _metaFields.Count; i++)
 			{
 				ReadyFieldDependancy2(_metaFields[i]);
