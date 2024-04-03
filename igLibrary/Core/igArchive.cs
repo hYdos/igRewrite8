@@ -278,6 +278,8 @@ namespace igLibrary.Core
 				sh.BaseStream.Write(orderedFiles.ElementAt(i)._compressedData);
 				sh.Align(_archiveHeader._sectorSize);
 			}
+			
+			currentOffset = sh.Tell();
 
 			for(int i = 0; i < _files.Count; i++)
 			{
