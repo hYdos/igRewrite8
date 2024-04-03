@@ -12,6 +12,7 @@ namespace igLibrary.Core
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Type _vTablePointer;
 		private bool _baseFieldsInherited = false;
+		public List<igMetaObject> _children = new List<igMetaObject>();
 
 
 		public igMetaObject()
@@ -282,10 +283,13 @@ namespace igLibrary.Core
 			//_baseFieldsInherited = true;
 			if(_parent == null) return;
 			//_parent.InheritFields();
+			_parent._children.Add(this);
 			_metaFields.AddRange(_parent._metaFields);
 		}
 		public void AppendDynamicField(igMetaField field)
 		{
+			if(_name == "igGuiBehavior")
+			;
 			field._offset = (ushort)(_metaFields.Max(x => x._offset) + 1u);
 			field._parentMeta = this;
 			_metaFields.Add(field);
@@ -392,6 +396,14 @@ namespace igLibrary.Core
 			if(fi != null)
 			{
 				fi.SetValue(obj, this);
+			}
+		}
+		internal void ApplyFixup(int index, igMetaField field)
+		{
+			_metaFields.Insert(index, field);
+			for(int i = 0; i < _children.Count; i++)
+			{
+				_children[i].ApplyFixup(index, field);
 			}
 		}
 	}

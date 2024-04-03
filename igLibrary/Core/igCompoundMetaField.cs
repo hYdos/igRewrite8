@@ -23,6 +23,7 @@ namespace igLibrary.Core
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
+				if(!metaFields[i].IsApplicableForPlatform(loader._platform)) continue;
 
 				if(!metaFields[i]._properties._persistent) continue;
 
@@ -53,6 +54,7 @@ namespace igLibrary.Core
 			{
 				if(metaFields[i] is igStaticMetaField) continue;
 				if(metaFields[i] is igPropertyFieldMetaField) continue;
+				if(!metaFields[i].IsApplicableForPlatform(saver._platform)) continue;
 
 				object? data = null;
 
@@ -260,6 +262,7 @@ namespace igLibrary.Core
 				if(metaFieldsByOffset[i] is igStaticMetaField) continue;
 				if(metaFieldsByOffset[i] is igPropertyFieldMetaField) continue;
 				if(metaFieldsByOffset[i] is igBitFieldMetaField) continue;
+				if(!metaFieldsByOffset[i].IsApplicableForPlatform(platform)) continue;
 				if(metaFieldsByOffset[i]._offsets.ContainsKey(platform)) continue;
 
 				Align(ref currentOffset, metaFieldsByOffset[i].GetAlignment(platform));

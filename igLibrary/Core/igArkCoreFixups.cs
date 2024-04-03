@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection.Metadata;
 
 namespace igLibrary.Core
 {
@@ -12,6 +11,19 @@ namespace igLibrary.Core
 			ErrorIfFieldCountMismatch(meta, expectedFieldNum);
 			return meta;
 		}
+		private static igCompoundMetaFieldInfo GetCompoundSafe(string name)
+		{
+			igCompoundMetaFieldInfo? compound = igArkCore.GetCompoundFieldInfo(name);
+			if(compound == null) throw new TypeLoadException($"Failed to load {name}");
+			return compound;
+		}
+		private static void SetSizeAlign(igCompoundMetaFieldInfo compound, IG_CORE_PLATFORM platform, ushort size, ushort align)
+		{
+			igMetaFieldPlatformInfo? platformInfo = igArkCore.GetMetaFieldPlatformInfo(compound._name!);
+			if(platformInfo == null) throw new TypeLoadException($"Failed to load {compound._name}");
+			platformInfo._alignments[platform] = align;
+			platformInfo._sizes[platform] = size;
+		}
 		private static void ErrorIfFieldCountMismatch(igMetaObject meta, int expectedFieldNum)
 		{
 			Debug.Assert(meta._metaFields.Count == expectedFieldNum, $"Expected {meta._name}._metaFields count to be {expectedFieldNum} before adding fields, instead got {meta._metaFields.Count}");
@@ -20,11 +32,31 @@ namespace igLibrary.Core
 		{
 			if(meta.GetFieldByName(fieldName) != null) throw new InvalidOperationException($"{fieldName} was already added to the type!");
 		}
+		private static void ErrorIfFieldExists(igCompoundMetaFieldInfo compound, string fieldName)
+		{
+			if(compound.GetFieldByName(fieldName) != null) throw new InvalidOperationException($"{fieldName} was already added to the type!");
+		}
 		private static igMetaField GetFieldSafe(igMetaObject meta, string fieldName)
 		{
 			igMetaField? field = meta.GetFieldByName(fieldName);
 			if(field == null) throw new InvalidOperationException($"{fieldName} was not added to the type!");
 			return field;
+		}
+		private static T InstantiateAndAppendMetaField<T>(igCompoundMetaFieldInfo compound, int index, ushort offset, string name, object? defaultValue, params IG_CORE_PLATFORM[] platforms) where T : igMetaField, new()
+		{
+			ErrorIfFieldExists(compound, name);
+			T metafield = new T();
+			metafield._attributes.SetCapacity(platforms.Length);
+			for(int i = 0; i < platforms.Length; i++)
+			{
+				metafield._attributes.Append(new igPlatformExclusiveAttribute(platforms[i]));
+			}
+			metafield._default = defaultValue;
+			metafield._name = name;
+			metafield._offset = offset;
+			metafield._parentMeta = compound;
+			compound._fieldList.Insert(index, metafield);
+			return metafield;
 		}
 		private static T InstantiateAndAppendMetaField<T>(igMetaObject meta, int index, ushort offset, string name, object? defaultValue, params IG_CORE_PLATFORM[] platforms) where T : igMetaField, new()
 		{
@@ -39,7 +71,7 @@ namespace igLibrary.Core
 			metafield._name = name;
 			metafield._offset = offset;
 			metafield._parentMeta = meta;
-			meta._metaFields.Insert(index, metafield);
+			meta.ApplyFixup(index, metafield);
 			return metafield;
 		}
 		private static igMetaField AddPlatformExclusionAttr(igMetaObject meta, string name, params IG_CORE_PLATFORM[] platforms)
@@ -65,7 +97,7 @@ namespace igLibrary.Core
 			_virtualDeadZoneDeflection._name = "_virtualDeadZoneDeflection";
 			_virtualDeadZoneDeflection._offset = 0x1D;	//in between the two surrounding fields
 			_virtualDeadZoneDeflection._parentMeta = playerSystemDataMeta;
-			playerSystemDataMeta._metaFields.Insert(6, _virtualDeadZoneDeflection);
+			playerSystemDataMeta.ApplyFixup(6, _virtualDeadZoneDeflection);
 			ErrorIfFieldExists(playerSystemDataMeta, "_virtualWalkAndTurnStickThreshold");
 			igFloatMetaField _virtualWalkAndTurnStickThreshold = new igFloatMetaField();
 			_virtualWalkAndTurnStickThreshold._attributes.SetCapacity(2);
@@ -75,7 +107,7 @@ namespace igLibrary.Core
 			_virtualWalkAndTurnStickThreshold._name = "_virtualWalkAndTurnStickThreshold";
 			_virtualWalkAndTurnStickThreshold._offset = 0x21;	//in between the two surrounding fields
 			_virtualWalkAndTurnStickThreshold._parentMeta = playerSystemDataMeta;
-			playerSystemDataMeta._metaFields.Insert(8, _virtualWalkAndTurnStickThreshold);
+			playerSystemDataMeta.ApplyFixup(8, _virtualWalkAndTurnStickThreshold);
 			ErrorIfFieldExists(playerSystemDataMeta, "_virtualRunStickThreshold");
 			igFloatMetaField _virtualRunStickThreshold = new igFloatMetaField();
 			_virtualRunStickThreshold._attributes.SetCapacity(2);
@@ -85,7 +117,7 @@ namespace igLibrary.Core
 			_virtualRunStickThreshold._name = "_virtualRunStickThreshold";
 			_virtualRunStickThreshold._offset = 0x25;	//in between the two surrounding fields
 			_virtualRunStickThreshold._parentMeta = playerSystemDataMeta;
-			playerSystemDataMeta._metaFields.Insert(10, _virtualRunStickThreshold);
+			playerSystemDataMeta.ApplyFixup(10, _virtualRunStickThreshold);
 			ErrorIfFieldCountMismatch(playerSystemDataMeta, 25);
 
 			igMetaObject vehicleSystemDataMeta = GetMetaSafe("CVehicleSystemData", 26);
@@ -130,7 +162,7 @@ namespace igLibrary.Core
 			_changeCategoryText._name = "_changeCategoryText";
 			_changeCategoryText._offset = 0xCD;	//in between the two surrounding fields
 			_changeCategoryText._parentMeta = guiBehaviorVehicleCustomizationMeta;
-			guiBehaviorVehicleCustomizationMeta._metaFields.Insert(29, _changeCategoryText);
+			guiBehaviorVehicleCustomizationMeta.ApplyFixup(29, _changeCategoryText);
 			ErrorIfFieldExists(guiBehaviorVehicleCustomizationMeta, "_dpadCycle");
 			igStringMetaField _dpadCycle = new igStringMetaField();
 			_dpadCycle._attributes.SetCapacity(2);
@@ -139,7 +171,7 @@ namespace igLibrary.Core
 			_dpadCycle._name = "_dpadCycle";
 			_dpadCycle._offset = 0x01A1;	//in between the two surrounding fields
 			_dpadCycle._parentMeta = guiBehaviorVehicleCustomizationMeta;
-			guiBehaviorVehicleCustomizationMeta._metaFields.Insert(85, _dpadCycle);
+			guiBehaviorVehicleCustomizationMeta.ApplyFixup(85, _dpadCycle);
 
 			igMetaObject globalPlatformStrings = GetMetaSafe("CGlobalPlatformStrings", 221);
 			InstantiateAndAppendMetaField<igStringMetaField>(globalPlatformStrings,  53, 0x00, "_unableToConnectToCloud", "Unable to connect to iCloud. Retry or continue without saving.", IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
@@ -188,6 +220,23 @@ namespace igLibrary.Core
 
 			igMetaObject cameraBaseMeta = GetMetaSafe("CCameraBase", 12);
 			InstantiateAndAppendMetaField<igBoolMetaField>(cameraBaseMeta, 12, 285, "_isSelected", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+
+			igCompoundMetaFieldInfo cameraModelComp = GetCompoundSafe("CCameraModelMetaField");
+			InstantiateAndAppendMetaField<igFloatMetaField>(cameraModelComp, 22, 0xB1, "_mobileShadowLodDistance", 1.0f, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igFloatMetaField>(cameraModelComp, 23, 0xB2, "_mobileShadowRange", 1000.0f, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igFloatMetaField>(cameraModelComp, 24, 0xB3, "_mobileShadowHeightOffset", 1000.0f, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			InstantiateAndAppendMetaField<igFloatMetaField>(cameraModelComp, 25, 0xB4, "_mobileShadowFarPlane", 1500.0f, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64);
+			SetSizeAlign(cameraModelComp, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, 0xD0, 0x10);
+			SetSizeAlign(cameraModelComp, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64, 0xD0, 0x10);
+
+			igMetaObject guiBehaviorUpsellBase = GetMetaSafe("CGuiBehaviorUpsellBase", 24);
+			InstantiateAndAppendMetaField<igBoolMetaField>(guiBehaviorUpsellBase, 24, 99, "_isPurchasing", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)._properties._persistent = false;
+
+			//unfinished
+			igMetaObject guiBehaviorToypackUpsell = GetMetaSafe("CGuiBehaviorToyPackUpsell", 35);
+			InstantiateAndAppendMetaField<igObjectRefMetaField>(guiBehaviorUpsellBase, 31, 99, "_comboPackOpenAnimation", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)._properties._persistent = false;
+			InstantiateAndAppendMetaField<igObjectRefMetaField>(guiBehaviorUpsellBase, 31, 99, "_comboPackIdleAnimation", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)._properties._persistent = false;
+			InstantiateAndAppendMetaField<igObjectRefMetaField>(guiBehaviorUpsellBase, 31, 99, "_comboPackCloseAnimation", null, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN, IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64)._properties._persistent = false;
 		}
 	}
 }
