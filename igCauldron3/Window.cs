@@ -43,7 +43,7 @@ namespace igCauldron3
 		{
 			if (KeyboardState.IsKeyDown(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Escape))
 			{
-				Close();
+				//Close();
 			}
 
 			base.OnUpdateFrame(e);
