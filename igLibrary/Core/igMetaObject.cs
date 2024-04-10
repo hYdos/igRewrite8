@@ -288,8 +288,6 @@ namespace igLibrary.Core
 		}
 		public void AppendDynamicField(igMetaField field)
 		{
-			if(_name == "igGuiBehavior")
-			;
 			field._offset = (ushort)(_metaFields.Max(x => x._offset) + 1u);
 			field._parentMeta = this;
 			_metaFields.Add(field);

@@ -151,7 +151,7 @@ namespace igRewrite8
 			parser.ReadMetaEnumFile(args[0]);
 			parser.ReadMetaFieldFile(args[1]);
 			parser.ReadMetaObjectFile(args[2]);	//regular one
-			parser.ReadMetaObjectFile(args[3]);	//extra one
+			//parser.ReadMetaObjectFile(args[3]);	//extra one
 			
 			List<igMetaEnum> enums = igArkCore._metaEnums;
 			List<igMetaFieldPlatformInfo> platformInfos = igArkCore._metaFieldPlatformInfos;

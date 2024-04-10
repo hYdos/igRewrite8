@@ -93,7 +93,7 @@ namespace igLibrary.Core
 		}
 		public static void WriteToFile(EGame game)
 		{
-			FixupClasses(game);
+			//FixupClasses(game);
 			igArkCoreFile saver = new igArkCoreFile();
 			saver.BeginSave($"{ArkCoreFolder}/{game.ToString()}.ark");
 			for(int i = 0; i < _metaEnums.Count; i++)

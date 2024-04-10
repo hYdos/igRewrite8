@@ -70,6 +70,10 @@ namespace igCauldron3
 
 					RenderObject(name, dir._objectList[i]);
 				}
+				if(ImGui.Button("+"))
+				{
+					_wnd.frames.Add(new CreateObjectFrame(_wnd, _dirs[_currentDir], igArkCore.GetObjectMeta("igObject")));
+				}
 				ImGui.TreePop();
 			}
 			if(renderChangeReference)

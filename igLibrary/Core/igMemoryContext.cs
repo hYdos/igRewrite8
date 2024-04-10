@@ -3,7 +3,7 @@ namespace igLibrary.Core
 	//Inherits from igContext
 	public class igMemoryContext : igSingleton<igMemoryContext>
 	{
-		private Dictionary<string, igMemoryPool> _pools;
+		public Dictionary<string, igMemoryPool> _pools { get; private set; }
 
 		private static bool _initialized;
 

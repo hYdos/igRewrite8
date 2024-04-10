@@ -13,7 +13,7 @@ namespace igCauldron3
 			{
 				if(ImGui.BeginMenu("File"))
 				{
-					if(ImGui.MenuItem("Save As"))
+					if(ImGui.MenuItem("Save"))
 					{
 						MemoryStream ms = new MemoryStream();
 						igObjectDirectory target = ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir];
@@ -31,6 +31,10 @@ namespace igCauldron3
 							ms.Close();
 							arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
 						}
+					}
+					if(ImGui.MenuItem("New IGZ"))
+					{
+						_wnd.frames.Add(new DirectoryCreatorFrame(_wnd));
 					}
 					ImGui.EndMenu();
 				}
