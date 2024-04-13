@@ -385,6 +385,7 @@ namespace igLibrary.Core
 			}
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;
+			obj.internalMeta = this;
 			if(setFields) obj.ResetFields(this);
 			return obj;
 		}
