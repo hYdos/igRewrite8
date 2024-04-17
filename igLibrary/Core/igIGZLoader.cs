@@ -172,25 +172,33 @@
 							depName._ns._hash = rawDepNSHash;
 
 							igObject? obj = null;
-							if(!igObjectStreamManager.Singleton._directories.Any(x => x.Value._name._hash == depName._ns._hash))
+							if(!igObjectStreamManager.Singleton._directoriesByName.TryGetValue(depName._ns._hash, out igObjectDirectoryList? list))
 							{
-								Console.WriteLine($"igIGZ EXID load: Failed to find {depName._ns._hash.ToString("X08")}, referenced in {_dir._path}");
+								Console.WriteLine($"igIGZ EXID load: Failed to find namespace {depName._ns._hash.ToString("X08")}, referenced in {_dir._path}");
 								goto finish;
 							}
-							igObjectDirectory dependantDir = igObjectStreamManager.Singleton._directories.First(x => x.Value._name._hash == depName._ns._hash).Value;
-							//depName._ns._string = dependantDir._name._string;
-							//Console.WriteLine($"igIGZ EXID load: Successfully found {depName._ns._string}, referenced in {_dir._path}");
-							if(dependantDir._useNameList)
+							for(int d = 0; d < list._count; d++)
 							{
-								for(int k = 0; k < dependantDir._nameList._count; k++)
+								igObjectDirectory dependantDir = list[d];
+								//depName._ns._string = dependantDir._name._string;
+								//Console.WriteLine($"igIGZ EXID load: Successfully found {depName._ns._string}, referenced in {_dir._path}");
+								if(dependantDir._useNameList)
 								{
-									if(dependantDir._nameList[k]._hash == depName._name._hash)
+									for(int k = 0; k < dependantDir._nameList!._count; k++)
 									{
-										//depName._name._string = dependantDir._nameList[k]._string;
-										obj = dependantDir._objectList[k];
-										break;
+										if(dependantDir._nameList[k]._hash == depName._name._hash)
+										{
+											//depName._name._string = dependantDir._nameList[k]._string;
+											obj = dependantDir._objectList[k];
+											break;
+										}
 									}
 								}
+								if(obj != null) break;
+							}
+							if(obj == null)
+							{
+								Console.WriteLine($"igIGZ EXID load: Failed to find object {depName._ns._hash.ToString("X08")} in {list[0]._name}, referenced in {_dir._path}");
 							}
 							finish:
 								_externalList.Add(new igHandle(depName));

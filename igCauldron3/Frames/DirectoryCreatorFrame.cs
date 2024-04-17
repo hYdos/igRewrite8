@@ -20,7 +20,7 @@ namespace igCauldron3
 				igObjectDirectory newDir = new igObjectDirectory(_path, new igName(Path.GetFileNameWithoutExtension(_path)));
 				newDir._nameList = new igNameList();
 				newDir._useNameList = true;
-				igObjectStreamManager.Singleton.AddObjectDirectory(newDir);
+				igObjectStreamManager.Singleton.AddObjectDirectory(newDir, _path);
 				ObjectManagerFrame._dirs.Add(newDir);
 				_wnd.frames.Remove(this);
 			}

@@ -3,30 +3,39 @@ namespace igLibrary.Core
 	public class igObjectStreamManager : igSingleton<igObjectStreamManager>
 	{
 		//change to Dictionary<igName, igObjectDirectory>
-		public Dictionary<uint, igObjectDirectory> _directories = new Dictionary<uint, igObjectDirectory>();
-		public void AddObjectDirectory(igObjectDirectory dir)
+		public Dictionary<uint, igObjectDirectoryList> _directoriesByName = new Dictionary<uint, igObjectDirectoryList>();
+		public Dictionary<uint, igObjectDirectory> _directoriesByPath = new Dictionary<uint, igObjectDirectory>();
+		public void AddObjectDirectory(igObjectDirectory dir, string filePath)
 		{
-			_directories.Add(dir._name._hash, dir);
+			igObjectDirectoryList? list = null;
+			if(!_directoriesByName.TryGetValue(dir._name._hash, out list))
+			{
+				list = new igObjectDirectoryList();
+				_directoriesByName.Add(dir._name._hash, list);
+			}
+			list.Append(dir);
+			_directoriesByPath.Add(igHash.Hash(filePath), dir);
 			igObjectHandleManager.Singleton.AddDirectory(dir);
 		}
-		public igObjectDirectory Load(string path)
+		public igObjectDirectory? Load(string path)
 		{
 			return Load(path, new igName(Path.GetFileNameWithoutExtension(path)));
 		}
-		public igObjectDirectory? Load(string filePath, igName nameSpace)
+		public igObjectDirectory? Load(string path, igName nameSpace)
 		{
+			string filePath = igFilePath.GetNativePath(path);
+			uint filePathHash = igHash.Hash(filePath);
 			Console.Write($"igObjectStreamManager was asked to load {filePath}...");
-			if(_directories.ContainsKey(nameSpace._hash))
+			if(_directoriesByPath.ContainsKey(filePathHash))
 			{
-				Console.Write($"was previously loaded.\n");
-				return _directories[nameSpace._hash];
+				Console.Write("was previously loaded.\n");
+				return _directoriesByPath[filePathHash];
 			}
-			Console.Write($"was not previously loaded.\n");
+			Console.Write("was not previously loaded.\n");
 
 			igObjectDirectory objDir = new igObjectDirectory(filePath, nameSpace);
-			AddObjectDirectory(objDir);
+			AddObjectDirectory(objDir, filePath);
 			objDir.ReadFile();
-			igObjectHandleManager.Singleton.AddDirectory(objDir);
 			return objDir;
 		}
 	}

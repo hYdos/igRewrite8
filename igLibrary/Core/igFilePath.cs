@@ -11,6 +11,7 @@ namespace igLibrary.Core
 		public string _path;
 		public string _nativePath;
 		public static string _defaultMedia = "isHostFileSystemMountedInternal";
+		private static igFilePath _utilFp = new igFilePath();
 
 		public string NativePrefix => string.Empty;
 		public string NativeAllowRelativePaths => string.Empty;
@@ -18,7 +19,17 @@ namespace igLibrary.Core
 		public string NativeActivePrefix => string.Empty;
 		public bool NativeCaseSensitive => true;
 
-		public igFilePath()
+#pragma warning disable CS8618
+	public igFilePath() => Reset();
+#pragma warning restore CS8618
+
+		public static string GetNativePath(string path)
+		{
+			_utilFp.Set(path);
+			return _utilFp._path;
+		}
+
+		public void Reset()
 		{
 			_media = string.Empty;
 			_directory = string.Empty;
@@ -32,6 +43,7 @@ namespace igLibrary.Core
 
 		public void Set(string path)
 		{
+			Reset();
 			path.Replace('\\', '/');
 			int mediaIndex = path.IndexOf(':');
 			if(mediaIndex == 1)

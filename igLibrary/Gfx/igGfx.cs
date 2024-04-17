@@ -299,7 +299,7 @@ namespace igLibrary.Gfx
 			metaimages._name = new igName("metaimages");
 			metaimages._useNameList = true;
 			metaimages._nameList = new igNameList();
-			igObjectStreamManager.Singleton.AddObjectDirectory(metaimages);
+			igObjectStreamManager.Singleton.AddObjectDirectory(metaimages, metaimages._name._string);
 			igObjectHandleManager.Singleton.AddSystemNamespace("metaimages");
 
 			for(int i = 0; i < canonicalMetaImages.Length; i++)

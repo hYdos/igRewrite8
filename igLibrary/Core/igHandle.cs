@@ -25,17 +25,21 @@ namespace igLibrary.Core
 		{
 			if(_object != null) return (T)_object;
 
-			Dictionary<uint, igObjectDirectory> dirs = igObjectStreamManager.Singleton._directories;
-			if(dirs.ContainsKey(_namespace._hash))
+			Dictionary<uint, igObjectDirectoryList> dirLists = igObjectStreamManager.Singleton._directoriesByName;
+			if(dirLists.ContainsKey(_namespace._hash))
 			{
-				igObjectDirectory dir = dirs[_namespace._hash];
-				if(dir._useNameList == false) return null;
-				for(int i = 0; i < dir._nameList._count; i++)
+				igObjectDirectoryList dirs = dirLists[_namespace._hash];
+				for(int d = 0; d < dirs._count; d++)
 				{
-					if(dir._nameList[i]._hash == _alias._hash)
+					igObjectDirectory dir = dirs[d];
+					if(dir._useNameList == false) return null;
+					for(int i = 0; i < dir._nameList._count; i++)
 					{
-						_object = dir._objectList[i] as T;
-						return (T)_object;
+						if(dir._nameList[i]._hash == _alias._hash)
+						{
+							_object = dir._objectList[i] as T;
+							return (T)_object;
+						}
 					}
 				}
 			}

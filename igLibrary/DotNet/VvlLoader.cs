@@ -777,9 +777,6 @@ namespace igLibrary.DotNet
 			dnMethodDef._name = ReadVvlString(strings, methodDef._methodName);
 			dnMethodDef._declaringType = declaringType;
 
-			if(dnMethodDef._declaringType._baseMeta._name == "Delegate" && dnMethodDef._name == "Combine")
-			;
-
 			if(!TypeResolverHelper(resolver, methodDef._isReturnArray != 0, methodDef._returnElementType, ReadVvlString(resolver._stringTable, methodDef._returnTypeName), out dnMethodDef._retType))
 			{
 				dnMethodDef._retType._baseMeta = igArkCore.GetObjectMeta("Object");
