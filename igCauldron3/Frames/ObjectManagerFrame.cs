@@ -14,6 +14,12 @@ namespace igCauldron3
 		private bool renderChangeReference = false;
 		public static int _currentDir;
 
+		public static void AddDirectory(igObjectDirectory dir)
+		{
+			int index = _dirs.FindIndex(x => x == dir);
+			if(index < 0) _dirs.Add(dir);
+		}
+
 		public ObjectManagerFrame(Window wnd) : base(wnd)
 		{
 			if(overrides == null)
@@ -38,12 +44,14 @@ namespace igCauldron3
 			{
 				for(int i = 0; i < _dirs.Count; i++)
 				{
+					ImGui.PushID(_dirs[i]._path);
 					if(ImGui.BeginTabItem(_dirs[i]._name._string))
 					{
 						_currentDir = i;
 						RenderDir(_dirs[i]);
 						ImGui.EndTabItem();
 					}
+					ImGui.PopID();
 				}
 				ImGui.EndTabBar();
 			}
