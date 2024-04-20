@@ -15,8 +15,10 @@ debug
 *.obj
 *.dae
 *.fbx
-*.dll
 #.dll because of the vvl exporter
+*.dll
+*.csv
+*.dat
 
 # debug files + explanations
 
@@ -47,13 +49,12 @@ debug
 *.igb
 *.fb
 *.ELF
-*.rpx
 *.dol
 *.pkg
 *.vvl
 *.wav*
-smoke_config.xml
-igTests/imgui.ini
-*.csv
-ParseTextMetasToBinary/gameconfig.json
-*.dat
+
+# igCauldron files
+
+gameconfig.json
+imgui.ini

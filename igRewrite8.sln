@@ -3,15 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseTextMetasToBinary", "ParseTextMetasToBinary\ParseTextMetasToBinary.csproj", "{6ABA7F49-593C-4D41-AAFC-7A9C176FDF5A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igRewrite8", "igRewrite8\igRewrite8.csproj", "{07D6BCA0-4CDA-4200-8869-7DB80E5541B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igLibrary", "igLibrary\igLibrary.csproj", "{E93B988B-BEDD-4954-A28B-FB21219FBA1B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseTextMetasToBinary2", "ParseTextMetasToBinary2\ParseTextMetasToBinary2.csproj", "{1E32493F-EC59-4BFA-9E52-C67F18D3D3FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igCauldron2", "igCauldron2\igCauldron2.csproj", "{2CB64704-4840-49D5-B72C-D19B3F3B7ECB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "igCauldron3", "igCauldron3\igCauldron3.csproj", "{836C339B-380A-446E-867F-84AFF3CC2F39}"
 EndProject
