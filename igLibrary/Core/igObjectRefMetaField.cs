@@ -23,33 +23,28 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			//TODO: Optimise this
-			bool isExid = loader._runtimeFields._externals.Any(x => x == (ulong)loader._stream.BaseStream.Position);
-			bool isOffset = loader._runtimeFields._offsets.Any(x => x == (ulong)loader._stream.BaseStream.Position);
-			bool isNamedExternal = loader._runtimeFields._namedExternals.Any(x => x == (ulong)loader._stream.BaseStream.Position);
-			igSizeTypeMetaField sizeTypeMetaField = new igSizeTypeMetaField();
-			ulong raw = (ulong)sizeTypeMetaField.ReadIGZField(loader);
+			ulong baseOffset = loader._stream.Tell64();
+			igSizeTypeMetaField sizeTypeMetaField = igSizeTypeMetaField._MetaField;
+			ulong raw = (ulong)sizeTypeMetaField.ReadIGZField(loader)!;
 			igObject? ret = null;
-			if(raw == 0) return null;
+			bool isOffset = loader._runtimeFields._offsets.Any(x => x == baseOffset);
+			if(isOffset)
+			{
+				return loader._offsetObjectList[raw];
+			}
+			bool isNamedExternal = loader._runtimeFields._namedExternals.Any(x => x == baseOffset);
 			if(isNamedExternal)
 			{
-				ret = loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
+				return loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
 			}
-			else if(isOffset)
+			bool isExid = loader._runtimeFields._externals.Any(x => x == baseOffset);
+			if(isExid)
 			{
-				ret = loader._offsetObjectList[raw];
+				return loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();
 			}
-			else if(isExid)
-			{
-				ret = loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();
-			}
-			else
-			{
-				Console.WriteLine("uhhhhhhhhhhhhhhhhh");
-			}
+			if(raw != 0)
+				throw new InvalidDataException("Failed to read igObjectRefMetaField properly");
 			return ret;
-			//if(ret is T t) return t;
-			//else return null;
 		}
 		public void WriteIGZFieldShallow(igIGZSaver saver, igIGZSaver.SaverSection section, igObject? obj, out ulong serializedOffset, out bool needsDeep)
 		{

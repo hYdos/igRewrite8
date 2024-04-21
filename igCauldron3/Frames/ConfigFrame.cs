@@ -2,6 +2,7 @@ using ImGuiNET;
 using igLibrary.Core;
 using igLibrary;
 using igLibrary.Gfx;
+using System.Diagnostics;
 
 namespace igCauldron3
 {
@@ -46,6 +47,9 @@ namespace igCauldron3
 						if(!string.IsNullOrWhiteSpace(game._updatePath) && !File.Exists(game._updatePath)) throw new FileNotFoundException("Update file does not exist");
 						if(game._platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT || game._platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEPRECATED || game._platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_MAX) throw new ArgumentException("Invalid platform");
 
+						Stopwatch timer = new Stopwatch();
+						timer.Start();
+
 						CauldronConfig.WriteConfig();
 
 						igFileContext.Singleton.Initialize(game._path);
@@ -83,6 +87,8 @@ namespace igCauldron3
 						_wnd.frames.Add(new ArchiveFrame(_wnd));
 						_wnd.frames.Add(new MenuBarFrame(_wnd));
 
+						timer.Stop();
+						Console.WriteLine($"Loaded game in {timer.Elapsed.TotalSeconds}");
 					}
 					ImGui.SameLine();
 					if(ImGui.Button("Remove Game"))
