@@ -107,7 +107,7 @@ namespace igCauldron3
 				return;
 			}
 			igMetaObject meta = obj.GetMeta();
-			string objKey = obj.GetHashCode().ToString("X08");
+			string objKey = obj.GetHashCode().ToString("X08") + label;
 			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
 			{
 				int i = 0;
