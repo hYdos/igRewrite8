@@ -7,8 +7,8 @@ namespace igLibrary.Core
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			uint basePos = loader._stream.Tell();
-			bool isRef = loader._runtimeFields._stringRefs.Any(x => x == basePos);
-			bool isTable = loader._runtimeFields._stringTables.Any(x => x == basePos);
+			bool isRef = loader._runtimeFields._stringRefs.BinarySearch(basePos) >= 0;
+			bool isTable = loader._runtimeFields._stringTables.BinarySearch(basePos) >= 0;
 
 			string? data = null;
 			ulong raw = loader.ReadRawOffset();

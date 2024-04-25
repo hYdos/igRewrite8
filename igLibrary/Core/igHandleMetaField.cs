@@ -20,7 +20,7 @@ namespace igLibrary.Core
 		}
 		public override object ReadIGZField(igIGZLoader loader)
 		{
-			if(!loader._runtimeFields._handles.Contains(loader._stream.Tell64())) return null;
+			if(loader._runtimeFields._handles.BinarySearch(loader._stream.Tell64()) < 0) return null;
 
 			uint raw = loader._stream.ReadUInt32();
 			if((raw & 0x80000000) != 0)

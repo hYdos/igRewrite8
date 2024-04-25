@@ -27,17 +27,17 @@ namespace igLibrary.Core
 			igSizeTypeMetaField sizeTypeMetaField = igSizeTypeMetaField._MetaField;
 			ulong raw = (ulong)sizeTypeMetaField.ReadIGZField(loader)!;
 			igObject? ret = null;
-			bool isOffset = loader._runtimeFields._offsets.Any(x => x == baseOffset);
+			bool isOffset = loader._runtimeFields._offsets.BinarySearch(baseOffset) >= 0;
 			if(isOffset)
 			{
 				return loader._offsetObjectList[raw];
 			}
-			bool isNamedExternal = loader._runtimeFields._namedExternals.Any(x => x == baseOffset);
+			bool isNamedExternal = loader._runtimeFields._namedExternals.BinarySearch(baseOffset) >= 0;
 			if(isNamedExternal)
 			{
 				return loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
 			}
-			bool isExid = loader._runtimeFields._externals.Any(x => x == baseOffset);
+			bool isExid = loader._runtimeFields._externals.BinarySearch(baseOffset) >= 0;
 			if(isExid)
 			{
 				return loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();

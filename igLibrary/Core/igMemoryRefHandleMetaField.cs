@@ -20,7 +20,7 @@ namespace igLibrary.Core
 		}
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
-			if(!loader._runtimeFields._memoryHandles.Contains(loader._stream.Tell())) return null;
+			if(loader._runtimeFields._memoryHandles.BinarySearch(loader._stream.Tell()) < 0) return null;
 
 			ulong thumbnailIndex = loader.ReadRawOffset();
 			Tuple<ulong, ulong> thumbnail = loader._thumbnails[(int)thumbnailIndex];

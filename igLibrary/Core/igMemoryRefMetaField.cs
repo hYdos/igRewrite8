@@ -48,7 +48,7 @@ namespace igLibrary.Core
 			uint memSize;
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 
-			if(loader._runtimeFields._poolIds.Any(x => x == start))
+			if(loader._runtimeFields._poolIds.BinarySearch(start) >= 0)
 			{
 				pool = loader._loadedPools[flags & 0xFFFFFF];
 				memSize = 0;
