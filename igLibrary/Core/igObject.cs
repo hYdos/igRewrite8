@@ -19,8 +19,10 @@ namespace igLibrary.Core
 
 				//if(!metaFields[i]._properties._persistent) continue;
 
+#if RELEASE
 				try
 				{
+#endif
 					loader._stream.Seek(objectOffset + metaFields[i]._offsets[loader._platform]);
 
 					object? data = metaFields[i].ReadIGZField(loader);
@@ -30,11 +32,13 @@ namespace igLibrary.Core
 					{
 						field.SetValue(this, data);
 					}
+#if RELEASE
 				}
 				catch(Exception e)
 				{
 					throw new FieldReadException(e, loader._dir._path, loader._stream.Tell(), meta, metaFields[i]);
 				}
+#endif
 			}
 		}
 		public void GetDependencies(IG_CORE_PLATFORM platform, igObjectDirectory directory, out igStringRefList? buildDeps, out igStringRefList? fileDeps)
