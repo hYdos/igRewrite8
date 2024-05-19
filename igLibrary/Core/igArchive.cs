@@ -151,7 +151,7 @@ namespace igLibrary.Core
 			{
 				//technically the offset is 5 bytes and the ordinal is 3
 				ulong temp = sh.ReadUInt64();	//????
-				_files[i]._ordinal = (uint)(temp >> 32);
+				_files[i]._ordinal = (uint)(temp >> 40);
 				_files[i]._offset = (uint)(temp & 0xFFFFFFFF);
 				_files[i]._length = sh.ReadUInt32();
 				_files[i]._blockIndex = sh.ReadUInt32();
@@ -284,9 +284,7 @@ namespace igLibrary.Core
 			for(int i = 0; i < _files.Count; i++)
 			{
 				sh.Seek(fileHeaderOffset + i * GetFileInfoSize());
-
-				sh.WriteUInt32(_files[i]._ordinal);
-				sh.WriteUInt32(_files[i]._offset);
+				sh.WriteUInt64(((ulong)_files[i]._ordinal << 40) | _files[i]._offset);
 				sh.WriteUInt32(_files[i]._length);
 				sh.WriteUInt32(_files[i]._blockIndex);
 			}
@@ -551,6 +549,38 @@ namespace igLibrary.Core
 			dst.Flush();
 			Array.Copy(dst.GetBuffer(), fileInfo._compressedData, fileInfo._compressedData.Length);
 			File.WriteAllBytes("debugiga.dat", dst.GetBuffer());
+		}
+		public FileInfo GetAddFile(string filePath)
+		{
+			//check if the file already exists, return it if so
+			uint hash = HashFilePath(filePath);
+			int index = HashSearch(_files, _archiveHeader._numFiles, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, hash);
+			if(index >= 0) return _files[index];
+
+			//if not, generate a new one
+			FileInfo file = new FileInfo();
+			file._hash = hash;
+			file._blockIndex = 0xFFFFFFFF;
+			file._logicalName = filePath;
+			file._name = $"Temporary/BuildServer/{igAlchemyCore.GetPlatformString(igRegistry.GetRegistry()._platform)}/Output/{filePath}";
+			file._ordinal = _archiveHeader._numFiles;
+
+			//figure out where to insert the new one
+			int indexToInsertTo = (int)_archiveHeader._numFiles;
+			for(int i = 0; i < _archiveHeader._numFiles; i++)
+			{
+				if(_files[i]._hash > hash)
+				{
+					indexToInsertTo = i;
+					break;
+				}
+			}
+
+			//insert the file and update the file header
+			_archiveHeader._numFiles++;
+			_files.Insert(indexToInsertTo, file);
+			CalculateHashSearchProperties();
+			return file;
 		}
 		//Reverse engineered by DTZxPorter
 		private void CalculateHashSearchProperties()
