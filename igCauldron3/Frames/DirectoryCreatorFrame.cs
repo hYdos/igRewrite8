@@ -11,7 +11,7 @@ namespace igCauldron3
 
 		public override void Render()
 		{
-			ImGui.Begin("New Directory");
+			ImGui.Begin("New Directory", ImGuiWindowFlags.NoDocking);
 			ImGui.Text("Path");
 			ImGui.SameLine();
 			ImGui.InputText(string.Empty, ref _path, 0x100);
@@ -22,8 +22,9 @@ namespace igCauldron3
 				newDir._useNameList = true;
 				igObjectStreamManager.Singleton.AddObjectDirectory(newDir, _path);
 				ObjectManagerFrame._dirs.Add(newDir);
-				_wnd.frames.Remove(this);
+				Close();
 			}
+			if(ImGui.Button("Close")) Close();
 			ImGui.End();
 		}
 	}

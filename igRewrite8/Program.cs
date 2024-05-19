@@ -14,7 +14,7 @@ namespace igRewrite8
 		{
 			//DumpToyDataToRunes(args); return;
 			//DumpAllArchives(args); return;
-			ReadFromTextFile(args); return;
+			//ReadFromTextFile(args); return;
 			//TestArchives(args); return;
 
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);

@@ -21,7 +21,7 @@ namespace igCauldron3
 
 		public override void Render()
 		{
-			ImGui.Begin("New Object");
+			ImGui.Begin("New Object", ImGuiWindowFlags.NoDocking);
 
 			ImGui.Text("Name");
 			ImGui.SameLine();
@@ -79,8 +79,9 @@ namespace igCauldron3
 			if(pressed)
 			{
 				_dir.AddObject(_meta.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]), default(igName), new igName(_name));
-				_wnd.frames.Remove(this);
+				Close();
 			}
+			if(ImGui.Button("Close")) Close();
 			ImGui.End();
 		}
 	}

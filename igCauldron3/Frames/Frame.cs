@@ -15,5 +15,9 @@ namespace igCauldron3
 				_children[i].Render();
 			}
 		}
+		public virtual void Close()
+		{
+			_wnd.frames.Remove(this);
+		}
 	}
 }
