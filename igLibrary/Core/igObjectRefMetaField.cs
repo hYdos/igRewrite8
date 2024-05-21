@@ -48,8 +48,6 @@ namespace igLibrary.Core
 		}
 		public void WriteIGZFieldShallow(igIGZSaver saver, igIGZSaver.SaverSection section, igObject? obj, out ulong serializedOffset, out bool needsDeep)
 		{
-			if(_fieldName == "_globalCollisionMaterials")
-			;
 			ulong baseOffset = section._sh.Tell64();
 			needsDeep = false;
 			serializedOffset = 0;
