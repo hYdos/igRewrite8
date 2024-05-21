@@ -52,6 +52,7 @@ namespace igLibrary.Core
 		{
 			igObjectLoader loader = igObjectLoader.FindLoader(_path);
 			loader.ReadFile(this, _path, igBlockingType.kMayBlock);
+			igObjectHandleManager.Singleton.AddDirectory(this);
 		}
 		public void WriteFile(Stream dst, IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
 		{
