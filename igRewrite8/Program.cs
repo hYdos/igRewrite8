@@ -88,7 +88,7 @@ namespace igRewrite8
 									{
 										igObject target = localData[l]._object.GetObjectAlias<igObject>();
 										Type? t = target.GetType();
-										FieldInfo? stringField = t.GetField(localData[l]._field._name);
+										FieldInfo? stringField = localData[l]._field._fieldHandle;
 										stringField.SetValue(target, localData[l]._string);
 									}
 								}

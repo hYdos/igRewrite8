@@ -116,7 +116,7 @@ namespace VvlToDll
 		public FieldReference ImportVvlFieldRef(int fieldToken)
 		{
 			igMetaField field = _library._fields[fieldToken];
-			return _module.ImportReference(new FieldReference(field._name, ArkDllExport.GetFieldTypeRef(_module, field, ImportVvlClassRef), ImportVvlClassRef(field._parentMeta)));
+			return _module.ImportReference(new FieldReference(field._fieldName, ArkDllExport.GetFieldTypeRef(_module, field, ImportVvlClassRef), ImportVvlClassRef(field._parentMeta)));
 		}
 		public TypeReference ImportVvlTypeRef(DotNetType dnTypeRef, bool isReturn = false)
 		{

@@ -4,13 +4,26 @@ namespace igLibrary.Core
 	{
 		public string _path;
 		public igName _name;
-		public List<igObjectDirectory> _dependancies = new List<igObjectDirectory>();
+		public List<igObjectDirectory> _dependencies = new List<igObjectDirectory>();
 		public igObjectList _objectList = new igObjectList();
 		public bool _useNameList = false;
 		public igNameList? _nameList = null;
-		public igIGZLoader _loader;
+		public bool _useNamespaceList = false;
+		public igNameList? _namespaceList = null;
+		[Obsolete("This exists for the reflection system, do not use.")] public igDataList _memory;
+		[Obsolete("This exists for the reflection system, do not use.")] public ulong _memoryUsage;
+		[Obsolete("This exists for the reflection system, do not use.")] public ulong _childMemoryUsage;
+		public igObject _loaderData;
+		public igIGZLoader _loader;     //needs to be changed to igObjectLoader
+		[Obsolete("This exists for the reflection system, do not use.")] public FileType _sourceFileType;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _loadCount;
+		[Obsolete("This exists for the reflection system, do not use.")] public igObjectList _debugObjects;
+		[Obsolete("This exists for the reflection system, do not use.")] public igObject _thumbnails;
+		[Obsolete("This exists for the reflection system, do not use.")] public igObjectList _createdMetaObjects;
+		[Obsolete("This exists for the reflection system, do not use.")] public igStringRefList _userSpecifiedPaths;
 		public igFileDescriptor _fd;
-		public static Func<string, igName, igBlockingType, igObjectDirectory?> _loadDependancyFunction = igObjectDirectory.LoadDependancyDefault;
+		public static Func<string, igName, igBlockingType, igObjectDirectory?> _loadDependencyFunction = igObjectDirectory.LoadDependancyDefault;
+		[Obsolete("This exists for the reflection system, do not use.")] public static object? _assertObjectLifetimesCallback;
 
 		public enum FileType : uint
 		{

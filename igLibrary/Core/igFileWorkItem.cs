@@ -60,7 +60,8 @@ namespace igLibrary.Core
 		public uint _bytesProcessed;
 		public Action	_callback;
 		public object[] _callbackData;
-		//public igSignal _signal;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _signal;    //igSignal
+		[Obsolete("This exists for the reflection system, do not use.")] public byte _bfStorage__0;
 		public uint _flags;
 		public WorkType _type;
 		public Priority _priority;

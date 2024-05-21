@@ -62,9 +62,9 @@ namespace igCauldron3
 			igObjectList list = dir._objectList;
 			if(ImGui.TreeNode("Dependancies"))
 			{
-				for(int i = 0; i < dir._dependancies.Count; i++)
+				for(int i = 0; i < dir._dependencies.Count; i++)
 				{
-					ImGui.Text(dir._dependancies[i]._path);					
+					ImGui.Text(dir._dependencies[i]._path);
 				}
 				ImGui.TreePop();
 			}
@@ -98,7 +98,7 @@ namespace igCauldron3
 			}
 			else if(obj is igMetaField metaField)
 			{
-				ImGui.Text($"{label}: metafield.{metaField._parentMeta._name}::{metaField._name}");
+				ImGui.Text($"{label}: metafield.{metaField._parentMeta._name}::{metaField._fieldName}");
 				return;
 			}
 			else if(obj is igMetaObject metaObject)
@@ -152,13 +152,13 @@ namespace igCauldron3
 		public void RenderFieldWithName(object obj, igMetaField field)
 		{
 			Type t = obj.GetType();
-			FieldInfo? fi = t.GetField(field._name);
+			FieldInfo? fi = field._fieldHandle!;
 			bool canRender = fi != null;
 
 			if(canRender)
 			{
 				object? value = fi.GetValue(obj);
-				RenderArrayField(field._name, ref value, field);
+				RenderArrayField(field._fieldName, ref value, field);
 				fi.SetValue(obj, value);
 			}
 		}

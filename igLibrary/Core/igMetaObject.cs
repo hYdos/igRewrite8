@@ -5,8 +5,18 @@ namespace igLibrary.Core
 {
 	public class igMetaObject : igBaseMeta
 	{
+		[Obsolete("This exists for the reflection system, do not use.")] public int _id = -1;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _tfbId = -1;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _instanceCount = -1;
 		public igMetaObject? _parent;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMetaObject _lastChild = null;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMetaObject _nextSibling = null;
+		[Obsolete("This exists for the reflection system, do not use.")] public ushort _index = 0xFFFF;
+		[Obsolete("This exists for the reflection system, use _sizes instead.")] public ushort _sizeofSize = 0xFFFF;
+		[Obsolete("This exists for the reflection system, do not use.")] public ushort _properties;
+		[Obsolete("This exists for the reflection system, use _alignments instead.")] public ushort _requiredAlignment = 0x4;
 		public List<igMetaField> _metaFields;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _metaFunctions;
 		public igObjectList? _attributes;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
@@ -88,7 +98,7 @@ namespace igLibrary.Core
 				FieldAttributes attrs = FieldAttributes.Public;
 				if(_metaFields[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
 
-				FieldBuilder fb = tb.DefineField(_metaFields[i]._name, _metaFields[i].GetOutputType(), attrs);
+				_metaFields[i]._fieldHandle = tb.DefineField(_metaFields[i]._fieldName, _metaFields[i].GetOutputType(), attrs);
 			}
 		}
 
@@ -186,7 +196,6 @@ namespace igLibrary.Core
 			if(_parent._name == "igDataList")
 			{
 				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
-
 				parentType = typeof(igTDataList<>).MakeGenericType(dataField._memType.GetOutputType());
 			}
 			else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
@@ -213,23 +222,68 @@ namespace igLibrary.Core
 				FieldAttributes attrs = FieldAttributes.Public;
 				if(_metaFields[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
 
-				FieldBuilder fb = tb.DefineField(_metaFields[i]._name, _metaFields[i].GetOutputType(), attrs);
+				_metaFields[i]._fieldHandle = tb.DefineField(_metaFields[i]._fieldName!, _metaFields[i].GetOutputType(), attrs);
 			}
 		}
 		public override void CreateType2()
 		{
 			if(_vTablePointer is not TypeBuilder tb) return;
 
-			if(!_parent._finishedFinalization) throw new TypeLoadException("Derived class being initialized before parent.");
+			if(!_parent!._finishedFinalization) throw new TypeLoadException("Derived class being initialized before parent.");
 			if(!_beganFinalization)
 			{
 				_beganFinalization = true;
 
 				Console.Write($"Finalizing {_name}... ");
 				
-				Type testType = tb.CreateType();
-				igArkCore.AddDynamicTypeToCache(testType);
+				Type testType = tb.CreateType()!;
+				igArkCore.AddDynamicTypeToCache(testType!);
 				_vTablePointer = testType;
+
+				for(int i = 0; i < _metaFields.Count; i++)
+				{
+					//I gave up on making this look neat
+					if(i < _parent._metaFields.Count)
+					{
+						if(_parent._metaFields[i] != _metaFields[i])
+						{
+							_metaFields[i]._fieldHandle = _vTablePointer.GetField(_metaFields[i]._fieldName!, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
+						}
+					}
+					else
+					{
+						_metaFields[i]._fieldHandle = _vTablePointer.GetField(_metaFields[i]._fieldName!, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
+					}
+				}
+
+				Type parentType = testType.BaseType!;
+				if(_parent._name == "igDataList")
+				{
+					igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
+					dataField._fieldHandle = parentType.GetField("_data")!;
+					_metaFields[0]._fieldHandle = parentType.GetField("_count")!;
+					_metaFields[1]._fieldHandle = parentType.GetField("_capacity")!;
+				}
+				else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
+				{
+					igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
+
+					dataField._fieldHandle = parentType.GetField("_data")!;
+					_metaFields[0]._fieldHandle = parentType.GetField("_count")!;
+					_metaFields[1]._fieldHandle = parentType.GetField("_capacity")!;
+				}
+				else if(_parent._name == "igHashTable")
+				{
+					igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
+					igMemoryRefMetaField keysField = (igMemoryRefMetaField)_metaFields[1];
+
+					valuesField._fieldHandle = parentType.GetField("_values")!;
+					keysField._fieldHandle = parentType.GetField("_keys")!;
+
+					_metaFields[2]._fieldHandle = parentType.GetField("_hashItemCount")!;
+					_metaFields[3]._fieldHandle = parentType.GetField("_autoRehash")!;
+					_metaFields[4]._fieldHandle = parentType.GetField("_loadFactor")!;
+				}
 
 				Console.Write("Finalized!\n");
 
@@ -242,13 +296,38 @@ namespace igLibrary.Core
 			_vTablePointer = igArkCore.GetObjectDotNetType(_name);
 
 			//Sometimes is null, in those cases, a dynamic type will be created
-
 			if(_vTablePointer != null)
 			{
 				_beganFinalizationPrep = true;
 				_finishedFinalizationPrep = true;
 				_beganFinalization = true;
 				_finishedFinalization = true;
+
+				if(_parent == null) return;
+
+				FieldInfo[] fields = _vTablePointer.GetFields();
+
+				//The following is complicated because one type can have multiple fields of the same name, this is to compensate for that
+				for(int i = 0; i < _metaFields.Count; i++)
+				{
+					//don't worry if a parent is null, that'll only happen for __internalObjectBase which doesn't have any fields
+					if(i < _parent!._metaFields.Count && _metaFields[i] == _parent._metaFields[i]) continue;
+					if(_metaFields[i] is igPropertyFieldMetaField) continue;
+
+					IEnumerable<FieldInfo> applicable = fields.Where(x => x.Name == _metaFields[i]._fieldName);
+					     if(applicable.Count() == 1) _metaFields[i]._fieldHandle = applicable.ElementAt(0);
+					else if(_vTablePointer.GetProperty(_metaFields[i]._fieldName!) != null) continue;
+					else if(applicable.Count() == 0) throw new NotImplementedException($"Field {_metaFields[i]._fieldName} is missing from type {_name}. Contact a developer.");
+					else
+					{
+						IEnumerable<igMetaField> applicableFields = _metaFields.Where(x => x._fieldName == _metaFields[i]._fieldName);
+						if(applicableFields.Count() != applicable.Count()) throw new NotImplementedException($"Mismatch between variable numbers for {_metaFields[i]._fieldName} in type {_name}. Contact a developer.");
+						for(int j = 0; j < applicableFields.Count(); j++)
+						{
+							applicableFields.ElementAt(j)._fieldHandle = applicable.ElementAt(j);
+						}
+					}
+				}
 			}
 		}
 		public bool CanBeAssignedTo(igMetaObject other)
@@ -263,7 +342,7 @@ namespace igLibrary.Core
 		}
 		public int GetFieldIndexByName(string name)
 		{
-			int index = _metaFields.FindIndex(x => x._name == name);
+			int index = _metaFields.FindIndex(x => x._fieldName == name);
 			return index;
 		}
 		public override igMetaField? GetFieldByName(string name)

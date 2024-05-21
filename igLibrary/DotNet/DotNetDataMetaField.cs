@@ -4,6 +4,7 @@ namespace igLibrary.DotNet
 {
 	public class DotNetDataMetaField : igMetaField
 	{
+		public static DotNetTypeMetaField _typeField;
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			ulong baseOffset = loader._stream.Tell64();

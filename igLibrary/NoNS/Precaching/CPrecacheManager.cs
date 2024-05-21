@@ -6,21 +6,21 @@ namespace igLibrary
 	public class CPrecacheManager : CManager
 	{
 		public igVector<igVector<string>> _packagesPerPool;
-		//public CZone _currentlyLoadingZone;
-		//public igVector<CAsynchronousLoadingModelRecord> _asynchronousLoadingModelRecords;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _currentlyLoadingZone;              //CZone
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _asynchronousLoadingModelRecords;   //igVector<CAsynchronousLoadingModelRecord>
 		public igVector<igObjectDirectoryList> mObjectDirectoryLists;
-		//public igVector<CAssetList> mAssetLists;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? mAssetLists;                        //igVector<CAssetList>
 		public CResourcePrecacherList _resourcePrecachers;
 		public CStringResourcePrecacherHashTable _resourcePrecacherLookup;
 		public string _packageName;
-		//public CPrecacheMemoryTracker mpPrecacheMemoryTracker;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? mpPrecacheMemoryTracker;            //CPrecacheMemoryTracker
 		public bool mReportHeroPrecacheMemory;
 		public bool mReportVehiclePrecacheMemory;
 		public bool mReportMapPrecacheMemory;
 		public bool mReportAllPrecacheMemory;
 		public bool _loadTextures = true;
 		public EMemoryPoolID _currentUncachingPool;
-		//public CPrecacheManagerExcludeRuleSetHandleList _exclusionRuleSetList;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _exclusionRuleSetList;              //CPrecacheManagerExcludeRuleSetHandleList
 		public static CPrecacheManager _Instance;
 
         public override void Intialize()

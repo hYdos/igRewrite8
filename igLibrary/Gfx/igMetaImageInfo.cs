@@ -8,6 +8,7 @@ namespace igLibrary.Gfx
 		public static igMetaImageInfo _metaImageInfo => _metaImageInfoLazy.Value;
 		public igStringMetaImageHashTable _metaImagesTable = new igStringMetaImageHashTable() { _autoRehash = true };
 		private igObjectDirectory? _metaimageDirInternal = null;
+		public igMetaImageList _metaImages = new igMetaImageList();
 		public igObjectDirectory _metaimageDir {
 			get
 			{
@@ -21,6 +22,7 @@ namespace igLibrary.Gfx
 			//Console.WriteLine($"I should've added {metaimage._name}");
 			_metaImageInfo._metaImagesTable.Add(metaimage._name, metaimage);
 			_metaImageInfo._metaimageDir.AddObject(metaimage, default, new igName(metaimage._name));
+			_metaImageInfo._metaImages.Append(metaimage);
 		}
 		public static igMetaImage? FindFormat(string name)
 		{

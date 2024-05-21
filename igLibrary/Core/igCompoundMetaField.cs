@@ -6,6 +6,7 @@ namespace igLibrary.Core
 	public class igCompoundMetaField : igMetaField
 	{
 		public igCompoundMetaFieldInfo _compoundFieldInfo;
+		[Obsolete("Exists for the reflection system, use _compoundFieldInfo._fieldList instead.")] public igMetaFieldList _fieldList;
 
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
@@ -31,11 +32,8 @@ namespace igLibrary.Core
 
 				object? data = metaFields[i].ReadIGZField(loader);
 
-				FieldInfo? field = GetOutputTypeInternal().GetField(metaFields[i]._name);
-				if(field != null)
-				{
-					field.SetValue(compoundData, data);
-				}
+				FieldInfo? field = metaFields[i]._fieldHandle;
+				field.SetValue(compoundData, data);
 			}
 
 			return compoundData;
@@ -60,9 +58,7 @@ namespace igLibrary.Core
 
 				if(metaFields[i]._properties._persistent)
 				{
-					FieldInfo? field = GetOutputTypeInternal().GetField(metaFields[i]._name);
-
-					if(field == null) continue;
+					FieldInfo? field = metaFields[i]._fieldHandle;
 
 					data = field.GetValue(value);
 				}
@@ -114,6 +110,13 @@ namespace igLibrary.Core
 			_platformInfo = igArkCore.GetMetaFieldPlatformInfo(_name);
 
 			//Sometimes is null, in those cases, a dynamic type will be created
+			if(_vTablePointer != null)
+			{
+				for(int i = 0; i < _fieldList.Count; i++)
+				{
+					_fieldList[i]._fieldHandle = _vTablePointer.GetField(_fieldList[i]._fieldName ?? $"_unk{i}");
+				}
+			}
 		}
 
 		public override void DeclareType()
@@ -143,7 +146,7 @@ namespace igLibrary.Core
 				FieldAttributes attrs = FieldAttributes.Public;
 				if(_fieldList[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
 
-				FieldBuilder fb = tb.DefineField(_fieldList[i]._name, _fieldList[i].GetOutputType(), attrs);
+				tb.DefineField(_fieldList[i]._fieldName, _fieldList[i].GetOutputType(), attrs);
 			}
 		}
 		public override void FinalizeType()
@@ -215,7 +218,7 @@ namespace igLibrary.Core
 				FieldAttributes attrs = FieldAttributes.Public;
 				if(_fieldList[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
 
-				FieldBuilder fb = tb.DefineField(_fieldList[i]._name, _fieldList[i].GetOutputType(), attrs);
+				_fieldList[i]._fieldHandle = tb.DefineField(_fieldList[i]._fieldName, _fieldList[i].GetOutputType(), attrs);
 			}
 		}
 		public override void CreateType2()
@@ -230,6 +233,11 @@ namespace igLibrary.Core
 				
 				Type testType = tb.CreateType();
 				_vTablePointer = testType;
+
+				for(int i = 0; i < _fieldList.Count; i++)
+				{
+					_fieldList[i]._fieldHandle = _vTablePointer.GetField(_fieldList[i]._fieldName!, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
+				}
 
 				Console.WriteLine($"Finalized {_name}");
 
@@ -274,7 +282,7 @@ namespace igLibrary.Core
 		}
 		public override igMetaField? GetFieldByName(string name)
 		{
-			int index = _fieldList.FindIndex(x => x._name == name);
+			int index = _fieldList.FindIndex(x => x._fieldName == name);
 			if(index < 0) return null;
 			return _fieldList[index];
 		}
@@ -316,7 +324,7 @@ namespace igLibrary.Core
 				FieldAttributes attrs = FieldAttributes.Public;
 				if(_fieldList[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
 
-				FieldBuilder fb = tb.DefineField(_fieldList[i]._name, _fieldList[i].GetOutputType(), attrs);
+				_fieldList[i]._fieldHandle = tb.DefineField(_fieldList[i]._fieldName, _fieldList[i].GetOutputType(), attrs);
 			}
 		}
 		public void TypeBuildFinalize()
@@ -370,8 +378,7 @@ namespace igLibrary.Core
 				if(_fieldList[i] is igStaticMetaField || _fieldList[i] is igPropertyFieldMetaField || _fieldList[i] is igBitFieldMetaField) continue;
 
 				//Defaults not working cos they're not in the metadata iirc
-				string name = _fieldList[i]._name ?? $"_unk{i}";
-				FieldInfo? field = t.GetField(name);
+				FieldInfo? field = _fieldList[i]._fieldHandle;
 
 				object? data = _fieldList[i].GetDefault(igMemoryContext.Singleton.GetMemoryPoolByName("Default"));
 

@@ -3,7 +3,7 @@ namespace igLibrary.Core
 	public abstract class igObjectLoader : igObject
 	{
 		public static Dictionary<string, igObjectLoader> _loaders = new Dictionary<string, igObjectLoader>();
-		static uint _testFileMaxSize;
+		public static uint _testFileMaxSize;
 		public static void RegisterClass<T>() where T : igObjectLoader, new()
 		{
 			T loader = new T();

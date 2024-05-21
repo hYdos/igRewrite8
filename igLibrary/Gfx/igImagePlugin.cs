@@ -2,6 +2,7 @@ namespace igLibrary.Gfx
 {
 	public class igImagePlugin : igObject
 	{
+		public static igImagePluginList _pluginTypes;
 		public static void RegisterPlugin()
 		{
 			igMetaImage a8                        = igMetaImageInfo.FindFormat("a8");							//Registered r8g8b8a8 func
@@ -88,4 +89,5 @@ namespace igLibrary.Gfx
 			dxt1.AppendConvertFunction(r8g8b8a8, igGfx.Convert_dxt1_to_r8g8b8a8);
 		}
 	}
+	public class igImagePluginList : igTObjectList<igImagePlugin>{}
 }

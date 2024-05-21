@@ -52,7 +52,7 @@ namespace igLibrary.Core
 				metafield._attributes.Append(new igPlatformExclusiveAttribute(platforms[i]));
 			}
 			metafield._default = defaultValue;
-			metafield._name = name;
+			metafield._fieldName = name;
 			metafield._offset = offset;
 			metafield._parentMeta = compound;
 			compound._fieldList.Insert(index, metafield);
@@ -68,7 +68,7 @@ namespace igLibrary.Core
 				metafield._attributes.Append(new igPlatformExclusiveAttribute(platforms[i]));
 			}
 			metafield._default = defaultValue;
-			metafield._name = name;
+			metafield._fieldName = name;
 			metafield._offset = offset;
 			metafield._parentMeta = meta;
 			meta.ApplyFixup(index, metafield);
@@ -94,7 +94,7 @@ namespace igLibrary.Core
 			_virtualDeadZoneDeflection._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_virtualDeadZoneDeflection._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
 			_virtualDeadZoneDeflection._default = 0.05f;
-			_virtualDeadZoneDeflection._name = "_virtualDeadZoneDeflection";
+			_virtualDeadZoneDeflection._fieldName = "_virtualDeadZoneDeflection";
 			_virtualDeadZoneDeflection._offset = 0x1D;	//in between the two surrounding fields
 			_virtualDeadZoneDeflection._parentMeta = playerSystemDataMeta;
 			playerSystemDataMeta.ApplyFixup(6, _virtualDeadZoneDeflection);
@@ -104,7 +104,7 @@ namespace igLibrary.Core
 			_virtualWalkAndTurnStickThreshold._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_virtualWalkAndTurnStickThreshold._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
 			_virtualWalkAndTurnStickThreshold._default = 0.05f;
-			_virtualWalkAndTurnStickThreshold._name = "_virtualWalkAndTurnStickThreshold";
+			_virtualWalkAndTurnStickThreshold._fieldName = "_virtualWalkAndTurnStickThreshold";
 			_virtualWalkAndTurnStickThreshold._offset = 0x21;	//in between the two surrounding fields
 			_virtualWalkAndTurnStickThreshold._parentMeta = playerSystemDataMeta;
 			playerSystemDataMeta.ApplyFixup(8, _virtualWalkAndTurnStickThreshold);
@@ -114,7 +114,7 @@ namespace igLibrary.Core
 			_virtualRunStickThreshold._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_virtualRunStickThreshold._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
 			_virtualRunStickThreshold._default = 0.3f;
-			_virtualRunStickThreshold._name = "_virtualRunStickThreshold";
+			_virtualRunStickThreshold._fieldName = "_virtualRunStickThreshold";
 			_virtualRunStickThreshold._offset = 0x25;	//in between the two surrounding fields
 			_virtualRunStickThreshold._parentMeta = playerSystemDataMeta;
 			playerSystemDataMeta.ApplyFixup(10, _virtualRunStickThreshold);
@@ -159,7 +159,7 @@ namespace igLibrary.Core
 			_changeCategoryText._attributes.Append(new igLocalizeAttribute());
 			_changeCategoryText._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_changeCategoryText._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
-			_changeCategoryText._name = "_changeCategoryText";
+			_changeCategoryText._fieldName = "_changeCategoryText";
 			_changeCategoryText._offset = 0xCD;	//in between the two surrounding fields
 			_changeCategoryText._parentMeta = guiBehaviorVehicleCustomizationMeta;
 			guiBehaviorVehicleCustomizationMeta.ApplyFixup(29, _changeCategoryText);
@@ -168,7 +168,7 @@ namespace igLibrary.Core
 			_dpadCycle._attributes.SetCapacity(2);
 			_dpadCycle._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN));
 			_dpadCycle._attributes.Append(new igPlatformExclusiveAttribute(IG_CORE_PLATFORM.IG_CORE_PLATFORM_ASPEN64));
-			_dpadCycle._name = "_dpadCycle";
+			_dpadCycle._fieldName = "_dpadCycle";
 			_dpadCycle._offset = 0x01A1;	//in between the two surrounding fields
 			_dpadCycle._parentMeta = guiBehaviorVehicleCustomizationMeta;
 			guiBehaviorVehicleCustomizationMeta.ApplyFixup(85, _dpadCycle);

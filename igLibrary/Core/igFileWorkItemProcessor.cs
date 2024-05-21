@@ -3,13 +3,13 @@ namespace igLibrary.Core
 	public abstract class igFileWorkItemProcessor : igObject
 	{
 		public igFileWorkItemList _workList;
-		//public igThreadList _threadList;
-		//public igSemaphore _workListLock;
-		//public igSemaphore _workPending;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _threadList;    //igThreadList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _workListLock;  //igSemaphore
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _workPending;   //igSemaphore
 		public igFileWorkItemProcessor _nextProcessor;
 		public bool _workerThreadsActive;
 		public bool _allowPause;
-		//public igSignal _pauseSignal;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _pauseSignal;   //igSignal
 		public int _pauseCounter;
 		public abstract void Process(igFileWorkItem workItem);
 		public void SendToNextProcessor(igFileWorkItem workItem)

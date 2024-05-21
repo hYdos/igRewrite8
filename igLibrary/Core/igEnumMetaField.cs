@@ -7,6 +7,7 @@ namespace igLibrary.Core
 	{
 		private static igEnumMetaField _MetaField = new igEnumMetaField();
 		public static igEnumMetaField GetMetaField() => _MetaField;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _getMetaEnumFunction;
 
 		public igMetaEnum _metaEnum;
 

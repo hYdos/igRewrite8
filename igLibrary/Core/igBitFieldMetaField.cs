@@ -15,7 +15,7 @@ namespace igLibrary.Core
 
 			sh.WriteUInt32(_shift);
 			sh.WriteUInt32(_bits);
-			saver.SaveString(sh, _storageMetaField._name);
+			saver.SaveString(sh, _storageMetaField._fieldName);
 			saver.SaveMetaField(sh, _assignmentMetaField);
 		}
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)

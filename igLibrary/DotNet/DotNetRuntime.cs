@@ -4,13 +4,13 @@ namespace igLibrary.DotNet
 	{
 		//Commented out ones aren't useful for us
 
-		//public igDotNetDebugger _debugger;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _debugger;             //igDotNetDebugger
 		public string _prefix;
-		//public DotNetThreadList _allocatedThreads;
-		//bool _traceActive;
-		//igVector<uint> _trace;
-		//int _traceHead;
-		//igStringIntHashTable _ignoreExceptions;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _allocatedThreads;     //DotNetThreadList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _traceActive;          //bool
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _trace;                //igVector<uint>
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _traceHead;            //int
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _ignoreExceptions;     //igStringIntHashTable
 		public igDotNetMetaInterface _methodLookup;
 	}
 }

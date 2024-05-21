@@ -2,10 +2,12 @@ namespace igLibrary
 {
 	public class CLanguageFilePrecacher : CResourcePrecacher
 	{
-        public override void Precache(string filePath)
-        {
+		[Obsolete("This exists for the reflection system, do not use.")] public static object? _loadedCallback;         //igObjectDirectoryLoadCallback
+		[Obsolete("This exists for the reflection system, do not use.")] public static object? _localizedNamespaceData; //igStringObjectDirectoryHashTable
+		public override void Precache(string filePath)
+		{
 			//Unimplemented
-            igObjectStreamManager.Singleton.Load(filePath);
-        }
-    }
+			igObjectStreamManager.Singleton.Load(filePath);
+		}
+	}
 }

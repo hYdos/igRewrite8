@@ -74,13 +74,18 @@ namespace igLibrary.Core
 				_implicitAlignment = stb(value, 14);
 			}
 		}
-		public string? _name;
+		public string? _fieldName;
 		public ushort _offset;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _offsets = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public igBaseMeta _parentMeta;
 		public Properties _properties = new Properties();
 		public igObjectList? _attributes = new igObjectList();
 		public object? _default;
+		public FieldInfo? _fieldHandle;
+		[Obsolete("This exists for the reflection system, use _parentMeta instead.")] public int _parentMetaObjectIndex = -1;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _typeIndex = -1;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _internalIndex = -1;
+		[Obsolete("This exists for the reflection system, use GetSize() instead.")] public ushort _size = 0;
 
 		public T[] GetAttributes<T>() where T : igObject
 		{
@@ -138,7 +143,7 @@ namespace igLibrary.Core
 				igMetaField? templateParam = GetTemplateParameter(i);
 				saver.SaveMetaField(sh, templateParam);
 			}
-			saver.SaveString(sh, _name == "0" ? null : _name);
+			saver.SaveString(sh, _fieldName == "0" ? null : _fieldName);
 
 			FieldInfo? numField = GetType().GetField("_num");
 			if(numField != null)
@@ -164,7 +169,7 @@ namespace igLibrary.Core
 			{
 				SetTemplateParameter(i, loader.ReadMetaField(sh));
 			}
-			_name = loader.ReadString(sh);
+			_fieldName = loader.ReadString(sh);
 			short num = sh.ReadInt16();
 			_offset = sh.ReadUInt16();
 			FieldInfo? numField = GetType().GetField("_num");

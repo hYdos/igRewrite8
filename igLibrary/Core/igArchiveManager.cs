@@ -4,7 +4,26 @@ namespace igLibrary.Core
 	{
 		public igArchiveList _archiveList = new igArchiveList();
 		public igArchiveList _patchArchives = new igArchiveList();
-
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _archiveListLock;           //igReadWriteLock
+		[Obsolete("This exists for the reflection system, do not use.")] public uint _archiveListLockCounter;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMemoryPool _blockPool;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _sharedSignal;              //igSignal
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _processLock;               //igSemaphore
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _freeArchiveItems;          //igArchiveFileWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _activeArchiveItems;        //igArchiveFileWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _allBlockItems;             //igArchiveBlockWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _freeBlockItems;            //igArchiveBlockWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _blockReadItems;            //igArchiveBlockWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _blockDecompressItems;      //igArchiveBlockWorkItemList
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _decompressionQueue;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _decompressionBatchCounter;
+		[Obsolete("This exists for the reflection system, do not use.")] public bool _enableReadAhead;
+		[Obsolete("This exists for the reflection system, do not use.")] public igArchive _lastDevice;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _lastFile;
+		[Obsolete("This exists for the reflection system, do not use.")] public uint _lastBlockIndex;
+		[Obsolete("This exists for the reflection system, do not use.")] public ulong _lastConsumedOffset;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _lastPriority;              //Priority
+		[Obsolete("This exists for the reflection system, do not use.")] public int _overrideArchives;
 		public igArchive LoadArchive(string path)
 		{
 			if(TryGetArchive(path, out igArchive? loaded)) return loaded;

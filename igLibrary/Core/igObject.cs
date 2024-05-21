@@ -27,7 +27,7 @@ namespace igLibrary.Core
 
 					object? data = metaFields[i].ReadIGZField(loader);
 
-					FieldInfo? field = GetType().GetField(metaFields[i]._name);
+					FieldInfo? field = metaFields[i]._fieldHandle;
 					if(field != null)
 					{
 						field.SetValue(this, data);
@@ -90,7 +90,7 @@ namespace igLibrary.Core
 
 				if(metaFields[i]._properties._persistent)
 				{
-					FieldInfo? field = GetType().GetField(metaFields[i]._name);
+					FieldInfo? field = metaFields[i]._fieldHandle;
 
 					if(field == null) continue;
 
@@ -114,7 +114,7 @@ namespace igLibrary.Core
 			{
 				if(meta._metaFields[i] is igStaticMetaField || meta._metaFields[i] is igPropertyFieldMetaField || meta._metaFields[i] is igBitFieldMetaField) continue;
 
-				FieldInfo? field = meta._vTablePointer.GetField(meta._metaFields[i]._name);
+				FieldInfo? field = meta._metaFields[i]._fieldHandle;
 
 				object? data = meta._metaFields[i].GetDefault(internalMemoryPool);
 

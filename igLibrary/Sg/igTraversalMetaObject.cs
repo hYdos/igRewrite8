@@ -2,8 +2,8 @@ namespace igLibrary.Sg
 {
 	public class igTraversalMetaObject : igMetaObject
 	{
-		//public igVector<igTraversalNodeProperties> _nodeProperties;
-		//public igVector<igTraversalNodeProperties> _propagatedNodeProperties;
-		//public bool _root
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _nodeProperties;             //igVector<igTraversalNodeProperties>
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _propagatedNodeProperties;   //igVector<igTraversalNodeProperties>
+		[Obsolete("This exists for the reflection system, do not use.")] public bool _root;
 	}
 }

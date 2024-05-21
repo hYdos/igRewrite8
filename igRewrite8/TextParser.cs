@@ -164,8 +164,8 @@ namespace igRewrite8.Devel
 						}
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, metaObject);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
-						metaField._name = memberInfo[dataIndex++];
-						if(metaField._name == "0") metaField._name = null;
+						metaField._fieldName = memberInfo[dataIndex++];
+						if(metaField._fieldName == "0") metaField._fieldName = null;
 						ReadFieldAttributes(metaField, ref dataIndex, memberInfo);
 						ReadFieldDefault(metaField, ref dataIndex, memberInfo);
 						if(parentFieldIndex < 0)
@@ -215,8 +215,8 @@ namespace igRewrite8.Devel
 						int dataIndex = 0;
 						igMetaField metaField = ReadFieldType(memberInfo, ref dataIndex, compoundInfo);
 						metaField._offset = ushort.Parse(memberInfo[dataIndex++].Substring(2), System.Globalization.NumberStyles.HexNumber);
-						metaField._name = memberInfo[dataIndex++];
-						if(metaField._name == "0") metaField._name = null;
+						metaField._fieldName = memberInfo[dataIndex++];
+						if(metaField._fieldName == "0") metaField._fieldName = null;
 						ReadFieldAttributes(metaField, ref dataIndex, memberInfo);
 						ReadFieldDefault(metaField, ref dataIndex, memberInfo);
 						compoundInfo._fieldList.Add(metaField);

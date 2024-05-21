@@ -2,7 +2,7 @@ namespace igLibrary.Core
 {
 	public class igIGZObjectLoader : igObjectLoader
 	{
-		private igIgzDeferredConstructionObjectsList? _deferredConstructionObjects;
+		[Obsolete("This exists for the reflection system, do not use.")] public igIgzDeferredConstructionObjectsList? _deferredConstructionObjects;
         public override string GetLoaderExtension() => "igz";
         public override string GetLoaderName() => "Alchemy Platform";
         public override string GetLoaderType() => "Alchemy";

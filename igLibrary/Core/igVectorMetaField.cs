@@ -5,6 +5,9 @@ namespace igLibrary.Core
 	public class igVectorMetaField : igRefMetaField
 	{
 		public igMetaField _memType;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMetaField _memTypeRef;
+		[Obsolete("This exists for the reflection system, do not use.")] public int _memTypeAlignment;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMetaObject _elementType;
 		public int _initialCapacity;		//Todo: Dump this from the game
 
 		public override void SetTemplateParameter(uint index, igMetaField meta)

@@ -4,6 +4,9 @@ namespace igLibrary.Core
 	{
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
+		[Obsolete("This exists for the reflection system, use _sizes instead.")] public int _typeSize;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _cppConstructor;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _cppDestructor;
 
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{

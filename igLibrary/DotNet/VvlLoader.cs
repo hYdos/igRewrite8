@@ -710,11 +710,11 @@ namespace igLibrary.DotNet
 						break;
 				}
 			}
-			metaField._name = ReadVvlString(strings, field._name);
-			if(metaField._name[0] == '<')	//Why would this happen??
+			metaField._fieldName = ReadVvlString(strings, field._name);
+			if(metaField._fieldName[0] == '<')	//Why would this happen??
 			{
-				int endIndex = metaField._name.IndexOf('>');
-				metaField._name = metaField._name.Substring(1, endIndex-1);
+				int endIndex = metaField._fieldName.IndexOf('>');
+				metaField._fieldName = metaField._fieldName.Substring(1, endIndex-1);
 				//Ignoring the rest for now
 			}
 

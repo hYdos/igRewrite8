@@ -5,6 +5,8 @@ namespace igLibrary.Core
 	public class igPropertyFieldMetaField : igMetaField
 	{
 		public igMetaField _innerMetaField;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _setCallbackFunction;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _getCallbackFunction;
 
 		public override void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{

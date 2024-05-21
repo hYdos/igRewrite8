@@ -103,9 +103,19 @@ namespace igLibrary.Core
 		public bool _configured;
 		public bool _needsEndianSwap = false;
 		public Header _archiveHeader;
+		[Obsolete("This exists for the reflection system, do not use.")] public igMemory<byte> _tocBuffer;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _fileIdTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _fileInfoTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _largeFileBlockTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _mediumFileBlockTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _smallFileBlockTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public igStringRefList? _nameTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public igStringRefList? _logicalNameTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public igUnsignedIntList? _modificationTimeTable;
 		public List<FileInfo> _files = new List<FileInfo>();
 		public string _nativeMedia;
 		public string _nativePath;
+		public static string _nativeAppPath;
 
 		public void Open(string filePath, igBlockingType blockingType)
 		{

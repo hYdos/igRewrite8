@@ -219,6 +219,17 @@ namespace igLibrary.Core
 				{
 					metaObject._parent = igArkCore.GetObjectMeta(parentName);
 					metaObject.InheritFields();
+					if(metaObject._parent._name == "igDataList" || metaObject._parent._name == "igObjectList" || metaObject._parent._name == "igNonRefCountedObjectList")
+					{
+						metaObject._metaFields[0] = metaObject._metaFields[0].CreateFieldCopy();
+						metaObject._metaFields[1] = metaObject._metaFields[1].CreateFieldCopy();
+					}
+					else if(metaObject._parent._name == "igHashTable")
+					{
+						metaObject._metaFields[2] = metaObject._metaFields[2].CreateFieldCopy();
+						metaObject._metaFields[3] = metaObject._metaFields[3].CreateFieldCopy();
+						metaObject._metaFields[4] = metaObject._metaFields[4].CreateFieldCopy();
+					}
 				}
 				int fieldCount = _shs[Section.ObjectInfo].ReadInt32();
 				int editedFieldCount = _shs[Section.ObjectInfo].ReadInt32();

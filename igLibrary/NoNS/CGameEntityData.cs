@@ -15,6 +15,6 @@ namespace igLibrary
 		public float _lifetime;
 		public float _lifetimeModifier;
 		public EMemoryPoolID _cachedAssetPool = EMemoryPoolID.MP_MAX_POOL;
-		//public EMaterial _material {get; set;}
+		public EMaterial _material;	//technically a property but that doesn't work well here
 	}
 }

@@ -116,7 +116,7 @@
 				{
 					case 0x50454454:							//TDEP
 						if(!_readDependancies) break;
-						_dir._dependancies.Capacity = (int)count;
+						_dir._dependencies.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
 							string nameStr = _stream.ReadString();
@@ -126,7 +126,7 @@
 							igObjectDirectory? dependantDir = igObjectDirectory.LoadDependancyDefault(pathStr, name, igBlockingType.kBlocking);
 							if(dependantDir == null) throw new FileNotFoundException($"Failed to find dependancy {pathStr}");
 
-							dir._dependancies.Add(dependantDir);
+							dir._dependencies.Add(dependantDir);
 						}
 						break;
 					case 0x54454D54:							//TMET
@@ -215,10 +215,10 @@
 							depHandleName._name.SetString(_stringList[(int)(nameStrIndex & 0x7FFFFFFF)]);
 
 							igObject? obj = null;
-							if(dir._dependancies.Any(x => x._name._hash == depHandleName._ns._hash))
+							if(dir._dependencies.Any(x => x._name._hash == depHandleName._ns._hash))
 							{
 								//Console.WriteLine($"igIGZ EXNM load: Successfully found namespace {depHandleName._ns._string}, referenced in {_dir._path}");
-								igObjectDirectory dependantDir = dir._dependancies.First(x => x._name._hash == depHandleName._ns._hash);
+								igObjectDirectory dependantDir = dir._dependencies.First(x => x._name._hash == depHandleName._ns._hash);
 								if(dependantDir._useNameList)
 								{
 									for(int k = 0; k < dependantDir._nameList._count; k++)
@@ -403,7 +403,7 @@
 		{
 			_stream.Seek(DeserializeOffset(offset));
 			int index = (int)ReadRawOffset();
-			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset));
+			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset), false);
 
 			if(obj is igBlindObject blindObj)
 			{

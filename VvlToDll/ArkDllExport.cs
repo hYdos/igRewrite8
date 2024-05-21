@@ -73,7 +73,7 @@ namespace VvlToDll
 		}
 		public static void AddField(ModuleDefinition md, TypeDefinition target, igMetaObject meta, igMetaField metaField, Func<igBaseMeta, TypeReference> resolver)
 		{
-			FieldDefinition fd = new FieldDefinition(metaField._name, FieldAttributes.Public, GetFieldTypeRef(md, metaField, resolver));
+			FieldDefinition fd = new FieldDefinition(metaField._fieldName, FieldAttributes.Public, GetFieldTypeRef(md, metaField, resolver));
 			if(metaField is igStaticMetaField)
 			{
 				fd.Attributes |= FieldAttributes.Static;

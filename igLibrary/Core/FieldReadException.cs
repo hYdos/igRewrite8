@@ -11,7 +11,7 @@ namespace igLibrary.Core
 		{
 			get
 			{
-				return $"Failed to read {MetaObject._name}::{Field._name} from file {FilePath} at {Offset.ToString("X08")}.\n{InnerException.Message}";
+				return $"Failed to read {MetaObject._name}::{Field._fieldName} from file {FilePath} at {Offset.ToString("X08")}.\n{InnerException.Message}";
 			}
 		}
 		public override string? StackTrace => InnerException.StackTrace;

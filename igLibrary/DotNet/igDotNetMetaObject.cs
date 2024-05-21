@@ -4,7 +4,7 @@ namespace igLibrary.DotNet
 	{
 		public NameDotNetMethodDefinitionHashTable _methods;
 		public igDotNetMetaObjectList _interfaces;
-		//public DotNetVTable _vTable;
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _vTable;    //DotNetVTable
 		public igMetaObject _boundMeta;
 		public DotNetTypeList _templateParameters;
 		public igMetaObject _patchMeta;
