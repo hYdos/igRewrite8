@@ -27,7 +27,7 @@ namespace igLibrary.Core
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			int raw = loader._stream.ReadInt32();
-			if(_metaEnum != null) return Enum.ToObject(_metaEnum._internalType, raw);
+			if(_metaEnum != null) return _metaEnum.GetEnumFromValue(raw);
 			else                  return raw;
 		}
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
