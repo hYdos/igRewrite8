@@ -17,7 +17,7 @@ namespace igLibrary.Core
 		public void SetString(string newString)
 		{
 			_string = newString;
-			_hash = igHash.Hash(newString.ToLower());
+			_hash = igHash.HashI(newString);
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace igLibrary.Core
 		public igObjectDirectory(string path)
 		{
 			_path = path;
-			_name = new igName(Path.GetFileNameWithoutExtension(path).ToLower());
+			_name = new igName(Path.GetFileNameWithoutExtension(path));
 		}
 		public void ReadFile()
 		{
