@@ -60,7 +60,7 @@ namespace igLibrary.Core
 		}
 		public override string ToString()
 		{
-			return $"{_namespace._string}.{_alias._string}";
+			return $"{_namespace._string ?? _namespace._hash.ToString("x")}.{_alias._string ?? _alias._hash.ToString("x")}";
 		}
 	}
 }

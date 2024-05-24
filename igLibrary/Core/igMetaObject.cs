@@ -38,129 +38,6 @@ namespace igLibrary.Core
 			}
 			return null;
 		}
-		public void GenerateType()
-		{
-			DeclareType();
-			igArkCore.GeneratePendingTypes();
-		}
-
-		public override void DeclareType()
-		{
-			if(_vTablePointer != null) return;
-
-			_vTablePointer = igArkCore.GetNewTypeBuilder(_name);
-
-			_parent.DeclareType();
-
-			for(int i = 0; i < _metaFields.Count; i++)
-			{
-				if(_parent._metaFields.Count <= i)                ReadyFieldDependancy(_metaFields[i]);
-				else if(_metaFields[i] != _parent._metaFields[i]) ReadyFieldDependancy(_metaFields[i]);
-			}
-
-			igArkCore._pendingTypes.Add(this);
-		}
-		public override void DefineType()
-		{
-			if(!(_vTablePointer is TypeBuilder)) return;
-
-			TypeBuilder tb = (TypeBuilder)_vTablePointer;
-			Type parentType = _parent._vTablePointer;
-
-			if(_parent._name == "igDataList")
-			{
-				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
-
-				parentType = typeof(igTDataList<>).MakeGenericType(dataField._memType.GetOutputType());
-			}
-			else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
-			{
-				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
-
-				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
-				_priority = BuildPriority.Low;
-			}
-			else if(_parent._name == "igHashTable")
-			{
-				igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
-				igMemoryRefMetaField keysField = (igMemoryRefMetaField)_metaFields[1];
-
-				parentType = typeof(igTUHashTable<,>).MakeGenericType(valuesField._memType.GetOutputType(), keysField._memType.GetOutputType());
-				_priority = BuildPriority.Low;
-			}
-
-			tb.SetParent(parentType);
-
-			for(int i = _parent._metaFields.Count; i < _metaFields.Count; i++)
-			{
-				if(_metaFields[i] is igPropertyFieldMetaField) continue;
-
-				FieldAttributes attrs = FieldAttributes.Public;
-				if(_metaFields[i] is igStaticMetaField) attrs |= FieldAttributes.Static;
-
-				_metaFields[i]._fieldHandle = tb.DefineField(_metaFields[i]._fieldName, _metaFields[i].GetOutputType(), attrs);
-			}
-		}
-
-		public override void FinalizeType()
-		{
-			if(!_beganFinalizationPrep)
-			{
-				_beganFinalizationPrep = true;
-
-				if(_vTablePointer is TypeBuilder tb)
-				{
-					Console.WriteLine($"Prepping {_name}");
-
-					_parent.FinalizeType();
-
-					if(tb.BaseType != null && tb.BaseType.IsGenericType)
-					{
-						if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTObjectList<>))
-						{
-							igMemoryRefMetaField _data = (igMemoryRefMetaField)_metaFields[2];
-							if(_data._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
-						}
-						else if(tb.BaseType.GetGenericTypeDefinition() == typeof(igTUHashTable<,>))
-						{
-							igMemoryRefMetaField memField = (igMemoryRefMetaField)_metaFields[0];
-							if(memField._memType is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject.FinalizeType();
-							memField = (igMemoryRefMetaField)_metaFields[1];
-							if(memField._memType is igObjectRefMetaField objectRefMetaField2) objectRefMetaField2._metaObject.FinalizeType();
-						}
-					}
-					
-
-					for(int i = 0; i < _metaFields.Count; i++)
-					{
-						if(_parent._metaFields.Count <= i)                FinalizeFieldDependancy(_metaFields[i]);
-						else if(_metaFields[i] != _parent._metaFields[i]) FinalizeFieldDependancy(_metaFields[i]);
-					}
-
-					Console.WriteLine($"Prepped {_name}");
-				}
-
-				_finishedFinalizationPrep = true;
-			}
-
-			if(!_beganFinalization && _finishedFinalizationPrep && _parent._finishedFinalization)
-			{
-				_beganFinalization = true;
-
-				if(_vTablePointer is TypeBuilder tb)
-				{
-					Console.WriteLine($"Finalizing {_name}");
-					
-					Type testType = tb.CreateType();
-					igArkCore.AddDynamicTypeToCache(testType);
-					_vTablePointer = testType;
-
-					Console.WriteLine($"Finalized {_name}");
-				}
-
-				_finishedFinalization = true;
-			}
-		}
 		public override void GatherDependancies()
 		{
 			if(_gatheredDependancies) return;
@@ -460,7 +337,8 @@ namespace igLibrary.Core
 		{
 			if(_vTablePointer == null)
 			{
-				GenerateType();
+				GatherDependancies();
+				igArkCore.FlushPendingTypes();
 			}
 			igObject obj = (igObject)Activator.CreateInstance(_vTablePointer);
 			obj.internalMemoryPool = memPool;

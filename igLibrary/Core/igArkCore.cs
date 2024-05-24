@@ -314,19 +314,6 @@ namespace igLibrary.Core
 				_vTableCache.Add(type.Name, type);
 			}
 		}
-		public static void GeneratePendingTypes()
-		{
-			for(int i = 0; i < _pendingTypes.Count; i++)
-			{
-				_pendingTypes[i].DefineType();
-			}
-			_pendingTypes = _pendingTypes.OrderByDescending(x => (int)x._priority).ToList();
-			for(int i = 0; i < _pendingTypes.Count; i++)
-			{
-				_pendingTypes[i].FinalizeType();
-			}
-			_pendingTypes.Clear();
-		}
 		public static void FlushPendingTypes()
 		{
 			for(int i = 0; i < _pendingTypes.Count; i++)
