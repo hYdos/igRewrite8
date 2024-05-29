@@ -20,6 +20,7 @@ namespace igCauldron3
 		{
 			this.args = args;
 			igAlchemyCore.InitializeSystems();
+			FieldRenderer.Init();
 		}
 		protected override void OnLoad()
 		{

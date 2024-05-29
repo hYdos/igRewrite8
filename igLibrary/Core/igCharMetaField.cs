@@ -2,6 +2,7 @@ namespace igLibrary.Core
 {
 	public class igCharMetaField : igMetaField
 	{
+		public static igCharMetaField _MetaField { get; private set; } = new igCharMetaField();
 		public override object? ReadIGZField(igIGZLoader loader) => loader._stream.ReadSByte();
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 1;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 1;

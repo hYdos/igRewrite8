@@ -149,5 +149,7 @@ namespace igLibrary.Core
 		uint GetPlatformAlignment(igMemoryRefHandleMetaField ioField, IG_CORE_PLATFORM platform);
 		void SetFlags(ulong flags, igMemoryRefMetaField ioField, IG_CORE_PLATFORM platform);
 		void SetFlags(ulong flags, igMemoryRefHandleMetaField ioField, IG_CORE_PLATFORM platform);
+		void Alloc(int itemCount);
+		void Realloc(int itemCount);
 	}
 }

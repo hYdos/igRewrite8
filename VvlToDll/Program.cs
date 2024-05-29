@@ -32,7 +32,7 @@ namespace VvlToDll
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 
-			CPrecacheManager._Instance.PrecachePackage("generated/characters/BeeTree", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/maps/UI/MainMenuBackground/MainMenuBackground", EMemoryPoolID.MP_DEFAULT);
 
 			//DotNetRuntime runtime = new DotNetRuntime();
 

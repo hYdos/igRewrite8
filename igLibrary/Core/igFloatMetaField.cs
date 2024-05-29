@@ -2,6 +2,7 @@ namespace igLibrary.Core
 {
 	public class igFloatMetaField : igMetaField
 	{
+		public static igFloatMetaField _MetaField { get; private set; } = new igFloatMetaField();
 		public override object? ReadIGZField(igIGZLoader loader) => loader._stream.ReadSingle();
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value) => section._sh.WriteSingle((float)value);
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;

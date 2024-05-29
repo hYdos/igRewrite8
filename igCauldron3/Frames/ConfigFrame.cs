@@ -83,7 +83,7 @@ namespace igCauldron3
 						}
 
 						_wnd.frames.Remove(this);
-						_wnd.frames.Add(new ObjectManagerFrame(_wnd));
+						_wnd.frames.Add(new DirectoryManagerFrame(_wnd));
 						_wnd.frames.Add(new ArchiveFrame(_wnd));
 						_wnd.frames.Add(new MenuBarFrame(_wnd));
 

@@ -1,0 +1,64 @@
+using System.Reflection;
+using igLibrary.Core;
+using ImGuiNET;
+
+namespace igCauldron3
+{
+	public class DirectoryManagerFrame : Frame
+	{
+		public igObjectDirectoryList _dirs = new igObjectDirectoryList();
+
+		public DirectoryManagerFrame(Window wnd) : base(wnd)
+		{
+			_dirs.Append(igObjectStreamManager.Singleton.Load("LooseData/GuiSystemData.igz")!);
+		}
+		public override void Render()
+		{
+			ImGui.Begin("Directory Manager");
+			RenderDirectory(_dirs[0]);
+			ImGui.End();
+		}
+		private void RenderDirectory(igObjectDirectory dir)
+		{
+			if(ImGui.TreeNode("Objects"))
+			{
+				for(int i = 0; i < dir._objectList._count; i++)
+				{
+					string name;
+					if(dir._useNameList) name = dir._nameList[i]._string;
+					else                       name = $"Object {i}";
+
+					RenderObject(name, dir._objectList[i]);
+				}
+			}
+		}
+		private void RenderObject(string label, igObject obj)
+		{
+			if(obj == null)
+			{
+				ImGui.Text($"{label}: null");
+				return;
+			}
+
+			//TODO: ADD METAFIELD AND METAOBJECT CASES
+
+			igMetaObject meta = obj.GetMeta();
+			string objKey = obj.GetHashCode().ToString("X08") + label;
+			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
+			{
+				RenderObjectFields(obj, meta);
+				ImGui.TreePop();
+			}
+		}
+		private void RenderObjectFields(igObject obj, igMetaObject meta)
+		{
+			for(int i = 0; i < meta._metaFields.Count; i++)
+			{
+				FieldInfo fi = meta._metaFields[i]._fieldHandle!;
+				object? raw = fi.GetValue(obj);
+				bool changed = FieldRenderer.RenderField(meta._metaFields[i]._fieldName!, ref raw, meta._metaFields[i]);
+				if(changed) fi.SetValue(obj, raw);
+			}
+		}
+	}
+}
