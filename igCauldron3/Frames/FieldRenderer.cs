@@ -293,10 +293,12 @@ namespace igCauldron3
 					int remove = -1;
 					for(int i = 0; i < data.Length; i++)
 					{
+						ImGui.PushID(label + field.GetHashCode().ToString("X08") + i.ToString("X08"));
 						if(ImGui.Button("-"))
 						{
 							remove = i;
 						}
+						ImGui.PopID();
 						ImGui.SameLine();
 						object? arrValue = data.GetValue(i);
 						bool changed = RenderField($"Element {i}", ref arrValue, memType);

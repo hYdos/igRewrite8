@@ -17,7 +17,8 @@ namespace igCauldron3
 			_t = typeof(igImage2);
 		}
 
-		public unsafe override void Draw(ObjectManagerFrame objFrame, igObject obj, igMetaObject meta)
+		public override void Draw(ObjectManagerFrame objFrame, igObject obj, igMetaObject meta) => throw new NotImplementedException();
+		public unsafe override void Draw2(DirectoryManagerFrame dirFrame, igObject obj, igMetaObject meta)
 		{
 			igImage2 image = (igImage2)obj;
 			
@@ -32,7 +33,11 @@ namespace igCauldron3
 				igTContext<igBaseGraphicsDevice>._instance.CreateTexture(igResourceUsage.kUsageDefault, image);
 			}
 
-			objFrame.RenderFieldWithName(image, meta.GetFieldByName("_name"));
+			object? castName = image._name;
+			if(FieldRenderer.RenderField("_name", ref castName, meta.GetFieldByName("_name")!))
+			{
+				image._name = (string)castName!;
+			}
 			if(ImGui.Button("Extract"))
 			{
 				string filePath = CrossFileDialog.SaveFile("Save Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");

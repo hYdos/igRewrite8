@@ -6,10 +6,25 @@ namespace igCauldron3
 {
 	public class DirectoryManagerFrame : Frame
 	{
+		private static List<InspectorDrawOverride> _overrides = null!;
 		public igObjectDirectoryList _dirs = new igObjectDirectoryList();
 
 		public DirectoryManagerFrame(Window wnd) : base(wnd)
 		{
+			if(_overrides == null)
+			{
+				_overrides = new List<InspectorDrawOverride>();
+				Type[] types = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.IsAssignableTo(typeof(InspectorDrawOverride))).ToArray();
+				for(uint i = 0; i < types.Length; i++)
+				{
+					if(!types[i].IsAbstract)
+					{
+						InspectorDrawOverride drawOverride = (InspectorDrawOverride)Activator.CreateInstance(types[i])!;
+						_overrides.Add(drawOverride!);
+					}
+				}
+			}
+
 			_dirs.Append(igObjectStreamManager.Singleton.Load("LooseData/GuiSystemData.igz")!);
 		}
 		public override void Render()
@@ -25,8 +40,8 @@ namespace igCauldron3
 				for(int i = 0; i < dir._objectList._count; i++)
 				{
 					string name;
-					if(dir._useNameList) name = dir._nameList[i]._string;
-					else                       name = $"Object {i}";
+					if(dir._useNameList) name = dir._nameList![i]._string;
+					else                        name = $"Object {i}";
 
 					RenderObject(name, dir._objectList[i]);
 				}
@@ -46,7 +61,15 @@ namespace igCauldron3
 			string objKey = obj.GetHashCode().ToString("X08") + label;
 			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
 			{
-				RenderObjectFields(obj, meta);
+				int overrideIndex = _overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(x._t));
+				if(overrideIndex < 0)
+				{
+					RenderObjectFields(obj, meta);
+				}
+				else
+				{
+					_overrides[overrideIndex].Draw2(this, obj, meta);
+				}
 				ImGui.TreePop();
 			}
 		}

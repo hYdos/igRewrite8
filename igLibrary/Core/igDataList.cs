@@ -31,10 +31,8 @@ namespace igLibrary.Core
 
 		public int GetCount() => _count;
 
-		public IigMemory GetData()
-		{
-			return _data;
-		}
+		public IigMemory GetData() => _data;
+		public void SetData(IigMemory data) => _data = (igMemory<T>)data;
 
 		public Type GetMemoryType()
 		{
@@ -54,6 +52,7 @@ namespace igLibrary.Core
 
 		public void SetCount(int count)
 		{
+			_count = count;
 			SetCapacity(((count + 3) / 4) * 4);
 		}
 
@@ -80,6 +79,7 @@ namespace igLibrary.Core
 		public void SetCapacity(int capacity);
 		public Type GetMemoryType();
 		public IigMemory GetData();
+		public void SetData(IigMemory data);
 		public object GetObject(int index);
 		public void SetObject(int index, object data);
 	}
