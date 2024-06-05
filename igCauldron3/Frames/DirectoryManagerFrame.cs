@@ -6,11 +6,15 @@ namespace igCauldron3
 {
 	public class DirectoryManagerFrame : Frame
 	{
+		public static DirectoryManagerFrame _instance { get; private set; }
+
 		private static List<InspectorDrawOverride> _overrides = null!;
 		public igObjectDirectoryList _dirs = new igObjectDirectoryList();
 
 		public DirectoryManagerFrame(Window wnd) : base(wnd)
 		{
+			if(_instance != null) throw new InvalidOperationException("DirectoryManagerFrame already created!");
+			_instance = this;
 			if(_overrides == null)
 			{
 				_overrides = new List<InspectorDrawOverride>();
@@ -32,6 +36,7 @@ namespace igCauldron3
 			ImGui.Begin("Directory Manager");
 			RenderDirectory(_dirs[0]);
 			ImGui.End();
+			base.Render();
 		}
 		private void RenderDirectory(igObjectDirectory dir)
 		{
@@ -43,15 +48,18 @@ namespace igCauldron3
 					if(dir._useNameList) name = dir._nameList![i]._string;
 					else                        name = $"Object {i}";
 
+					ImGui.Text(name);
+					ImGui.SameLine();
 					RenderObject(name, dir._objectList[i]);
 				}
+				ImGui.TreePop();
 			}
 		}
-		private void RenderObject(string label, igObject obj)
+		public void RenderObject(string label, igObject? obj)
 		{
 			if(obj == null)
 			{
-				ImGui.Text($"{label}: null");
+				ImGui.Text("null");
 				return;
 			}
 
@@ -59,7 +67,7 @@ namespace igCauldron3
 
 			igMetaObject meta = obj.GetMeta();
 			string objKey = obj.GetHashCode().ToString("X08") + label;
-			if(ImGui.TreeNode(objKey, $"{label}: {meta._name}"))
+			if(ImGui.TreeNode(objKey, meta._name))
 			{
 				int overrideIndex = _overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(x._t));
 				if(overrideIndex < 0)

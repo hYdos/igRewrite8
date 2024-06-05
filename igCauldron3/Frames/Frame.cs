@@ -19,5 +19,9 @@ namespace igCauldron3
 		{
 			_wnd.frames.Remove(this);
 		}
+		public void AddChild(Frame child)
+		{
+			_children.Add(child);
+		}
 	}
 }

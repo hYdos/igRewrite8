@@ -12,12 +12,14 @@ namespace igCauldron3
 {
 	public class Window : GameWindow
 	{
+		public static Window _instance { get; private set; }
 		ImGuiController controller;
 		public List<Frame> frames = new List<Frame>();
 		string[] args;
 
 		public Window(GameWindowSettings gws, NativeWindowSettings nws, string[] args) : base(gws, nws)
 		{
+			_instance = this;
 			this.args = args;
 			igAlchemyCore.InitializeSystems();
 			FieldRenderer.Init();

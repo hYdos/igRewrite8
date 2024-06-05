@@ -40,11 +40,20 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igBoolMetaField), RenderField_Bool);
 			_renderFuncLookup.Add(typeof(igMemoryRefMetaField), RenderField_MemoryRef);
 			_renderFuncLookup.Add(typeof(igMemoryRefHandleMetaField), RenderField_MemoryRef);
+			_renderFuncLookup.Add(typeof(igBitFieldMetaField), RenderField_BitField);
+			_renderFuncLookup.Add(typeof(igObjectRefMetaField), RenderField_Object);
+			_renderFuncLookup.Add(typeof(igHandleMetaField), RenderField_Handle);
 		}
 		public static bool RenderField(string label, ref object? value, igMetaField field)
 		{
+			if(field is igStaticMetaField) return false;
+			if(field is igPropertyFieldMetaField) return false;
 			ImGui.Text(label);
 			ImGui.SameLine();
+			return RenderFieldNoLabel(label, ref value, field);
+		}
+		private static bool RenderFieldNoLabel(string label, ref object? value, igMetaField field)
+		{
 			if(_renderFuncLookup.TryGetValue(field.GetType(), out RenderFieldAction? renderFunc))
 			{
 				return renderFunc.Invoke(label, ref value, field);
@@ -327,5 +336,32 @@ namespace igCauldron3
 			return memChanged;
 		}
 #endregion
+		public static bool RenderField_BitField(string label, ref object? raw, igMetaField field)
+		{
+			igBitFieldMetaField bfmf = (igBitFieldMetaField)field;
+			return RenderFieldNoLabel(label, ref raw, bfmf._assignmentMetaField);
+		}
+		public static bool RenderField_Object(string label, ref object? raw, igMetaField field)
+		{
+			DirectoryManagerFrame._instance.RenderObject(label, (igObject?)raw);
+			return false;
+		}
+		public static bool RenderField_Handle(string label, ref object? raw, igMetaField field)
+		{
+			string display = "NullHandle";
+			if(raw != null)
+			{
+				display = raw.ToString()!;
+			}
+			ImGui.PushID(label);
+			bool shouldEdit = ImGui.Selectable(display);
+			ImGui.PopID();
+			if(shouldEdit)
+			{
+				DirectoryManagerFrame._instance.AddChild(new HandlePickerFrame(Window._instance, (handle) => Console.WriteLine("Selected " + handle.ToString())));
+			}
+			//I know it should only be done when the field is edited but this is the easiest way to set it up, in the future, a better ui implementation should be thought up
+			return true;
+		}
 	}
 }
