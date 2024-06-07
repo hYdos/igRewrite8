@@ -3,13 +3,13 @@ using igLibrary.Core;
 using igLibrary.DotNet;
 using igLibrary.Math;
 using ImGuiNET;
-using OpenTK.Platform.Windows;
 
 namespace igCauldron3
 {
 	public static class FieldRenderer
 	{
-		private delegate bool RenderFieldAction(string label, ref object? raw, igMetaField field);
+		public delegate void FieldSetCallback(object? newRaw);
+		private delegate void RenderFieldAction(string id, object? raw, igMetaField field, FieldSetCallback cb);
 		private static Dictionary<Type, RenderFieldAction> _renderFuncLookup = new Dictionary<Type, RenderFieldAction>();
 		public static void Init()
 		{
@@ -38,38 +38,38 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igMatrix44fMetaField), RenderField_Matrix44f);
 			_renderFuncLookup.Add(typeof(igStringMetaField), RenderField_String);
 			_renderFuncLookup.Add(typeof(igBoolMetaField), RenderField_Bool);
+			_renderFuncLookup.Add(typeof(igVectorMetaField), RenderField_Vector);
 			_renderFuncLookup.Add(typeof(igMemoryRefMetaField), RenderField_MemoryRef);
 			_renderFuncLookup.Add(typeof(igMemoryRefHandleMetaField), RenderField_MemoryRef);
 			_renderFuncLookup.Add(typeof(igBitFieldMetaField), RenderField_BitField);
 			_renderFuncLookup.Add(typeof(igObjectRefMetaField), RenderField_Object);
 			_renderFuncLookup.Add(typeof(igHandleMetaField), RenderField_Handle);
 		}
-		public static bool RenderField(string label, ref object? value, igMetaField field)
+		public static void RenderField(string id, string label, object? value, igMetaField field, FieldSetCallback cb)
 		{
-			if(field is igStaticMetaField) return false;
-			if(field is igPropertyFieldMetaField) return false;
+			if(field is igStaticMetaField) return;
+			if(field is igPropertyFieldMetaField) return;
 			ImGui.Text(label);
 			ImGui.SameLine();
-			return RenderFieldNoLabel(label, ref value, field);
+			RenderFieldNoLabel(id + label, value, field, cb);
 		}
-		private static bool RenderFieldNoLabel(string label, ref object? value, igMetaField field)
+		private static void RenderFieldNoLabel(string id, object? value, igMetaField field, FieldSetCallback cb)
 		{
 			if(_renderFuncLookup.TryGetValue(field.GetType(), out RenderFieldAction? renderFunc))
 			{
-				return renderFunc.Invoke(label, ref value, field);
+				renderFunc.Invoke(id, value, field, cb);
 			}
 			else
 			{
 				ImGui.Text($"{field.GetType().Name} is unimplemented.");
-				return false;
 			}
 		}
 
 #region Primitive Numeric Renderers
-		private static bool RenderField_PrimitiveNumber(string label, ref object? raw, ElementType type)
+		private static void RenderField_PrimitiveNumber(string id, object? raw, ElementType type, FieldSetCallback cb)
 		{
 			string val = raw!.ToString()!;
-			ImGui.PushID(label);
+			ImGui.PushID(id);
 			ImGui.PushItemWidth(128);
 			bool changed = ImGui.InputText(string.Empty, ref val, 128);
 			ImGui.PopItemWidth();
@@ -93,167 +93,139 @@ namespace igCauldron3
 				}
 				try
 				{
-					raw = convertFunc.Invoke(null, new object?[]{val});
+					cb.Invoke(convertFunc.Invoke(null, new object?[]{val}));
 				}
 				catch(Exception){ changed = false; }	//change nothing
 			}
-			return changed;
 		}
-		private static bool RenderField_SByte(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeI1);
-		private static bool RenderField_Byte(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeU1);
-		private static bool RenderField_Short(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeI2);
-		private static bool RenderField_UShort(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeU2);
-		private static bool RenderField_Int(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeI4);
-		private static bool RenderField_UInt(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeU4);
-		private static bool RenderField_Long(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeI8);
-		private static bool RenderField_ULong(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeU8);
-		private static bool RenderField_Float(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeR4);
-		private static bool RenderField_Double(string label, ref object? raw, igMetaField field) => RenderField_PrimitiveNumber(label, ref raw, ElementType.kElementTypeR8);
+		private static void RenderField_SByte(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI1, cb);
+		private static void RenderField_Byte(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeU1, cb);
+		private static void RenderField_Short(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI2, cb);
+		private static void RenderField_UShort(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeU2, cb);
+		private static void RenderField_Int(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI4, cb);
+		private static void RenderField_UInt(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeU4, cb);
+		private static void RenderField_Long(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI8, cb);
+		private static void RenderField_ULong(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeU8, cb);
+		private static void RenderField_Float(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeR4, cb);
+		private static void RenderField_Double(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeR8, cb);
 #endregion
 #region Math Structure Renderers
-		private static bool RenderField_Vec2f(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec2f(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec2f value = (igVec2f)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Float(label + " _x", ref worker, igFloatMetaField._MetaField)) { changed = true; value._x = (float)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Float(label + " _y", ref worker, igFloatMetaField._MetaField)) { changed = true; value._y = (float)worker!; }
-			return changed;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec3f(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec3f(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec3f value = (igVec3f)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Float(label + " _x", ref worker, igFloatMetaField._MetaField)) { changed = true; value._x = (float)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Float(label + " _y", ref worker, igFloatMetaField._MetaField)) { changed = true; value._y = (float)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Float(label + " _z", ref worker, igFloatMetaField._MetaField)) { changed = true; value._z = (float)worker!; }
-			return changed;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec3d(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec3d(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec3d value = (igVec3d)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Double(label + " _x", ref worker, igDoubleMetaField._MetaField)) { changed = true; value._x = (double)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Double(label + " _y", ref worker, igDoubleMetaField._MetaField)) { changed = true; value._y = (double)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Double(label + " _z", ref worker, igDoubleMetaField._MetaField)) { changed = true; value._z = (double)worker!; }
-			return changed;
+			RenderField_Double(id + " _x", value._x, igDoubleMetaField._MetaField, (newValue) => { value._x = (double)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Double(id + " _y", value._y, igDoubleMetaField._MetaField, (newValue) => { value._y = (double)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Double(id + " _z", value._z, igDoubleMetaField._MetaField, (newValue) => { value._z = (double)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec4f(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec4f(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec4f value = (igVec4f)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Float(label + " _x", ref worker, igFloatMetaField._MetaField)) { changed = true; value._x = (float)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Float(label + " _y", ref worker, igFloatMetaField._MetaField)) { changed = true; value._y = (float)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Float(label + " _z", ref worker, igFloatMetaField._MetaField)) { changed = true; value._z = (float)worker!; } ImGui.SameLine();
-			        worker = value._w; if(RenderField_Float(label + " _w", ref worker, igFloatMetaField._MetaField)) { changed = true; value._w = (float)worker!; }
-			return changed;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _w", value._w, igFloatMetaField._MetaField, (newValue) => { value._w = (float)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec2uc(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec2uc(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec2uc value = (igVec2uc)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Byte(label + " _x", ref worker, igCharMetaField._MetaField)) { changed = true; value._x = (byte)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Byte(label + " _y", ref worker, igCharMetaField._MetaField)) { changed = true; value._y = (byte)worker!; }
-			return changed;
+			RenderField_Byte(id + " _x", value._x, igCharMetaField._MetaField, (newValue) => { value._x = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _y", value._y, igCharMetaField._MetaField, (newValue) => { value._y = (byte)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec3uc(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec3uc(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec3uc value = (igVec3uc)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Byte(label + " _x", ref worker, igCharMetaField._MetaField)) { changed = true; value._x = (byte)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Byte(label + " _y", ref worker, igCharMetaField._MetaField)) { changed = true; value._y = (byte)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Byte(label + " _z", ref worker, igCharMetaField._MetaField)) { changed = true; value._z = (byte)worker!; }
-			return changed;
+			RenderField_Byte(id + " _x", value._x, igCharMetaField._MetaField, (newValue) => { value._x = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _y", value._y, igCharMetaField._MetaField, (newValue) => { value._y = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _z", value._z, igCharMetaField._MetaField, (newValue) => { value._z = (byte)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec4uc(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec4uc(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec4uc value = (igVec4uc)raw!;
-			bool changed = false;
-			object? worker = value._r; if(RenderField_Byte(label + " _r", ref worker, igCharMetaField._MetaField)) { changed = true; value._r = (byte)worker!; } ImGui.SameLine();
-			        worker = value._g; if(RenderField_Byte(label + " _g", ref worker, igCharMetaField._MetaField)) { changed = true; value._g = (byte)worker!; } ImGui.SameLine();
-			        worker = value._b; if(RenderField_Byte(label + " _b", ref worker, igCharMetaField._MetaField)) { changed = true; value._b = (byte)worker!; } ImGui.SameLine();
-			        worker = value._a; if(RenderField_Byte(label + " _a", ref worker, igCharMetaField._MetaField)) { changed = true; value._a = (byte)worker!; }
-			return changed;
+			RenderField_Byte(id + " _r", value._r, igCharMetaField._MetaField, (newValue) => { value._r = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _g", value._g, igCharMetaField._MetaField, (newValue) => { value._g = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _b", value._b, igCharMetaField._MetaField, (newValue) => { value._b = (byte)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _a", value._a, igCharMetaField._MetaField, (newValue) => { value._a = (byte)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Vec4i(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vec4i(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec4i value = (igVec4i)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Byte(label + " _x", ref worker, igIntMetaField._MetaField)) { changed = true; value._x = (int)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Byte(label + " _y", ref worker, igIntMetaField._MetaField)) { changed = true; value._y = (int)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Byte(label + " _z", ref worker, igIntMetaField._MetaField)) { changed = true; value._z = (int)worker!; } ImGui.SameLine();
-			        worker = value._w; if(RenderField_Byte(label + " _w", ref worker, igIntMetaField._MetaField)) { changed = true; value._w = (int)worker!; }
-			return changed;
+			RenderField_Byte(id + " _x", value._x, igIntMetaField._MetaField, (newValue) => { value._x = (int)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _y", value._y, igIntMetaField._MetaField, (newValue) => { value._y = (int)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _z", value._z, igIntMetaField._MetaField, (newValue) => { value._z = (int)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Byte(id + " _w", value._w, igIntMetaField._MetaField, (newValue) => { value._w = (int)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Quaternionf(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Quaternionf(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igQuaternionf value = (igQuaternionf)raw!;
-			bool changed = false;
-			object? worker = value._x; if(RenderField_Float(label + " _x", ref worker, igFloatMetaField._MetaField)) { changed = true; value._x = (float)worker!; } ImGui.SameLine();
-			        worker = value._y; if(RenderField_Float(label + " _y", ref worker, igFloatMetaField._MetaField)) { changed = true; value._y = (float)worker!; } ImGui.SameLine();
-			        worker = value._z; if(RenderField_Float(label + " _z", ref worker, igFloatMetaField._MetaField)) { changed = true; value._z = (float)worker!; } ImGui.SameLine();
-			        worker = value._w; if(RenderField_Float(label + " _w", ref worker, igFloatMetaField._MetaField)) { changed = true; value._w = (float)worker!; }
-			return changed;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _w", value._w, igFloatMetaField._MetaField, (newValue) => { value._w = (float)newValue!; cb.Invoke(value); });
 		}
-		private static bool RenderField_Matrix44f(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Matrix44f(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igMatrix44f value = (igMatrix44f)raw!;
-			bool changed = false;
-			object? worker = value._m11; if(RenderField_Float(label + " _m11", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m11 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m12; if(RenderField_Float(label + " _m12", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m12 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m13; if(RenderField_Float(label + " _m13", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m13 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m14; if(RenderField_Float(label + " _m14", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m14 = (float)worker!; }
-			        worker = value._m21; if(RenderField_Float(label + " _m21", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m21 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m22; if(RenderField_Float(label + " _m22", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m22 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m23; if(RenderField_Float(label + " _m23", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m23 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m24; if(RenderField_Float(label + " _m24", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m24 = (float)worker!; }
-			        worker = value._m31; if(RenderField_Float(label + " _m31", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m31 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m32; if(RenderField_Float(label + " _m32", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m32 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m33; if(RenderField_Float(label + " _m33", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m33 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m34; if(RenderField_Float(label + " _m34", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m34 = (float)worker!; }
-			        worker = value._m41; if(RenderField_Float(label + " _m41", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m41 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m42; if(RenderField_Float(label + " _m42", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m42 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m43; if(RenderField_Float(label + " _m43", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m43 = (float)worker!; } ImGui.SameLine();
-			        worker = value._m44; if(RenderField_Float(label + " _m44", ref worker, igFloatMetaField._MetaField)) { changed = true; value._m44 = (float)worker!; }
-			return changed;
+			RenderField_Float(id + " _m11", value._m11, igFloatMetaField._MetaField, (newValue) => { value._m11 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m12", value._m12, igFloatMetaField._MetaField, (newValue) => { value._m12 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m13", value._m13, igFloatMetaField._MetaField, (newValue) => { value._m13 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m14", value._m14, igFloatMetaField._MetaField, (newValue) => { value._m14 = (float)newValue!; cb.Invoke(value); });
+			RenderField_Float(id + " _m21", value._m21, igFloatMetaField._MetaField, (newValue) => { value._m21 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m22", value._m22, igFloatMetaField._MetaField, (newValue) => { value._m22 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m23", value._m23, igFloatMetaField._MetaField, (newValue) => { value._m23 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m24", value._m24, igFloatMetaField._MetaField, (newValue) => { value._m24 = (float)newValue!; cb.Invoke(value); });
+			RenderField_Float(id + " _m31", value._m31, igFloatMetaField._MetaField, (newValue) => { value._m31 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m32", value._m32, igFloatMetaField._MetaField, (newValue) => { value._m32 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m33", value._m33, igFloatMetaField._MetaField, (newValue) => { value._m33 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m34", value._m34, igFloatMetaField._MetaField, (newValue) => { value._m34 = (float)newValue!; cb.Invoke(value); });
+			RenderField_Float(id + " _m41", value._m41, igFloatMetaField._MetaField, (newValue) => { value._m41 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m42", value._m42, igFloatMetaField._MetaField, (newValue) => { value._m42 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m43", value._m43, igFloatMetaField._MetaField, (newValue) => { value._m43 = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _m44", value._m44, igFloatMetaField._MetaField, (newValue) => { value._m44 = (float)newValue!; cb.Invoke(value); });
 		}
 #endregion
-		private static bool RenderField_String(string label, ref object? raw, igMetaField field)
+		private static void RenderField_String(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
-			ImGui.PushID(label);
+			ImGui.PushID(id);
 			string value = (string)raw ?? string.Empty;
 			bool changed = ImGui.InputText(string.Empty, ref value, ushort.MaxValue);
-			if(changed) raw = value;
-			return changed;
+			ImGui.PopID();
+			if(changed) cb.Invoke(value);
 		}
-		private static bool RenderField_Bool(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Bool(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
-			ImGui.PushID(label);
+			ImGui.PushID(id);
 			bool value = (bool)raw!;
 			bool changed = ImGui.Checkbox(string.Empty, ref value);
-			if(changed) raw = value;
-			return changed;
+			ImGui.PopID();
+			if(changed) cb.Invoke(value);
 		}
-#region Array Rendereres
-		public static bool RenderArrayField(string label, ref object? value, igMetaField field)
+#region Array Renderers
+		public static void RenderArrayField(string id, object? value, igMetaField field, FieldSetCallback cb)
 		{
-			FieldInfo? fi = field.GetType().GetField("_num");
-			if(fi != null)
+			FieldInfo fi = field.GetType().GetField("_num")!;
+			short num = (short)fi.GetValue(field)!;
+			Array values = (Array)value!;
+			for(int i = 0; i < num; i++)
 			{
-				short num = (short)fi.GetValue(field)!;
-				Array values = (Array)value!;
-				for(int i = 0; i < num; i++)
-				{
-					object? currValue = values.GetValue(i);
-					bool changed = RenderField($"{i}_{label}", ref currValue, field);
-					if(changed) values.SetValue(currValue, i);
-				}
-				return false;	//The array itself never changes, only the contents of it, so we always return false
+				RenderField(id + i.ToString(), $"Element {i}", values.GetValue(i), field, (newValue) => values.SetValue(newValue, i));
 			}
-			else return RenderField(label, ref value, field);	//Here it's different though
 		}
-		private static bool RenderField_Vector(string label, ref object? raw, igMetaField field)
+		private static void RenderField_Vector(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
-			if(ImGui.TreeNode(label, "Data"))
+			if(ImGui.TreeNode(id, "Data"))
 			{
 				igVectorCommon vector = (igVectorCommon)raw!;
 				IigMemory memValue = vector.GetData();
@@ -265,9 +237,7 @@ namespace igCauldron3
 					//ADD REMOVE BUTTON
 					for(int i = 0; i < vector.GetCount(); i++)
 					{
-						object? arrValue = vector.GetItem(i);
-						bool changed = RenderField($"Element {i}", ref arrValue, memType);
-						if(changed) vector.SetItem(i, arrValue);
+						RenderField(id + i.ToString(), $"Element {i}", vector.GetItem(i), memType, (newValue) => vector.SetItem(i, newValue));
 					}
 					if(ImGui.Button("+"))
 					{
@@ -277,12 +247,10 @@ namespace igCauldron3
 				}
 				ImGui.TreePop();
 			}
-			return false;
 		}
-		private static bool RenderField_MemoryRef(string label, ref object? raw, igMetaField field)
+		private static void RenderField_MemoryRef(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
-			bool memChanged = false;
-			if(ImGui.TreeNode(label, "Data"))
+			if(ImGui.TreeNode(id, "Data"))
 			{
 				IigMemory memValue = (IigMemory)raw!;
 				igMetaField memType;
@@ -302,16 +270,14 @@ namespace igCauldron3
 					int remove = -1;
 					for(int i = 0; i < data.Length; i++)
 					{
-						ImGui.PushID(label + field.GetHashCode().ToString("X08") + i.ToString("X08"));
+						ImGui.PushID(id + i.ToString() + "$remove$");
 						if(ImGui.Button("-"))
 						{
 							remove = i;
 						}
 						ImGui.PopID();
 						ImGui.SameLine();
-						object? arrValue = data.GetValue(i);
-						bool changed = RenderField($"Element {i}", ref arrValue, memType);
-						if(changed) data.SetValue(arrValue, i);
+						RenderField(id + i.ToString(), $"Element {i}", data.GetValue(i), memType, (newValue) => data.SetValue(newValue, i));
 					}
 					if(remove >= 0)
 					{
@@ -323,45 +289,43 @@ namespace igCauldron3
 							w++;
 						}
 						memValue.SetData(newData);
-						memChanged = true;
+						cb.Invoke(memValue);
 					}
+					ImGui.PushID(id + "$add$");
 					if(ImGui.Button("+"))
 					{
 						memValue.Realloc(data.Length + 1);
-						memChanged = true;
+						cb.Invoke(memValue);
 					}
+					ImGui.PopID();
 				}
 				ImGui.TreePop();
 			}
-			return memChanged;
 		}
 #endregion
-		public static bool RenderField_BitField(string label, ref object? raw, igMetaField field)
+		public static void RenderField_BitField(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igBitFieldMetaField bfmf = (igBitFieldMetaField)field;
-			return RenderFieldNoLabel(label, ref raw, bfmf._assignmentMetaField);
+			RenderFieldNoLabel(id, raw, bfmf._assignmentMetaField, cb);
 		}
-		public static bool RenderField_Object(string label, ref object? raw, igMetaField field)
+		public static void RenderField_Object(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
-			DirectoryManagerFrame._instance.RenderObject(label, (igObject?)raw);
-			return false;
+			DirectoryManagerFrame._instance.RenderObject(id, (igObject?)raw);
 		}
-		public static bool RenderField_Handle(string label, ref object? raw, igMetaField field)
+		public static void RenderField_Handle(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			string display = "NullHandle";
 			if(raw != null)
 			{
 				display = raw.ToString()!;
 			}
-			ImGui.PushID(label);
+			ImGui.PushID(id);
 			bool shouldEdit = ImGui.Selectable(display);
 			ImGui.PopID();
 			if(shouldEdit)
 			{
-				DirectoryManagerFrame._instance.AddChild(new HandlePickerFrame(Window._instance, (handle) => Console.WriteLine("Selected " + handle.ToString())));
+				Window._instance._frames.Add(new HandlePickerFrame(Window._instance, ((igHandleMetaField)field)._metaObject, (handle) => cb.Invoke(handle)));
 			}
-			//I know it should only be done when the field is edited but this is the easiest way to set it up, in the future, a better ui implementation should be thought up
-			return true;
 		}
 	}
 }

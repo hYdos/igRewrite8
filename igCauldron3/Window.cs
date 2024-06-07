@@ -14,7 +14,7 @@ namespace igCauldron3
 	{
 		public static Window _instance { get; private set; }
 		ImGuiController controller;
-		public List<Frame> frames = new List<Frame>();
+		public List<Frame> _frames = new List<Frame>();
 		string[] args;
 
 		public Window(GameWindowSettings gws, NativeWindowSettings nws, string[] args) : base(gws, nws)
@@ -33,7 +33,7 @@ namespace igCauldron3
 			controller = new ImGuiController(ClientSize.X, ClientSize.Y);
 			igTContext<igBaseGraphicsDevice>._instance = new igOpenGLGraphicsDevice();
 
-			frames.Add(new ConfigFrame(this));
+			_frames.Add(new ConfigFrame(this));
 		}
 		protected override void OnResize(ResizeEventArgs e)
 		{
@@ -66,9 +66,9 @@ namespace igCauldron3
 
 			controller.Update(this, (float)e.Time);
 
-			for(int i = 0; i < frames.Count; i++)
+			for(int i = 0; i < _frames.Count; i++)
 			{
-				frames[i].Render();
+				_frames[i].Render();
 			}
 
 			controller.Render();

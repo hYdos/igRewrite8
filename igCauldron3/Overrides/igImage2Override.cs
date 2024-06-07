@@ -18,7 +18,7 @@ namespace igCauldron3
 		}
 
 		public override void Draw(ObjectManagerFrame objFrame, igObject obj, igMetaObject meta) => throw new NotImplementedException();
-		public unsafe override void Draw2(DirectoryManagerFrame dirFrame, igObject obj, igMetaObject meta)
+		public unsafe override void Draw2(DirectoryManagerFrame dirFrame, string id, igObject obj, igMetaObject meta)
 		{
 			igImage2 image = (igImage2)obj;
 			
@@ -34,10 +34,7 @@ namespace igCauldron3
 			}
 
 			object? castName = image._name;
-			if(FieldRenderer.RenderField("_name", ref castName, meta.GetFieldByName("_name")!))
-			{
-				image._name = (string)castName!;
-			}
+			FieldRenderer.RenderField(id, "_name", castName, meta.GetFieldByName("_name")!, (value) => image._name = (string)value!);
 			if(ImGui.Button("Extract"))
 			{
 				string filePath = CrossFileDialog.SaveFile("Save Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");

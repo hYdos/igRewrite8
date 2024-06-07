@@ -55,7 +55,7 @@ namespace igCauldron3
 				ImGui.TreePop();
 			}
 		}
-		public void RenderObject(string label, igObject? obj)
+		public void RenderObject(string id, igObject? obj)
 		{
 			if(obj == null)
 			{
@@ -66,29 +66,27 @@ namespace igCauldron3
 			//TODO: ADD METAFIELD AND METAOBJECT CASES
 
 			igMetaObject meta = obj.GetMeta();
-			string objKey = obj.GetHashCode().ToString("X08") + label;
-			if(ImGui.TreeNode(objKey, meta._name))
+			if(ImGui.TreeNode(id, meta._name))
 			{
 				int overrideIndex = _overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(x._t));
 				if(overrideIndex < 0)
 				{
-					RenderObjectFields(obj, meta);
+					RenderObjectFields(id, obj, meta);
 				}
 				else
 				{
-					_overrides[overrideIndex].Draw2(this, obj, meta);
+					_overrides[overrideIndex].Draw2(this, id, obj, meta);
 				}
 				ImGui.TreePop();
 			}
 		}
-		private void RenderObjectFields(igObject obj, igMetaObject meta)
+		private void RenderObjectFields(string id, igObject obj, igMetaObject meta)
 		{
 			for(int i = 0; i < meta._metaFields.Count; i++)
 			{
 				FieldInfo fi = meta._metaFields[i]._fieldHandle!;
 				object? raw = fi.GetValue(obj);
-				bool changed = FieldRenderer.RenderField(meta._metaFields[i]._fieldName!, ref raw, meta._metaFields[i]);
-				if(changed) fi.SetValue(obj, raw);
+				FieldRenderer.RenderField(id, meta._metaFields[i]._fieldName!, raw, meta._metaFields[i], (value) => fi.SetValue(obj, value));
 			}
 		}
 	}

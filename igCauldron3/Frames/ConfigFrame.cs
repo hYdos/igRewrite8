@@ -82,10 +82,10 @@ namespace igCauldron3
 							CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 						}
 
-						_wnd.frames.Remove(this);
-						_wnd.frames.Add(new DirectoryManagerFrame(_wnd));
-						_wnd.frames.Add(new ArchiveFrame(_wnd));
-						_wnd.frames.Add(new MenuBarFrame(_wnd));
+						_wnd._frames.Remove(this);
+						_wnd._frames.Add(new DirectoryManagerFrame(_wnd));
+						_wnd._frames.Add(new ArchiveFrame(_wnd));
+						_wnd._frames.Add(new MenuBarFrame(_wnd));
 
 						timer.Stop();
 						Console.WriteLine($"Loaded game in {timer.Elapsed.TotalSeconds}");

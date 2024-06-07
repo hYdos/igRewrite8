@@ -17,7 +17,7 @@ namespace igCauldron3
 		}
 		public virtual void Close()
 		{
-			_wnd.frames.Remove(this);
+			_wnd._frames.Remove(this);
 		}
 		public void AddChild(Frame child)
 		{

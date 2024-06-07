@@ -9,17 +9,16 @@ namespace igCauldron3
 			_t = typeof(IigDataList);
 		}
 		public override void Draw(ObjectManagerFrame objFrame, igObject obj, igMetaObject meta) => throw new NotImplementedException();
-		public override void Draw2(DirectoryManagerFrame dirFrame, igObject obj, igMetaObject meta)
+		public override void Draw2(DirectoryManagerFrame dirFrame, string id, igObject obj, igMetaObject meta)
 		{
 			IigDataList dataList = (IigDataList)obj;
 			IigMemory memValue = dataList.GetData();
 			object? castedObject = memValue;
-			if(FieldRenderer.RenderField("Data", ref castedObject, meta._metaFields[2]))
-			{
+			FieldRenderer.RenderField(id, "Data", castedObject, meta._metaFields[2], (value) => {
 				dataList.SetData(memValue);
 				dataList.SetCount(memValue.GetData().Length);
 				dataList.SetCapacity(memValue.GetData().Length);
-			}
+			});
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace igCauldron3
 					}
 					if(ImGui.MenuItem("New IGZ"))
 					{
-						_wnd.frames.Add(new DirectoryCreatorFrame(_wnd));
+						_wnd._frames.Add(new DirectoryCreatorFrame(_wnd));
 					}
 					ImGui.EndMenu();
 				}
