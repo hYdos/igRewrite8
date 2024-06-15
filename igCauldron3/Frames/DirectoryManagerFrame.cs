@@ -10,6 +10,8 @@ namespace igCauldron3
 
 		private static List<InspectorDrawOverride> _overrides = null!;
 		public igObjectDirectoryList _dirs = new igObjectDirectoryList();
+		private int _dirIndex = 0;
+		public igObjectDirectory CurrentDir => _dirs[_dirIndex];
 
 		public DirectoryManagerFrame(Window wnd) : base(wnd)
 		{

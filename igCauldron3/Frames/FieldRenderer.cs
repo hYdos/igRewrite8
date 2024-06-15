@@ -311,6 +311,14 @@ namespace igCauldron3
 		public static void RenderField_Object(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			DirectoryManagerFrame._instance.RenderObject(id, (igObject?)raw);
+			if(ImGui.BeginPopupContextItem(id))
+			{
+				if(ImGui.Selectable("Change Reference"))
+				{
+					Window._instance._frames.Add(new ObjectPickerFrame(Window._instance, DirectoryManagerFrame._instance.CurrentDir, ((igObjectRefMetaField)field)._metaObject, (handle) => cb.Invoke(handle)));
+				}
+				ImGui.EndPopup();
+			}
 		}
 		public static void RenderField_Handle(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
