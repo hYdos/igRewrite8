@@ -6,7 +6,7 @@ namespace igLibrary.Core
 	public class igCompoundMetaField : igMetaField
 	{
 		public igCompoundMetaFieldInfo _compoundFieldInfo;
-		[Obsolete("Exists for the reflection system, use _compoundFieldInfo._fieldList instead.")] public igMetaFieldList _fieldList;
+		[Obsolete("Exists for the reflection system, use GetFieldList instead.")] public igMetaFieldList _fieldList;
 
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
@@ -14,9 +14,9 @@ namespace igLibrary.Core
 
 			uint objectOffset = loader._stream.Tell();
 
-			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
+			List<igMetaField> metaFields = GetFieldList();
 
-			object compoundData = _compoundFieldInfo.ConstructInstance(GetOutputTypeInternal());	//grab the type like this becuase igOrderedMapMetaField<T, U>
+			object compoundData = _compoundFieldInfo.ConstructInstance(GetOutputTypeInternal(), metaFields);	//grab the type like this becuase igOrderedMapMetaField<T, U>
 
 			_compoundFieldInfo.CalculateOffsetForPlatform(loader._platform);
 
@@ -44,7 +44,7 @@ namespace igLibrary.Core
 
 			uint objectOffset = section._sh.Tell();
 
-			List<igMetaField> metaFields = _compoundFieldInfo._fieldList;
+			List<igMetaField> metaFields = GetFieldList();
 
 			_compoundFieldInfo.CalculateOffsetForPlatform(saver._platform);
 
@@ -85,12 +85,13 @@ namespace igLibrary.Core
 			if(t.IsArray) t = t.GetElementType();
 			return t;
 		}
+		public virtual List<igMetaField> GetFieldList() => _compoundFieldInfo._fieldList;
 
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._alignments[platform];
 		public override uint GetSize(IG_CORE_PLATFORM platform) => _compoundFieldInfo._platformInfo._sizes[platform];
 		public override object? GetDefault(igMemoryPool pool)
 		{
-			return _compoundFieldInfo.ConstructInstance(GetOutputTypeInternal());
+			return _compoundFieldInfo.ConstructInstance(GetOutputTypeInternal(), GetFieldList());
 		}
 	}
 
@@ -221,28 +222,35 @@ namespace igLibrary.Core
 		{
 			offset = (ushort)(((offset + (alignment - 1)) / alignment) * alignment);
 		}
-		public object ConstructInstance(Type t, bool setFields = true)
+		internal object ConstructInstance(Type t, List<igMetaField> fields)
 		{
-			object obj = Activator.CreateInstance(t);
-			if(setFields) ResetFields(t, obj);
+			object obj = Activator.CreateInstance(t)!;
+			ResetFields(obj, fields);
 			return obj;
 		}
-		public void ResetFields(Type t, object dat)
+		public object ConstructInstance(Type t, bool setFields = true)
 		{
-			for(int i = 0; i < _fieldList.Count; i++)
+			object obj = Activator.CreateInstance(t)!;
+			if(setFields) ResetFields(obj);
+			return obj;
+		}
+		internal void ResetFields(object dat, List<igMetaField> fields)
+		{
+			for(int i = 0; i < fields.Count; i++)
 			{
-				if(_fieldList[i] is igStaticMetaField || _fieldList[i] is igPropertyFieldMetaField || _fieldList[i] is igBitFieldMetaField) continue;
+				if(fields[i] is igStaticMetaField || fields[i] is igPropertyFieldMetaField || fields[i] is igBitFieldMetaField) continue;
 
 				//Defaults not working cos they're not in the metadata iirc
-				FieldInfo? field = _fieldList[i]._fieldHandle;
+				FieldInfo? field = fields[i]._fieldHandle;
 
-				object? data = _fieldList[i].GetDefault(igMemoryContext.Singleton.GetMemoryPoolByName("Default"));
+				object? data = fields[i].GetDefault(igMemoryContext.Singleton.GetMemoryPoolByName("Default"));
 
-				if(_fieldList[i].GetOutputType().IsValueType && data == null) continue;
+				if(fields[i].GetOutputType().IsValueType && data == null) continue;
 
 				field.SetValue(dat, data);
 			}
 		}
+		public void ResetFields(object dat) => ResetFields(dat, _fieldList);
 	}
 
 	public class igStruct : Attribute{}
