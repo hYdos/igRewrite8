@@ -1,3 +1,4 @@
+using igCauldron3.Utils;
 using igLibrary.Core;
 using ImGuiNET;
 
@@ -44,51 +45,8 @@ namespace igCauldron3
 				if(filteredDir._objects.Count == 0) continue;
 				_orderedDirs.Add(filteredDir);
 			}
-			List<igObject> traversedObjects = new List<igObject>();
-			_curDirObjects = new List<igObject>();
-			_curDirNames = new List<string>();
-			for(int i = 0; i < dir._objectList._count; i++)
-			{
-				TraverseNode(dir._objectList[i], dir._nameList![i]._string, traversedObjects);
-			}
+			FieldTraversal.TraverseObjectDir(dir, metaObject._vTablePointer, out _curDirObjects, out _curDirNames);
 		}
-		private void TraverseNode(igObject? obj, string name, List<igObject> traversed)
-		{
-			if(obj == null) return;
-			if(obj is igMetaObject) return;
-			if(obj is igMetaField) return;
-			if(obj is igMetaEnum) return;
-			if(traversed.Contains(obj)) return;
-
-			if(_metaObject._vTablePointer.IsAssignableFrom(obj.GetType()))
-			{
-				_curDirObjects.Add(obj);
-				_curDirNames.Add(name);
-			}
-			traversed.Add(obj);
-
-
-			igMetaObject meta = obj.GetMeta();
-			for(int i = 0; i < meta._metaFields.Count; i++)
-			{
-				if(meta._metaFields[i] is not igObjectRefMetaField) continue;
-
-				if(meta._metaFields[i] is igObjectRefArrayMetaField arrMf)
-				{
-					//variable naming is my passion
-					Array objArrObjs = (Array)meta._metaFields[i]._fieldHandle!.GetValue(obj)!;
-					for(int j = 0; j < arrMf._num; j++)
-					{
-						TraverseNode((igObject?)objArrObjs.GetValue(j), name + "->" + meta._metaFields[i]._fieldName + "[" + i.ToString() + "]", traversed);
-					}
-				}
-				else
-				{
-					TraverseNode((igObject?)meta._metaFields[i]._fieldHandle!.GetValue(obj)!, name + "->" + meta._metaFields[i]._fieldName, traversed);
-				}
-			}
-		}
-
 		public override void Render()
 		{
 			ImGui.Begin("Select Object");
