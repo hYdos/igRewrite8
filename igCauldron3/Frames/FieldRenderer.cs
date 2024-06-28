@@ -44,6 +44,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igBitFieldMetaField), RenderField_BitField);
 			_renderFuncLookup.Add(typeof(igObjectRefMetaField), RenderField_Object);
 			_renderFuncLookup.Add(typeof(igHandleMetaField), RenderField_Handle);
+			_renderFuncLookup.Add(typeof(igEnumMetaField), RenderField_Enum);
 		}
 		public static void RenderField(string id, string label, object? value, igMetaField field, FieldSetCallback cb)
 		{
@@ -333,6 +334,30 @@ namespace igCauldron3
 			if(shouldEdit)
 			{
 				Window._instance._frames.Add(new HandlePickerFrame(Window._instance, ((igHandleMetaField)field)._metaObject, (handle) => cb.Invoke(handle)));
+			}
+		}
+		public static void RenderField_Enum(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			igEnumMetaField enumMetaField = (igEnumMetaField)field;
+			if(enumMetaField._metaEnum != null)
+			{
+				string valueName = raw!.ToString()!;
+				int selectedItem = enumMetaField._metaEnum._names.FindIndex(x => x == valueName);
+				ImGui.PushID(id);
+				bool changed = ImGui.Combo(string.Empty, ref selectedItem, enumMetaField._metaEnum._names.ToArray(), enumMetaField._metaEnum._names.Count);
+				ImGui.PopID();
+				if(changed)
+				{
+					cb.Invoke(enumMetaField._metaEnum.GetEnumFromName(enumMetaField._metaEnum._names[selectedItem]));
+				}
+			}
+			else
+			{
+				int intValue = (int)raw!;
+				ImGui.PushID(id);
+				ImGui.InputInt(string.Empty, ref intValue);
+				ImGui.PopID();
+				cb.Invoke((int)Math.Clamp(intValue, int.MinValue, int.MaxValue));
 			}
 		}
 	}
