@@ -78,7 +78,7 @@ namespace igCauldron3
 					if(!(name.EndsWith(".igz") || name.EndsWith(".lng"))) continue;
 					if(ImGui.Button(name))
 					{
-						ObjectManagerFrame.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName)!);
+						DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName)!);
 					}
 				}
 				ImGui.TreePop();

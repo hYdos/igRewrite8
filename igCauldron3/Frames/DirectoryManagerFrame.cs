@@ -33,10 +33,35 @@ namespace igCauldron3
 
 			_dirs.Append(igObjectStreamManager.Singleton.Load("LooseData/GuiSystemData.igz")!);
 		}
+		public void AddDirectory(igObjectDirectory dir)
+		{
+			_dirIndex = _dirs._count;
+			_dirs.Append(dir);
+		}
 		public override void Render()
 		{
 			ImGui.Begin("Directory Manager");
-			RenderDirectory(_dirs[0]);
+			if(ImGui.BeginTabBar("directory tabs"))
+			{
+				for(int i = 0; i < _dirs._count; i++)
+				{
+					bool tabOpen = true;
+					ImGui.PushID(i);
+					bool tabSelected = ImGui.BeginTabItem(_dirs[i]._name._string, ref tabOpen);
+					ImGui.PopID();
+					if(tabSelected)
+					{
+						_dirIndex = i;
+						RenderDirectory(_dirs[i]);
+						ImGui.EndTabItem();
+					}
+					if(tabOpen == false)
+					{
+						Console.WriteLine($"Remove {i}");
+					}
+				}
+				ImGui.EndTabBar();
+			}
 			ImGui.End();
 			base.Render();
 		}
