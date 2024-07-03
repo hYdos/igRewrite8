@@ -26,6 +26,18 @@ namespace igLibrary.Core
 			_count++;
 			return item;
 		}
+		public void Remove(int index)
+		{
+			if(index >= _count) throw new IndexOutOfRangeException($"Index {index} is out of bounds");
+			if(index < 0) throw new IndexOutOfRangeException($"Index {index} is below zero");
+
+			for(int i = index; i < _count-1; i++)
+			{
+				_data[i] = _data[i+1];
+			}
+			_count--;
+			_data[_count] = default!;
+		}
 
 		public int GetCapacity() => _capacity;
 

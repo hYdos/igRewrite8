@@ -47,7 +47,8 @@ namespace igCauldron3
 				{
 					bool tabOpen = true;
 					ImGui.PushID(i);
-					bool tabSelected = ImGui.BeginTabItem(_dirs[i]._name._string, ref tabOpen);
+					//bool tabSelected = ImGui.BeginTabItem(_dirs[i]._name._string, ref tabOpen, );
+					bool tabSelected = ImGui.BeginTabItem(_dirs[i]._name._string);
 					ImGui.PopID();
 					if(tabSelected)
 					{
@@ -57,7 +58,7 @@ namespace igCauldron3
 					}
 					if(tabOpen == false)
 					{
-						Console.WriteLine($"Remove {i}");
+						_dirs.Remove(i);
 					}
 				}
 				ImGui.EndTabBar();
