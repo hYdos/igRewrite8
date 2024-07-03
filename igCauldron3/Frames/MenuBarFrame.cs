@@ -16,7 +16,7 @@ namespace igCauldron3
 					if(ImGui.MenuItem("Save"))
 					{
 						MemoryStream ms = new MemoryStream();
-						igObjectDirectory target = ObjectManagerFrame._dirs[ObjectManagerFrame._currentDir];
+						igObjectDirectory target = DirectoryManagerFrame._instance.CurrentDir;
 						target.WriteFile(ms, igRegistry.GetRegistry()._platform);
 						ms.Seek(0, SeekOrigin.Begin);
 #if DEBUG

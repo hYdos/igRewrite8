@@ -17,7 +17,6 @@ namespace igCauldron3
 			_t = typeof(igImage2);
 		}
 
-		public override void Draw(ObjectManagerFrame objFrame, igObject obj, igMetaObject meta) => throw new NotImplementedException();
 		public unsafe override void Draw2(DirectoryManagerFrame dirFrame, string id, igObject obj, igMetaObject meta)
 		{
 			igImage2 image = (igImage2)obj;

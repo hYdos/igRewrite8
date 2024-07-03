@@ -127,7 +127,7 @@ namespace igCauldron3
 						break;
 					case "-f":
 						i++;
-						ObjectManagerFrame._dirs.Add(igObjectStreamManager.Singleton.Load(args[i]));
+						DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(args[i]));
 						i++;
 						break;
 				}
