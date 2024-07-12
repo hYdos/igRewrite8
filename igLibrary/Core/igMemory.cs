@@ -64,6 +64,7 @@ namespace igLibrary.Core
 		igMemoryPool IigMemory.GetMemoryPool() => _memoryPool;
 		void IigMemory.SetMemoryPool(igMemoryPool pool) => _memoryPool = pool;
 		Array IigMemory.GetData() => _data;
+		uint IigMemory.GetCount() => (uint)Length;
 		void IigMemory.SetData(Array data)
 		{
 			if(data.GetType().GetElementType().IsAssignableTo(typeof(T)))
@@ -71,6 +72,8 @@ namespace igLibrary.Core
 				_data = data.Cast<T>().ToArray();
 			}
 		}
+		object? IigMemory.GetItem(int i) => this[i];
+		void IigMemory.SetItem(int i, object? obj) => this[i] = (T)obj;
 		public void Alloc(int itemCount)
 		{
 			_data = new T[itemCount];
@@ -142,7 +145,10 @@ namespace igLibrary.Core
 		igMemoryPool GetMemoryPool();
 		void SetMemoryPool(igMemoryPool pool);
 		Array GetData();
+		uint GetCount();
 		void SetData(Array data);
+		object? GetItem(int i);
+		void SetItem(int i, object? obj);
 		ulong GetFlags(igMemoryRefMetaField ioField, IG_CORE_PLATFORM platform);
 		ulong GetFlags(igMemoryRefHandleMetaField ioField, IG_CORE_PLATFORM platform);
 		uint GetPlatformAlignment(igMemoryRefMetaField ioField, IG_CORE_PLATFORM platform);

@@ -1,7 +1,4 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Security.Cryptography;
 
 namespace igLibrary.Core
 {
@@ -17,6 +14,18 @@ namespace igLibrary.Core
 		public ICollection<T> Values => _values.Buffer;
 		public int Count => _hashItemCount;
 		public bool IsReadOnly => false;
+
+		public bool IsFixedSize => false;
+
+		ICollection IDictionary.Keys => _keys.Buffer;
+
+		ICollection IDictionary.Values => _values.Buffer;
+
+		public bool IsSynchronized => true;
+
+		public object SyncRoot => throw new NotImplementedException();
+
+		public object? this[object key] { get => this[(U)key]; set => this[(U)key] = (T)value!; }
 
 		public virtual T this[U key]
 		{
@@ -324,14 +333,75 @@ namespace igLibrary.Core
 			value = _values[index];
 			return true;
 		}
+		public IigMemory GetValues() => _values;
+		public IigMemory GetKeys() => _keys;
+		//Cry about how messy this is
+		public igMetaField GetValueElementType() => ((igMemoryRefMetaField)GetMeta().GetFieldByName("_values")!)._memType;
+		public igMetaField GetKeyElementType() => ((igMemoryRefMetaField)GetMeta().GetFieldByName("_keys")!)._memType;
 
+		public void Add(object key, object? value) => Add((U)key, (T)value!);
+		public bool Contains(object key) => ContainsKey((U)key);
+		public bool IsValidKey(object? key) => IsValidKey((U)key!);
+		IDictionaryEnumerator IDictionary.GetEnumerator()
+		{
+			return new igHashTableDictionaryEnumerator<T, U>(this);
+		}
+		public void Remove(object key) => Remove((U)key);
+		public int GetHashItemCount() => _hashItemCount;
+
+		public void CopyTo(Array array, int index)
+		{
+			throw new NotImplementedException();
+		}
 	}
 	public class igHashTable : igTUHashTable<byte, byte>
 	{
 		public static uint HashString(string str) => igHash.Hash(str);
 	}
-	public interface IigHashTable
+	public interface IigHashTable : IDictionary
 	{
 		public void Activate(int capacity);
+		public IigMemory GetValues();
+		public IigMemory GetKeys();
+		public igMetaField GetValueElementType();
+		public igMetaField GetKeyElementType();
+		public bool IsValidKey(object? key); 
+		public int GetHashItemCount();
+	}
+	internal class igHashTableDictionaryEnumerator<T, U> : IDictionaryEnumerator
+	{
+		igTUHashTable<T, U> _hashTable;
+		int _index = 0;
+		public DictionaryEntry Entry => new DictionaryEntry(Key, Value);
+
+		public object Key => _hashTable._keys[_index];
+
+		public object? Value => _hashTable._values[_index];
+
+		public object Current => KeyValuePair.Create<U, T>(_hashTable._keys[_index], _hashTable._values[_index]);
+
+		public igHashTableDictionaryEnumerator(igTUHashTable<T, U> hashTable)
+		{
+			_hashTable = hashTable;
+			MoveNext();
+		}
+
+		public bool MoveNext()
+		{
+			for(; _index < _hashTable._values.Length; _index++)
+			{
+				if(_hashTable.IsValidKey(_hashTable._keys[_index]))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void Reset()
+		{
+			_index = 0;
+			MoveNext();
+		}
 	}
 }
