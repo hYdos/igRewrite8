@@ -8,8 +8,8 @@ namespace igLibrary.Core
 		public igMemory<T> _values;
 		public igMemory<U> _keys;
 		public int _hashItemCount;
-		public bool _autoRehash;
-		public float _loadFactor;
+		public bool _autoRehash = true;
+		public float _loadFactor = 0.5f;	//how much is expected to used up, basically if i wanna expect to fill in 0x10 items, allocate 0x20
 		public ICollection<U> Keys => _keys.Buffer;
 		public ICollection<T> Values => _values.Buffer;
 		public int Count => _hashItemCount;
@@ -50,6 +50,13 @@ namespace igLibrary.Core
 			_keys.Realloc(capacity);
 			_keys._optimalCPUReadWrite = true;
 			KeyTraitsInvalidateAll();
+		}
+		public void ActivateWithExpectedCount(int count) => Activate((int)(count / _loadFactor));
+
+		private void BackupKeysAndValues(out igMemory<T> values, out igMemory<U> keys)
+		{
+			values = _values.CreateCopy();
+			keys = _keys.CreateCopy();
 		}
 
 		protected virtual int GetKeyIndex(U key)
@@ -239,8 +246,9 @@ namespace igLibrary.Core
 			{
 				keys = _keys.CreateCopy();
 				values = _values.CreateCopy();
-				_keys = new igMemory<U>();
-				_values = new igMemory<T>();
+				_keys = new igMemory<U>(keys._memoryPool, (uint)count);
+				_values = new igMemory<T>(values._memoryPool, (uint)count);
+				KeyTraitsInvalidateAll();
 			}
 			_hashItemCount = 0;
 			if (length != 0)
@@ -260,7 +268,6 @@ namespace igLibrary.Core
 					}
 				}
 			}
-			KeyTraitsInvalidateAll();
 			//ValueTraitsInvalidate(values);
 		}
 		public bool InsertInternal(U key, T value, uint hash)
@@ -291,6 +298,11 @@ namespace igLibrary.Core
 					_autoRehash = false;
 					bool inserted = InsertInternal(key, value, hash);
 					_autoRehash = true;
+
+					if(_loadFactor < (float)_hashItemCount / _keys.Length)
+					{
+						SetCapacity(_keys.Length * 2);
+					}
 
 					return inserted;
 				}
@@ -404,4 +416,10 @@ namespace igLibrary.Core
 			MoveNext();
 		}
 	}
+
+#region Common Hashtables
+	public class igStringStringHashTable : igTUHashTable<string, string>{}
+	public class igStringIntHashTable : igTUHashTable<int, string>{}
+	public class igIntIntHashTable : igTUHashTable<int, int>{}
+#endregion
 }
