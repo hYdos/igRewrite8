@@ -20,7 +20,7 @@ public class igHashTableTest
 		Assert.Equal(10, hashTable._values.Length);
 
 		//error
-		Assert.Throws<ArgumentException>(() => hashTable.Activate(-1));
+		Assert.Throws<ArgumentOutOfRangeException>(() => hashTable.Activate(-1));
 
 		//load factor
 		hashTable.ActivateWithExpectedCount(10);
