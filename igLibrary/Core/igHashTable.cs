@@ -50,6 +50,8 @@ namespace igLibrary.Core
 			_keys.Realloc(capacity);
 			_keys._optimalCPUReadWrite = true;
 			KeyTraitsInvalidateAll();
+			_hashItemCount = 0;
+			_autoRehash = true;
 		}
 		public void ActivateWithExpectedCount(int count) => Activate((int)(count / _loadFactor));
 
@@ -270,6 +272,7 @@ namespace igLibrary.Core
 			}
 			//ValueTraitsInvalidate(values);
 		}
+		public void Insert(object key, object value) => Add((U)key, (T)value);
 		public bool InsertInternal(U key, T value, uint hash)
 		{
 			int slot = FindSlot(_keys.Length, hash, key);
@@ -373,11 +376,13 @@ namespace igLibrary.Core
 	public interface IigHashTable : IDictionary
 	{
 		public void Activate(int capacity);
+		public void ActivateWithExpectedCount(int count);
 		public IigMemory GetValues();
 		public IigMemory GetKeys();
 		public igMetaField GetValueElementType();
 		public igMetaField GetKeyElementType();
 		public bool IsValidKey(object? key); 
+		public void Insert(object key, object value);
 		public int GetHashItemCount();
 	}
 	internal class igHashTableDictionaryEnumerator<T, U> : IDictionaryEnumerator
