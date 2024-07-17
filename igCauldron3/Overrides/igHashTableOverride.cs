@@ -74,11 +74,13 @@ namespace igCauldron3
 				ImGui.TextColored(new System.Numerics.Vector4(0, 1, 1, 1), "! HashTable contains invalid keys and will not be saved until these are resolved !");
 			}
 
-			ImGui.Columns(2);
-			ImGui.Text("Keys");
-			ImGui.NextColumn();
-			ImGui.Text("Values");
-			ImGui.NextColumn();
+			ImGui.BeginTable(id, 2, ImGuiTableFlags.Resizable | ImGuiTableFlags.Borders);
+			ImGui.TableSetupColumn("Keys");
+			ImGui.TableSetupColumn("Values");
+			ImGui.TableHeadersRow();
+
+			ImGui.TableNextRow();
+			ImGui.TableSetColumnIndex(0);
 
 			for(int i = 0; i < values.Count; i++)
 			{
@@ -114,13 +116,15 @@ namespace igCauldron3
 					}
 					uiData._stale = true;
 				});
-				ImGui.NextColumn();
+				ImGui.TableNextColumn();
 				FieldRenderer.RenderField($"{id}_values[{i}]", string.Empty, value, valuesType, (newValue) => {
 					values[i] = newValue!;
 					uiData._stale = true;
 				});
-				ImGui.NextColumn();
+				ImGui.TableNextColumn();
 			}
+
+			ImGui.EndTable();
 
 			if(uiData._stale && uiData._keyStatus.All(x => x == KeyStatus.Good))
 			{
@@ -131,8 +135,6 @@ namespace igCauldron3
 				}
 				uiData._stale = false;
 			}
-
-			ImGui.Columns();
 		}
 	}
 }
