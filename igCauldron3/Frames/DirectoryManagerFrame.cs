@@ -95,7 +95,17 @@ namespace igCauldron3
 				return;
 			}
 
-			//TODO: ADD METAFIELD AND METAOBJECT CASES
+			//TODO: add editing for these
+			if(obj is igMetaObject mo)
+			{
+				ImGui.Text("metaobject." + mo._name);
+				return;
+			}
+			else if(obj is igMetaField field)
+			{
+				ImGui.Text("metafield." + field._parentMeta._name + "::" + field._fieldName);
+				return;
+			}
 
 			igMetaObject meta = obj.GetMeta();
 			if(ImGui.TreeNode(id, meta._name))
