@@ -40,7 +40,7 @@ namespace igCauldron3
 		}
 		public override void Render()
 		{
-			ImGui.Begin("Directory Manager");
+			ImGui.Begin("Directory Manager", ImGuiWindowFlags.HorizontalScrollbar);
 			if(ImGui.BeginTabBar("directory tabs"))
 			{
 				for(int i = 0; i < _dirs._count; i++)
