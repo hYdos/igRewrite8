@@ -188,7 +188,11 @@ namespace igLibrary.Core
 			if(key is ulong kul)   return HashLong(kul);
 			if(typeof(U).IsEnum)   return HashInt((int)(object)key);
 			if(typeof(U).IsAssignableTo(typeof(string)))   return HashString((string)(object)key);
-			if(typeof(U).IsAssignableTo(typeof(igObject))) return HashInt(key.GetHashCode());	//I hash the hash
+			if(typeof(U).IsAssignableTo(typeof(igObject)))
+			{
+				if(key != null) return HashInt(key.GetHashCode());	//I hash the hash
+				else return HashInt(0);
+			}
 			else throw new NotImplementedException($"Unimplemented key type {typeof(U)}");
 		}
 		private bool KeyTraitsEqual(U key1, U key2)
