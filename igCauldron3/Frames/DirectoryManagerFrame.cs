@@ -30,8 +30,6 @@ namespace igCauldron3
 					}
 				}
 			}
-
-			_dirs.Append(igObjectStreamManager.Singleton.Load("LooseData/GuiSystemData.igz")!);
 		}
 		public void AddDirectory(igObjectDirectory dir)
 		{
