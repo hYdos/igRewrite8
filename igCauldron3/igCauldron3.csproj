@@ -20,4 +20,15 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ArkFiles Include="../Resources/ArkCore/*.ark"/>
+  </ItemGroup>
+
+  <Target Name="Debug|Release" AfterTargets="AfterBuild">
+    <Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/ArkCore" SkipUnchangedFiles="true"/>
+  </Target>
+  <Target Name="Debug|Release" AfterTargets="Publish">
+    <Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/publish/ArkCore" SkipUnchangedFiles="true"/>
+  </Target>
 </Project>
