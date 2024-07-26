@@ -221,7 +221,8 @@ namespace igCauldron3
 			Array values = (Array)value!;
 			for(int i = 0; i < num; i++)
 			{
-				RenderField(id + i.ToString(), $"Element {i}", values.GetValue(i), field, (newValue) => values.SetValue(newValue, i));
+				int capturedIndex = i;
+				RenderField(id + i.ToString(), $"Element {i}", values.GetValue(i), field, (newValue) => values.SetValue(newValue, capturedIndex));
 			}
 		}
 		private static void RenderField_Vector(string id, object? raw, igMetaField field, FieldSetCallback cb)
@@ -238,13 +239,14 @@ namespace igCauldron3
 					//ADD REMOVE BUTTON
 					for(int i = 0; i < vector.GetCount(); i++)
 					{
-						RenderField(id + i.ToString(), $"Element {i}", vector.GetItem(i), memType, (newValue) => vector.SetItem(i, newValue));
+						int capturedIndex = i;
+						RenderField(id + i.ToString(), $"Element {i}", vector.GetItem(i), memType, (newValue) => vector.SetItem(capturedIndex, newValue));
 					}
-					if(ImGui.Button("+"))
-					{
-						vector.SetCapacity((int)vector.GetCount() + 1);
-						vector.SetCount(vector.GetCount() + 1u);
-					}
+				}
+				if(ImGui.Button("+"))
+				{
+					vector.SetCapacity((int)vector.GetCount() + 1);
+					vector.SetCount(vector.GetCount() + 1u);
 				}
 				ImGui.TreePop();
 			}
@@ -278,7 +280,8 @@ namespace igCauldron3
 						}
 						ImGui.PopID();
 						ImGui.SameLine();
-						RenderField(id + i.ToString(), $"Element {i}", data.GetValue(i), memType, (newValue) => data.SetValue(newValue, i));
+						int capturedIndex = i;
+						RenderField(id + i.ToString(), $"Element {i}", data.GetValue(i), memType, (newValue) => data.SetValue(newValue, capturedIndex));
 					}
 					if(remove >= 0)
 					{
@@ -292,14 +295,14 @@ namespace igCauldron3
 						memValue.SetData(newData);
 						cb.Invoke(memValue);
 					}
-					ImGui.PushID(id + "$add$");
-					if(ImGui.Button("+"))
-					{
-						memValue.Realloc(data.Length + 1);
-						cb.Invoke(memValue);
-					}
-					ImGui.PopID();
 				}
+				ImGui.PushID(id + "$add$");
+				if(ImGui.Button("+"))
+				{
+					memValue.Realloc(data.Length + 1);
+					cb.Invoke(memValue);
+				}
+				ImGui.PopID();
 				ImGui.TreePop();
 			}
 		}
