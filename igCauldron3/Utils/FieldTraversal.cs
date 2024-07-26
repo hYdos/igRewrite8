@@ -104,7 +104,8 @@ namespace igCauldron3.Utils
 			igMetaField memType = field.GetTemplateParameter(0)!;
 			if(!_lookup.TryGetValue(memType.GetType(), out TraverseFieldAction? action)) return;
 
-			IigMemory mem = (IigMemory)obj!;
+			igVectorCommon vec = (igVectorCommon)obj!;
+			IigMemory mem = vec.GetData();
 			Array data = mem.GetData();
 			if(data == null) return;
 			for(int i = 0; i < data.Length; i++)
