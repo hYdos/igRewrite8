@@ -26,9 +26,14 @@ namespace igLibrary.DotNet
 				{
 					igArkCore._metaEnums.Add(metaEnum);
 				}
-				else throw new NotSupportedException("What??");
+				else if(lib._ownedTypes[i] is not igMetaObject && lib._ownedTypes[i] is not igMetaEnum)
+				{
+					throw new NotSupportedException("What??");
+				}
 			}
-			dir.AddObject(lib, default(igName), new igName("library"));
+			//Don't use AddObject, that's only for external use cos it messes with igHandles
+			dir._objectList.Append(lib);
+			dir._nameList.Append(new igName("library"));
 		}
 	}
 }

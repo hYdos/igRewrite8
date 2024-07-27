@@ -52,18 +52,6 @@ namespace igLibrary
 				}
 			}
 			lib = VvlLoader.Load(libName, _runtime, out succeeded);
-			//This isn't correct
-			for(int i = 0; i < lib._ownedTypes._count; i++)
-			{
-				if(lib._ownedTypes[i] is igDotNetDynamicMetaObject metaObject)
-				{
-					metaObject.AppendToArkCore();
-				}
-				else if(lib._ownedTypes[i] is igDotNetDynamicMetaEnum metaEnum)
-				{
-					igArkCore._metaEnums.Add(metaEnum);
-				}
-			}
 			return lib;
 		}
 	}

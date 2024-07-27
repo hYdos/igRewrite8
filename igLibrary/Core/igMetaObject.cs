@@ -252,10 +252,10 @@ namespace igLibrary.Core
 		{
 			igMetaEnum platformEnum = igArkCore.GetMetaEnum("IG_CORE_PLATFORM");
 			IG_CORE_PLATFORM[] platforms = new IG_CORE_PLATFORM[platformEnum._names.Count];
-			
+
 			for(int i = 0; i < platforms.Length; i++)
 			{
-				platforms[i] = (IG_CORE_PLATFORM)platformEnum.GetEnumFromName(platformEnum._names[i]);
+				platforms[i] = (IG_CORE_PLATFORM)platformEnum._values[i];
 
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT) continue;
 				if(platforms[i] == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEPRECATED) continue;
@@ -266,6 +266,8 @@ namespace igLibrary.Core
 		}
 		public void CalculateOffsetForPlatform(IG_CORE_PLATFORM platform)
 		{
+			//This feels a bit wasteful with how this is getting recalculated a lot but uhhh
+
 			if(_parent != null) _parent.CalculateOffsetForPlatform(platform);
 			ushort alignment = (ushort)igAlchemyCore.GetPointerSize(platform);	//alignment set to alignof pointer cos vtable
 			igMetaField[] metaFieldsByOffset = _metaFields.OrderBy(x => x._offset).ToArray();
