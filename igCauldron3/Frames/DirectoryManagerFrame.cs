@@ -76,7 +76,7 @@ namespace igCauldron3
 
 					ImGui.Text(name);
 					ImGui.SameLine();
-					RenderObject(name, dir._objectList[i]);
+					RenderObject(i + name, dir._objectList[i]);
 				}
 				if(ImGui.Button("+"))
 				{
