@@ -72,6 +72,8 @@ namespace igCauldron3
 				io.NativePtr->IniFilename = (byte*)newname;
 			}
 
+			ImGui.LoadIniSettingsFromDisk(CauldronConfig.ImGuiConfigFilePath);
+
 			io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
 			CreateDeviceResources();
