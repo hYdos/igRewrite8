@@ -25,12 +25,19 @@ namespace igCauldron3
 
 			ImGui.Text("Name");
 			ImGui.SameLine();
+			bool nameErrored = string.IsNullOrWhiteSpace(_name);
+			if(nameErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
 			ImGui.InputText(string.Empty, ref _name, 0x100);
+			if(nameErrored) ImGui.PopStyleColor();
 
 			ImGui.Text("Type");
 			ImGui.SameLine();
 			ImGui.PushID("Type");
-			if(ImGui.BeginCombo(string.Empty, _meta == null ? "Select a type" : _meta._name))
+			bool metaErrored = _meta == null;
+			if(metaErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
+			bool comboing = ImGui.BeginCombo(string.Empty, _meta == null ? "Select a type" : _meta._name);
+			if(metaErrored) ImGui.PopStyleColor();
+			if(comboing)
 			{
 				for(int i = 0; i < _alphabeticalMetas.Count; i++)
 				{
@@ -71,14 +78,9 @@ namespace igCauldron3
 			}
 			ImGui.PopID();
 			bool pressed = ImGui.Button("Create");
-			if(_meta == null)
+			if(pressed && !metaErrored && !nameErrored)
 			{
-				//ImGui.PushStyleVar(ImGuiStyleVar.Alpha, ImGui.GetStyle().Alpha * 0.5f);
-				pressed = false;
-			}
-			if(pressed)
-			{
-				_dir.AddObject(_meta.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]), default(igName), new igName(_name));
+				_dir.AddObject(_meta!.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]), default(igName), new igName(_name));
 				Close();
 			}
 			if(ImGui.Button("Close")) Close();

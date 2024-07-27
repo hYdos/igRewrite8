@@ -12,10 +12,15 @@ namespace igCauldron3
 		public override void Render()
 		{
 			ImGui.Begin("New Directory", ImGuiWindowFlags.NoDocking);
+
 			ImGui.Text("Path");
 			ImGui.SameLine();
+			bool pathErrored = string.IsNullOrWhiteSpace(_path) || _path.Contains(' ');
+			if(pathErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
 			ImGui.InputText(string.Empty, ref _path, 0x100);
-			if(ImGui.Button("Create"))
+			if(pathErrored) ImGui.PopStyleColor();
+
+			if(ImGui.Button("Create") && !pathErrored)
 			{
 				igObjectDirectory newDir = new igObjectDirectory(_path, new igName(Path.GetFileNameWithoutExtension(_path)));
 				newDir._nameList = new igNameList();
