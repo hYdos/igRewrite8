@@ -18,7 +18,7 @@ namespace igCauldron3
 				for(int i = 0; i < dir._objectList._count; i++)
 				{
 					//Use metaobject stuff for this cos _vTablePointer isn't guaranteed to be assigned
-					if(dir._objectList[i].GetMeta().CanBeAssignedTo(filter));
+					if(dir._objectList[i].GetMeta().CanBeAssignedTo(filter))
 					{
 						_objects.Add(dir._objectList[i]);
 						_names.Add(dir._nameList![i]);
