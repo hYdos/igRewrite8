@@ -50,29 +50,36 @@ namespace igLibrary.Core
 			}
 
 			igMemoryPool pool;
-			uint memSize;
-			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
+			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType)!;
 
 			if(loader._runtimeFields._poolIds.BinarySearch(start) >= 0)
 			{
 				pool = loader._loadedPools[flags & 0xFFFFFF];
-				memSize = 0;
 			}
 			else
 			{
 				memory.SetFlags(flags, this, loader._platform);
 
 				pool = loader.GetMemoryPoolFromSerializedOffset(raw);
-				memSize = _memType.GetSize(loader._platform);
-				Array objects = memory.GetData();
 
-				for(int i = 0; i < objects.Length; i++)
+				if(_memType.GetType() == typeof(igUnsignedCharMetaField))
 				{
-					loader._stream.Seek((long)offset + memSize * i);
-					objects.SetValue(_memType.ReadIGZField(loader), i);
+					loader._stream.Seek(offset);
+					memory.SetData(loader._stream.ReadBytes(memory.GetCount()));
 				}
+				else
+				{
+					Array objects = memory.GetData();
+					uint memSize = _memType.GetSize(loader._platform);
 
-				memory.SetData(objects);
+					for(int i = 0; i < objects.Length; i++)
+					{
+						loader._stream.Seek((long)offset + memSize * i);
+						objects.SetValue(_memType.ReadIGZField(loader), i);
+					}
+
+					memory.SetData(objects);
+				}
 			}
 
 			memory.SetMemoryPool(pool);
