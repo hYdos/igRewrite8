@@ -55,15 +55,14 @@ namespace igLibrary
 			//This isn't correct
 			for(int i = 0; i < lib._ownedTypes._count; i++)
 			{
-				if(lib._ownedTypes[i] is igMetaObject metaObject)
+				if(lib._ownedTypes[i] is igDotNetDynamicMetaObject metaObject)
 				{
-					igArkCore._metaObjects.Add(metaObject);
+					metaObject.AppendToArkCore();
 				}
-				else if(lib._ownedTypes[i] is igMetaEnum metaEnum)
+				else if(lib._ownedTypes[i] is igDotNetDynamicMetaEnum metaEnum)
 				{
 					igArkCore._metaEnums.Add(metaEnum);
 				}
-				else throw new NotSupportedException("What??");
 			}
 			return lib;
 		}

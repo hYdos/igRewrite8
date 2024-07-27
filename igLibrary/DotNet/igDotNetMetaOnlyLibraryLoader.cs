@@ -6,18 +6,23 @@ namespace igLibrary.DotNet
 		public static object _loadCallback;
 		public override string GetLoaderExtension() => "vvl";
 		public override string GetLoaderType() => "DotNet";
-        public override uint GetTestFileMemorySize() => 0x28;
-        public override void ReadFile(igObjectDirectory dir, string filePath, igBlockingType blockingType)
+		public override uint GetTestFileMemorySize() => 0x28;
+		public override void ReadFile(igObjectDirectory dir, string filePath, igBlockingType blockingType)
 		{
+			if(dir._nameList == null)
+			{
+				dir._nameList = new igNameList();
+				dir._useNameList = true;
+			}
 			_runtime = CDotNetaManager._Instance._runtime;
 			DotNetLibrary lib = VvlLoader.Load(filePath, _runtime, out bool success);
 			for(int i = 0; i < lib._ownedTypes._count; i++)
 			{
-				if(lib._ownedTypes[i] is igMetaObject metaObject)
+				if(lib._ownedTypes[i] is igDotNetDynamicMetaObject metaObject)
 				{
-					igArkCore._metaObjects.Add(metaObject);
+					metaObject.AppendToArkCore();
 				}
-				else if(lib._ownedTypes[i] is igMetaEnum metaEnum)
+				else if(lib._ownedTypes[i] is igDotNetDynamicMetaEnum metaEnum)
 				{
 					igArkCore._metaEnums.Add(metaEnum);
 				}

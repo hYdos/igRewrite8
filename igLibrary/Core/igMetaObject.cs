@@ -331,7 +331,9 @@ namespace igLibrary.Core
 		}
 		public virtual void AppendToArkCore()
 		{
+			if(_inArkCore) return;
 			igArkCore._metaObjects.Add(this);
+			_inArkCore = true;
 		}
 		public virtual igObject ConstructInstance(igMemoryPool memPool, bool setFields = true)
 		{

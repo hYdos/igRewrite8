@@ -15,7 +15,6 @@ namespace igLibrary.Core
 			}
 			list.Append(dir);
 			_directoriesByPath.Add(igHash.Hash(filePath), dir);
-			igObjectHandleManager.Singleton.AddDirectory(dir);
 		}
 		public igObjectDirectory? Load(string path)
 		{

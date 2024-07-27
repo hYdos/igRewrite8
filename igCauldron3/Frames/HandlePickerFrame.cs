@@ -39,6 +39,7 @@ namespace igCauldron3
 			_orderedDirs = new List<FilteredDir>(orderedUnfilteredDirs.Count());
 			for(int i = 0; i < orderedUnfilteredDirs.Count(); i++)
 			{
+				if(orderedUnfilteredDirs.ElementAt(i)._nameList == null) continue;
 				FilteredDir filteredDir = new FilteredDir(unorderedDirs.ElementAt(i), metaObject);
 				if(filteredDir._objects.Count == 0) continue;
 				_orderedDirs.Add(filteredDir);
