@@ -143,6 +143,7 @@ namespace igLibrary.Core
 	}
 	public interface IigMemory
 	{
+		public int Length { get; }
 		igMemoryPool GetMemoryPool();
 		void SetMemoryPool(igMemoryPool pool);
 		Array GetData();

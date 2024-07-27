@@ -18,7 +18,7 @@ namespace igLibrary
 		public byte bitPosition = 0;
 
 		//THIS MAKES IT NOT THREAD SAFE
-		private static readonly byte[] _integerBuffer = new byte[8];
+		private readonly byte[] _integerBuffer = new byte[8];
 
 		public StreamHelper(byte[] input) : base(new MemoryStream(input)) {}
 		public StreamHelper(Stream input) : base(input) {}

@@ -45,6 +45,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igObjectRefMetaField), RenderField_Object);
 			_renderFuncLookup.Add(typeof(igHandleMetaField), RenderField_Handle);
 			_renderFuncLookup.Add(typeof(igEnumMetaField), RenderField_Enum);
+			_renderFuncLookup.Add(typeof(igCompoundMetaField), RenderField_Compound);
 		}
 		public static void RenderField(string id, string label, object? value, igMetaField field, FieldSetCallback cb)
 		{
@@ -299,7 +300,7 @@ namespace igCauldron3
 				ImGui.PushID(id + "$add$");
 				if(ImGui.Button("+"))
 				{
-					memValue.Realloc(data.Length + 1);
+					memValue.Realloc(memValue.Length + 1);
 					cb.Invoke(memValue);
 				}
 				ImGui.PopID();
@@ -361,6 +362,24 @@ namespace igCauldron3
 				ImGui.InputInt(string.Empty, ref intValue);
 				ImGui.PopID();
 				cb.Invoke((int)Math.Clamp(intValue, int.MinValue, int.MaxValue));
+			}
+		}
+		public static void RenderField_Compound(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			igCompoundMetaField compound = (igCompoundMetaField)field;
+			if(ImGui.TreeNode(compound._compoundFieldInfo._name))
+			{
+				List<igMetaField> fieldList = compound._compoundFieldInfo._fieldList;
+				for(int i = 0; i < fieldList.Count; i++)
+				{
+					FieldInfo fi = fieldList[i]._fieldHandle!;
+					object? fieldValue = fi.GetValue(raw);
+					RenderField(id, fieldList[i]._fieldName!, fieldValue, fieldList[i], (newValue) => {
+						fi.SetValue(raw, newValue);
+						cb.Invoke(raw);
+					});
+				}
+				ImGui.TreePop();
 			}
 		}
 	}
