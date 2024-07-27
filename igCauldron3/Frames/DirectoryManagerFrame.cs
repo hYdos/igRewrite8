@@ -108,7 +108,7 @@ namespace igCauldron3
 			igMetaObject meta = obj.GetMeta();
 			if(ImGui.TreeNode(id, meta._name))
 			{
-				int overrideIndex = _overrides.FindIndex(x => meta._vTablePointer.IsAssignableTo(x._t));
+				int overrideIndex = _overrides.FindIndex(x => meta._vTablePointer!.IsAssignableTo(x._t));
 				if(overrideIndex < 0)
 				{
 					RenderObjectFields(id, obj, meta);

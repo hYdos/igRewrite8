@@ -13,10 +13,13 @@ namespace igCauldron3
 			public List<igName> _names = new List<igName>();
 			public FilteredDir(igObjectDirectory dir, igMetaObject filter)
 			{
+				if(filter == null) throw new ArgumentNullException("Filter cannot be null!");
+
 				_dir = dir;
 				for(int i = 0; i < dir._objectList._count; i++)
 				{
-					if(filter._vTablePointer.IsAssignableFrom(dir._objectList[i].GetType()))
+					//Use metaobject stuff for this cos _vTablePointer isn't guaranteed to be assigned
+					if(dir._objectList[i].GetMeta().CanBeAssignedTo(filter))
 					{
 						_objects.Add(dir._objectList[i]);
 						_names.Add(dir._nameList![i]);
@@ -45,7 +48,7 @@ namespace igCauldron3
 				if(filteredDir._objects.Count == 0) continue;
 				_orderedDirs.Add(filteredDir);
 			}
-			FieldTraversal.TraverseObjectDir(dir, metaObject._vTablePointer, out _curDirObjects, out _curDirNames);
+			FieldTraversal.TraverseObjectDir(dir, metaObject, out _curDirObjects, out _curDirNames);
 		}
 		public override void Render()
 		{

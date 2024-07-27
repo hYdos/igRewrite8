@@ -20,7 +20,7 @@ namespace igLibrary.Core
 		public igObjectList? _attributes;
 		public Dictionary<IG_CORE_PLATFORM, ushort> _sizes = new Dictionary<IG_CORE_PLATFORM, ushort>();
 		public Dictionary<IG_CORE_PLATFORM, ushort> _alignments = new Dictionary<IG_CORE_PLATFORM, ushort>();
-		public Type _vTablePointer;
+		public Type? _vTablePointer;
 		private bool _baseFieldsInherited = false;
 		public List<igMetaObject> _children = new List<igMetaObject>();
 

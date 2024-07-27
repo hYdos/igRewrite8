@@ -33,7 +33,7 @@ namespace igCauldron3.Utils
 				TraverseCompound(obj, name, field, traversed, names);
 			}
 		}
-		public static void TraverseObjectDir(igObjectDirectory directory, Type filterType, out List<igObject> curDirObjects, out List<string> curDirNames)
+		public static void TraverseObjectDir(igObjectDirectory directory, igMetaObject filterType, out List<igObject> curDirObjects, out List<string> curDirNames)
 		{
 			List<igObject> traversedObjs = new List<igObject>();
 			List<string> traversedNames = new List<string>();
@@ -45,7 +45,7 @@ namespace igCauldron3.Utils
 			curDirNames = new List<string>();
 			for(int i = 0; i < traversedObjs.Count; i++)
 			{
-				if(traversedObjs[i].GetType().IsAssignableTo(filterType))
+				if(traversedObjs[i].GetMeta().CanBeAssignedTo(filterType))
 				{
 					curDirObjects.Add(traversedObjs[i]);
 					curDirNames.Add(traversedNames[i]);
