@@ -5,45 +5,29 @@ namespace igCauldron3
 {
 	public class HandlePickerFrame : Frame
 	{
-		private class FilteredDir
-		{
-			public igObjectDirectory _dir;
-			public List<igObject> _objects = new List<igObject>();
-			public List<igName> _names = new List<igName>();
-			public FilteredDir(igObjectDirectory dir, igMetaObject filter)
-			{
-				if(filter == null) throw new ArgumentNullException("Filter cannot be null!");
-
-				_dir = dir;
-				for(int i = 0; i < dir._objectList._count; i++)
-				{
-					//Use metaobject stuff for this cos _vTablePointer isn't guaranteed to be assigned
-					if(dir._objectList[i].GetMeta().CanBeAssignedTo(filter))
-					{
-						_objects.Add(dir._objectList[i]);
-						_names.Add(dir._nameList![i]);
-					}
-				}
-			}
-		}
-		private List<FilteredDir> _orderedDirs;
+		private List<igHandle> _orderedHandles;
+		private List<igHandle> _searchedHandles;
 		private Action<igHandle?> _selectedCb;
 		private igMetaObject _metaObject;
+		private string _searchTerm = "";
 		
 		public HandlePickerFrame(Window wnd, igMetaObject metaObject, Action<igHandle?> selectedCallback) : base(wnd)
 		{
 			_selectedCb = selectedCallback;
 			_metaObject = metaObject;
-			IEnumerable<igObjectDirectory> unorderedDirs = igObjectStreamManager.Singleton._directoriesByPath.Values;
-			IEnumerable<igObjectDirectory> orderedUnfilteredDirs = unorderedDirs.OrderBy(x => x._name._string);
-			_orderedDirs = new List<FilteredDir>(orderedUnfilteredDirs.Count());
-			for(int i = 0; i < orderedUnfilteredDirs.Count(); i++)
+			IEnumerable<igHandle> unorderedHnds = igObjectHandleManager.Singleton._objectToHandleTable.Values;
+			_orderedHandles = new List<igHandle>(unorderedHnds.Count());
+			for(int i = 0; i < unorderedHnds.Count(); i++)
 			{
-				if(orderedUnfilteredDirs.ElementAt(i)._nameList == null) continue;
-				FilteredDir filteredDir = new FilteredDir(unorderedDirs.ElementAt(i), metaObject);
-				if(filteredDir._objects.Count == 0) continue;
-				_orderedDirs.Add(filteredDir);
+				igObject? alias = unorderedHnds.ElementAt(i).GetObjectAlias<igObject>();
+				if(alias == null) continue;
+				if(alias.GetMeta().CanBeAssignedTo(metaObject))
+				{
+					_orderedHandles.Add(unorderedHnds.ElementAt(i));
+				}
 			}
+			_orderedHandles = _orderedHandles.OrderBy(x => x.ToString()).ToList();
+			_searchedHandles = _orderedHandles;
 		}
 
 		public override void Render()
@@ -56,33 +40,31 @@ namespace igCauldron3
 				Close();
 			}
 
-			string searchTerm = "Search box goes here...";
 			ImGui.PushID("search box id");
-			bool refreshSearch = ImGui.InputText("", ref searchTerm, 0x100);
+			bool refreshSearch = ImGui.InputTextWithHint("", "Search", ref _searchTerm, 0x100);
 			ImGui.PopID();
 
-			for(int i = 0; i < _orderedDirs.Count; i++)
+			if(refreshSearch)
 			{
-				FilteredDir filteredDir = _orderedDirs[i];
-				igObjectDirectory dir = filteredDir._dir;
-
-				ImGui.PushID(i);
-				bool openDir = ImGui.TreeNode(dir._name._string);
-				ImGui.PopID();
-				if(openDir)
+				if(string.IsNullOrWhiteSpace(_searchTerm))
 				{
-					for(int o = 0; o < filteredDir._objects.Count; o++)
-					{
-						ImGui.PushID(dir._name._string + filteredDir._names[o]._string);
-						bool objectSelected = ImGui.Button(filteredDir._names[o]._string);
-						ImGui.PopID();
-						if(objectSelected)
-						{
-							_selectedCb.Invoke(igObjectHandleManager.Singleton._objectToHandleTable[filteredDir._objects[o]]);
-							Close();
-						}
-					}
-					ImGui.TreePop();
+					_searchedHandles = _orderedHandles;
+				}
+				else
+				{
+					_searchedHandles = _orderedHandles.Where(x => x.ToString().Contains(_searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+				}
+			}
+
+			for(int i = 0; i < _searchedHandles.Count; i++)
+			{
+				ImGui.PushID(_searchedHandles[i].ToString());
+				bool objectSelected = ImGui.Button(_searchedHandles[i].ToString());
+				ImGui.PopID();
+				if(objectSelected)
+				{
+					_selectedCb.Invoke(_searchedHandles[i]);
+					Close();
 				}
 			}
 

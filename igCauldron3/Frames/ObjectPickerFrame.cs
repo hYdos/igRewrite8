@@ -61,9 +61,9 @@ namespace igCauldron3
 				Close();
 			}
 
-			string searchTerm = "Search box goes here...";
+			string searchTerm = "";
 			ImGui.PushID("search box id");
-			bool refreshSearch = ImGui.InputText("", ref searchTerm, 0x100);
+			bool refreshSearch = ImGui.InputTextWithHint("", "Search box would go here if it worked...", ref searchTerm, 0x100);
 			ImGui.PopID();
 
 			if(ImGui.TreeNode("this directory"))
