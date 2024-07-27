@@ -12,7 +12,7 @@ namespace igCauldron3
 		public ArchiveFrame(Window wnd) : base(wnd){}
 		public override void Render()
 		{
-			ImGui.Begin("igArchive Manager");
+			ImGui.Begin("igArchive Manager", ImGuiWindowFlags.HorizontalScrollbar);
 			if(!_isChoosingArchive)
 			{
 				igArchiveList archives = igFileContext.Singleton._archiveManager._archiveList;
