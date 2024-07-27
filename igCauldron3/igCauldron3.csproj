@@ -25,6 +25,10 @@
     <ArkFiles Include="../Resources/ArkCore/*.ark"/>
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DefineConstants>CAULDRON_FEATURE_EXTERNAL_CONSOLE</DefineConstants>
+  </PropertyGroup>
+
   <Target Name="Debug|Release" AfterTargets="AfterBuild">
     <Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/ArkCore" SkipUnchangedFiles="true"/>
   </Target>

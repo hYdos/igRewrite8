@@ -2,6 +2,9 @@
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
 using igLibrary.Core;
+#if CAULDRON_FEATURE_EXTERNAL_CONSOLE
+using System.Runtime.InteropServices;
+#endif // CAULDRON_FEATURE_EXTERNAL_CONSOLE
 
 namespace igCauldron3
 {
@@ -10,6 +13,9 @@ namespace igCauldron3
 		[STAThread] 
 		public static void Main(string[] args)
 		{
+#if CAULDRON_FEATURE_EXTERNAL_CONSOLE
+			AllocConsole();
+#endif // CAULDRON_FEATURE_EXTERNAL_CONSOLE
 			Window wnd = new Window(
 				new GameWindowSettings()
 				{
@@ -38,6 +44,10 @@ namespace igCauldron3
 #else
 			wnd.Run();
 #endif
+
+#if CAULDRON_FEATURE_EXTERNAL_CONSOLE
+			FreeConsole();
+#endif // CAULDRON_FEATURE_EXTERNAL_CONSOLE
 		}
 		private static void ExtractSLIArchive(string[] args)
 		{
@@ -53,5 +63,14 @@ namespace igCauldron3
 				fs.Close();
 			}
 		}
+#if CAULDRON_FEATURE_EXTERNAL_CONSOLE
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool AllocConsole();
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool FreeConsole();
+#endif // CAULDRON_FEATURE_EXTERNAL_CONSOLE
 	}
 }
