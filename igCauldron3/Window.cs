@@ -49,6 +49,12 @@ namespace igCauldron3
 				//Close();
 			}
 
+			if(ImGui.GetIO().WantSaveIniSettings)
+			{
+				ImGui.SaveIniSettingsToDisk(CauldronConfig.ImGuiConfigFilePath);
+			}
+
+
 			base.OnUpdateFrame(e);
 		}
 		protected override void OnMouseWheel(MouseWheelEventArgs e)

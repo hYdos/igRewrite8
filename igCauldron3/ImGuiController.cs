@@ -9,6 +9,8 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Diagnostics;
 using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
+using System.Text;
+using System.Runtime.InteropServices;
 
 //Credits: https://github.com/NogginBops/ImGui.NET_OpenTK_Sample
 
@@ -56,6 +58,19 @@ namespace igCauldron3
 			ImGui.SetCurrentContext(context);
 			var io = ImGui.GetIO();
 			io.Fonts.AddFontDefault();
+
+			//Set the config filepath to something in AppData
+			//The following does not feel like the intended way, but it's the only way that I saw
+			unsafe
+			{
+				//Alloc memory for the string
+				IntPtr newname = Marshal.AllocHGlobal(CauldronConfig.ImGuiConfigFilePath.Length + 1);
+				//copy the string over
+				byte[] ba = Encoding.ASCII.GetBytes(CauldronConfig.ImGuiConfigFilePath);
+				Marshal.Copy(ba, 0, newname, ba.Length);
+				//assign the thing
+				io.NativePtr->IniFilename = (byte*)newname;
+			}
 
 			io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
