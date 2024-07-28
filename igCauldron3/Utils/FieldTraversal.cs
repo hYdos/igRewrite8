@@ -63,6 +63,9 @@ namespace igCauldron3.Utils
 			for(int i = 0; i < meta._metaFields.Count; i++)
 			{
 				igMetaField field = meta._metaFields[i];
+				if(field is igPropertyFieldMetaField) continue;
+				if(field is igStaticMetaField)        continue;
+				if(field is igBitFieldMetaField)      continue;
 				TraverseField(field._fieldHandle!.GetValue(obj), name + "->" + field._fieldName, field, traversed, names);
 			}
 		}
