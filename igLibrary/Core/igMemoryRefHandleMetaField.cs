@@ -72,10 +72,9 @@ namespace igLibrary.Core
 			}
 
 			section._sh.Seek(start);
+			saver.WriteRawOffset((ulong)saver._thumbnails.Count, section);
 
 			saver._thumbnails.Add(new Tuple<ulong, ulong>(memory.GetFlags(this, saver._platform), (memOffset | (memorySection._index << (saver._version >= 7 ? 0x1B : 0x18)))));
-			//saver.WriteRawOffset(size, section);
-			//saver.WriteRawOffset(memOffset, section);
 			section._runtimeFields._memoryHandles.Add(start);
 		}
 
