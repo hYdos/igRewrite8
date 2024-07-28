@@ -11,24 +11,47 @@ namespace igCauldron3
 		private igMetaObject _parentType;
 		private string _memoryPoolName = "Default";
 		private List<igMetaObject> _alphabeticalMetas;
+		private Action<igObject?, igName>? _cbAddRoot;
+		private Action<igObject?>? _cbAddNormal;
 
-		public CreateObjectFrame(Window wnd, igObjectDirectory dir, igMetaObject parentType) : base(wnd)
+		public CreateObjectFrame(Window wnd, igObjectDirectory dir, igMetaObject parentType, Action<igObject?, igName> cb) : base(wnd)
 		{
+			if(wnd == null) throw new ArgumentNullException("wnd must not be null!");
+			if(parentType == null) throw new ArgumentNullException("parentType must not be null!");
+			if(dir == null) throw new ArgumentNullException("dir must not be null!");
+			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
 			_parentType = parentType;
 			_alphabeticalMetas = igArkCore._metaObjects.FindAll(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
 			_dir = dir;
+			_cbAddRoot = cb;
+		}
+
+		public CreateObjectFrame(Window wnd, igObjectDirectory dir, igMetaObject parentType, Action<igObject?> cb) : base(wnd)
+		{
+			if(wnd == null) throw new ArgumentNullException("wnd must not be null!");
+			if(parentType == null) throw new ArgumentNullException("parentType must not be null!");
+			if(dir == null) throw new ArgumentNullException("dir must not be null!");
+			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
+			_parentType = parentType;
+			_alphabeticalMetas = igArkCore._metaObjects.FindAll(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
+			_dir = dir;
+			_cbAddNormal = cb;
 		}
 
 		public override void Render()
 		{
 			ImGui.Begin("New Object", ImGuiWindowFlags.NoDocking);
 
-			ImGui.Text("Name");
-			ImGui.SameLine();
-			bool nameErrored = string.IsNullOrWhiteSpace(_name);
-			if(nameErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
-			ImGui.InputText(string.Empty, ref _name, 0x100);
-			if(nameErrored) ImGui.PopStyleColor();
+			bool nameErrored = false;
+			if(_cbAddRoot != null)
+			{
+				ImGui.Text("Name");
+				ImGui.SameLine();
+				nameErrored = string.IsNullOrWhiteSpace(_name);
+				if(nameErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
+				ImGui.InputText(string.Empty, ref _name, 0x100);
+				if(nameErrored) ImGui.PopStyleColor();
+			}
 
 			ImGui.Text("Type");
 			ImGui.SameLine();
@@ -80,7 +103,14 @@ namespace igCauldron3
 			bool pressed = ImGui.Button("Create");
 			if(pressed && !metaErrored && !nameErrored)
 			{
-				_dir.AddObject(_meta!.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]), default(igName), new igName(_name));
+				if(_cbAddRoot != null)
+				{
+					_cbAddRoot.Invoke(_meta!.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]), new igName(_name));
+				}
+				else if(_cbAddNormal != null)
+				{
+					_cbAddNormal.Invoke(_meta!.ConstructInstance(igMemoryContext.Singleton._pools[_memoryPoolName]));
+				}
 				Close();
 			}
 			if(ImGui.Button("Close")) Close();

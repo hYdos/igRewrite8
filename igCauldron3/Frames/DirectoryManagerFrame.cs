@@ -80,7 +80,13 @@ namespace igCauldron3
 				}
 				if(ImGui.Button("+"))
 				{
-					_wnd._frames.Add(new CreateObjectFrame(_wnd, CurrentDir, igArkCore.GetObjectMeta("igObject")!));
+					igObjectDirectory capturedDir = dir;
+					_wnd._frames.Add(new CreateObjectFrame(_wnd, CurrentDir, igArkCore.GetObjectMeta("igObject")!, (obj, name) => {
+						if(obj != null)
+						{
+							capturedDir.AddObject(obj, default(igName), name);
+						}
+					}));
 				}
 				ImGui.TreePop();
 			}

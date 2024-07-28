@@ -324,6 +324,15 @@ namespace igCauldron3
 				}
 				ImGui.EndPopup();
 			}
+			if(raw == null)
+			{
+				ImGui.SameLine();
+				if(ImGui.Button("+"))
+				{
+					igObjectDirectory capturedDir = DirectoryManagerFrame._instance.CurrentDir;
+					Window._instance._frames.Add(new CreateObjectFrame(Window._instance, capturedDir, ((igObjectRefMetaField)field)._metaObject, (obj) => cb.Invoke(obj)));
+				}
+			}
 		}
 		public static void RenderField_Handle(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
