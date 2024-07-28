@@ -14,8 +14,8 @@ namespace igLibrary.Core
 			data._unk = loader._stream.ReadUInt32();
 			return data;
 		}
-        public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
-        {
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
 			igTimeOfDay data = (igTimeOfDay)value;
 			section._sh.ReadUInt32(data._year);
 			section._sh.ReadUInt32(data._month);
@@ -24,8 +24,8 @@ namespace igLibrary.Core
 			section._sh.ReadUInt32(data._minute);
 			section._sh.ReadUInt32(data._second);
 			section._sh.ReadUInt32(data._unk);
-        }
-        public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;
+		}
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 4;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x1C;
 		public override Type GetOutputType() => typeof(igTimeOfDay);
 	}

@@ -69,28 +69,28 @@ namespace igLibrary.Core
 			}
 		}
 
-        static CoderPropID[] propIDs =
-        {
-            CoderPropID.DictionarySize,
-            CoderPropID.PosStateBits,
-            CoderPropID.LitContextBits,
-            CoderPropID.LitPosBits,
-            CoderPropID.Algorithm,
-            CoderPropID.NumFastBytes,
-            CoderPropID.EndMarker,
-            CoderPropID.MatchFinder,
-        };
-        static object[] properties =
-        {
-            0x8000,
-            2,
-            3,
-            0,
-            2,
-            0x80,
-            false,
-            "bt4",
-        };
+		static CoderPropID[] propIDs =
+		{
+			CoderPropID.DictionarySize,
+			CoderPropID.PosStateBits,
+			CoderPropID.LitContextBits,
+			CoderPropID.LitPosBits,
+			CoderPropID.Algorithm,
+			CoderPropID.NumFastBytes,
+			CoderPropID.EndMarker,
+			CoderPropID.MatchFinder,
+		};
+		static object[] properties =
+		{
+			0x8000,
+			2,
+			3,
+			0,
+			2,
+			0x80,
+			false,
+			"bt4",
+		};
 
 
 		public bool _loadNameTable;

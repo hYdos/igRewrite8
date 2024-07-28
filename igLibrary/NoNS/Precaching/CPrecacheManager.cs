@@ -23,9 +23,9 @@ namespace igLibrary
 		[Obsolete("This exists for the reflection system, do not use.")] public object? _exclusionRuleSetList;              //CPrecacheManagerExcludeRuleSetHandleList
 		public static CPrecacheManager _Instance;
 
-        public override void Intialize()
-        {
-            _resourcePrecachers = new CResourcePrecacherList();
+		public override void Intialize()
+		{
+			_resourcePrecachers = new CResourcePrecacherList();
 			_resourcePrecachers.SetCapacity(0x24);
 			_resourcePrecacherLookup = new CStringResourcePrecacherHashTable();
 			_resourcePrecacherLookup.Activate(0x24);
@@ -68,13 +68,13 @@ namespace igLibrary
 				mObjectDirectoryLists.Append(new igObjectDirectoryList());
 			}
 
-        }
+		}
 		private void RegisterResourcePrecacher(string name, CResourcePrecacher precacher)
 		{
 			_resourcePrecachers.Append(precacher);
 			_resourcePrecacherLookup.Add(name, precacher);
 		}
-        public bool IsPackageCached(string packageName, EMemoryPoolID poolId)
+		public bool IsPackageCached(string packageName, EMemoryPoolID poolId)
 		{
 			string packagePathToCheck = packageName.ToLower();
 			igVector<string> packages = _packagesPerPool[(int)poolId];
