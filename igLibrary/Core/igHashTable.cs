@@ -10,8 +10,42 @@ namespace igLibrary.Core
 		public int _hashItemCount;
 		public bool _autoRehash = true;
 		public float _loadFactor = 0.5f;	//how much is expected to used up, basically if i wanna expect to fill in 0x10 items, allocate 0x20
-		public ICollection<U> Keys => _keys.Buffer;
-		public ICollection<T> Values => _values.Buffer;
+		public ICollection<U> Keys {
+			get
+			{
+				U[] keys = new U[_hashItemCount];
+				int write = 0;
+				int read = 0;
+				for(; read < _keys.Length; read++)
+				{
+					if(IsValidKey(_keys[read]))
+					{
+						keys[write] = _keys[read];
+						write++;
+					}
+				}
+				if(write != _hashItemCount) throw new InvalidDataException("keys buffer does not contain enough valid elements!\n This should never happen!");
+				return keys;
+			}
+		}
+		public ICollection<T> Values {
+			get
+			{
+				T[] values = new T[_hashItemCount];
+				int write = 0;
+				int read = 0;
+				for(; read < _values.Length; read++)
+				{
+					if(IsValidKey(_keys[read]))
+					{
+						values[write] = _values[read];
+						write++;
+					}
+				}
+				if(write != _hashItemCount) throw new InvalidDataException("keys buffer does not contain enough valid elements!\n This should never happen!");
+				return values;
+			}
+		}
 		public int Count => _hashItemCount;
 		public bool IsReadOnly => false;
 
@@ -107,6 +141,7 @@ namespace igLibrary.Core
 		{
 			_keys[keyIndex] = KeyTraitsInvalid();
 		}
+		object? IigHashTable.KeyTraitsInvalid() => KeyTraitsInvalid();
 		public virtual U KeyTraitsInvalid()
 		{
 				 if(!typeof(U).IsValueType)      return default(U);
@@ -123,6 +158,8 @@ namespace igLibrary.Core
 			}
 			else throw new NotImplementedException("Key type " + typeof(U).Name + " is not implemented.");
 		}
+		object? IigHashTable.ValueTraitsInvalid() => ValueTraitsInvalid();
+		public virtual T ValueTraitsInvalid() => default(T);
 		public static uint HashString(string name)
 		{
 			return HashString(name, 0x811c9dc5);
@@ -386,6 +423,8 @@ namespace igLibrary.Core
 		public igMetaField GetValueElementType();
 		public igMetaField GetKeyElementType();
 		public bool IsValidKey(object? key); 
+		public object? KeyTraitsInvalid(); 
+		public object? ValueTraitsInvalid(); 
 		public void Insert(object key, object value);
 		public int GetHashItemCount();
 	}

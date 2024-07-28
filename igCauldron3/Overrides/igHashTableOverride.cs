@@ -87,24 +87,55 @@ namespace igCauldron3
 				object? value = values[i];
 				object? key = keys[i];
 
+				ImGui.PushID(id + "$remove$" + i);
+				bool remove = ImGui.Button("-");
+				ImGui.PopID();
+				if(remove)
+				{
+					int dupeKeys = 0;
+					object? oldKey = keys[i];
+					for(int d = 0; d < keys.Count; d++)
+					{
+						if(Equals(oldKey, keys[d]))
+						{
+							dupeKeys++;
+						}
+					}
+					keys.RemoveAt(i);
+					values.RemoveAt(i);
+					uiData._keyStatus.RemoveAt(i);
+					if(dupeKeys <= 2)
+					{
+						for(int d = 0; d < keys.Count; d++)
+						{
+							if(Equals(oldKey, keys[d]))
+							{
+								uiData._keyStatus[d] = uiData._keyStatus[d] & ~KeyStatus.Duplicate;
+								break;
+							}
+						}
+					}
+				}
+				ImGui.SameLine();
+				int capturedI = i;
 				FieldRenderer.RenderField($"{id}_keys[{i}]", string.Empty, key, keysType, (newKey) => {
 					//reset old values
 					for(int j = 0; j < keys.Count; j++)
 					{
-						if(keys[j].Equals(keys[i]))
+						if(Equals(keys[j], keys[capturedI]))
 						{
 							uiData._keyStatus[j] = uiData._keyStatus[j] & ~KeyStatus.Duplicate;
 						}
 					}
-					keys[i] = newKey!;
+					keys[capturedI] = newKey!;
 					//set whether or not the key's invalid
-					uiData._keyStatus[i] = (uiData._keyStatus[i] & ~KeyStatus.Invalid) | (hashTable.IsValidKey(newKey) ? KeyStatus.Good : KeyStatus.Invalid);
+					uiData._keyStatus[capturedI] = (uiData._keyStatus[capturedI] & ~KeyStatus.Invalid) | (hashTable.IsValidKey(newKey) ? KeyStatus.Good : KeyStatus.Invalid);
 					bool duplicateFound = false;
 					//set new values
 					for(int j = 0; j < keys.Count; j++)
 					{
-						if(i == j) continue;
-						if(keys[j].Equals(newKey))
+						if(capturedI == j) continue;
+						if(Equals(keys[j], newKey))
 						{
 							uiData._keyStatus[j] |= KeyStatus.Duplicate;
 							duplicateFound = true;
@@ -112,19 +143,42 @@ namespace igCauldron3
 					}
 					if(duplicateFound)
 					{
-						uiData._keyStatus[i] |= KeyStatus.Duplicate;
+						uiData._keyStatus[capturedI] |= KeyStatus.Duplicate;
 					}
 					uiData._stale = true;
 				});
 				ImGui.TableNextColumn();
 				FieldRenderer.RenderField($"{id}_values[{i}]", string.Empty, value, valuesType, (newValue) => {
-					values[i] = newValue!;
+					values[capturedI] = newValue!;
 					uiData._stale = true;
 				});
 				ImGui.TableNextColumn();
 			}
 
 			ImGui.EndTable();
+
+			ImGui.PushID(id + "$create$");
+			bool create = ImGui.Button("+");
+			ImGui.PopID();
+			if(create)
+			{
+				keys.Add(hashTable.KeyTraitsInvalid()!);
+				values.Add(hashTable.ValueTraitsInvalid()!);
+				uiData._keyStatus.Add(KeyStatus.Invalid);
+				bool duplicateFound = false;
+				for(int i = 0; i < keys.Count - 1; i++)
+				{
+					if(Equals(keys[i], hashTable.KeyTraitsInvalid()))
+					{
+						uiData._keyStatus[i] |= KeyStatus.Duplicate;
+						duplicateFound = true;
+					} 
+				}
+				if(duplicateFound)
+				{
+					uiData._keyStatus[keys.Count-1] |= KeyStatus.Duplicate;
+				}
+			}
 
 			if(uiData._stale && uiData._keyStatus.All(x => x == KeyStatus.Good))
 			{
