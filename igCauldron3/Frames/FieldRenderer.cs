@@ -244,7 +244,10 @@ namespace igCauldron3
 						RenderField(id + i.ToString(), $"Element {i}", vector.GetItem(i), memType, (newValue) => vector.SetItem(capturedIndex, newValue));
 					}
 				}
-				if(ImGui.Button("+"))
+				ImGui.PushID(id + "$create$");
+				bool create = ImGui.Button("+");
+				ImGui.PopID();
+				if(create)
 				{
 					vector.SetCapacity((int)vector.GetCount() + 1);
 					vector.SetCount(vector.GetCount() + 1u);
@@ -327,7 +330,10 @@ namespace igCauldron3
 			if(raw == null)
 			{
 				ImGui.SameLine();
-				if(ImGui.Button("+"))
+				ImGui.PushID(id + "$create$");
+				bool create = ImGui.Button("+");
+				ImGui.PopID();
+				if(create)
 				{
 					igObjectDirectory capturedDir = DirectoryManagerFrame._instance.CurrentDir;
 					Window._instance._frames.Add(new CreateObjectFrame(Window._instance, capturedDir, ((igObjectRefMetaField)field)._metaObject, (obj) => cb.Invoke(obj)));
