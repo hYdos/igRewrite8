@@ -75,9 +75,6 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...pack
 			igFileContext.Singleton.Initialize(gamePath);
 			igFileContext.Singleton.InitializeUpdate(updatePath);
 
-			//CRenderBase<CRender>::initializeEarly
-			CPrecacheManager._Instance.PrecachePackage("generated/shaders/shaders_ps3", EMemoryPoolID.MP_DEFAULT);
-
 			//CClient::loadGameStartupPackages
 			//CPrecacheManager._Instance.PrecachePackage("data:/archives/languagestartup", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_ps3", EMemoryPoolID.MP_DEFAULT);
