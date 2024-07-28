@@ -367,7 +367,7 @@ namespace igCauldron3
 		public static void RenderField_Compound(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igCompoundMetaField compound = (igCompoundMetaField)field;
-			if(ImGui.TreeNode(compound._compoundFieldInfo._name))
+			if(ImGui.TreeNode(id, compound._compoundFieldInfo._name))
 			{
 				List<igMetaField> fieldList = compound._compoundFieldInfo._fieldList;
 				for(int i = 0; i < fieldList.Count; i++)
