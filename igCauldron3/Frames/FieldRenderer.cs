@@ -28,11 +28,11 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igVec2fMetaField), RenderField_Vec2f);
 			_renderFuncLookup.Add(typeof(igVec3ucMetaField), RenderField_Vec3uc);
 			_renderFuncLookup.Add(typeof(igVec3fMetaField), RenderField_Vec3f);
-			_renderFuncLookup.Add(typeof(igVec3fAlignedMetaField), RenderField_Vec3f);
+			_renderFuncLookup.Add(typeof(igVec3fAlignedMetaField), RenderField_Vec3fAligned);
 			_renderFuncLookup.Add(typeof(igVec3dMetaField), RenderField_Vec3d);
 			_renderFuncLookup.Add(typeof(igVec4ucMetaField), RenderField_Vec4uc);
 			_renderFuncLookup.Add(typeof(igVec4fMetaField), RenderField_Vec4f);
-			_renderFuncLookup.Add(typeof(igVec4fUnalignedMetaField), RenderField_Vec4f);
+			_renderFuncLookup.Add(typeof(igVec4fUnalignedMetaField), RenderField_Vec4fUnaligned);
 			_renderFuncLookup.Add(typeof(igVec4iMetaField), RenderField_Vec4i);
 			_renderFuncLookup.Add(typeof(igQuaternionfMetaField), RenderField_Quaternionf);
 			_renderFuncLookup.Add(typeof(igMatrix44fMetaField), RenderField_Matrix44f);
@@ -125,6 +125,13 @@ namespace igCauldron3
 			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
 			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); });
 		}
+		private static void RenderField_Vec3fAligned(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			igVec3fAligned value = (igVec3fAligned)raw!;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); });
+		}
 		private static void RenderField_Vec3d(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec3d value = (igVec3d)raw!;
@@ -135,6 +142,14 @@ namespace igCauldron3
 		private static void RenderField_Vec4f(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
 			igVec4f value = (igVec4f)raw!;
+			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
+			RenderField_Float(id + " _w", value._w, igFloatMetaField._MetaField, (newValue) => { value._w = (float)newValue!; cb.Invoke(value); });
+		}
+		private static void RenderField_Vec4fUnaligned(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			igVec4fUnaligned value = (igVec4fUnaligned)raw!;
 			RenderField_Float(id + " _x", value._x, igFloatMetaField._MetaField, (newValue) => { value._x = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
 			RenderField_Float(id + " _y", value._y, igFloatMetaField._MetaField, (newValue) => { value._y = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
 			RenderField_Float(id + " _z", value._z, igFloatMetaField._MetaField, (newValue) => { value._z = (float)newValue!; cb.Invoke(value); }); ImGui.SameLine();
