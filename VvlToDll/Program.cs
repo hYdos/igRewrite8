@@ -8,11 +8,72 @@ namespace VvlToDll
 	{
 		public static void Main(string[] args)
 		{
+			if(args.Length == 0)
+			{
+				Console.WriteLine(@"
+VvlToDll
+
+Utility for converting Vvl files to DotNet Dlls so they can be viewed in an external tool.
+
+VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...packages>
+- base game folder: folder containing archives folder
+- update.pak: self explanatory
+- output directory: where the dlls get dumped
+- packages: game paths to package, can be written as ""generated/maps/UI/MainMenuBackground/MainMenuBackground"",
+  can find these by looking in the packages folder of an archive.
+");
+				return;
+			}
+
+			string? gamePath = null;
+			string? updatePath = null;
+			string? outputDir = null;
+			List<string> packages = new List<string>();
+			for(int i = 0; i < args.Length; i++)
+			{
+				string flag = args[i];
+				switch(flag)
+				{
+					case "-g":
+						gamePath = args[++i];
+						break;
+					case "-u":
+						updatePath = args[++i];
+						break;
+					case "-o":
+						outputDir = args[++i];
+						break;
+					case "--":
+						i++;
+						for(; i < args.Length; i++)
+						{
+							packages.Add(args[i]);
+						}
+						break;
+				}
+			}
+
+			if(gamePath == null)
+			{
+				Console.WriteLine("Missing game path");
+				return;
+			}
+			if(updatePath == null)
+			{
+				Console.WriteLine("Missing update path");
+				return;
+			}
+			if(outputDir == null)
+			{
+				Console.WriteLine("Missing output directory");
+				return;
+			}
+
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 			ArkDllExport.Create();
 			igAlchemyCore.InitializeSystems();
-			igFileContext.Singleton.Initialize(args[0]);
-			igFileContext.Singleton.InitializeUpdate(args[1]);
+			igFileContext.Singleton.Initialize(gamePath);
+			igFileContext.Singleton.InitializeUpdate(updatePath);
 
 			//CRenderBase<CRender>::initializeEarly
 			CPrecacheManager._Instance.PrecachePackage("generated/shaders/shaders_ps3", EMemoryPoolID.MP_DEFAULT);
@@ -24,6 +85,7 @@ namespace VvlToDll
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage("generated/SoundBankData", EMemoryPoolID.MP_DEFAULT);
 
 			//CClient::loadDeferredPackages
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent", EMemoryPoolID.MP_DEFAULT);
@@ -32,7 +94,12 @@ namespace VvlToDll
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
 
-			CPrecacheManager._Instance.PrecachePackage("generated/maps/UI/MainMenuBackground/MainMenuBackground", EMemoryPoolID.MP_DEFAULT);
+			for(int i = 0; i < packages.Count; i++)
+			{
+				Console.WriteLine("Loading script " + packages[i]);
+				CPrecacheManager._Instance.PrecachePackage(packages[i], EMemoryPoolID.MP_DEFAULT);
+			}
+
 
 			//DotNetRuntime runtime = new DotNetRuntime();
 
@@ -51,7 +118,7 @@ namespace VvlToDll
 
 			//VvlLoader.Load("scripts:/ChopChop_script.vvl", runtime, out success);
 
-			DllExportManager.ExportAllVvls();
+			DllExportManager.ExportAllVvls(outputDir);
 		}
 	}
 }
