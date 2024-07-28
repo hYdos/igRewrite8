@@ -1,6 +1,7 @@
 ﻿using igLibrary;
 using igLibrary.Core;
 using igLibrary.DotNet;
+using igLibrary.Gfx;
 
 namespace VvlToDll
 {
@@ -15,10 +16,11 @@ VvlToDll
 
 Utility for converting Vvl files to DotNet Dlls so they can be viewed in an external tool.
 
-VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...packages>
+VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -p <platform> -- <...packages>
 - base game folder: folder containing archives folder
 - update.pak: self explanatory
 - output directory: where the dlls get dumped
+- platform: IG_CORE_PLATFORM name
 - packages: game paths to package, can be written as ""generated/maps/UI/MainMenuBackground/MainMenuBackground"",
   can find these by looking in the packages folder of an archive.
 ");
@@ -28,6 +30,7 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...pack
 			string? gamePath = null;
 			string? updatePath = null;
 			string? outputDir = null;
+			IG_CORE_PLATFORM platform = IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT;
 			List<string> packages = new List<string>();
 			for(int i = 0; i < args.Length; i++)
 			{
@@ -42,6 +45,9 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...pack
 						break;
 					case "-o":
 						outputDir = args[++i];
+						break;
+					case "-p":
+						platform = Enum.Parse<IG_CORE_PLATFORM>(args[++i]);
 						break;
 					case "--":
 						i++;
@@ -68,7 +74,14 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...pack
 				Console.WriteLine("Missing output directory");
 				return;
 			}
+			if(platform == IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)
+			{
+				Console.WriteLine("Missing platform.");
+				return;
+			}
 
+			igRegistry.GetRegistry()._platform = platform;
+			igRegistry.GetRegistry()._gfxPlatform = igGfx.GetGfxPlatformFromCore(platform);
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
 			ArkDllExport.Create();
 			igAlchemyCore.InitializeSystems();
@@ -77,7 +90,7 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -- <...pack
 
 			//CClient::loadGameStartupPackages
 			//CPrecacheManager._Instance.PrecachePackage("data:/archives/languagestartup", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_ps3", EMemoryPoolID.MP_DEFAULT);
+			CPrecacheManager._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/essentialui", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
 			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
