@@ -21,7 +21,7 @@ namespace igLibrary.Core
 		public int Length => _data == null ? 0 : _data.Length;
 		public T[] Buffer => _data;
 		public bool _implicitMemoryPool;
-		public bool _optimalCPUReadWrite;
+		public bool _optimalCPUReadWrite = true;
 		public bool _optimalGPURead;
 		public byte _alignmentMultiple;
 
