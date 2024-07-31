@@ -21,7 +21,7 @@ namespace igLibrary.Core
 		public int Length => _data == null ? 0 : _data.Length;
 		public T[] Buffer => _data;
 		public bool _implicitMemoryPool;
-		public bool _optimalCPUReadWrite = true;
+		public bool _optimalCPUReadWrite;
 		public bool _optimalGPURead;
 		public byte _alignmentMultiple;
 
@@ -30,7 +30,7 @@ namespace igLibrary.Core
 			_memoryPool = igMemoryContext.Singleton.GetMemoryPoolByName("Default");
  			_data = null;
 			_implicitMemoryPool = true;
-			_optimalCPUReadWrite = false;
+			_optimalCPUReadWrite = true;
 			_optimalGPURead = false;
 			_alignmentMultiple = 1;
  		}
@@ -39,7 +39,7 @@ namespace igLibrary.Core
 			_memoryPool = pool;
 			_data = new T[size];
 			_implicitMemoryPool = true;
-			_optimalCPUReadWrite = false;
+			_optimalCPUReadWrite = true;
 			_optimalGPURead = false;
 			_alignmentMultiple = 1;
 		}
