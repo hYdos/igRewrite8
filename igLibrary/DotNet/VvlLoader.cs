@@ -263,6 +263,18 @@ namespace igLibrary.DotNet
 						{
 							meta.AppendDynamicField(AddField(library, resolver, fieldDefs[memberStarts[metaIndex] + j], strings));
 						}
+
+						// The sunburn exception... (Issue #41)
+						// This exists because sunburn is bad and for some reason internally uses a CTriggerVolumeSphereComponentData,
+						// this gets cast into a CTriggerVolumeCapsuleComponentData, which shouldn't be allowed, however the Vvl runner
+						// has no type safety, so this is allowed.
+						// I've added this special case to cope, it manually modifies the problematic field, I just wish there was a better way
+						if(meta._name == "Scripts.Sunburn_FlamethrowerComponentData")
+						{
+							igObjectRefMetaField contactTriggerVolumeField = (igObjectRefMetaField)meta.GetFieldByName("ContactTriggerVolume")!;
+							contactTriggerVolumeField._metaObject = igArkCore.GetObjectMeta("CTriggerVolumeCapsuleComponentData")!;
+						}
+
 						((igDotNetDynamicMetaObject)meta)._owner = library;
 					}
 				}
