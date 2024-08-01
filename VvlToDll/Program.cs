@@ -88,26 +88,28 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -p <platfor
 			igFileContext.Singleton.Initialize(gamePath);
 			igFileContext.Singleton.InitializeUpdate(updatePath);
 
+			VvlPackagePrecacher._Instance.Intialize();
+
 			//CClient::loadGameStartupPackages
 			//CPrecacheManager._Instance.PrecachePackage("data:/archives/languagestartup", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/essentialui", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/SoundBankData", EMemoryPoolID.MP_DEFAULT);
+			VvlPackagePrecacher._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/essentialui");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/legal");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/gamestartup");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/SoundBankData");
 
 			//CClient::loadDeferredPackages
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/maps/zoneinfos", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_2015", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
-			CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanent");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/maps/zoneinfos");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanent_2015");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile");
+			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd");
 
 			for(int i = 0; i < packages.Count; i++)
 			{
 				Console.WriteLine("Loading script " + packages[i]);
-				CPrecacheManager._Instance.PrecachePackage(packages[i], EMemoryPoolID.MP_DEFAULT);
+				VvlPackagePrecacher._Instance.PrecachePackage(packages[i]);
 			}
 
 
