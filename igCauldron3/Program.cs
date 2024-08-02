@@ -20,6 +20,7 @@ namespace igCauldron3
 			Logging.Mode = Logging.LoggingMode.File;
 			DateTime now = DateTime.Now;
 
+			Directory.CreateDirectory(Path.Combine(CauldronConfig.ConfigFolder, "Logs"));
 			// Cry about this line length
 			Logging.LogFile = File.Create(Path.Combine(CauldronConfig.ConfigFolder, "Logs", $"igCauldron-{now.Year.ToString("0000")}-{now.Month.ToString("00")}-{now.Day.ToString("00")}-{now.Hour.ToString("00")}-{now.Minute.ToString("00")}-{now.Second.ToString("00")}.log"));
 #endif // DEBUG
