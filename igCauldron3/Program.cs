@@ -21,7 +21,7 @@ namespace igCauldron3
 			DateTime now = DateTime.Now;
 
 			// Cry about this line length
-			Logging.LogFile = File.Create($"igCauldron-{now.Year.ToString("0000")}-{now.Month.ToString("00")}-{now.Day.ToString("00")}-{now.Hour.ToString("00")}-{now.Minute.ToString("00")}-{now.Second.ToString("00")}.log");
+			Logging.LogFile = File.Create(Path.Combine(CauldronConfig.ConfigFolder, "Logs", $"igCauldron-{now.Year.ToString("0000")}-{now.Month.ToString("00")}-{now.Day.ToString("00")}-{now.Hour.ToString("00")}-{now.Minute.ToString("00")}-{now.Second.ToString("00")}.log"));
 #endif // DEBUG
 
 #if CAULDRON_FEATURE_EXTERNAL_CONSOLE
