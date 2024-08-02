@@ -60,7 +60,6 @@
   <!-- Release Specific -->
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <FeatureConstants>CAULDRON_FEATURE_EXTERNAL_CONSOLE</FeatureConstants>
   </PropertyGroup>
 
   <!--=======-->
