@@ -161,7 +161,7 @@ namespace igLibrary.Core
 			{
 				_beganFinalization = true;
 
-				Console.WriteLine($"Finalizing {_name}");
+				Logging.Info("Finalizing {0}", _name);
 				
 				Type testType = tb.CreateType();
 				_vTablePointer = testType;
@@ -171,7 +171,7 @@ namespace igLibrary.Core
 					_fieldList[i]._fieldHandle = _vTablePointer.GetField(_fieldList[i]._fieldName!, BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Instance);
 				}
 
-				Console.WriteLine($"Finalized {_name}");
+				Logging.Info("Finalized!");
 
 				_finishedFinalization = true;
 			}

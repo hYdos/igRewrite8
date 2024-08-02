@@ -131,7 +131,7 @@ namespace igCauldron3
 						_wnd._frames.Add(new MenuBarFrame(_wnd));
 
 						timer.Stop();
-						Console.WriteLine($"Loaded game in {timer.Elapsed.TotalSeconds}");
+						Logging.Info("Loaded game in {0}", timer.Elapsed.TotalSeconds);
 					}
 					ImGui.SameLine();
 					if(ImGui.Button("Remove Game"))

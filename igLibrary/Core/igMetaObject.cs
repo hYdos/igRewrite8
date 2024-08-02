@@ -111,8 +111,8 @@ namespace igLibrary.Core
 			{
 				_beganFinalization = true;
 
-				Console.Write($"Finalizing {_name}... ");
-				
+				Logging.Info("Finalizing {0}... ", _name);
+
 				Type testType = tb.CreateType()!;
 				igArkCore.AddDynamicTypeToCache(testType!);
 				_vTablePointer = testType;
@@ -162,7 +162,7 @@ namespace igLibrary.Core
 					_metaFields[4]._fieldHandle = parentType.GetField("_loadFactor")!;
 				}
 
-				Console.Write("Finalized!\n");
+				Logging.Info("Finalized!");
 
 				_finishedFinalization = true;
 			}

@@ -408,7 +408,6 @@ namespace igLibrary.Core
 
 				for(int j = 0; j < fieldCount; j++)
 				{
-					//Console.WriteLine($"Compound {i}, metafield {j} @ {GetOffset(Section.CompoundInfo).ToString("X08")}");
 					compoundInfo._fieldList.Add(ReadMetaField(_shs[Section.CompoundInfo], compoundInfo));
 				}
 				compoundInfo.PostUndump();

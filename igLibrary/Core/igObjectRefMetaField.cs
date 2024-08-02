@@ -79,7 +79,7 @@ namespace igLibrary.Core
 			{
 				if(igObjectHandleManager.Singleton.IsSystemObject(hnd))
 				{
-					Console.WriteLine("EXID object found, reference to " + hnd.ToString());
+					Logging.Info("EXID object found, reference to {0}", hnd.ToString());
 					int index = saver._externalList.FindIndex(x => x == hnd);
 					if(index < 0)
 					{
@@ -91,7 +91,7 @@ namespace igLibrary.Core
 				}
 				else
 				{
-					Console.WriteLine("EXNM object found, reference to " + hnd.ToString());
+					Logging.Info("EXNM object found, reference to {0}", hnd.ToString());
 					section._runtimeFields._namedExternals.Add(section._sh.Tell64());
 					section._sh.WriteUInt32((uint)saver.GetOrAddHandle((hnd, false)) | (_refCounted ? 0x80000000 : 0));
 				}

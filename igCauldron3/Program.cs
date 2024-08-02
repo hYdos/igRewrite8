@@ -14,7 +14,7 @@ namespace igCauldron3
 		[STAThread] 
 		public static void Main(string[] args)
 		{
-#if !DEBUG
+#if DEBUG
 			Logging.Mode = Logging.LoggingMode.Console;
 #else
 			Logging.Mode = Logging.LoggingMode.File;

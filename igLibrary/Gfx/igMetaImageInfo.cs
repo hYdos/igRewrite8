@@ -19,7 +19,6 @@ namespace igLibrary.Gfx
 		}
 		public static void RegisterFormat(igMetaImage metaimage)
 		{
-			//Console.WriteLine($"I should've added {metaimage._name}");
 			_metaImageInfo._metaImagesTable.Add(metaimage._name, metaimage);
 			_metaImageInfo._metaimageDir.AddObject(metaimage, default, new igName(metaimage._name));
 			_metaImageInfo._metaImages.Append(metaimage);

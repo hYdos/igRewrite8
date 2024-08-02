@@ -1,6 +1,7 @@
 using igCauldron3.Conversion;
 using igCauldron3.Graphics;
 using igCauldron3.Utils;
+using igLibrary;
 using igLibrary.Core;
 using igLibrary.Gfx;
 using igLibrary.Graphics;
@@ -25,7 +26,7 @@ namespace igCauldron3
 			{
 				if(image._format == null)
 				{
-					Console.WriteLine($"{image._name} has Unsupported Texture Format");
+					Logging.Error("{0} has Unsupported Texture Format", image._name);
 					return;
 				}
 

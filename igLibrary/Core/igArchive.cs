@@ -377,7 +377,6 @@ namespace igLibrary.Core
 			{
 				pathToHash = pathToHash.Replace('\\', '/');
 				pathToHash = pathToHash.ToLower();
-				//Console.WriteLine("kCaseInsensitiveHash");
 			}
 			if((_archiveHeader._flags & 2u) != 0) pathToHash = Path.GetFileName(pathToHash);
 			pathToHash = pathToHash.TrimStart('/', '\\');

@@ -524,7 +524,7 @@ namespace igLibrary.DotNet
 			//if(meta == null) throw new TypeLoadException($"Somehow failed to load {typeName}, I don't really know how it got past the previous checks");
 			if(meta == null)
 			{
-				Console.Error.WriteLine($"FAILED TO LOAD {typeName} SOMETIMES THIS IS MEANT TO HAPPEN IDK");
+				Logging.Error("FAILED TO LOAD {0} SOMETIMES THIS IS MEANT TO HAPPEN IDK", typeName);
 				return null;
 			}
 

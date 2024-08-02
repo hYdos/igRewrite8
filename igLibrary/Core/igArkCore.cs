@@ -138,7 +138,7 @@ namespace igLibrary.Core
 
 			stopwatch.Stop();
 
-			Console.WriteLine($"Loading and generating all types took {stopwatch.Elapsed.TotalSeconds} seconds");
+			Logging.Info("Loading and generating all types took {0} seconds", stopwatch.Elapsed.TotalSeconds);
 		}
 		public static igMetaObject? GetObjectMeta(string name)
 		{

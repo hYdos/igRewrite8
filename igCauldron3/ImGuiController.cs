@@ -11,6 +11,7 @@ using System.Diagnostics;
 using ErrorCode = OpenTK.Graphics.OpenGL4.ErrorCode;
 using System.Text;
 using System.Runtime.InteropServices;
+using igLibrary;
 
 //Credits: https://github.com/NogginBops/ImGui.NET_OpenTK_Sample
 
@@ -380,7 +381,7 @@ void main()
 					GL.BufferData(BufferTarget.ArrayBuffer, newSize, IntPtr.Zero, BufferUsageHint.DynamicDraw);
 					_vertexBufferSize = newSize;
 
-					Console.WriteLine($"Resized dear imgui vertex buffer to new size {_vertexBufferSize}");
+					Logging.Info("Resized dear imgui vertex buffer to new size {0}", _vertexBufferSize);
 				}
 
 				int indexSize = cmd_list.IdxBuffer.Size * sizeof(ushort);
@@ -390,7 +391,7 @@ void main()
 					GL.BufferData(BufferTarget.ElementArrayBuffer, newSize, IntPtr.Zero, BufferUsageHint.DynamicDraw);
 					_indexBufferSize = newSize;
 
-					Console.WriteLine($"Resized dear imgui index buffer to new size {_indexBufferSize}");
+					Logging.Info("Resized dear imgui index buffer to new size {0}", _indexBufferSize);
 				}
 			}
 
