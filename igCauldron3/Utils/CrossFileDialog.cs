@@ -23,7 +23,7 @@ namespace igCauldron3.Utils
 		/// </summary>
 		/// <param name="title">Title of the dialog</param>
 		/// <param name="filter">File extension filter, eg: .bmp;.jpg|.dds</param>
-		public static string OpenFile(string title = "Choose a file", string filter = "")
+		public static string OpenFile(string title = "Choose a file", string filter = "", string defaultName = "")
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
@@ -33,7 +33,7 @@ namespace igCauldron3.Utils
 				return Zenity.OpenFile(title, filter);
 			}
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-				return Win32Dialog.OpenFile(title, filter);
+				return Win32Dialog.OpenFile(title, filter, defaultName);
 
 			throw new NoImplementationException();
 		}
@@ -53,7 +53,7 @@ namespace igCauldron3.Utils
 			throw new NoImplementationException();
 		}
 
-		public static string SaveFile(string title = "Enter the name of the file to save to", string filter = "")
+		public static string SaveFile(string title = "Enter the name of the file to save to", string filter = "", string defaultName = "")
 		{
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
 			{
@@ -63,7 +63,7 @@ namespace igCauldron3.Utils
 				return Zenity.SaveFile(title);
 			}
 			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-				return Win32Dialog.SaveFile(title, filter);
+				return Win32Dialog.SaveFile(title, filter, defaultName);
 
 			throw new NoImplementationException();
 		}
@@ -256,12 +256,13 @@ namespace igCauldron3.Utils
 				return String.Join('|', filters);
 			}
 
-			public static string OpenFile(string title, string filter = "")
+			public static string OpenFile(string title, string filter = "", string defaultName = "")
 			{
 #if _WINDOWS
 				var dialog = new System.Windows.Forms.OpenFileDialog();
 				dialog.Title = title;
 				dialog.Filter = BuildFilterList(filter);
+				dialog.FileName = defaultName;
 				dialog.ShowDialog();
 				return dialog.FileName;
 #else
@@ -278,12 +279,13 @@ namespace igCauldron3.Utils
 #endif
 			}
 
-			public static string SaveFile(string title, string filter = "")
+			public static string SaveFile(string title, string filter = "", string defaultName = "")
 			{
 #if _WINDOWS
 				var dialog = new System.Windows.Forms.SaveFileDialog();
 				dialog.Title = title;
 				dialog.Filter = BuildFilterList(filter);
+				dialog.FileName = defaultName;
 				dialog.ShowDialog();
 				return dialog.FileName;
 #else

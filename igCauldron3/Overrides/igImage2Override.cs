@@ -37,7 +37,7 @@ namespace igCauldron3
 			FieldRenderer.RenderField(id, "_name", castName, meta.GetFieldByName("_name")!, (value) => image._name = (string)value!);
 			if(ImGui.Button("Extract"))
 			{
-				string filePath = CrossFileDialog.SaveFile("Save Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");
+				string filePath = CrossFileDialog.SaveFile("Save Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp", image._name);
 				if(!string.IsNullOrWhiteSpace(filePath))
 				{
 					FileStream fs = File.Create(filePath);
@@ -49,7 +49,7 @@ namespace igCauldron3
 			}
 			if(ImGui.Button("Replace"))
 			{
-				string filePath = CrossFileDialog.OpenFile("Open Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp");
+				string filePath = CrossFileDialog.OpenFile("Open Image...", ".bmp;.dds;.gif;.jpg;.pbm;.png;.qoi;.tga;.tiff;.webp", image._name);
 				if(!string.IsNullOrWhiteSpace(filePath))
 				{
 					FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read);
