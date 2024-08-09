@@ -178,6 +178,11 @@ namespace igLibrary.Core
 		{
 			fd = Prepare(path, flags);
 			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeOpen, null, 0, 0, flags, fd._path, blockingType, priority, null, null);
+
+			if(fd._handle == null)
+			{
+				throw new FileNotFoundException($"Failed to open file \"{path}\"");
+			}
 		}
 		public void Close(igFileDescriptor fd, igBlockingType blockingType, igFileWorkItem.Priority priority)
 		{
