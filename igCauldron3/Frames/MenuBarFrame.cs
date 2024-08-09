@@ -34,9 +34,13 @@ namespace igCauldron3
 						if(arc._path[1] == ':') arc.Save(arc._path);
 						else arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
 					}
-					if(ImGui.MenuItem("New IGZ"))
+					else if(ImGui.MenuItem("New IGZ"))
 					{
 						_wnd._frames.Add(new DirectoryCreatorFrame(_wnd));
+					}
+					else if(ImGui.MenuItem("Duplicate"))
+					{
+						_wnd._frames.Add(new DirectoryDuplicatorFrame(_wnd, DirectoryManagerFrame._instance.CurrentDir));
 					}
 					ImGui.EndMenu();
 				}

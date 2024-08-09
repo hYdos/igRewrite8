@@ -49,7 +49,8 @@ namespace igLibrary.Core
 			if(mediaIndex == 1)
 			{
 				_path = path;
-				_extension = _fileExtension = Path.GetExtension(path);
+				_fileExtension = Path.GetExtension(path);
+				_extension = _fileExtension.Substring(1);
 				return;
 			}
 			if(mediaIndex >= 0)
