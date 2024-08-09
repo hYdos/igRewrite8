@@ -10,10 +10,11 @@ namespace VvlToDll
 		public static Dictionary<igBaseMeta, TypeDefinition> _dynamicMetaTypeLookup = new Dictionary<igBaseMeta, TypeDefinition>();
 		public static ModuleDefinition module;
 
-		public static void Create()
+		public static void Create(string outputDir)
 		{
 			if(module != null) return;
-			module = ModuleDefinition.CreateModule("Ark.dll", ModuleKind.Dll);
+			Directory.CreateDirectory(outputDir);
+			module = ModuleDefinition.CreateModule(Path.Combine(outputDir, "Ark.dll"), ModuleKind.Dll);
 			_metaTypeLookup = new Dictionary<igBaseMeta, TypeDefinition>();
 			InstantiateTypes();
 			DefineEnums();

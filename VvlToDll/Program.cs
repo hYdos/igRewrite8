@@ -83,7 +83,7 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -p <platfor
 			igRegistry.GetRegistry()._platform = platform;
 			igRegistry.GetRegistry()._gfxPlatform = igGfx.GetGfxPlatformFromCore(platform);
 			igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
-			ArkDllExport.Create();
+			ArkDllExport.Create(outputDir);
 			igAlchemyCore.InitializeSystems();
 			igFileContext.Singleton.Initialize(gamePath);
 			igFileContext.Singleton.InitializeUpdate(updatePath);
@@ -111,24 +111,6 @@ VvlToDll -g <base game folder> -u <update.pak> -o <output directory> -p <platfor
 				Console.WriteLine("Loading script " + packages[i]);
 				VvlPackagePrecacher._Instance.PrecachePackage(packages[i]);
 			}
-
-
-			//DotNetRuntime runtime = new DotNetRuntime();
-
-			//bool success;
-			//VvlLoader.Load("scripts:/interop/Core.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/interop/Runtime.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/interop/DebugLink.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/interop/VisualScript.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/interop/game.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/interop/DotNetAttributes.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/common.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/ui.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/behaviorHandlers.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/common_script_vs.vvl", runtime, out success);
-			//VvlLoader.Load("scripts:/Characters_script_vs.vvl", runtime, out success);
-
-			//VvlLoader.Load("scripts:/ChopChop_script.vvl", runtime, out success);
 
 			DllExportManager.ExportAllVvls(outputDir);
 		}
