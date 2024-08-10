@@ -4,12 +4,26 @@ using igLibrary;
 
 namespace igCauldron3
 {
-	public class ArchiveFrame : Frame
+	/// <summary>
+	/// UI Frame for viewing files to load
+	/// </summary>
+	public sealed class ArchiveFrame : Frame
 	{
 		private bool _isChoosingArchive = false;
 		private string?[]? _allowedArchives = null;
 		private Dictionary<string, igArchive.FileInfo[]> _sortedFileHeaders = new Dictionary<string, igArchive.FileInfo[]>();
+
+
+		/// <summary>
+		/// Constructor for the frame
+		/// </summary>
+		/// <param name="wnd">Reference to the main window object</param>
 		public ArchiveFrame(Window wnd) : base(wnd){}
+
+
+		/// <summary>
+		/// Render function for the frame
+		/// </summary>
 		public override void Render()
 		{
 			ImGui.Begin("igArchive Manager", ImGuiWindowFlags.HorizontalScrollbar);
@@ -62,6 +76,12 @@ namespace igCauldron3
 			}
 			ImGui.End();
 		}
+
+
+		/// <summary>
+		/// Function that renders the contents of an <c>igArchive</c>
+		/// </summary>
+		/// <param name="archive">The archive to render</param>
 		private void RenderArchive(igArchive archive)
 		{
 			igArchive.FileInfo[]? fileHeaders;
