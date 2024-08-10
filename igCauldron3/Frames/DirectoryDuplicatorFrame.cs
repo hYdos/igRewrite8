@@ -7,9 +7,8 @@ namespace igCauldron3
 	/// <summary>
 	/// UI Frame for duplicating an igObjectDirectory
 	/// </summary>
-	public sealed class DirectoryDuplicatorFrame : Frame
+	public sealed class DirectoryDuplicatorFrame : DirectoryActionFrame
 	{
-		private string _path = "";
 		private igObjectDirectory _source;
 
 
@@ -18,54 +17,37 @@ namespace igCauldron3
 		/// </summary>
 		/// <param name="wnd">Reference to the main window object</param>
 		/// <param name="source">the <c>igObjectDirectory</c> to clone</param>
-		public DirectoryDuplicatorFrame(Window wnd, igObjectDirectory source) : base(wnd)
+		public DirectoryDuplicatorFrame(Window wnd, igObjectDirectory source) : base(wnd, "Copy Directory" ,"Copy")
 		{
 			_source = source;
 		}
 
 
 		/// <summary>
-		/// Render function for the frame
+		/// Callback function when the confirmation button is pressed
 		/// </summary>
-		public override void Render()
+		protected override void OnActionStart()
 		{
-			ImGui.Begin("Copy Directory", ImGuiWindowFlags.NoDocking);
+			// Duplicating igObjectDirectories is a bit hellish by virtue of the fact that they're actually literally
+			// just objects when loaded, it's probably best to just save it to a file and then reload that file
 
-			//Render path field and check for errors
-			ImGui.Text("Path");
-			ImGui.SameLine();
-			bool pathErrored = string.IsNullOrWhiteSpace(_path) || _path.Contains(' ');
-			if(pathErrored) ImGui.PushStyleColor(ImGuiCol.FrameBg, Styles._errorBg);
-			ImGui.InputText(string.Empty, ref _path, 0x100);
-			if(pathErrored) ImGui.PopStyleColor();
+			// Ideally this'd be handled with igFileContext's ram storage device but I've not implemented that yet
+			string tempPath = Path.Combine(Path.GetTempPath(), "igz_dupe.igz");
+			FileStream tempFs = File.Create(tempPath);
 
-			if(ImGui.Button("Copy") && !pathErrored)
-			{
-				// Duplicating igObjectDirectories is a bit hellish by virtue of the fact that they're actually literally
-				// just objects when loaded, it's probably best to just save it to a file and then reload that file
+			_source.WriteFile(tempFs, igRegistry.GetRegistry()._platform);
 
-				// Ideally this'd be handled with igFileContext's ram storage device but I've not implemented that yet
-				string tempPath = Path.Combine(Path.GetTempPath(), "igz_dupe.igz");
-				FileStream tempFs = File.Create(tempPath);
+			// Close it so igFileContext can access it
+			tempFs.Close();
 
-				_source.WriteFile(tempFs, igRegistry.GetRegistry()._platform);
+			igObjectDirectory duplicate = igObjectStreamManager.Singleton.Load(tempPath, new igName(Path.GetFileNameWithoutExtension(_path)))!;
+			duplicate._path = _path;
 
-				// Close it so igFileContext can access it
-				tempFs.Close();
+			igFileContext.Singleton.Close(duplicate._fd, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 
-				igObjectDirectory duplicate = igObjectStreamManager.Singleton.Load(tempPath, new igName(Path.GetFileNameWithoutExtension(_path)))!;
-				duplicate._path = _path;
+			File.Delete(tempPath);
 
-				igFileContext.Singleton.Close(duplicate._fd, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
-
-				File.Delete(tempPath);
-
-				DirectoryManagerFrame._instance.AddDirectory(duplicate);
-
-				Close();
-			}
-			if(ImGui.Button("Close")) Close();
-			ImGui.End();
+			DirectoryManagerFrame._instance.AddDirectory(duplicate);
 		}
 	}
 }
