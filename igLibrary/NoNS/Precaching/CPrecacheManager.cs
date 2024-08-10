@@ -82,8 +82,6 @@ namespace igLibrary
 		}
 		public bool PrecachePackage(string packageName, EMemoryPoolID poolID)
 		{
-			if(IsPackageCached(packageName, poolID)) return true;
-
 			string packagePath = packageName.ToLower();
 
 			//CEntityPrecacher._currentlyLoadingZone = _currentlyLoadingZone;
@@ -97,6 +95,8 @@ namespace igLibrary
 			{
 				packagePath += "_pkg.igz";
 			}
+
+			if(IsPackageCached(packagePath, poolID)) return true;
 
 			CArchive.Open(Path.GetFileNameWithoutExtension(packagePath.ReplaceEnd("_pkg.igz", "")), out igArchive? arc, EMemoryPoolID.MP_TEMPORARY, 0);
 
@@ -122,6 +122,9 @@ namespace igLibrary
 					throw new NotImplementedException($"file type {type} has no registered loader");
 				}
 			}
+
+			_packagesPerPool[(int)poolID].Append(packagePath);
+
 			return true;
 		}
 		public void CleanupDeadRules()
