@@ -1,6 +1,7 @@
 using ImGuiNET;
 using igLibrary.Core;
 using igLibrary;
+using System.Diagnostics;
 
 namespace igCauldron3
 {
@@ -10,7 +11,8 @@ namespace igCauldron3
 	public sealed class ArchiveFrame : Frame
 	{
 		private bool _isChoosingArchive = false;
-		private string?[]? _allowedArchives = null;
+		private string[]? _allowedArchivePaths = null;
+		private string[]? _allowedArchiveNames = null;
 		private Dictionary<string, igArchive.FileInfo[]> _sortedFileHeaders = new Dictionary<string, igArchive.FileInfo[]>();
 
 
@@ -42,16 +44,7 @@ namespace igCauldron3
 				if(ImGui.Button("Add Archive"))
 				{
 					_isChoosingArchive = true;
-					_allowedArchives = Directory.GetFiles(Path.Combine(igFileContext.Singleton._root, "archives"), "*.pak");
-					for(int i = 0; i < _allowedArchives.Length; i++)
-					{
-						_allowedArchives[i] = Path.GetFileName(_allowedArchives[i]);
-						if(archives.Any(x => Path.GetFileName(x._path).ToLower() == _allowedArchives[i].ToLower()))
-						{
-							_allowedArchives[i] = null;
-						}
-					}
-					Array.Sort(_allowedArchives);
+					PopulateArchiveList();
 				}
 				igVector<string> packages = CPrecacheManager._Instance._packagesPerPool[(int)EMemoryPoolID.MP_DEFAULT];
 				for(int i = 0; i < packages._count; i++)
@@ -61,18 +54,21 @@ namespace igCauldron3
 			}
 			else
 			{
-				if(_allowedArchives == null) _isChoosingArchive = false;
+				if(_allowedArchiveNames == null || _allowedArchivePaths == null)
+				{
+					return;
+				}
+
 				if(ImGui.Button("Cancel"))
 				{
 					_isChoosingArchive = false;
 				}
-				for(int i = 0; i < _allowedArchives.Length; i++)
+				for(int i = 0; i < _allowedArchiveNames.Length; i++)
 				{
-					if(_allowedArchives[i] == null) continue;
-					if(ImGui.Button(_allowedArchives[i]))
+					if(ImGui.Button(_allowedArchiveNames[i]))
 					{
 						_isChoosingArchive = false;
-						igArchive loaded = igFileContext.Singleton.LoadArchive("app:/archives/" + _allowedArchives[i]);
+						igArchive loaded = igFileContext.Singleton.LoadArchive(_allowedArchivePaths[i]);
 						for(int j = 0; j < loaded._files.Count; j++)
 						{
 							if(loaded._files[j]._logicalName.EndsWith("_pkg.igz"))
@@ -196,6 +192,43 @@ namespace igCauldron3
 			_packageUiData.Add(packageName, uiData);
 
 			return uiData;
+		}
+
+
+		private void PopulateArchiveList()
+		{
+			igArchiveList archives = igFileContext.Singleton._archiveManager._archiveList;
+
+			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, "archives"), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList virtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+
+			igStringRefList files = realFiles;
+			files.SetCapacity(files._capacity + virtualFiles._count);
+			for(int i = 0; i < virtualFiles._count; i++)
+			{
+				files.Append(virtualFiles[i]);
+			}
+
+			List<string> allowedArchivePaths = new List<string>();
+			List<string> allowedArchiveNames = new List<string>();
+
+			for(int i = 0; i < files._count; i++)
+			{
+				if(Path.GetExtension(files[i]) == ".pak")
+				{
+					if(!archives.Any(x => Path.GetFileName(x._path).ToLower() == Path.GetFileName(files[i])))
+					{
+						allowedArchivePaths.Add(files[i]);
+						allowedArchiveNames.Add(Path.GetFileName(files[i]));
+					}
+				} 
+			}
+
+			//Not proud of this
+			_allowedArchivePaths = allowedArchivePaths.OrderBy(x => Path.GetFileName(x)).ToArray();
+
+			allowedArchiveNames.Sort();
+			_allowedArchiveNames = allowedArchiveNames.ToArray();
 		}
 
 
