@@ -111,7 +111,16 @@ namespace igCauldron3
 		/// <param name="packageName">path to a package file</param>
 		private void RenderPackage(string packageName)
 		{
-			if(ImGui.TreeNode(packageName))
+			bool expand = ImGui.TreeNode(packageName);
+			if(ImGui.BeginPopupContextItem())
+			{
+				if(ImGui.Selectable("Edit"))
+				{
+					DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(packageName)!);
+				}
+				ImGui.EndPopup();
+			}
+			if(expand)
 			{
 				PackageUiData uiData = GetOrCreatePackageUi(packageName);
 
@@ -132,6 +141,13 @@ namespace igCauldron3
 				}
 
 				ImGui.TreePop();
+			}
+			else
+			{
+				if(_packageUiData.ContainsKey(packageName))
+				{
+					_packageUiData.Remove(packageName);
+				}
 			}
 		}
 
