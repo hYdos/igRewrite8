@@ -70,7 +70,7 @@ namespace igLibrary.Core
 			}
 			else return media;
 		}
-		private void CreateWorkItem(igFileDescriptor fd, igFileWorkItem.WorkType workType, object buffer, ulong offset, ulong size, uint flags, string path, igBlockingType blockingType, igFileWorkItem.Priority priority, Action callback, object[] callbackData)
+		private void CreateWorkItem(igFileDescriptor? fd, igFileWorkItem.WorkType workType, object? buffer, ulong offset, ulong size, uint flags, string path, igBlockingType blockingType, igFileWorkItem.Priority priority, Action? callback, object[]? callbackData)
 		{
 			igFileWorkItem workItem = AllocateWorkItem();
 
@@ -188,6 +188,11 @@ namespace igLibrary.Core
 		{
 			CreateWorkItem(fd, igFileWorkItem.WorkType.kTypeClose, null, 0, 0, 0, fd._path, blockingType, priority, null, null);
 			_fileDescriptorPool.Remove(fd);
+		}
+		public void FileList(string dir, out igStringRefList list, igBlockingType blockingType, igFileWorkItem.Priority priority)
+		{
+			list = new igStringRefList();
+			CreateWorkItem(null, igFileWorkItem.WorkType.kTypeFileList, list, 0, 0, 0, dir, blockingType, priority, null, null);
 		}
 	}
 }
