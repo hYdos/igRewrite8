@@ -10,6 +10,7 @@ namespace igCauldron3
 	public abstract class DirectoryActionFrame : Frame
 	{
 		protected string _path = "";
+		protected string? _errorMsg = null;
 		private readonly string _title;
 		private readonly string _action;
 
@@ -33,6 +34,11 @@ namespace igCauldron3
 		public override void Render()
 		{
 			ImGui.Begin(_title, ImGuiWindowFlags.NoDocking);
+
+			if(_errorMsg != null)
+			{
+				ImGui.TextColored(Styles._errorTxt, _errorMsg);
+			}
 
 			//Render path field and check for errors
 			ImGui.Text("Path");

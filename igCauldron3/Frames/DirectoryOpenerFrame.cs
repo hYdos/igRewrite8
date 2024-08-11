@@ -21,9 +21,21 @@ namespace igCauldron3
 		/// </summary>
 		protected override void OnActionStart()
 		{
-			DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(_path)!);
+			try
+			{
+				igObjectDirectory directory = igObjectStreamManager.Singleton.Load(_path)!;
+				DirectoryManagerFrame._instance.AddDirectory(directory);
 
-			Close();
+				Close();
+			}
+			catch(KeyNotFoundException)
+			{
+				_errorMsg = $"Path \"{_path}\" doesn't end in a supported file extension, try \".igz\" or \".lng\".";
+			}
+			catch(FileNotFoundException)
+			{
+				_errorMsg = $"File \"{_path}\" does not exist in any mounted archive.";
+			}
 		}
 	}
 }
