@@ -13,9 +13,9 @@ namespace igCauldron3
 		private bool _isChoosingArchive = false;
 		private string[]? _allowedArchivePaths = null;
 		private string[]? _allowedArchiveNames = null;
+
+		private List<igArchive> _looseArchives = new List<igArchive>();
 		private Dictionary<string, igArchive.FileInfo[]> _sortedFileHeaders = new Dictionary<string, igArchive.FileInfo[]>();
-
-
 		private Dictionary<string, PackageUiData> _packageUiData = new Dictionary<string, PackageUiData>();
 
 		private struct PackageUiData
@@ -29,7 +29,10 @@ namespace igCauldron3
 		/// Constructor for the frame
 		/// </summary>
 		/// <param name="wnd">Reference to the main window object</param>
-		public ArchiveFrame(Window wnd) : base(wnd){}
+		public ArchiveFrame(Window wnd) : base(wnd)
+		{
+			_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
+		}
 
 
 		/// <summary>
@@ -45,6 +48,10 @@ namespace igCauldron3
 				{
 					_isChoosingArchive = true;
 					PopulateArchiveList();
+				}
+				for(int i = 0; i < _looseArchives.Count; i++)
+				{
+					RenderLooseArchive(_looseArchives[i]);
 				}
 				igVector<string> packages = CPrecacheManager._Instance._packagesPerPool[(int)EMemoryPoolID.MP_DEFAULT];
 				for(int i = 0; i < packages._count; i++)
@@ -65,9 +72,18 @@ namespace igCauldron3
 				}
 				for(int i = 0; i < _allowedArchiveNames.Length; i++)
 				{
-					if(ImGui.Button(_allowedArchiveNames[i]))
+					ImGui.PushID(_allowedArchivePaths[i]);
+					bool full = ImGui.Button("Full");
+					ImGui.SameLine();
+					bool loose = ImGui.Button("Loose");
+					ImGui.PopID();
+					ImGui.SameLine();
+					ImGui.Text(_allowedArchiveNames[i]);
+
+					if(full)
 					{
 						_isChoosingArchive = false;
+
 						igArchive loaded = igFileContext.Singleton.LoadArchive(_allowedArchivePaths[i]);
 						for(int j = 0; j < loaded._files.Count; j++)
 						{
@@ -76,7 +92,12 @@ namespace igCauldron3
 								CPrecacheManager._Instance.PrecachePackage(loaded._files[j]._logicalName, EMemoryPoolID.MP_DEFAULT);
 							}
 						}
-						CDotNetaManager cdnm = CDotNetaManager._Instance;
+					}
+					else if(loose)
+					{
+						_isChoosingArchive = false;
+
+						_looseArchives.Add(igFileContext.Singleton.LoadArchive(_allowedArchivePaths[i]));
 					}
 				}
 			}
@@ -202,8 +223,12 @@ namespace igCauldron3
 			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, "archives"), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 			igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList virtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 
-			igStringRefList files = realFiles;
-			files.SetCapacity(files._capacity + virtualFiles._count);
+			igStringRefList files = new igStringRefList();
+			files.SetCapacity(realFiles._capacity + virtualFiles._count);
+			for(int i = 0; i < realFiles._count; i++)
+			{
+				files.Append("app:/archives/" + Path.GetFileName(realFiles[i]));
+			}
 			for(int i = 0; i < virtualFiles._count; i++)
 			{
 				files.Append(virtualFiles[i]);
@@ -236,7 +261,7 @@ namespace igCauldron3
 		/// Function that renders the contents of an <c>igArchive</c>
 		/// </summary>
 		/// <param name="archive">The archive to render</param>
-		private void RenderArchive(igArchive archive)
+		private void RenderLooseArchive(igArchive archive)
 		{
 			igArchive.FileInfo[]? fileHeaders;
 			if(!_sortedFileHeaders.TryGetValue(archive._path, out fileHeaders))
