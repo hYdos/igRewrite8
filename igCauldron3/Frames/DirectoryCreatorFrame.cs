@@ -28,6 +28,8 @@ namespace igCauldron3
 			igObjectStreamManager.Singleton.AddObjectDirectory(newDir, _path);
 
 			DirectoryManagerFrame._instance.AddDirectory(newDir);
+
+			Close();
 		}
 	}
 }

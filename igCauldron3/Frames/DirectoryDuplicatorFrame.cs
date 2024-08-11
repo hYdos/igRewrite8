@@ -48,6 +48,8 @@ namespace igCauldron3
 			File.Delete(tempPath);
 
 			DirectoryManagerFrame._instance.AddDirectory(duplicate);
+
+			Close();
 		}
 	}
 }

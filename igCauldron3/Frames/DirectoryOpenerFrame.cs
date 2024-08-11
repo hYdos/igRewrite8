@@ -22,6 +22,8 @@ namespace igCauldron3
 		protected override void OnActionStart()
 		{
 			DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(_path)!);
+
+			Close();
 		}
 	}
 }

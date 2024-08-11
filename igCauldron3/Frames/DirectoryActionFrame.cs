@@ -45,8 +45,6 @@ namespace igCauldron3
 			if(ImGui.Button(_action) && !pathErrored)
 			{
 				OnActionStart();
-
-				Close();
 			}
 			if(ImGui.Button("Close")) Close();
 			ImGui.End();
