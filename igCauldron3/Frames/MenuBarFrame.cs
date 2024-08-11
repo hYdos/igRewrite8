@@ -13,7 +13,11 @@ namespace igCauldron3
 			{
 				if(ImGui.BeginMenu("File"))
 				{
-					if(ImGui.MenuItem("Save"))
+					if(ImGui.MenuItem("Open"))
+					{
+						_wnd._frames.Add(new DirectoryOpenerFrame(_wnd));
+					}
+					else if(ImGui.MenuItem("Save"))
 					{
 						MemoryStream ms = new MemoryStream();
 						igObjectDirectory target = DirectoryManagerFrame._instance.CurrentDir;
