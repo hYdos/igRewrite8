@@ -232,6 +232,9 @@ namespace igCauldron3
 		}
 
 
+		/// <summary>
+		/// Populates UI data for archives
+		/// </summary>
 		private void PopulateArchiveList()
 		{
 			igArchiveList archives = igFileContext.Singleton._archiveManager._archiveList;
