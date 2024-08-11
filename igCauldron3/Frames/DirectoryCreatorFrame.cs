@@ -9,9 +9,6 @@ namespace igCauldron3
 	/// </summary>
 	public sealed class DirectoryCreatorFrame : DirectoryActionFrame
 	{
-		private string _path = "";
-
-
 		/// <summary>
 		/// Constructor for the frame
 		/// </summary>
