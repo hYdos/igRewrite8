@@ -39,7 +39,7 @@ namespace igCauldron3
 		public override void Render()
 		{
 			ImGui.Begin("Directory Manager", ImGuiWindowFlags.HorizontalScrollbar);
-			if(ImGui.BeginTabBar("directory tabs"))
+			if(ImGui.BeginTabBar("directory tabs", ImGuiTabBarFlags.FittingPolicyScroll))
 			{
 				for(int i = 0; i < _dirs._count; i++)
 				{
@@ -51,7 +51,9 @@ namespace igCauldron3
 					if(tabSelected)
 					{
 						_dirIndex = i;
+						ImGui.BeginChild("$directoryview$", default(System.Numerics.Vector2), false, ImGuiWindowFlags.HorizontalScrollbar);
 						RenderDirectory(_dirs[i]);
+						ImGui.EndChild();
 						ImGui.EndTabItem();
 					}
 					if(tabOpen == false)
