@@ -4,6 +4,11 @@ namespace igLibrary.Core
 {
 	public class igArkCoreFile
 	{
+		public const uint _magicCookie = 0x41726B00;
+		public const uint _magicVersion = 0x01;
+		public const string ArkCoreFolder = "ArkCore";
+
+
 		private StreamHelper _sh;
 		private List<string?> _stringTable;
 		public List<igMetaObject> _metaObjectsInFile;
@@ -416,8 +421,8 @@ namespace igLibrary.Core
 		public void FinishSave()
 		{
 			_sh.Seek(0);
-			_sh.WriteUInt32(igArkCore._magicCookie);
-			_sh.WriteUInt32(igArkCore._magicVersion);
+			_sh.WriteUInt32(_magicCookie);
+			_sh.WriteUInt32(_magicVersion);
 			_sh.Seek(0x10);
 			_sh.WriteInt32(_stringTable.Count);
 			_sh.WriteInt32(_compoundsInFile.Count);
