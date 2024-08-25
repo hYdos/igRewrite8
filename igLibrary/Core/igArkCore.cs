@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System;
+using System.Collections.ObjectModel;
 
 namespace igLibrary.Core
 {
@@ -68,10 +69,15 @@ namespace igLibrary.Core
 		public const string dynamicMetaEnumNS = "igLibrary.Gen.MetaEnum";
 		public const string dynamicCompoundFieldNS = "igLibrary.Gen.CompoundField";
 
-		public static List<igMetaEnum> _metaEnums = new List<igMetaEnum>();
-		public static List<igMetaObject> _metaObjects = new List<igMetaObject>();
-		public static List<igCompoundMetaFieldInfo> _compoundFieldInfos = new List<igCompoundMetaFieldInfo>();
-		public static List<igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new List<igMetaFieldPlatformInfo>();
+		public static ReadOnlyCollection<igMetaObject> MetaObjects => _metaObjects.AsReadOnly();
+		public static ReadOnlyCollection<igMetaEnum> MetaEnums => _metaEnums.AsReadOnly();
+		public static ReadOnlyCollection<igCompoundMetaFieldInfo> CompoundMetaFieldInfos => _compoundFieldInfos.AsReadOnly();
+		public static ReadOnlyCollection<igMetaFieldPlatformInfo> MetaFieldPlatformInfos => _metaFieldPlatformInfos.AsReadOnly();
+
+		private static List<igMetaEnum> _metaEnums = new List<igMetaEnum>();
+		private static List<igMetaObject> _metaObjects = new List<igMetaObject>();
+		private static List<igCompoundMetaFieldInfo> _compoundFieldInfos = new List<igCompoundMetaFieldInfo>();
+		private static List<igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new List<igMetaFieldPlatformInfo>();
 
 		private static Dictionary<string, Type>? _vTableCache = null;
 		private static Dictionary<string, Type>? _compoundStructCache = null;
@@ -326,5 +332,10 @@ namespace igLibrary.Core
 			}
 			_pendingTypes.Clear();
 		}
+
+		public static void AddObjectMeta(igMetaObject meta) => _metaObjects.Add(meta);
+		public static void AddEnumMeta(igMetaEnum meta) => _metaEnums.Add(meta);
+		public static void AddCompoundMeta(igCompoundMetaFieldInfo meta) => _compoundFieldInfos.Add(meta);
+		public static void AddPlatformMeta(igMetaFieldPlatformInfo meta) => _metaFieldPlatformInfos.Add(meta);
 	}
 }

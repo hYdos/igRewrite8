@@ -21,7 +21,7 @@ namespace igCauldron3
 			if(dir == null) throw new ArgumentNullException("dir must not be null!");
 			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
 			_parentType = parentType;
-			_alphabeticalMetas = igArkCore._metaObjects.FindAll(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
+			_alphabeticalMetas = igArkCore.MetaObjects.Where(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
 			_dir = dir;
 			_cbAddRoot = cb;
 		}
@@ -33,7 +33,7 @@ namespace igCauldron3
 			if(dir == null) throw new ArgumentNullException("dir must not be null!");
 			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
 			_parentType = parentType;
-			_alphabeticalMetas = igArkCore._metaObjects.FindAll(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
+			_alphabeticalMetas = igArkCore.MetaObjects.Where(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
 			_dir = dir;
 			_cbAddNormal = cb;
 		}

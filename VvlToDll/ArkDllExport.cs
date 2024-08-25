@@ -23,13 +23,13 @@ namespace VvlToDll
 		}
 		private static void InstantiateTypes()
 		{
-			foreach(igMetaEnum metaEnum in igArkCore._metaEnums)
+			foreach(igMetaEnum metaEnum in igArkCore.MetaEnums)
 			{
 				TypeDefinition td = new TypeDefinition("Enums", metaEnum._name, TypeAttributes.Public | TypeAttributes.Sealed);
 				_metaTypeLookup.Add(metaEnum, td);
 				module.Types.Add(td);
 			}
-			foreach(igMetaObject metaObject in igArkCore._metaObjects)
+			foreach(igMetaObject metaObject in igArkCore.MetaObjects)
 			{
 				TypeDefinition td = new TypeDefinition("Classes", metaObject._name, TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.AutoLayout | TypeAttributes.BeforeFieldInit | TypeAttributes.AnsiClass);
 				_metaTypeLookup.Add(metaObject, td);

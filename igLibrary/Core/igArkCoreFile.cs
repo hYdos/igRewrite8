@@ -94,7 +94,7 @@ namespace igLibrary.Core
 			{
 				igMetaEnum metaEnum = ReadMetaEnum();
 				if(metaEnum == null) continue;
-				igArkCore._metaEnums.Add(metaEnum);
+				igArkCore.AddEnumMeta(metaEnum);
 				_metaEnumsInFile.Add(metaEnum);
 			}
 			ReadPlatformInfos(metaFieldPlatformCount);
@@ -119,7 +119,7 @@ namespace igLibrary.Core
 				igCompoundMetaFieldInfo compoundInfo = new igCompoundMetaFieldInfo();
 				compoundInfo._name = ReadString(_shs[Section.CompoundInst]);
 				_compoundsInFile.Add(compoundInfo);
-				igArkCore._compoundFieldInfos.Add(compoundInfo);
+				igArkCore.AddCompoundMeta(compoundInfo);
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace igLibrary.Core
 					metaFieldPlatformInfo._alignments.Add(platformValue, align);
 				}
 				_metaFieldPlatformInfosInFile.Add(metaFieldPlatformInfo);
-				igArkCore._metaFieldPlatformInfos.Add(metaFieldPlatformInfo);
+				igArkCore.AddPlatformMeta(metaFieldPlatformInfo);
 			}
 		}
 		public void SaveMetaFieldPlatformInfo(igMetaFieldPlatformInfo metaFieldPlatformInfo)

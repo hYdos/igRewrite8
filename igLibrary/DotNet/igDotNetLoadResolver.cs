@@ -22,7 +22,7 @@ namespace igLibrary.DotNet
 			for(int i = 0; i < library._ownedTypes._count; i++)
 			{
 				if(library._ownedTypes[i] is igDotNetDynamicMetaObject metaObject)  metaObject.AppendToArkCore();
-				else if(library._ownedTypes[i] is igDotNetDynamicMetaEnum metaEnum) igArkCore._metaEnums.Add(metaEnum);
+				else if(library._ownedTypes[i] is igDotNetDynamicMetaEnum metaEnum) igArkCore.AddEnumMeta(metaEnum);
 			}
 		}
 	}
