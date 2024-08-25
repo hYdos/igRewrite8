@@ -96,25 +96,25 @@ namespace igLibrary.Core
 		/// <summary>
 		/// A readonly list of loaded igMetaObjects
 		/// </summary>
-		public static ReadOnlyCollection<igMetaObject> MetaObjects => _metaObjects.AsReadOnly();
+		public static IEnumerable<igMetaObject> MetaObjects => _metaObjects.Values;
 
 
 		/// <summary>
 		/// A readonly list of loaded igMetaEnums
 		/// </summary>
-		public static ReadOnlyCollection<igMetaEnum> MetaEnums => _metaEnums.AsReadOnly();
+		public static IEnumerable<igMetaEnum> MetaEnums => _metaEnums.Values;
 
 
 		/// <summary>
 		/// A readonly list of loaded igCompoundMetaFieldInfos
 		/// </summary>
-		public static ReadOnlyCollection<igCompoundMetaFieldInfo> CompoundMetaFieldInfos => _compoundFieldInfos.AsReadOnly();
+		public static IEnumerable<igCompoundMetaFieldInfo> CompoundMetaFieldInfos => _compoundFieldInfos.Values;
 
 
 		/// <summary>
 		/// A readonly list of loaded igMetaFieldPlatformInfo
 		/// </summary>
-		public static ReadOnlyCollection<igMetaFieldPlatformInfo> MetaFieldPlatformInfos => _metaFieldPlatformInfos.AsReadOnly();
+		public static IEnumerable<igMetaFieldPlatformInfo> MetaFieldPlatformInfos => _metaFieldPlatformInfos.Values;
 
 
 
@@ -124,25 +124,25 @@ namespace igLibrary.Core
 		/// <summary>
 		/// Currently loaded metaenums
 		/// </summary>
-		private static List<igMetaEnum> _metaEnums = new List<igMetaEnum>();
+		private static Dictionary<string, igMetaEnum> _metaEnums = new Dictionary<string, igMetaEnum>();
 
 
 		/// <summary>
 		/// Currently loaded metaobjects
 		/// </summary>
-		private static List<igMetaObject> _metaObjects = new List<igMetaObject>();
+		private static Dictionary<string, igMetaObject> _metaObjects = new Dictionary<string, igMetaObject>();
 
 
 		/// <summary>
 		/// Currently loaded compound field information, aka igCompoundMetaField type structs
 		/// </summary>
-		private static List<igCompoundMetaFieldInfo> _compoundFieldInfos = new List<igCompoundMetaFieldInfo>();
+		private static Dictionary<string, igCompoundMetaFieldInfo> _compoundFieldInfos = new Dictionary<string, igCompoundMetaFieldInfo>();
 
 
 		/// <summary>
 		/// Currently loaded metafield platform information
 		/// </summary>
-		private static List<igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new List<igMetaFieldPlatformInfo>();
+		private static Dictionary<string, igMetaFieldPlatformInfo> _metaFieldPlatformInfos = new Dictionary<string, igMetaFieldPlatformInfo>();
 
 
 
@@ -227,21 +227,21 @@ namespace igLibrary.Core
 			//FixupClasses(game);
 			igArkCoreFile saver = new igArkCoreFile();
 			saver.BeginSave($"{igArkCoreFile.ArkCoreFolder}/{game.ToString()}.ark");
-			for(int i = 0; i < _metaEnums.Count; i++)
+			foreach(igMetaEnum metaEnum in MetaEnums)
 			{
-				saver.SaveMetaEnum(_metaEnums[i]);
+				saver.SaveMetaEnum(metaEnum);
 			}
-			for(int i = 0; i < _metaObjects.Count; i++)
+			foreach(igMetaObject metaObject in MetaObjects)
 			{
-				saver.SaveMetaObject(_metaObjects[i]);
+				saver.SaveMetaObject(metaObject);
 			}
-			for(int i = 0; i < _compoundFieldInfos.Count; i++)
+			foreach(igCompoundMetaFieldInfo compoundFieldInfo in CompoundMetaFieldInfos)
 			{
-				saver.SaveCompoundInfo(_compoundFieldInfos[i]);
+				saver.SaveCompoundInfo(compoundFieldInfo);
 			}
-			for(int i = 0; i < _metaFieldPlatformInfos.Count; i++)
+			foreach(igMetaFieldPlatformInfo metaFieldPlatformInfo in MetaFieldPlatformInfos)
 			{
-				saver.SaveMetaFieldPlatformInfo(_metaFieldPlatformInfos[i]);
+				saver.SaveMetaFieldPlatformInfo(metaFieldPlatformInfo);
 			}
 			saver.FinishSave();
 			saver.Dispose();
@@ -298,10 +298,10 @@ namespace igLibrary.Core
 		public static igMetaObject? GetObjectMeta(string name)
 		{
 			if(name == null) return null;
-			//TODO: Optimise this
-			int index = _metaObjects.FindIndex(x => x._name == name);
-			if(index < 0) return null;
-			else return _metaObjects[index];
+
+			_metaObjects.TryGetValue(name, out igMetaObject? metaObject);
+
+			return metaObject;
 		}
 
 
@@ -311,10 +311,10 @@ namespace igLibrary.Core
 		public static igMetaFieldPlatformInfo? GetMetaFieldPlatformInfo(string name)
 		{
 			if(name == null) return null;
-			
-			int index = _metaFieldPlatformInfos.FindIndex(x => x._name == name);
-			if(index < 0) return null;
-			else return _metaFieldPlatformInfos[index];
+
+			_metaFieldPlatformInfos.TryGetValue(name, out igMetaFieldPlatformInfo? platformInfo);
+
+			return platformInfo;
 		}
 
 
@@ -353,6 +353,32 @@ namespace igLibrary.Core
 				return _dynamicTypes[name];
 			}
 			else return null;
+		}
+
+
+		/// <summary>
+		/// Lookup an igMetaEnum by name.
+		/// </summary>
+		public static igMetaEnum? GetMetaEnum(string name)
+		{
+			if(name == null) return null;
+
+			_metaEnums.TryGetValue(name, out igMetaEnum? metaEnum);
+
+			return metaEnum;
+		}
+
+
+		/// <summary>
+		/// Lookup an igCompoundMetaFieldInfo by name.
+		/// </summary>
+		public static igCompoundMetaFieldInfo? GetCompoundFieldInfo(string name)
+		{
+			if(_compoundFieldInfos == null) return null;
+
+			_compoundFieldInfos.TryGetValue(name, out igCompoundMetaFieldInfo? compoundFieldInfo);
+
+			return compoundFieldInfo;
 		}
 
 
@@ -413,32 +439,6 @@ namespace igLibrary.Core
 			{
 				return null;
 			}
-		}
-
-
-		/// <summary>
-		/// Lookup an igMetaEnum by name.
-		/// </summary>
-		public static igMetaEnum? GetMetaEnum(string name)
-		{
-			if(name == null) return null;
-			
-			int index = _metaEnums.FindIndex(x => x._name == name);
-			if(index < 0) return null;
-			else return _metaEnums[index];
-		}
-
-
-		/// <summary>
-		/// Lookup an igCompoundMetaFieldInfo by name.
-		/// </summary>
-		public static igCompoundMetaFieldInfo? GetCompoundFieldInfo(string name)
-		{
-			if(_compoundFieldInfos == null) return null;
-			
-			int index = _compoundFieldInfos.FindIndex(x => x._name == name);
-			if(index < 0) return null;
-			else return _compoundFieldInfos[index];			
 		}
 
 
@@ -556,24 +556,24 @@ namespace igLibrary.Core
 		/// <summary>
 		/// Add igMetaObject to metaobject list
 		/// </summary>
-		public static void AddObjectMeta(igMetaObject meta) => _metaObjects.Add(meta);
+		public static void AddObjectMeta(igMetaObject meta) => _metaObjects.Add(meta._name!, meta);
 
 
 		/// <summary>
 		/// Add igMetaEnum to metaenum list
 		/// </summary>
-		public static void AddEnumMeta(igMetaEnum meta) => _metaEnums.Add(meta);
+		public static void AddEnumMeta(igMetaEnum meta) => _metaEnums.Add(meta._name!, meta);
 
 
 		/// <summary>
 		/// Add igCompoundMetaFieldInfo to compound field info list
 		/// </summary>
-		public static void AddCompoundMeta(igCompoundMetaFieldInfo meta) => _compoundFieldInfos.Add(meta);
+		public static void AddCompoundMeta(igCompoundMetaFieldInfo meta) => _compoundFieldInfos.Add(meta._name!, meta);
 
 
 		/// <summary>
 		/// Add igMetaFieldPlatformInfo to metafield platform info list
 		/// </summary>
-		public static void AddPlatformMeta(igMetaFieldPlatformInfo meta) => _metaFieldPlatformInfos.Add(meta);
+		public static void AddPlatformMeta(igMetaFieldPlatformInfo meta) => _metaFieldPlatformInfos.Add(meta._name!, meta);
 	}
 }
