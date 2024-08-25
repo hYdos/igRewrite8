@@ -118,5 +118,16 @@ namespace igLibrary.Core
 
 			return Enum.Parse(_internalType, name);
 		}
+
+
+		/// <summary>
+		/// Adds the igMetaEnum to igArkCore
+		/// </summary>
+		public virtual void AppendToArkCore()
+		{
+			if(_inArkCore) return;
+			igArkCore.AddEnumMeta(this);
+			_inArkCore = true;
+		}
 	}
 }

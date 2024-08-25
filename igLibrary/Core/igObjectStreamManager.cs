@@ -14,7 +14,7 @@ namespace igLibrary.Core
 				_directoriesByName.Add(dir._name._hash, list);
 			}
 			list.Append(dir);
-			_directoriesByPath.Add(igHash.Hash(filePath), dir);
+			_directoriesByPath.Add(igHash.HashI(filePath), dir);
 		}
 		public igObjectDirectory? Load(string path)
 		{
@@ -23,7 +23,7 @@ namespace igLibrary.Core
 		public igObjectDirectory? Load(string path, igName nameSpace)
 		{
 			string filePath = igFilePath.GetNativePath(path);
-			uint filePathHash = igHash.Hash(filePath);
+			uint filePathHash = igHash.HashI(filePath);
 
 			igObjectDirectory objDir;
 			string result;
