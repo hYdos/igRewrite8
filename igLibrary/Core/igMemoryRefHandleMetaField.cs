@@ -39,16 +39,25 @@ namespace igLibrary.Core
 			IigMemory memory = (IigMemory)Activator.CreateInstance(memoryType);
 			memory.SetMemoryPool(pool);
 			memory.SetFlags(thumbnail.Item1, this, loader._platform);
-			Array objects = memory.GetData();
-			uint memSize = _memType.GetSize(loader._platform);
 
-			for(int i = 0; i < objects.Length; i++)
+			if(_memType.GetType() == typeof(igUnsignedCharMetaField))
 			{
-				loader._stream.Seek(offset + i * memSize);
-				objects.SetValue(_memType.ReadIGZField(loader), i);
+				loader._stream.Seek(offset);
+				memory.SetData(loader._stream.ReadBytes(memory.GetCount()));
 			}
+			else
+			{
+				Array objects = memory.GetData();
+				uint memSize = _memType.GetSize(loader._platform);
 
-			memory.SetData(objects);
+				for(int i = 0; i < objects.Length; i++)
+				{
+					loader._stream.Seek((long)offset + memSize * i);
+					objects.SetValue(_memType.ReadIGZField(loader), i);
+				}
+
+				memory.SetData(objects);
+			}
 			
 			return memory;
 		}
