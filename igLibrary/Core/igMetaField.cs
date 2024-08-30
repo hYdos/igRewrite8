@@ -318,7 +318,7 @@ namespace igLibrary.Core
 		/// Set the number of template parameters
 		/// </summary>
 		/// <param name="count">The number of template parameters</param>
-		public virtual void SetTemplateParameterCount(uint count) => throw new NotImplementedException();
+		public virtual void SetTemplateParameterCount(uint count) {}
 
 
 		/// <summary>
