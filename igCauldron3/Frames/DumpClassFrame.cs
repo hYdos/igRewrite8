@@ -78,7 +78,7 @@ namespace igCauldron3
 
 			for(int i = meta._parent._metaFields.Count; i < meta._metaFields.Count; i++)
 			{
-				output.AppendFormat("\t\tpublic {0} {1};\n", meta._metaFields[i].GetOutputType().Name, meta._metaFields[i]._fieldName);
+				output.AppendFormat("\t\tpublic {0} {1};\n", DemangleTypeName(meta._metaFields[i].GetOutputType()), meta._metaFields[i]._fieldName);
 			}
 
 			      output.Append("\t}\n");
