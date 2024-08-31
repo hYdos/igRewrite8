@@ -14,12 +14,12 @@ namespace VvlToDll
 		{
 			if(module != null) return;
 			Directory.CreateDirectory(outputDir);
-			module = ModuleDefinition.CreateModule(Path.Combine(outputDir, "Ark.dll"), ModuleKind.Dll);
+			module = ModuleDefinition.CreateModule( "Ark.dll", ModuleKind.Dll);
 			_metaTypeLookup = new Dictionary<igBaseMeta, TypeDefinition>();
 			InstantiateTypes();
 			DefineEnums();
 			DefineObjects();
-			module.Write("Ark.dll");
+			module.Write(Path.Combine(outputDir, "Ark.dll"));
 		}
 		private static void InstantiateTypes()
 		{
