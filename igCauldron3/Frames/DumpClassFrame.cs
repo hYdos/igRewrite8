@@ -62,6 +62,8 @@ namespace igCauldron3
 
 			_dumpedMetas.Add(meta);
 
+			DumpClass(meta._parent!);
+
 			meta.GatherDependancies();
 			igArkCore.FlushPendingTypes();
 
