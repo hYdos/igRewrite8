@@ -469,5 +469,6 @@ namespace igLibrary.Core
 	public class igStringStringHashTable : igTUHashTable<string, string>{}
 	public class igStringIntHashTable : igTUHashTable<int, string>{}
 	public class igIntIntHashTable : igTUHashTable<int, int>{}
+	public class igUnsignedIntStringHashTable : igTUHashTable<string, uint>{}
 #endregion
 }
