@@ -537,6 +537,14 @@ namespace igLibrary.Core
 
 
 		/// <summary>
+		/// Checks whether a type was created dynamically
+		/// </summary>
+		/// <param name="meta">The type to check</param>
+		/// <returns>whether the type was created at runtime</returns>
+		public static bool IsDynamicType(igMetaObject meta) => meta._vTablePointer == null || meta._vTablePointer.Assembly == _dynamicTypeAssembly;
+
+
+		/// <summary>
 		/// Generate dynamics types for pending types.
 		/// </summary>
 		public static void FlushPendingTypes()

@@ -6,6 +6,8 @@ namespace igCauldron3
 		protected Window _wnd;
 		public Frame(Window wnd)
 		{
+			if(wnd == null) throw new ArgumentNullException("wnd must not be null!");
+
 			_wnd = wnd;
 		}
 		public virtual void Render()

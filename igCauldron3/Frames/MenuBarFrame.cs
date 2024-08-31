@@ -48,6 +48,14 @@ namespace igCauldron3
 					}
 					ImGui.EndMenu();
 				}
+				if(ImGui.BeginMenu("Developer"))
+				{
+					if(ImGui.MenuItem("Dump Class"))
+					{
+						_wnd._frames.Add(new DumpClassFrame(_wnd));
+					}
+					ImGui.EndMenu();
+				}
 				ImGui.EndMainMenuBar();
 			}
 		}
