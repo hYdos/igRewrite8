@@ -127,7 +127,7 @@ namespace igCauldron3
 			      output.Append("\t{\n");
 			for(int i = 0; i < metaenum._names.Count; i++)
 			{
-				output.AppendFormat("\t\tpublic {0} = {1};\n", metaenum._names[i], metaenum._values[i]);
+				output.AppendFormat("\t\t{0} = {1},\n", metaenum._names[i], metaenum._values[i]);
 			}
 			      output.Append("\t}\n");
 			      output.Append("}");
@@ -142,6 +142,7 @@ namespace igCauldron3
 			else if(field is igStaticMetaField staticField) CheckShouldDump(staticField._storageMetaField);
 			else if(field is igCompoundMetaField compoundField) DumpStruct(compoundField._compoundFieldInfo);
 			else if(field is igEnumMetaField enumMetaField) DumpEnum(enumMetaField._metaEnum);
+			else if(field is igVectorMetaField vectorMetaField) CheckShouldDump(vectorMetaField.GetTemplateParameter(0));
 			else if(field is igOrderedMapMetaField omField)
 			{
 				CheckShouldDump(omField._t);
