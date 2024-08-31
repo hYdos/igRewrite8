@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Reflection.Metadata;
 using igLibrary.Core;
 using igLibrary.DotNet;
 using igLibrary.Math;
@@ -57,9 +58,41 @@ namespace igCauldron3
 		}
 		private static void RenderFieldNoLabel(string id, object? value, igMetaField field, FieldSetCallback cb)
 		{
-			if(_renderFuncLookup.TryGetValue(field.GetType(), out RenderFieldAction? renderFunc))
+			RenderFieldAction? renderFunc;
+			Type queryType = field.GetType();
+
+			if(field.IsArray)
 			{
-				renderFunc.Invoke(id, value, field, cb);
+				queryType = field.GetType().BaseType!;
+			}
+
+			if(_renderFuncLookup.TryGetValue(queryType, out renderFunc))
+			{
+				if(field.IsArray)
+				{
+					ImGui.PushID(id);
+					bool opened = ImGui.TreeNode("Data");
+					ImGui.PopID();
+					if(opened)
+					{
+						Array arrValue = (Array)value!;
+						for(int i = 0; i < field.ArrayNum; i++)
+						{
+							ImGui.Text("Element " + i.ToString());
+							ImGui.SameLine();
+							int capturedI = i;
+							renderFunc.Invoke(i.ToString("%08X"), arrValue.GetValue(i), field, (newValue) => {
+								arrValue.SetValue(newValue, capturedI);
+								cb.Invoke(arrValue);
+							});
+						}
+						ImGui.TreePop();
+					}
+				}
+				else
+				{
+					renderFunc.Invoke(id, value, field, cb);
+				}
 			}
 			else
 			{

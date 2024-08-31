@@ -111,6 +111,8 @@ namespace igLibrary.Core
 		[Obsolete("This exists for the reflection system, do not use.")] public int _internalIndex = -1;
 		[Obsolete("This exists for the reflection system, use GetSize() instead.")] public ushort _size = 0;
 
+		public virtual bool IsArray => false;
+		public virtual int ArrayNum => throw new NotSupportedException($"Fields of type \"{GetType().FullName}\" do not support array based operations");
 
 		/// <summary>
 		/// Returns all attributes of the given type or derived types.
