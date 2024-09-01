@@ -296,6 +296,7 @@ namespace igLibrary.Gfx
 		public static void Initialize()
 		{
 			InitializeIndexFormats();
+			InitializeVertexFormatPlatforms();
 			InitializeMetaImages();
 		}
 		public static void InitializeIndexFormats()
@@ -322,7 +323,38 @@ namespace igLibrary.Gfx
 					igIndexFormat._indexFormats.Append(indexFormat);
 				}
 			}
+		}
+		public static void InitializeVertexFormatPlatforms()
+		{
+			igObjectDirectory vertexformat = new igObjectDirectory();
+			vertexformat._name = new igName("vertexformat");
+			vertexformat._useNameList = true;
+			vertexformat._nameList = new igNameList();
+			igObjectStreamManager.Singleton.AddObjectDirectory(vertexformat, vertexformat._name._string);
+			igObjectHandleManager.Singleton.AddSystemNamespace("vertexformat");
 
+			AddVertexFormatPlatform<igVertexFormatAspen>  (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatCafe>   (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatDurango>(vertexformat);
+			AddVertexFormatPlatform<igVertexFormatDX>     (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatMetal>  (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatPS3>    (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatWii>    (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatXenon>  (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatOSX>    (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatDX11>   (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatRaspi>  (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatNull>   (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatAndroid>(vertexformat);
+			AddVertexFormatPlatform<igVertexFormatWgl>    (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatLGTV>   (vertexformat);
+			AddVertexFormatPlatform<igVertexFormatPS4>    (vertexformat);
+		}
+		private static void AddVertexFormatPlatform<T>(igObjectDirectory vertexformat) where T : igVertexFormatPlatform, new()
+		{
+			// I'm aware that it's igVertexFormatPlatform and not new T(), this is because there's a lack of metadata
+			// It's easier to just lie
+			vertexformat.AddObject(new igVertexFormatPlatform(), default(igName), new igName(typeof(T).Name));
 		}
 		public static void InitializeMetaImages()
 		{
