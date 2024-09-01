@@ -195,7 +195,7 @@
 							}
 							if(obj == null)
 							{
-								Logging.Warn("igIGZ EXID load: Failed to find object {0} in {1}, referenced in {2}", depName._ns._hash.ToString("X08"), list[0]._name, _dir._path);
+								Logging.Warn("igIGZ EXID load: Failed to find object {0} in {1}, referenced in {2}", depName._ns._hash.ToString("X08"), list[0]._name._string, _dir._path);
 							}
 							finish:
 								_externalList.Add(new igHandle(depName));
