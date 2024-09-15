@@ -47,6 +47,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igHandleMetaField), RenderField_Handle);
 			_renderFuncLookup.Add(typeof(igEnumMetaField), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igCompoundMetaField), RenderField_Compound);
+			_renderFuncLookup.Add(typeof(igTimeMetaField), RenderField_Time);
 		}
 		public static void RenderField(string id, string label, object? value, igMetaField field, FieldSetCallback cb)
 		{
@@ -444,6 +445,12 @@ namespace igCauldron3
 				}
 				ImGui.TreePop();
 			}
+		}
+		public static void RenderField_Time(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			RenderField_PrimitiveNumber(id, ((igTime)raw!)._elapsedDays, ElementType.kElementTypeR4, (value) => cb.Invoke(new igTime((float)value!)));
+			ImGui.SameLine();
+			ImGui.Text("days");
 		}
 	}
 }
