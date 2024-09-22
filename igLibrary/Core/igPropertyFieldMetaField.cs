@@ -22,6 +22,6 @@ namespace igLibrary.Core
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
-		public override Type GetOutputType() => null;
+		public override Type GetOutputType() => _innerMetaField.GetOutputType();
 	}
 }

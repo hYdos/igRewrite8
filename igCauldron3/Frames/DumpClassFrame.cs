@@ -145,6 +145,8 @@ namespace igCauldron3
 			else if(field is igCompoundMetaField compoundField) DumpStruct(compoundField._compoundFieldInfo);
 			else if(field is igEnumMetaField enumMetaField) DumpEnum(enumMetaField._metaEnum);
 			else if(field is igVectorMetaField vectorMetaField) CheckShouldDump(vectorMetaField.GetTemplateParameter(0));
+			else if(field is igBitFieldMetaField bfMetaField) CheckShouldDump(bfMetaField._assignmentMetaField);
+			else if(field is igPropertyFieldMetaField) return; // unsupported
 			else if(field is igOrderedMapMetaField omField)
 			{
 				CheckShouldDump(omField._t);
