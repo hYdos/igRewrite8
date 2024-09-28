@@ -44,6 +44,11 @@ namespace igCauldron3
 		}
 		protected override void OnUpdateFrame(FrameEventArgs e)
 		{
+			if(!IsFocused)
+			{
+				return;
+			}
+
 			if (KeyboardState.IsKeyDown(OpenTK.Windowing.GraphicsLibraryFramework.Keys.Escape))
 			{
 				//Close();
@@ -68,6 +73,11 @@ namespace igCauldron3
 		}
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
+			if(!IsFocused)
+			{
+				return;
+			}
+
 			base.OnRenderFrame(e);
 
 			controller.Update(this, (float)e.Time);
