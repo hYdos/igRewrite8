@@ -32,7 +32,7 @@ namespace igCauldron3
 			// just objects when loaded, it's probably best to just save it to a file and then reload that file
 
 			// Ideally this'd be handled with igFileContext's ram storage device but I've not implemented that yet
-			string tempPath = Path.Combine(Path.GetTempPath(), "igz_dupe.igz");
+			string tempPath = Path.ChangeExtension(Path.Combine(Path.GetTempPath(), Path.GetRandomFileName()), "igz");
 			FileStream tempFs = File.Create(tempPath);
 
 			_source.WriteFile(tempFs, igRegistry.GetRegistry()._platform);
