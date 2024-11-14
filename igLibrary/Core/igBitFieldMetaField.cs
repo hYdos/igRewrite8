@@ -143,5 +143,17 @@ namespace igLibrary.Core
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
 		public override Type GetOutputType() => _assignmentMetaField.GetOutputType();
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			return _assignmentMetaField.SetMemoryFromString(ref target, input);
+		}
 	}
 }

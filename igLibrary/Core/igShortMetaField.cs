@@ -16,5 +16,22 @@ namespace igLibrary.Core
 		{
 			_default = sh.ReadInt16();
 		}
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			if (!short.TryParse(input, out short buffer))
+			{
+				return false;
+			}
+			target = buffer;
+			return true;
+		}
 	}
 }

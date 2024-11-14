@@ -34,5 +34,27 @@ namespace igLibrary.Math
 			data._y = sh.ReadSingle();
 			_default = data;
 		}
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			string[] floats = input.Split(',');
+			if (floats.Length != 2) return false;
+
+			igVec2f tempTarget = (igVec2f)target!;
+
+			if (!float.TryParse(floats[0], out tempTarget._x)) return false;
+			if (!float.TryParse(floats[1], out tempTarget._y)) return false;
+
+			target = tempTarget;
+
+			return true;
+		}
 	}
 }
