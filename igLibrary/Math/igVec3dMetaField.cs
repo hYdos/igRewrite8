@@ -38,5 +38,28 @@ namespace igLibrary.Math
 			data._z = sh.ReadDouble();
 			_default = data;
 		}
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			string[] doubles = input.Split(',');
+			if (doubles.Length != 3) return false;
+
+			igVec3d tempTarget = (igVec3d)target!;
+
+			if (!double.TryParse(doubles[0], out tempTarget._x)) return false;
+			if (!double.TryParse(doubles[1], out tempTarget._y)) return false;
+			if (!double.TryParse(doubles[2], out tempTarget._z)) return false;
+
+			target = tempTarget;
+
+			return true;
+		}
 	}
 }

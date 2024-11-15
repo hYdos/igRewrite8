@@ -55,5 +55,23 @@ namespace igLibrary.Core
 			if(_default != null) return _metaEnum.GetEnumFromValue((int)_default);
 			return Activator.CreateInstance(GetOutputType());
 		}
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			if(int.TryParse(input, out int buffer))
+			{
+				target = buffer;
+				return true;
+			}
+
+			return Enum.TryParse(_metaEnum._internalType, input, false, out target);
+		}
 	}
 }

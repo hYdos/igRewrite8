@@ -240,7 +240,7 @@ namespace igLibrary.Core
 			if(_parent == null) return;
 			//_parent.InheritFields();
 			_parent._children.Add(this);
-			_metaFields.AddRange(_parent._metaFields);
+			_metaFields.InsertRange(0, _parent._metaFields);
 		}
 		public void AppendDynamicField(igMetaField field)
 		{

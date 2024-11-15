@@ -293,6 +293,56 @@ namespace igLibrary.Core
 
 
 		/// <summary>
+		/// Reads metadata from an igArkCoreXmlFile.
+		/// </summary>
+		/// <param name="game">The game to load the metadata for</param>
+		public static void ReadFromXmlFile(EGame game)
+		{
+			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+			stopwatch.Start();
+
+			igArkCoreXmlFile loader = new igArkCoreXmlFile();
+			igArkCoreXmlFile.ArkCoreXmlError? error = loader.Load($"{igArkCoreFile.ArkCoreFolder}/{game}/metaobjects.xml",
+			                                                      $"{igArkCoreFile.ArkCoreFolder}/{game}/metaenums.xml",
+			                                                      $"{igArkCoreFile.ArkCoreFolder}/{game}/metafields.xml");
+			if (error != null)
+			{
+				throw new Exception(error.Message);
+			}
+
+			List<igMetaObject> metaObjects = loader.MetaObjects;
+			List<igMetaEnum> metaEnums = loader.MetaEnums;
+			List<igMetaFieldPlatformInfo> platformInfos = loader.MetaFieldPlatformInfos;
+			List<igCompoundMetaFieldInfo> compounds = loader.Compounds;
+
+			foreach (igMetaObject metaObject in metaObjects)
+			{
+				_metaObjects.Add(metaObject._name!, metaObject);
+				metaObject.PostUndump();
+			}
+			foreach (igMetaEnum metaEnum in metaEnums)
+			{
+				_metaEnums.Add(metaEnum._name!, metaEnum);
+				metaEnum.PostUndump();
+			}
+			foreach (igMetaFieldPlatformInfo platformInfo in platformInfos)
+			{
+				_metaFieldPlatformInfos.Add(platformInfo._name!, platformInfo);
+			}
+			foreach (igCompoundMetaFieldInfo compound in compounds)
+			{
+				_compoundFieldInfos.Add(compound._name!, compound);
+				compound.PostUndump();
+			}
+
+			stopwatch.Stop();
+
+			Logging.Info("Loading and generating all types took {0} seconds", stopwatch.Elapsed.TotalSeconds);
+		}
+
+
+		/// <summary>
 		/// Lookup an igMetaObject by name.
 		/// </summary>
 		public static igMetaObject? GetObjectMeta(string name)
