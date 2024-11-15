@@ -29,9 +29,25 @@ namespace igCauldron3
 			(IG_CORE_PLATFORM.IG_CORE_PLATFORM_XENON, "Xbox 360"),
 			(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DURANGO, "Xbox One")
 		};
+		public (igArkCore.EGame, string)[] _gameNames = new (igArkCore.EGame, string)[]
+		{
+			(igArkCore.EGame.EV_SkylandersSuperchargers, "Skylanders Superchargers 1.6.X"),
+			(igArkCore.EGame.EV_SkylandersImaginators,   "Skylanders Imaginators 1.1.X")
+		};
 		public ConfigFrame(Window wnd) : base(wnd)
 		{
 			CauldronConfig.ReadConfig();
+		}
+		private string GetGameName(igArkCore.EGame game)
+		{
+			for(int i = 0; i < _gameNames.Length; i++)
+			{
+				if(_gameNames[i].Item1 == game)
+				{
+					return _gameNames[i].Item2;
+				}
+			}
+			return "Select a Game";
 		}
 		private string GetPlatformName(IG_CORE_PLATFORM platform)
 		{
@@ -58,12 +74,35 @@ namespace igCauldron3
 					RenderTextField("Game Path", "gp", ref game._path);
 					RenderTextField("Update Path", "up", ref game._updatePath);
 
+					ImGui.Text("Game");
+					ImGui.SameLine();
+					ImGui.PushID("game");
+					bool gameComboing = ImGui.BeginCombo(string.Empty, GetGameName(game._game));
+					ImGui.PopID();
+					if(gameComboing)
+					{
+						for(int p = 0; p < _gameNames.Length; p++)
+						{
+							ImGui.PushID(p);
+							if(ImGui.Selectable(_gameNames[p].Item2, game._game == _gameNames[p].Item1))
+							{
+								game._game = _gameNames[p].Item1;
+							}
+							if(game._game == _gameNames[p].Item1)
+							{
+								ImGui.SetItemDefaultFocus();
+							}
+							ImGui.PopID();
+						}
+						ImGui.EndCombo();
+					}
+
 					ImGui.Text("Platform");
 					ImGui.SameLine();
 					ImGui.PushID("platform");
-					bool comboing = ImGui.BeginCombo(string.Empty, GetPlatformName(game._platform));
+					bool platformComboing = ImGui.BeginCombo(string.Empty, GetPlatformName(game._platform));
 					ImGui.PopID();
-					if(comboing)
+					if(platformComboing)
 					{
 						for(int p = 0; p < _platformNames.Length; p++)
 						{
@@ -78,6 +117,7 @@ namespace igCauldron3
 							}
 							ImGui.PopID();
 						}
+						ImGui.EndCombo();
 					}
 
 					bool full = ImGui.Button("Load Game");

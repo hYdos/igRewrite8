@@ -16,6 +16,7 @@ namespace igLibrary.Core
 		/// </summary>
 		public enum EGame
 		{
+			EV_None = -1,
 			EV_ZooCube,
 			EV_HootersRoadTrip,
 			EV_DogsPlayingPoker,
