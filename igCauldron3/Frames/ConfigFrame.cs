@@ -104,8 +104,8 @@ namespace igCauldron3
 						igRegistry.GetRegistry()._platform = game._platform;
 						igRegistry.GetRegistry()._gfxPlatform = igGfx.GetGfxPlatformFromCore(game._platform);
 
-						igArkCore.ReadFromXmlFile(igArkCore.EGame.EV_SkylandersSuperchargers);
-						CPrecacheFileLoader.LoadInitialPackages(igArkCore.EGame.EV_SkylandersSuperchargers);
+						igArkCore.ReadFromXmlFile(game._game);
+						CPrecacheFileLoader.LoadInitialPackages(game._game);
 
 						_wnd._frames.Remove(this);
 						_wnd._frames.Add(new DirectoryManagerFrame(_wnd));
