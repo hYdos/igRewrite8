@@ -100,30 +100,12 @@ namespace igCauldron3
 						{
 							igFileContext.Singleton.InitializeUpdate(game._updatePath);
 						}
+
 						igRegistry.GetRegistry()._platform = game._platform;
 						igRegistry.GetRegistry()._gfxPlatform = igGfx.GetGfxPlatformFromCore(game._platform);
+
 						igArkCore.ReadFromFile(igArkCore.EGame.EV_SkylandersSuperchargers);
-						IG_CORE_PLATFORM platform = igRegistry.GetRegistry()._platform;
-
-						igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak");
-
-						if(full)
-						{
-							CPrecacheManager._Instance.PrecachePackage($"generated/shaders/shaders_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
-	
-							CPrecacheManager._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/essentialui", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/UI/legal", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/gamestartup", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/SoundBankData", EMemoryPoolID.MP_DEFAULT);
-	
-							CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/maps/zoneinfos", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/packageXmls/permanent_2015", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile", EMemoryPoolID.MP_DEFAULT);
-							CPrecacheManager._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd", EMemoryPoolID.MP_DEFAULT);
-						}
+						CPrecacheFileLoader.LoadInitialPackages(igArkCore.EGame.EV_SkylandersSuperchargers);
 
 						_wnd._frames.Remove(this);
 						_wnd._frames.Add(new DirectoryManagerFrame(_wnd));
