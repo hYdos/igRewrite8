@@ -581,6 +581,11 @@ namespace igLibrary.Core
 			}
 			else if(metafield is igCompoundMetaField compoundField)
 			{
+				if (compoundInfo == null)
+				{
+					// The only thing that should make it here is igOrderedMapMetaField
+					_compoundLookup.TryGetValue(typeAttr.Value!, out compoundInfo);
+				}
 				compoundField._compoundFieldInfo = compoundInfo!;
 			}
 			if (metafield.IsArray)
