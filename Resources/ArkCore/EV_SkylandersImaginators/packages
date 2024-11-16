@@ -6,7 +6,7 @@ app:/archives/loosefiles.pak
 
 generated/shaders/shaders_${platform_string}
 generated/packageXmls/languagestartup
-generated/SoundBankData
+generated/packageXmls/SoundBankData
 generated/packageXmls/permanent_${platform_string}
 generated/packageXmls/essentialui
 generated/UI/legal
