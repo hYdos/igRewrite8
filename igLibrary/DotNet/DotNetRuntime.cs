@@ -11,6 +11,7 @@ namespace igLibrary.DotNet
 		[Obsolete("This exists for the reflection system, do not use.")] public object? _trace;                //igVector<uint>
 		[Obsolete("This exists for the reflection system, do not use.")] public object? _traceHead;            //int
 		[Obsolete("This exists for the reflection system, do not use.")] public object? _ignoreExceptions;     //igStringIntHashTable
+		[Obsolete("This exists for the reflection system, do not use.")] public object? _exceptionScopes;      //igStringIntHashTable
 		public igDotNetMetaInterface _methodLookup;
 	}
 }

@@ -2,6 +2,7 @@ namespace igLibrary.Core
 {
 	public class igMemoryPool : igObject
 	{
+		public bool _lockOnOperation;
 		public bool _active;
 		public int _poolIndex;
 		public ulong _address;

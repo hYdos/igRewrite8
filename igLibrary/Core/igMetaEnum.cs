@@ -40,6 +40,11 @@ namespace igLibrary.Core
 		public igObject _valueAttributes;
 
 
+		/// <summary>
+		/// The type that declared this enum inside it
+		/// </summary>
+		public string _declaringType;
+
 
 
 

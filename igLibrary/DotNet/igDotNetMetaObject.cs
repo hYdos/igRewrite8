@@ -8,6 +8,12 @@ namespace igLibrary.DotNet
 		public igMetaObject _boundMeta;
 		public DotNetTypeList _templateParameters;
 		public igMetaObject _patchMeta;
+		public object? _dotNetFieldNames;
+		public object? _cppFieldNames;
+		public int _exposedFieldCount;
+		public object? _cppMethods;
+		public object? _cppMethodNames;
+		public int _cppMethodCount;
 		public DotNetLibrary? _wrappedIn;	//Added to aid with interop types
 		public bool _isInterface;
 		public bool _baseMethodsInherited;

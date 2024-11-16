@@ -25,6 +25,7 @@ namespace igLibrary.Core
 		public EAllowedHitReactDirections _deathReactDirections = EAllowedHitReactDirections.eAHRD_Front;
 		public EAllowedHitReactDirections _knockawayDeathReactDirections;
 		public igHandle _hudPortrait;
+		public igHandle _racingHudPortrait;
 		public igHandle _footstepEffect;
 		public igHandle _magicMomentNameEffect;
 		public CActorData()

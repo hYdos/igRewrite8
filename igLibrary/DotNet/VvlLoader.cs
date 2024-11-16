@@ -405,7 +405,7 @@ namespace igLibrary.DotNet
 				igMetaField? field = dnt._baseMeta.GetFieldByName(fieldName);
 				if(field == null)
 				{
-					throw new MissingFieldException($"{dnt._baseMeta._name}.{fieldName} (from {fieldHandle}) could not be loaded!");
+					Logging.Error("{0}.{1} (from {2}) could not be loaded! file: {3}", dnt._baseMeta._name, fieldName, fieldHandle, libName);
 				}
 				library._fields.Append(field);
 			}

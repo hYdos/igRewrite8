@@ -17,6 +17,7 @@ namespace igLibrary.Core
 		public igIGZLoader _loader;     //needs to be changed to igObjectLoader
 		[Obsolete("This exists for the reflection system, do not use.")] public FileType _sourceFileType;
 		[Obsolete("This exists for the reflection system, do not use.")] public int _loadCount;
+		[Obsolete("This exists for the reflection system, do not use.")] public bool _allowMultipleInstances;
 		[Obsolete("This exists for the reflection system, do not use.")] public igObjectList _debugObjects;
 		[Obsolete("This exists for the reflection system, do not use.")] public igObject _thumbnails;
 		[Obsolete("This exists for the reflection system, do not use.")] public igObjectList _createdMetaObjects;
