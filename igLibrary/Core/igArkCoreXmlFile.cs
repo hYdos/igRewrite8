@@ -635,15 +635,20 @@ namespace igLibrary.Core
 				{
 					return new ArkCoreXmlError("{0} metafield node missing \"metaobject\" attribute", metafield.GetType().Name);
 				}
-				if (_metaobjectLookup.TryGetValue(metaobjectNode.Value!, out igMetaObject? metaobject))
+				igMetaObject? referencedMetaObject = null;
+				if (!_metaobjectLookup.TryGetValue(metaobjectNode.Value!, out referencedMetaObject))
 				{
-					     if (metafield is igHandleMetaField    handleMetaField)    handleMetaField._metaObject    = metaobject;
-					else if (metafield is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject = metaobject;
+					if (metaobjectNode.Value! == "(null)")
+					{
+						referencedMetaObject = _metaobjectLookup["igObject"];
+					}
+					else
+					{
+						return new ArkCoreXmlError("{0} metafield node is referencing a nonexistent metaobject {1}", metafield.GetType().Name, metaobjectNode.Value!);
+					}
 				}
-				else
-				{
-					return new ArkCoreXmlError("{0} metafield node is referencing a nonexistent metaobject", metafield.GetType().Name);
-				}
+				     if (metafield is igHandleMetaField    handleMetaField)    handleMetaField._metaObject    = referencedMetaObject;
+				else if (metafield is igObjectRefMetaField objectRefMetaField) objectRefMetaField._metaObject = referencedMetaObject;
 			}
 
 			if (metafield is igMemoryRefMetaField || metafield is igMemoryRefHandleMetaField)
