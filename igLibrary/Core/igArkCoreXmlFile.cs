@@ -192,12 +192,9 @@ namespace igLibrary.Core
 						return new ArkCoreXmlError("size field of platforminfo nodes must be between 0 and 0xFFFF");
 					}
 
-					if (!platformInfo._alignments.TryAdd(platform, (ushort)align))
-					{
-						return new ArkCoreXmlError("Duplicate platform detected in metafield platform node!!");
-					}
-					// no need to check here
-					platformInfo._sizes.Add(platform, (ushort)size);
+					// Don't treat duplicates as an error
+					platformInfo._alignments.TryAdd(platform, (ushort)align);
+					platformInfo._sizes.TryAdd(platform, (ushort)size);
 				}
 
 				_metafieldLookup.Add(platformInfo._name, platformInfo);
