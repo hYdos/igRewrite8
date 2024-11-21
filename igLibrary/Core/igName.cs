@@ -14,10 +14,18 @@ namespace igLibrary.Core
 		{
 			_hash = hash;
 		}
-		public void SetString(string newString)
+		public void SetString(string? newString)
 		{
-			_string = newString;
-			_hash = igHash.HashI(newString);
+			if (newString == null || newString == "(null)")
+			{
+				_string = null;
+				_hash = 0;
+			}
+			else
+			{
+				_string = newString;
+				_hash = igHash.HashI(newString);
+			}
 		}
 	}
 }

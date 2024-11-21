@@ -9,6 +9,11 @@ namespace igLibrary.Core
 		public igName _namespace;
 		public igName _alias;
 		public igObject? _object;
+
+
+		/// <summary>
+		/// Default constructor
+		/// </summary>
 		public igHandle()
 		{
 			_namespace._hash = 0;
@@ -16,11 +21,33 @@ namespace igLibrary.Core
 			_alias._hash = 0;
 			_alias._string = null;
 		}
+
+
+		/// <summary>
+		/// Constructor taking in an igHandleName
+		/// </summary>
+		/// <param name="name">the igHandleName</param>
 		public igHandle(igHandleName name)
 		{
 			_alias = name._name;
 			_namespace = name._ns;
 		}
+
+
+		/// <summary>
+		/// Constructor taking in a string
+		/// </summary>
+		/// <param name="name">the string</param>
+		public igHandle(string name): this(new igHandleName(name))
+		{
+		}
+
+
+		/// <summary>
+		/// Gets the object referenced by this handle and attempts to cast it
+		/// </summary>
+		/// <typeparam name="T">The type to cast to</typeparam>
+		/// <returns>The object, or null if the cast fails or if it can't be located</returns>
 		public T? GetObjectAlias<T>() where T : igObject
 		{
 			if(_object != null) return (T)_object;
@@ -46,18 +73,24 @@ namespace igLibrary.Core
 			Logging.Warn("failed to load {0}.{1}", _namespace._string, _alias._string);
 			return null;
 		}
+
+
 		public static bool operator ==(igHandle? a, igHandle? b)
 		{
 			if(ReferenceEquals(a, b)) return true;
 			if(a is null || b is null) return false;
 			return a._namespace._hash == b._namespace._hash && a._alias._hash == b._alias._hash;
 		}
+
+
 		public static bool operator !=(igHandle? a, igHandle? b)
 		{
 			if(ReferenceEquals(a, b)) return false;
 			if(a is null || b is null) return true;
 			return a._namespace._hash != b._namespace._hash || a._alias._hash != b._alias._hash;
 		}
+
+
 		public override string ToString()
 		{
 			return $"{_namespace._string ?? _namespace._hash.ToString("x")}.{_alias._string ?? _alias._hash.ToString("x")}";
