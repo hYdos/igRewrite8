@@ -325,7 +325,6 @@ namespace igLibrary.Core
 			foreach (igMetaEnum metaEnum in metaEnums)
 			{
 				_metaEnums.Add(metaEnum._name!, metaEnum);
-				metaEnum.PostUndump();
 			}
 			foreach (igMetaFieldPlatformInfo platformInfo in platformInfos)
 			{

@@ -273,6 +273,8 @@ namespace igLibrary.Core
 					}
 					metaEnum._values.Add(value);
 				}
+
+				metaEnum.PostUndump();
 			}
 
 			return null;
