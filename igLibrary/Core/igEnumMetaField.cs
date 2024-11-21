@@ -71,7 +71,7 @@ namespace igLibrary.Core
 				return true;
 			}
 
-			return Enum.TryParse(_metaEnum._internalType, input, false, out target);
+			return Enum.TryParse(_metaEnum!._internalType, input, false, out target);
 		}
 	}
 }

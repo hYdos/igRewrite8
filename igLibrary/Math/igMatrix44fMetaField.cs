@@ -90,5 +90,41 @@ namespace igLibrary.Math
 			data._m44 = sh.ReadSingle();
 			_default = data;
 		}
+
+
+		/// <summary>
+		/// Sets the target variable based on the string representation of the input
+		/// </summary>
+		/// <param name="target">The output field</param>
+		/// <param name="input">The input field</param>
+		/// <returns>boolean indicating whether the input was read successfully</returns>
+		public override bool SetMemoryFromString(ref object? target, string input)
+		{
+			string[] floats = input.Replace(" ", string.Empty).Split(',');
+			if (floats.Length != 4) return false;
+
+			igMatrix44f tempTarget;
+
+			if (!float.TryParse(floats[0], out tempTarget._m11)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m12)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m13)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m14)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m21)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m22)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m23)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m24)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m31)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m32)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m33)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m34)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m41)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m42)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m43)) return false;
+			if (!float.TryParse(floats[0], out tempTarget._m44)) return false;
+
+			target = tempTarget;
+
+			return true;
+		}
 	}
 }
