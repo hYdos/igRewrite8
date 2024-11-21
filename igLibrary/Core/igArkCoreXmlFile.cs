@@ -754,6 +754,12 @@ namespace igLibrary.Core
 				}
 			}
 
+			ParseMetaFieldPropertyString(node, "default", out string? defaultValue, "(null)");
+			if (defaultValue != "(null)")
+			{
+				metafield.SetMemoryFromString(ref metafield._default, defaultValue!);
+			}
+
 			return null;
 		}
 
