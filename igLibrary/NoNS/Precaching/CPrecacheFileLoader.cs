@@ -11,17 +11,35 @@ namespace igLibrary
 		{
 			Unknown,
 			LoosePak,
-			FullPackage
+			FullPackage,
+			LoosePackage,
+			Noop
 		};
+
+
+		/// <summary>
+		/// Struct combining info for each task
+		/// </summary>
+		struct TaskEntry
+		{
+			public LoaderTask _fullTask;
+			public LoaderTask _looseTask;
+
+			public TaskEntry(LoaderTask fullTask, LoaderTask looseTask)
+			{
+				_fullTask = fullTask;
+				_looseTask = looseTask;
+			}
+		}
 
 
 		/// <summary>
 		/// Lookup table from task name to task enum
 		/// </summary>
-		private static readonly Dictionary<string, LoaderTask> _taskLookup = new Dictionary<string, LoaderTask>()
+		private static readonly Dictionary<string, TaskEntry> _taskLookup = new Dictionary<string, TaskEntry>()
 		{
-			{ "loose_pak_lab",                   LoaderTask.LoosePak                     },
-			{ "full_package_lab",                LoaderTask.FullPackage                  },
+			{ "loose_pak_lab",                   new(LoaderTask.LoosePak,                  LoaderTask.LoosePak                  ) },
+			{ "full_package_lab",                new(LoaderTask.FullPackage,               LoaderTask.LoosePackage              ) },
 		};
 
 		private static readonly Dictionary<string, Func<string>> _envLookup = new Dictionary<string, Func<string>>()
@@ -30,9 +48,9 @@ namespace igLibrary
 		};
 
 
-		public static void LoadInitialPackages(igArkCore.EGame game)
+		public static void LoadInitialPackages(igArkCore.EGame game, bool loose)
 		{
-			LoadInitialPackages($"{igArkCoreFile.ArkCoreFolder}/{game}/packages");
+			LoadInitialPackages($"{igArkCoreFile.ArkCoreFolder}/{game}/packages", loose);
 		}
 
 
@@ -40,14 +58,14 @@ namespace igLibrary
 		/// Loads all packages from a given file
 		/// </summary>
 		/// <param name="filePath">The filepath to load from</param>
-		public static void LoadInitialPackages(string filePath)
+		public static void LoadInitialPackages(string filePath, bool loose)
 		{
 			StreamReader precacheFile = File.OpenText(filePath);
 
-			ReadLoop(precacheFile);
+			ReadLoop(precacheFile, loose);
 		}
 
-		private static void ReadLoop(StreamReader precacheFile)
+		private static void ReadLoop(StreamReader precacheFile, bool loose)
 		{
 			LoaderTask task = LoaderTask.LoosePak;
 
@@ -78,7 +96,7 @@ namespace igLibrary
 						break;
 					}
 
-					task = ParseTask(line);
+					task = ParseTask(line, loose);
 
 					if (task == LoaderTask.Unknown)
 					{
@@ -101,13 +119,13 @@ namespace igLibrary
 
 
 		
-		private static LoaderTask ParseTask(string line)
+		private static LoaderTask ParseTask(string line, bool loose)
 		{
 			LoaderTask task = LoaderTask.Unknown;
 
-			if (!_taskLookup.TryGetValue(line.Substring(1, line.Length - 2), out task))
+			if (_taskLookup.TryGetValue(line.Substring(1, line.Length - 2), out TaskEntry entry))
 			{
-				task = LoaderTask.Unknown;
+				task = loose ? entry._looseTask : entry._fullTask;
 			}
 
 			return task;
@@ -163,6 +181,11 @@ namespace igLibrary
 					break;
 				case LoaderTask.FullPackage:
 					CPrecacheManager._Instance.PrecachePackage(line, EMemoryPoolID.MP_DEFAULT);
+					break;
+				case LoaderTask.LoosePackage:
+					igFileContext.Singleton.LoadArchive($"app:/archives/{Path.GetFileName(line)}.pak");
+					break;
+				case LoaderTask.Noop:
 					break;
 			}
 		}
