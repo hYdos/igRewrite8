@@ -6,6 +6,9 @@ namespace igLibrary.Core
 		public short _num;
 		public List<igMetaField> _templateArgs = new List<igMetaField>();
 
+		public override int ArrayNum => _num;
+		public override bool IsArray => _num > 0;
+
 		public override void SetTemplateParameterCount(uint count)
 		{
 			if(_templateArgs.Count < count)
