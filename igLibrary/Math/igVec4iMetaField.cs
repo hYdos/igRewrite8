@@ -55,7 +55,7 @@ namespace igLibrary.Math
 			string[] ints = input.Split(',');
 			if (ints.Length != 4) return false;
 
-			igVec4i tempTarget = (igVec4i)target!;
+			igVec4i tempTarget;
 
 			if (!int.TryParse(ints[0], out tempTarget._x)) return false;
 			if (!int.TryParse(ints[1], out tempTarget._y)) return false;

@@ -51,7 +51,7 @@ namespace igLibrary.Math
 			string[] doubles = input.Split(',');
 			if (doubles.Length != 3) return false;
 
-			igVec3d tempTarget = (igVec3d)target!;
+			igVec3d tempTarget;
 
 			if (!double.TryParse(doubles[0], out tempTarget._x)) return false;
 			if (!double.TryParse(doubles[1], out tempTarget._y)) return false;

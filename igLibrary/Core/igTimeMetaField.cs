@@ -21,7 +21,7 @@ namespace igLibrary.Core
 			{
 				return false;
 			}
-			igTime tempTarget = (igTime)target!;
+			igTime tempTarget;
 			tempTarget._elapsedDays = buffer >= 0 ? buffer * 8192 : -1;
 			target = tempTarget;
 			return true;

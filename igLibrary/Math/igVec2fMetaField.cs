@@ -47,7 +47,7 @@ namespace igLibrary.Math
 			string[] floats = input.Split(',');
 			if (floats.Length != 2) return false;
 
-			igVec2f tempTarget = (igVec2f)target!;
+			igVec2f tempTarget;
 
 			if (!float.TryParse(floats[0], out tempTarget._x)) return false;
 			if (!float.TryParse(floats[1], out tempTarget._y)) return false;

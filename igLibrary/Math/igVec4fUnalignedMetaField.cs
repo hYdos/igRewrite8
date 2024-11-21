@@ -55,7 +55,7 @@ namespace igLibrary.Math
 			string[] floats = input.Split(',');
 			if (floats.Length != 4) return false;
 
-			igVec4fUnaligned tempTarget = (igVec4fUnaligned)target!;
+			igVec4fUnaligned tempTarget;
 
 			if (!float.TryParse(floats[0], out tempTarget._x)) return false;
 			if (!float.TryParse(floats[1], out tempTarget._y)) return false;

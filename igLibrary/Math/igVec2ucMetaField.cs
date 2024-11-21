@@ -47,7 +47,7 @@ namespace igLibrary.Math
 			string[] bytes = input.Split(',');
 			if (bytes.Length != 2) return false;
 
-			igVec2uc tempTarget = (igVec2uc)target!;
+			igVec2uc tempTarget;
 
 			if (!byte.TryParse(bytes[0], out tempTarget._x)) return false;
 			if (!byte.TryParse(bytes[1], out tempTarget._y)) return false;
