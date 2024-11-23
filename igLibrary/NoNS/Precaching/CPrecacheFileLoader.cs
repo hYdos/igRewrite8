@@ -39,7 +39,7 @@ namespace igLibrary
 		private static readonly Dictionary<string, TaskEntry> _taskLookup = new Dictionary<string, TaskEntry>()
 		{
 			{ "loose_pak_lab",                   new(LoaderTask.LoosePak,                  LoaderTask.LoosePak                  ) },
-			{ "full_package_lab",                new(LoaderTask.FullPackage,               LoaderTask.LoosePackage              ) },
+			{ "full_package_lab",                new(LoaderTask.FullPackage,               LoaderTask.Noop                      ) },
 		};
 
 		private static readonly Dictionary<string, Func<string>> _envLookup = new Dictionary<string, Func<string>>()
