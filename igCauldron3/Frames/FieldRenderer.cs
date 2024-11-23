@@ -406,25 +406,36 @@ namespace igCauldron3
 		}
 		public static void RenderField_Enum(string id, object? raw, igMetaField field, FieldSetCallback cb)
 		{
+			ImGui.PushID(id);
 			igEnumMetaField enumMetaField = (igEnumMetaField)field;
 			if(enumMetaField._metaEnum != null)
 			{
+				// Enum representation
 				string valueName = raw!.ToString()!;
 				int selectedItem = enumMetaField._metaEnum._names.FindIndex(x => x == valueName);
-				ImGui.PushID(id);
+				ImGui.PushID("$enum$");
+				ImGui.PushItemWidth(258);
 				bool changed = ImGui.Combo(string.Empty, ref selectedItem, enumMetaField._metaEnum._names.ToArray(), enumMetaField._metaEnum._names.Count);
 				ImGui.PopID();
 				if(changed)
 				{
 					cb.Invoke(enumMetaField._metaEnum.GetEnumFromName(enumMetaField._metaEnum._names[selectedItem]));
 				}
+
+				// We'll render the int representation too
+				ImGui.SameLine();
+				ImGui.PushItemWidth(258);
 			}
-			else
+
+			// Int representation
+			int intValue = (int)raw!;
+			ImGui.PushID("$int$");
+			bool intChanged = ImGui.InputInt(string.Empty, ref intValue);
+			ImGui.PopID();
+
+			ImGui.PopID();
+			if (intChanged)
 			{
-				int intValue = (int)raw!;
-				ImGui.PushID(id);
-				ImGui.InputInt(string.Empty, ref intValue);
-				ImGui.PopID();
 				cb.Invoke((int)Math.Clamp(intValue, int.MinValue, int.MaxValue));
 			}
 		}
