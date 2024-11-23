@@ -54,6 +54,10 @@ namespace igCauldron3
 					{
 						_wnd._frames.Add(new DumpClassFrame(_wnd));
 					}
+					else if (ImGui.MenuItem("Open ImGui Demo"))
+					{
+						_wnd._frames.Add(new DemoWindowFrame(_wnd));
+					}
 					ImGui.EndMenu();
 				}
 				ImGui.EndMainMenuBar();
