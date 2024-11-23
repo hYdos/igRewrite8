@@ -21,6 +21,18 @@ namespace igLibrary.DotNet
 		public static Dictionary<string, igBaseMeta> _aliases = new Dictionary<string, igBaseMeta>();
 		public static DotNetType _thisPointer;
 
+		public override void PostUndump()
+		{
+			base.PostUndump();
+
+			igObjectRefMetaField? metaField = GetFieldByName("_meta") as igObjectRefMetaField;
+
+			if (metaField != null)
+			{
+				metaField._default = this;
+			}
+		}
+
 		public static igMetaObject? FindType(string name, DotNetRuntime runtime)
 		{
 			if(string.IsNullOrEmpty(name)) return null;
