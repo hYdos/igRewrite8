@@ -143,20 +143,14 @@ namespace igCauldron3.Graphics
 					uint mipHeight = (image._height + 3u) & ~3u;
 					uint blockWidth = image._format.GetBlockWidth();
 					uint blockHeight = image._format.GetBlockHeight();
-					uint cumSize = 0;
 					for(int i = 0; i < image._levelCount; i++)
 					{
-						cumSize += image._format.GetTextureSize((int)mipWidth, (int)mipHeight, image._depth, 1, image._imageCount);
 						GL.CompressedTexImage2D(TextureTarget.Texture2D, i, _compressedPlatformEnums[formatIndex]._format,
 							(int)mipWidth, (int)mipHeight, 0, (int)image._format.GetTextureSize((int)mipWidth, (int)mipHeight, image._depth, 1, image._imageCount),
 							(IntPtr)(data + image._format.GetTextureLevelOffset(image._width, image._height, image._depth, image._levelCount, image._imageCount, i, 0))
 						);
 						mipWidth >>= 1;     if(mipWidth < blockWidth)   mipWidth = blockWidth;
 						mipHeight >>= 1;    if(mipHeight < blockHeight) mipHeight = blockHeight;
-					}
-					if(StreamHelper.Align(cumSize, image._data._alignmentMultiple) != image._data.Length)
-					{
-						throw new InvalidDataException("Image size doesn't match processed bytes");
 					}
 				}
 				else
