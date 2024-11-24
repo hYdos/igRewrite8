@@ -481,6 +481,27 @@ namespace igLibrary.Core
 					((igObjectRefMetaField)_data._memType)._metaObject = _metaobjectLookup[elementtypeAttr.Value!];
 					metaobject.ValidateAndSetField(2, _data);
 				}
+				else if (childNode.Name == "hashtable")
+				{
+					XmlNode? invalidvalueAttr = childNode.Attributes!.GetNamedItem("invalidvalue");
+					if (invalidvalueAttr == null)
+					{
+						return new ArkCoreXmlError("\"hashtable\" node must have an \"invalidkey\" attribute!");
+					}
+					igMemoryRefMetaField _values = (igMemoryRefMetaField)metaobject._metaFields[0].CreateFieldCopy();
+					_values._memType.SetMemoryFromString(ref _values._memType._default, invalidvalueAttr.Value!);
+					metaobject.ValidateAndSetField(0, _values);
+
+
+					XmlNode? invalidkeyAttr = childNode.Attributes!.GetNamedItem("invalidkey");
+					if (invalidkeyAttr == null)
+					{
+						return new ArkCoreXmlError("\"hashtable\" node must have an \"invalidkey\" attribute!");
+					}
+					igMemoryRefMetaField _keys = (igMemoryRefMetaField)metaobject._metaFields[1].CreateFieldCopy();
+					_keys._memType.SetMemoryFromString(ref _keys._memType._default, invalidkeyAttr.Value!);
+					metaobject.ValidateAndSetField(1, _keys);
+				}
 				else if (childNode.Name == "compoundfields")
 				{
 					error = ParseCompoundNodePass2(childNode, _compoundLookup[metaobject._name!]);

@@ -369,7 +369,15 @@ namespace igLibrary.Core
 		/// <param name="target">The output field</param>
 		/// <param name="input">The input field</param>
 		/// <returns>boolean indicating whether the input was read successfully</returns>
-		public virtual bool SetMemoryFromString(ref object? target, string input) => throw new NotImplementedException();
+		public virtual bool SetMemoryFromString(ref object? target, string input)
+		{
+			if (input == "(null)")
+			{
+				target = null;
+				return true;
+			}
+			throw new NotImplementedException();
+		}
 
 
 		/// <summary>
