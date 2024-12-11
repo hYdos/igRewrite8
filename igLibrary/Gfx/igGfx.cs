@@ -356,6 +356,28 @@ namespace igLibrary.Gfx
 			// It's easier to just lie
 			vertexformat.AddObject(new igVertexFormatPlatform(), default(igName), new igName(typeof(T).Name));
 		}
+
+
+		public static void InitializeVertexBlenders()
+		{
+			igObjectDirectory vertexblender = new igObjectDirectory();
+			vertexblender._name = new igName("vertexblender");
+			vertexblender._useNameList = true;
+			vertexblender._nameList = new igNameList();
+			igObjectStreamManager.Singleton.AddObjectDirectory(vertexblender, vertexblender._name._string);
+			igObjectHandleManager.Singleton.AddSystemNamespace("vertexblender");
+
+			AddVertexBlender<igVertexBlenderDefault>(vertexblender);
+		}
+
+		private static void AddVertexBlender<T>(igObjectDirectory vertexformat) where T : igVertexBlender, new()
+		{
+			// I'm aware that it's igVertexBlender and not new T(), this is because there's a lack of metadata
+			// It's easier to just lie
+			vertexformat.AddObject(new T(), default(igName), new igName(typeof(T).Name.Substring(15)));
+		}
+
+
 		public static void InitializeMetaImages()
 		{
 			igObjectDirectory metaimages = new igObjectDirectory();
