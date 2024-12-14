@@ -370,11 +370,11 @@ namespace igLibrary.Gfx
 			AddVertexBlender<igVertexBlenderDefault>(vertexblender);
 		}
 
-		private static void AddVertexBlender<T>(igObjectDirectory vertexformat) where T : igVertexBlender, new()
+		private static void AddVertexBlender<T>(igObjectDirectory vertexblender) where T : igVertexBlender, new()
 		{
 			// I'm aware that it's igVertexBlender and not new T(), this is because there's a lack of metadata
 			// It's easier to just lie
-			vertexformat.AddObject(new T(), default(igName), new igName(typeof(T).Name.Substring(15)));
+			vertexblender.AddObject(new T(), default(igName), new igName(typeof(T).Name.Substring(15)));
 		}
 
 
