@@ -2,6 +2,7 @@ namespace igLibrary.Utils
 {
 	public struct igVariant
 	{
-		//No idea
+		public object? _data;
+		public igMetaField _storageField;
 	}
 }
