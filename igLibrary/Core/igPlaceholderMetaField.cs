@@ -1,3 +1,4 @@
+
 namespace igLibrary.Core
 {
 	public class igPlaceHolderMetaField : igMetaField
@@ -39,9 +40,22 @@ namespace igLibrary.Core
 			return _templateArgs[(int)index];
 		}
 
+		public override object? ReadIGZField(igIGZLoader loader)
+		{
+			Logging.Warn("Using placeholder implementation of ReadIGZField of field type {0}, this is bad", GetType().Name);
+			return loader._stream.ReadBytes(GetSize(loader._platform));
+		}
+
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			Logging.Warn("Using placeholder implementation of WriteIGZField of field type {0}, this is bad", GetType().Name);
+			section._sh.WriteBytes((byte[])value!);
+		}
+
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => _platformInfo._alignments[platform];
 		public override uint GetSize(IG_CORE_PLATFORM platform) => _platformInfo._sizes[platform];
 
+		public override Type GetOutputType() => typeof(byte[]);
 
 		/// <summary>
 		/// Sets the target variable based on the string representation of the input

@@ -88,6 +88,18 @@ namespace igLibrary
 			else convertedChar = Encoding.Unicode.GetString(new byte[] { newByte, newByte2 });
 			return convertedChar[0];
 		}
+
+		public unsafe void WriteUnicodeChar(char value)
+		{
+			string stringValue = new string(value, 1);
+			Encoding encoding = Encoding.Unicode;
+			if (_endianness == Endianness.Big)
+			{
+				encoding = Encoding.BigEndianUnicode;
+			}
+			BaseStream.Write(encoding.GetBytes(stringValue));
+		}
+
 		public string ReadUnicodeString()
 		{
 			var sb = new StringBuilder();

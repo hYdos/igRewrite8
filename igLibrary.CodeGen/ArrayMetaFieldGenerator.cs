@@ -36,7 +36,7 @@ namespace igLibrary.CodeGen
 
 		private void ParseType(GeneratorExecutionContext context, INamedTypeSymbol type)
 		{
-			if(!IsAssignableTo(type, "igMetaField") || type.Name == "igMetaField")
+			if(!IsAssignableTo(type, "igMetaField") || type.IsAbstract)
 			{
 				return;
 			}

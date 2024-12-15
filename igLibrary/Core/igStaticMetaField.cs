@@ -21,6 +21,10 @@ namespace igLibrary.Core
 			_storageMetaField = loader.ReadMetaField(sh);
 		}
 
+		// These two aren't meant to be used
+		public override object? ReadIGZField(igIGZLoader loader) => null;
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value) {}
+
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0;
 		public override Type GetOutputType() => _storageMetaField.GetOutputType();

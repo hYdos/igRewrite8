@@ -2,7 +2,7 @@ using System.Reflection;
 
 namespace igLibrary.Core
 {
-	public class igRefMetaField : igMetaField
+	public abstract class igRefMetaField : igMetaField
 	{
 		public bool _construct;
 		public bool _destruct;
