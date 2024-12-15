@@ -7,7 +7,12 @@ namespace igLibrary.Vfx
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			igVfxRangedRamp data = new igVfxRangedRamp();
+			data._data = loader._stream.ReadBytes(0x10);
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			section._sh.WriteBytes(((igVfxRangedRamp)value!)._data);
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x04;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x18;

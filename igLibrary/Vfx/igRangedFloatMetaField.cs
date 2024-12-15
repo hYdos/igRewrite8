@@ -11,7 +11,7 @@ namespace igLibrary.Vfx
 		}
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
 		{
-			igRangedFloat data = (igRangedFloat)value;
+			igRangedFloat data = (igRangedFloat)value!;
 			section._sh.WriteSingle(data._min);
 			section._sh.WriteSingle(data._max);
 		}

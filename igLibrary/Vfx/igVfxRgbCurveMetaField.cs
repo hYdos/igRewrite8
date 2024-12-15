@@ -7,7 +7,12 @@ namespace igLibrary.Vfx
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			igVfxRgbCurve data = new igVfxRgbCurve();
+			data._data = loader._stream.ReadBytes(0x110);
 			return data;
+		}
+		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
+		{
+			section._sh.WriteBytes(((igVfxRgbCurve)value!)._data);
 		}
 		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x04;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x110;
