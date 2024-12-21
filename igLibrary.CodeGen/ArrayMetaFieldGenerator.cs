@@ -84,6 +84,10 @@ namespace {type.ContainingNamespace.ToDisplayString()}
 		{{
 			return base.GetOutputType().MakeArrayType();
 		}}
+		public override object? GetDefault(igMemoryPool pool)
+		{{
+			return Array.CreateInstance(base.GetOutputType(), _num);
+		}}
 	}}
 }}
 #nullable disable
