@@ -268,6 +268,12 @@ namespace igLibrary.Core
 		}
 		public SaverSection GetSaverSection(igMemoryPool pool)
 		{
+			if (pool == null)
+			{
+				Logging.Warn("Tried finding a saver section with a null pool, assigning default to prevent crash");
+				pool = igMemoryContext.Singleton.GetMemoryPoolByName("Default")!;
+			}
+
 			int index = _sections.FindIndex(x => x._pool == pool);
 			SaverSection ret;
 			if(index < 0)
