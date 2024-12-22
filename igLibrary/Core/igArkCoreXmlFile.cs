@@ -705,6 +705,9 @@ namespace igLibrary.Core
 				}
 				error = ParseMetaFieldPropertyMetaField(node, "assignmentField", out bitFieldMetaField._assignmentMetaField!);
 				if (error != null) return error;
+
+				// bit (hehe) of a hack to get bitfields to be written out
+				bitFieldMetaField._properties._persistent = true;
 			}
 
 			if (metafield is igEnumMetaField enumMetaField)
