@@ -1,23 +1,34 @@
 using igCauldron3.Conversion;
-using igCauldron3.Graphics;
 using igCauldron3.Utils;
 using igLibrary;
 using igLibrary.Core;
 using igLibrary.Gfx;
 using igLibrary.Graphics;
 using ImGuiNET;
-using OpenTK.Graphics.OpenGL4;
-using SixLabors.ImageSharp;
 
 namespace igCauldron3
 {
+	/// <summary>
+	/// UI override for rendering hash tables
+	/// </summary>
 	public class igImage2Override : InspectorDrawOverride
 	{
+		/// <summary>
+		/// Constructor
+		/// </summary>
 		public igImage2Override()
 		{
 			_t = typeof(igImage2);
 		}
 
+
+		/// <summary>
+		/// Renders the ui
+		/// </summary>
+		/// <param name="dirFrame">The directory manager frame</param>
+		/// <param name="id">the id to render with</param>
+		/// <param name="obj">the object</param>
+		/// <param name="meta">the type of the object</param>
 		public unsafe override void Draw2(DirectoryManagerFrame dirFrame, string id, igObject obj, igMetaObject meta)
 		{
 			igImage2 image = (igImage2)obj;

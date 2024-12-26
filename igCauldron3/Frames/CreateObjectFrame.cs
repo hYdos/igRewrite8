@@ -3,6 +3,9 @@ using ImGuiNET;
 
 namespace igCauldron3
 {
+	/// <summary>
+	/// The UI frame for creating an <c>igObject</c>
+	/// </summary>
 	public class CreateObjectFrame : Frame
 	{
 		private igObjectDirectory _dir;
@@ -14,30 +17,52 @@ namespace igCauldron3
 		private Action<igObject?, igName>? _cbAddRoot;
 		private Action<igObject?>? _cbAddNormal;
 
+
+		/// <summary>
+		/// Constructor for <c>CreateObjectFrame</c> for appending an object to the end of a directory
+		/// </summary>
+		/// <param name="wnd">The window to parent the frame to</param>
+		/// <param name="dir">The <c>igObjectDrectory</c> to modify</param>
+		/// <param name="parentType">The type of the object to create, this'll populate the frame with the specified type and its derived types</param>
+		/// <param name="cb">The callback for when the user confirms</param>
+		/// <exception cref="ArgumentNullException">Thrown if one of the arguments are null</exception>
 		public CreateObjectFrame(Window wnd, igObjectDirectory dir, igMetaObject parentType, Action<igObject?, igName> cb) : base(wnd)
 		{
-			if(wnd == null) throw new ArgumentNullException("wnd must not be null!");
-			if(parentType == null) throw new ArgumentNullException("parentType must not be null!");
-			if(dir == null) throw new ArgumentNullException("dir must not be null!");
-			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
+			if(wnd == null) throw new ArgumentNullException(nameof(wnd));
+			if(parentType == null) throw new ArgumentNullException(nameof(parentType));
+			if(dir == null) throw new ArgumentNullException(nameof(dir));
+			if(cb == null) throw new ArgumentNullException(nameof(cb));
 			_parentType = parentType;
 			_alphabeticalMetas = igArkCore.MetaObjects.Where(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
 			_dir = dir;
 			_cbAddRoot = cb;
 		}
 
+
+		/// <summary>
+		/// Constructor for <c>CreateObjectFrame</c> for setting a regular object ref
+		/// </summary>
+		/// <param name="wnd">The window to parent the frame to</param>
+		/// <param name="dir">The <c>igObjectDrectory</c> to modify</param>
+		/// <param name="parentType">The type of the object to create, this'll populate the frame with the specified type and its derived types</param>
+		/// <param name="cb">The callback for when the user confirms</param>
+		/// <exception cref="ArgumentNullException">Thrown if one of the arguments are null</exception>
 		public CreateObjectFrame(Window wnd, igObjectDirectory dir, igMetaObject parentType, Action<igObject?> cb) : base(wnd)
 		{
-			if(wnd == null) throw new ArgumentNullException("wnd must not be null!");
-			if(parentType == null) throw new ArgumentNullException("parentType must not be null!");
-			if(dir == null) throw new ArgumentNullException("dir must not be null!");
-			if(cb == null) throw new ArgumentNullException("Callback must not be null!");
+			if(wnd == null) throw new ArgumentNullException(nameof(wnd));
+			if(parentType == null) throw new ArgumentNullException(nameof(parentType));
+			if(dir == null) throw new ArgumentNullException(nameof(dir));
+			if(cb == null) throw new ArgumentNullException(nameof(cb));
 			_parentType = parentType;
 			_alphabeticalMetas = igArkCore.MetaObjects.Where(x => x.CanBeAssignedTo(parentType)).OrderBy(x => x._name).ToList();
 			_dir = dir;
 			_cbAddNormal = cb;
 		}
 
+
+		/// <summary>
+		/// Renders the ui
+		/// </summary>
 		public override void Render()
 		{
 			ImGui.Begin("New Object", ImGuiWindowFlags.NoDocking);

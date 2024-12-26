@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Reflection.Metadata;
 using igLibrary.Core;
 using igLibrary.DotNet;
 using igLibrary.Math;
@@ -7,11 +6,21 @@ using ImGuiNET;
 
 namespace igCauldron3
 {
+	/// <summary>
+	/// Methods for rendering each field type
+	/// </summary>
 	public static class FieldRenderer
 	{
+		// Delegates
 		public delegate void FieldSetCallback(object? newRaw);
 		private delegate void RenderFieldAction(string id, object? raw, igMetaField field, FieldSetCallback cb);
+
+		// The lookup table
 		private static Dictionary<Type, RenderFieldAction> _renderFuncLookup = new Dictionary<Type, RenderFieldAction>();
+
+		/// <summary>
+		/// Sets up the lookup table
+		/// </summary>
 		public static void Init()
 		{
 			_renderFuncLookup.Add(typeof(igCharMetaField), RenderField_SByte);
@@ -49,6 +58,16 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igCompoundMetaField), RenderField_Compound);
 			_renderFuncLookup.Add(typeof(igTimeMetaField), RenderField_Time);
 		}
+
+
+		/// <summary>
+		/// Renders a field with a label
+		/// </summary>
+		/// <param name="id">The id to render with</param>
+		/// <param name="label">The label to display</param>
+		/// <param name="value">The value to display</param>
+		/// <param name="field">The metafield to use</param>
+		/// <param name="cb">The callback for when a new value is entered</param>
 		public static void RenderField(string id, string label, object? value, igMetaField field, FieldSetCallback cb)
 		{
 			if(field is igStaticMetaField) return;
@@ -57,6 +76,15 @@ namespace igCauldron3
 			ImGui.SameLine();
 			RenderFieldNoLabel(id + label, value, field, cb);
 		}
+
+
+		/// <summary>
+		/// Render a field without a label
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="value"></param>
+		/// <param name="field"></param>
+		/// <param name="cb"></param>
 		private static void RenderFieldNoLabel(string id, object? value, igMetaField field, FieldSetCallback cb)
 		{
 			RenderFieldAction? renderFunc;
@@ -101,7 +129,16 @@ namespace igCauldron3
 			}
 		}
 
+
 #region Primitive Numeric Renderers
+		/// <summary>
+		/// Renders a primitive number
+		/// </summary>
+		/// <param name="id">The id to render with</param>
+		/// <param name="raw">The value to render with</param>
+		/// <param name="type">The type of value</param>
+		/// <param name="cb">The callback on setting the value</param>
+		/// <exception cref="ArgumentException">If a non-numeric type was passed</exception>
 		private static void RenderField_PrimitiveNumber(string id, object? raw, ElementType type, FieldSetCallback cb)
 		{
 			string val = raw!.ToString()!;
@@ -134,6 +171,7 @@ namespace igCauldron3
 				catch(Exception){ changed = false; }	//change nothing
 			}
 		}
+		// I'm not commenting these
 		private static void RenderField_SByte(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI1, cb);
 		private static void RenderField_Byte(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeU1, cb);
 		private static void RenderField_Short(string id, object? raw, igMetaField field, FieldSetCallback cb) => RenderField_PrimitiveNumber(id, raw, ElementType.kElementTypeI2, cb);

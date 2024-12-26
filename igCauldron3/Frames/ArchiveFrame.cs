@@ -1,7 +1,6 @@
 using ImGuiNET;
 using igLibrary.Core;
 using igLibrary;
-using System.Diagnostics;
 
 namespace igCauldron3
 {
@@ -18,6 +17,10 @@ namespace igCauldron3
 		private Dictionary<string, igArchive.FileInfo[]> _sortedFileHeaders = new Dictionary<string, igArchive.FileInfo[]>();
 		private Dictionary<string, PackageUiData> _packageUiData = new Dictionary<string, PackageUiData>();
 
+
+		/// <summary>
+		/// Cached data representing a package
+		/// </summary>
 		private struct PackageUiData
 		{
 			public igObjectDirectory _directory;

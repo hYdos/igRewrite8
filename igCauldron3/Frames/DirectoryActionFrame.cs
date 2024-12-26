@@ -56,6 +56,10 @@ namespace igCauldron3
 			ImGui.End();
 		}
 
+
+		/// <summary>
+		/// Overridable method for when the user confirms
+		/// </summary>
 		protected abstract void OnActionStart();
 	}
 }

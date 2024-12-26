@@ -4,6 +4,9 @@ using Newtonsoft.Json.Converters;
 
 namespace igCauldron3
 {
+	/// <summary>
+	/// The settings file
+	/// </summary>
 	public class CauldronConfig
 	{
 		public static string ConfigFolder
@@ -23,11 +26,13 @@ namespace igCauldron3
 		public int _version = CurrentVersion;
 		public List<GameConfig> _games = new List<GameConfig>();
 
+		// A lot of this json stuff should be rewritten to not rely on reflection
 		public class VersionChecker
 		{
 			public int _version;
 		}
 
+		// Per game config
 		public class GameConfig
 		{
 			public string _path = string.Empty;
@@ -36,6 +41,11 @@ namespace igCauldron3
 			[JsonConverter(typeof(StringEnumConverter))] public IG_CORE_PLATFORM _platform;
 		}
 
+
+		/// <summary>
+		/// Load the configuration file
+		/// </summary>
+		/// <exception cref="ApplicationException">Thrown when it fails to read the config</exception>
 		public static void ReadConfig()
 		{
 			if(File.Exists(GameConfigFilePath))
@@ -55,6 +65,11 @@ namespace igCauldron3
 				_config = new CauldronConfig();
 			}
 		}
+
+
+		/// <summary>
+		/// Writing config
+		/// </summary>
 		public static void WriteConfig()
 		{
 			string json = JsonConvert.SerializeObject(_config);

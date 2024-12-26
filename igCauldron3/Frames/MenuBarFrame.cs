@@ -1,12 +1,23 @@
 using ImGuiNET;
-using igCauldron3.Utils;
 using igLibrary.Core;
 
 namespace igCauldron3
 {
+	/// <summary>
+	/// UI frame for the top menu bar
+	/// </summary>
 	public class MenuBarFrame : Frame
 	{
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="wnd">The window to parent the frame to</param>
 		public MenuBarFrame(Window wnd) : base(wnd){}
+
+
+		/// <summary>
+		/// Renders the ui
+		/// </summary>
 		public override void Render()
 		{
 			if(ImGui.BeginMainMenuBar())
