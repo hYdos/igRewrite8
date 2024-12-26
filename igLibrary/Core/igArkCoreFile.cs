@@ -2,6 +2,10 @@ using System.Reflection;
 
 namespace igLibrary.Core
 {
+	/// <summary>
+	/// A binary ark core file
+	/// </summary>
+	[Obsolete]
 	public class igArkCoreFile
 	{
 		public const uint _magicCookie = 0x41726B00;

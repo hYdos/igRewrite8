@@ -1,5 +1,8 @@
 namespace igLibrary.Core
 {
+	/// <summary>
+	/// Exception for when the tool fails to read a field
+	/// </summary>
 	public class FieldReadException : Exception
 	{
 		public new Exception InnerException { get; private set; }
@@ -16,6 +19,14 @@ namespace igLibrary.Core
 		}
 		public override string? StackTrace => InnerException.StackTrace;
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="innerException">The root exception</param>
+		/// <param name="filePath">The path of the file</param>
+		/// <param name="offset">The offset within the file</param>
+		/// <param name="metaObject">The metaobject that failed to be read</param>
+		/// <param name="field">The field that failed to be read</param>
 		public FieldReadException(Exception innerException, string filePath, uint offset, igMetaObject metaObject, igMetaField field)
 		{
 			InnerException = innerException;

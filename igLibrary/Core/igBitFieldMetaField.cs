@@ -2,6 +2,9 @@ using System.Reflection;
 
 namespace igLibrary.Core
 {
+	/// <summary>
+	/// Metafield for bitfields
+	/// </summary>
 	public class igBitFieldMetaField : igMetaField
 	{
 		public igMetaField _storageMetaField;
@@ -9,6 +12,12 @@ namespace igLibrary.Core
 		public uint _bits;
 		public uint _shift;
 
+
+		/// <summary>
+		/// Dump binary ark data
+		/// </summary>
+		/// <param name="saver">The saver</param>
+		/// <param name="sh">The streamhelper</param>
 		public override void DumpArkData(igArkCoreFile saver, StreamHelper sh)
 		{
 			base.DumpArkData(saver, sh);
@@ -18,6 +27,13 @@ namespace igLibrary.Core
 			saver.SaveString(sh, _storageMetaField._fieldName);
 			saver.SaveMetaField(sh, _assignmentMetaField);
 		}
+
+
+		/// <summary>
+		/// Undump binary ark data
+		/// </summary>
+		/// <param name="loader">The loader</param>
+		/// <param name="sh">The streamhelper</param>
 		public override void UndumpArkData(igArkCoreFile loader, StreamHelper sh)
 		{
 			base.UndumpArkData(loader, sh);
@@ -27,7 +43,14 @@ namespace igLibrary.Core
 			_storageMetaField = _parentMeta.GetFieldByName(loader.ReadString(sh));
 			_assignmentMetaField = loader.ReadMetaField(sh);
 		}
-		//Look into this
+
+
+		/// <summary>
+		/// Read data from the igz
+		/// </summary>
+		/// <param name="loader">The loader</param>
+		/// <returns>The value</returns>
+		/// <exception cref="NotImplementedException">Thrown when there's an unimplemented bitfield type</exception>
 		public override object? ReadIGZField(igIGZLoader loader)
 		{
 			ulong storage = (ulong)Convert.ChangeType(_storageMetaField.ReadIGZField(loader), typeof(ulong));
@@ -46,6 +69,15 @@ namespace igLibrary.Core
 
 			throw new NotImplementedException($"_assignmentMetaField for {_assignmentMetaField.GetType().Name} is not implemented, contact a developer.");
 		}
+
+
+		/// <summary>
+		/// Write igz field
+		/// </summary>
+		/// <param name="saver">the saver</param>
+		/// <param name="section">the section of the file</param>
+		/// <param name="value">the value</param>
+		/// <exception cref="NotImplementedException">Thrown when there's an unimplemented bitfield type</exception>
 		public override void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value)
 		{
 			uint size = _storageMetaField.GetSize(saver._platform);

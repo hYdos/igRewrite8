@@ -2,6 +2,10 @@ using System.Diagnostics;
 
 namespace igLibrary.Core
 {
+	/// <summary>
+	/// List of modifications to make to the arkcore data, was used to support ssc ios before i realised it's futile
+	/// </summary>
+	[Obsolete]
 	internal static class igArkCoreFixups
 	{
 		private static igMetaObject GetMetaSafe(string name, int expectedFieldNum)
