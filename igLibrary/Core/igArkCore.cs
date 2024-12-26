@@ -209,18 +209,6 @@ namespace igLibrary.Core
 
 
 		/// <summary>
-		/// Deals with differing metadata on different platforms.
-		/// </summary>
-		private static void FixupClasses(EGame game)
-		{
-			string funcName = game.ToString();
-			MethodInfo? func = typeof(igArkCoreFixups).GetMethod(funcName.ReplaceBeginning("EV_", ""));
-			func?.Invoke(null, null);
-		}
-
-
-
-		/// <summary>
 		/// Output stored reflection metadata to an igArkCoreFile.
 		/// </summary>
 		public static void WriteToFile(EGame game)

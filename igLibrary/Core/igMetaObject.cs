@@ -350,21 +350,5 @@ namespace igLibrary.Core
 			if(setFields) obj.ResetFields(this);
 			return obj;
 		}
-		public void CorrectObjectMeta(igObject obj)
-		{
-			FieldInfo? fi = _vTablePointer.GetField("_meta");
-			if(fi != null)
-			{
-				fi.SetValue(obj, this);
-			}
-		}
-		internal void ApplyFixup(int index, igMetaField field)
-		{
-			_metaFields.Insert(index, field);
-			for(int i = 0; i < _children.Count; i++)
-			{
-				_children[i].ApplyFixup(index, field);
-			}
-		}
 	}
 }
