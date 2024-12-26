@@ -218,5 +218,11 @@ namespace igLibrary.Core
 
 			return false;
 		}
+
+
+		public void Unlink(string path)
+		{
+			CreateWorkItem(null, igFileWorkItem.WorkType.kTypeUnlink, null, 0, 0, 0, path, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal, null, null);
+		}
 	}
 }
