@@ -194,5 +194,29 @@ namespace igLibrary.Core
 			list = new igStringRefList();
 			CreateWorkItem(null, igFileWorkItem.WorkType.kTypeFileList, list, 0, 0, 0, dir, blockingType, priority, null, null);
 		}
+		public bool Exists(string path)
+		{
+			igFilePath fp = new igFilePath();
+			fp.Set(path);
+
+			if (File.Exists(fp.getNativePath()))
+			{
+				return true;
+			}
+
+			uint hash = igHash.Hash(fp._path.ToString());
+			for(int i = 0; i < _devices.Count; i++)
+			{
+				if(_devices[i] is igArchive iga)
+				{
+					if(iga.HasFile(hash))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
 	}
 }
