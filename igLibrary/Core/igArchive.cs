@@ -655,6 +655,22 @@ namespace igLibrary.Core
 		}
 		public bool HasFile(string path) => HasFile(HashFilePath(path));
 		public bool HasFile(uint hash) => HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, hash) >= 0;
+
+
+		public bool Delete(string path)
+		{
+			int fileId = HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, HashFilePath(path));
+			if(fileId == -1)
+			{
+				return false;
+			}
+
+			_files.RemoveAt(fileId);
+			CalculateHashSearchProperties();
+			return true;
+		}
+
+
 		public override void Exists(igFileWorkItem workItem)
 		{
 			if(HasFile(workItem._path))
@@ -722,7 +738,8 @@ namespace igLibrary.Core
 		}
 		public override void Unlink(igFileWorkItem workItem)
 		{
-			workItem.SetStatus(igFileWorkItem.Status.kStatusUnsupported);
+			bool success = Delete(workItem._path);
+			workItem.SetStatus(success ? igFileWorkItem.Status.kStatusComplete : igFileWorkItem.Status.kStatusInvalidPath);
 		}
 		public override void Rename(igFileWorkItem workItem)
 		{
