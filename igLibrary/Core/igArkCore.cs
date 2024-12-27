@@ -1,3 +1,12 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -205,18 +214,6 @@ namespace igLibrary.Core
 		public static List<igBaseMeta> _pendingTypes = new List<igBaseMeta>();
 
 
-
-
-
-		/// <summary>
-		/// Deals with differing metadata on different platforms.
-		/// </summary>
-		private static void FixupClasses(EGame game)
-		{
-			string funcName = game.ToString();
-			MethodInfo? func = typeof(igArkCoreFixups).GetMethod(funcName.ReplaceBeginning("EV_", ""));
-			func?.Invoke(null, null);
-		}
 
 
 

@@ -1,3 +1,12 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
 using System.Reflection;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -88,6 +97,18 @@ namespace igLibrary
 			else convertedChar = Encoding.Unicode.GetString(new byte[] { newByte, newByte2 });
 			return convertedChar[0];
 		}
+
+		public unsafe void WriteUnicodeChar(char value)
+		{
+			string stringValue = new string(value, 1);
+			Encoding encoding = Encoding.Unicode;
+			if (_endianness == Endianness.Big)
+			{
+				encoding = Encoding.BigEndianUnicode;
+			}
+			BaseStream.Write(encoding.GetBytes(stringValue));
+		}
+
 		public string ReadUnicodeString()
 		{
 			var sb = new StringBuilder();

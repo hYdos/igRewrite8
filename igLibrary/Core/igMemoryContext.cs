@@ -1,3 +1,12 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
 namespace igLibrary.Core
 {
 	//Inherits from igContext
@@ -20,6 +29,7 @@ namespace igLibrary.Core
 			_pools.Add("String", 				new igMemoryPool("String"));
 			_pools.Add("Kernel", 				new igMemoryPool("Kernel"));
 			_pools.Add("SystemDebug", 			new igMemoryPool("SystemDebug"));
+			_pools.Add("Debug",					new igMemoryPool("Debug"));
 			_pools.Add("Default", 				new igMemoryPool("Default"));
 			_pools.Add("Current", 				new igMemoryPool("Current"));
 			_pools.Add("Fast", 					new igMemoryPool("Fast"));
@@ -45,6 +55,7 @@ namespace igLibrary.Core
 			_pools.Add("AudioStreamFile", 		new igMemoryPool("AudioStreamFile"));
 			_pools.Add("AudioStreamDecode", 	new igMemoryPool("AudioStreamDecode"));
 			_pools.Add("Video", 				new igMemoryPool("Video"));
+			_pools.Add("Temporary", 			new igMemoryPool("Temporary"));
 			_pools.Add("DMA", 					new igMemoryPool("DMA"));
 			_pools.Add("Shader", 				new igMemoryPool("Shader"));
 			_pools.Add("ShaderBinary", 			new igMemoryPool("ShaderBinary"));
@@ -59,6 +70,7 @@ namespace igLibrary.Core
 			_pools.Add("VRAMTopDown", 			new igMemoryPool("VRAMTopDown"));
 			_pools.Add("DotNet", 				new igMemoryPool("DotNet"));
 			_pools.Add("VramA", 				new igMemoryPool("VramA"));
+			_pools.Add("VramB", 				new igMemoryPool("VramB"));
 			_pools.Add("VramStaging", 			new igMemoryPool("VramStaging"));
 			_pools.Add("MEM1", 					_pools["Default"]);
 			_pools.Add("MEM2", 					_pools["Default"]);

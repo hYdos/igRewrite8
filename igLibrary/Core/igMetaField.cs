@@ -1,3 +1,12 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
 using System.Reflection;
 
 namespace igLibrary.Core
@@ -5,7 +14,7 @@ namespace igLibrary.Core
 	/// <summary>
 	/// Represents the metadata for a field
 	/// </summary>
-	public class igMetaField : igObject
+	public abstract class igMetaField : igObject
 	{
 		/// <summary>
 		/// Different ways to copy a field when copying an object
@@ -273,7 +282,7 @@ namespace igLibrary.Core
 		/// </summary>
 		/// <param name="loader">the IGZ to read the data from, at the correct offset</param>
 		/// <returns>The value of the field</returns>
-		public virtual object? ReadIGZField(igIGZLoader loader) => throw new NotImplementedException();
+		public abstract object? ReadIGZField(igIGZLoader loader);
 
 
 		/// <summary>
@@ -282,14 +291,14 @@ namespace igLibrary.Core
 		/// <param name="saver">The IGZ to write the data to</param>
 		/// <param name="section">The section of the igz to write the data to, at the correct offset</param>
 		/// <param name="value">The value to write</param>
-		public virtual void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value) => throw new NotImplementedException();
+		public abstract void WriteIGZField(igIGZSaver saver, igIGZSaver.SaverSection section, object? value);// => throw new NotImplementedException();
 
 
 		/// <summary>
 		/// The dotnet type of the field
 		/// </summary>
 		/// <returns>The type of the field</returns>
-		public virtual Type GetOutputType() => typeof(object);
+		public abstract Type GetOutputType();
 
 
 		/// <summary>
@@ -297,7 +306,7 @@ namespace igLibrary.Core
 		/// </summary>
 		/// <param name="platform">The platform in question</param>
 		/// <returns>An unsigned integer representing how big the field is in bytes</returns>
-		public virtual uint GetSize(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
+		public abstract uint GetSize(IG_CORE_PLATFORM platform);
 
 
 		/// <summary>
@@ -305,7 +314,7 @@ namespace igLibrary.Core
 		/// </summary>
 		/// <param name="platform">The platfomr in question</param>
 		/// <returns>An unsigned integer represnting the alignment of the field in bytes</returns>
-		public virtual uint GetAlignment(IG_CORE_PLATFORM platform) => throw new NotImplementedException();
+		public abstract uint GetAlignment(IG_CORE_PLATFORM platform);
 
 
 		/// <summary>
@@ -369,7 +378,15 @@ namespace igLibrary.Core
 		/// <param name="target">The output field</param>
 		/// <param name="input">The input field</param>
 		/// <returns>boolean indicating whether the input was read successfully</returns>
-		public virtual bool SetMemoryFromString(ref object? target, string input) => throw new NotImplementedException();
+		public virtual bool SetMemoryFromString(ref object? target, string input)
+		{
+			if (input == "(null)")
+			{
+				target = null;
+				return true;
+			}
+			throw new NotImplementedException();
+		}
 
 
 		/// <summary>

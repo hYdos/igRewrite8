@@ -1,3 +1,12 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
 using System.Reflection;
 using System.Xml;
 
@@ -481,6 +490,27 @@ namespace igLibrary.Core
 					((igObjectRefMetaField)_data._memType)._metaObject = _metaobjectLookup[elementtypeAttr.Value!];
 					metaobject.ValidateAndSetField(2, _data);
 				}
+				else if (childNode.Name == "hashtable")
+				{
+					XmlNode? invalidvalueAttr = childNode.Attributes!.GetNamedItem("invalidvalue");
+					if (invalidvalueAttr == null)
+					{
+						return new ArkCoreXmlError("\"hashtable\" node must have an \"invalidkey\" attribute!");
+					}
+					igMemoryRefMetaField _values = (igMemoryRefMetaField)metaobject._metaFields[0].CreateFieldCopy();
+					_values._memType.SetMemoryFromString(ref _values._memType._default, invalidvalueAttr.Value!);
+					metaobject.ValidateAndSetField(0, _values);
+
+
+					XmlNode? invalidkeyAttr = childNode.Attributes!.GetNamedItem("invalidkey");
+					if (invalidkeyAttr == null)
+					{
+						return new ArkCoreXmlError("\"hashtable\" node must have an \"invalidkey\" attribute!");
+					}
+					igMemoryRefMetaField _keys = (igMemoryRefMetaField)metaobject._metaFields[1].CreateFieldCopy();
+					_keys._memType.SetMemoryFromString(ref _keys._memType._default, invalidkeyAttr.Value!);
+					metaobject.ValidateAndSetField(1, _keys);
+				}
 				else if (childNode.Name == "compoundfields")
 				{
 					error = ParseCompoundNodePass2(childNode, _compoundLookup[metaobject._name!]);
@@ -684,6 +714,9 @@ namespace igLibrary.Core
 				}
 				error = ParseMetaFieldPropertyMetaField(node, "assignmentField", out bitFieldMetaField._assignmentMetaField!);
 				if (error != null) return error;
+
+				// bit (hehe) of a hack to get bitfields to be written out
+				bitFieldMetaField._properties._persistent = true;
 			}
 
 			if (metafield is igEnumMetaField enumMetaField)

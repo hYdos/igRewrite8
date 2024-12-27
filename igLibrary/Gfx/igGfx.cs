@@ -1,3 +1,14 @@
+/*
+	Copyright (c) 2022-2025, The igLibrary Contributors.
+	igLibrary and its libraries are free software: You can redistribute it and
+	its libraries under the terms of the Apache License 2.0 as published by
+	The Apache Software Foundation.
+	Please see the LICENSE file for more details.
+*/
+
+
+using igLibrary.Core;
+
 namespace igLibrary.Gfx
 {
 	/// <summary>
@@ -465,9 +476,38 @@ namespace igLibrary.Gfx
 
 
 		/// <summary>
+		/// Initialise all the vertex blenders
+		/// </summary>
+		public static void InitializeVertexBlenders()
+		{
+			igObjectDirectory vertexblender = new igObjectDirectory();
+			vertexblender._name = new igName("vertexblender");
+			vertexblender._useNameList = true;
+			vertexblender._nameList = new igNameList();
+			igObjectStreamManager.Singleton.AddObjectDirectory(vertexblender, vertexblender._name._string);
+			igObjectHandleManager.Singleton.AddSystemNamespace("vertexblender");
+
+			AddVertexBlender<igVertexBlenderDefault>(vertexblender);
+		}
+
+
+		/// <summary>
+		/// Add a specific vertex blender
+		/// </summary>
+		/// <typeparam name="T">The blender type</typeparam>
+		/// <param name="vertexblender">The directory</param>
+		private static void AddVertexBlender<T>(igObjectDirectory vertexblender) where T : igVertexBlender, new()
+		{
+			// I'm aware that it's igVertexBlender and not new T(), this is because there's a lack of metadata
+			// It's easier to just lie
+			vertexblender.AddObject(new T(), default(igName), new igName(typeof(T).Name.Substring(15)));
+		}
+
+
+		/// <summary>
 		/// Initialize all metaimages
 		/// </summary>
-		private static void InitializeMetaImages()
+		public static void InitializeMetaImages()
 		{
 			igObjectDirectory metaimages = new igObjectDirectory();
 			metaimages._name = new igName("metaimages");
