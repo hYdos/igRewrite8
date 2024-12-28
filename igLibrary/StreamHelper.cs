@@ -248,12 +248,10 @@ namespace igLibrary
 					Array.Reverse(data, 0, data.Length);
 				}
 			}
-
-			GCHandle handle = GCHandle.Alloc(data, GCHandleType.Pinned);
-			T read = Marshal.PtrToStructure<T>(handle.AddrOfPinnedObject());
-			handle.Free();
-
-			return read;
+			fixed (byte* b = data)
+			{
+				return Marshal.PtrToStructure<T>((IntPtr)b);
+			}
 		}
 		public unsafe object ReadStructArray(Type t, uint count)
 		{
