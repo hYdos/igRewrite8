@@ -2,9 +2,13 @@
 
 A modding tool for the alchemy engine
 
-## Building
+## Running from source
 
-cd into the repository root and run `dotnet build`
+cd into the Resources directory and run `dotnet run --project ../igCauldron3`
+
+## Building for release
+
+cd into the root of the repo (the folder with the .sln) and run `dotnet publish --configuration=Release`, this'll also copy the necessary resources
 
 ## The Projects
 
