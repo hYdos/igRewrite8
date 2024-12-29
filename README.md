@@ -2,9 +2,17 @@
 
 A modding tool for the alchemy engine
 
+## Usage
+
+Create a new game config, in the game path, put the directory containing the `archives` folder, (e.g. for PS3 this'll be the `USRDIR` folder, and for Wii U this'll be the `content` folder).
+
+Note that only Superchargers 1.6.X and Imaginators 1.1.0 are supported.
+
+Logs are stored in `%AppData%/NefariousTechSupport/igCauldron`. These may be quite large so feel free to delete the Logs directory if you find that you're running out of space, logs before a certain date will be automatically deleted in a later update.
+
 ## Running from source
 
-cd into the Resources directory and run `dotnet run --project ../igCauldron3`
+cd into the `Resources` directory and run `dotnet run --project ../igCauldron3`
 
 ## Building for release
 
