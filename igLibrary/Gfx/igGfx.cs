@@ -929,6 +929,149 @@ namespace igLibrary.Gfx
 				}
 			}
 		}
+
+
+		public static unsafe void Convert_dxt5_to_r8g8b8a8(igImageLevel source, igImageLevel target)
+		{
+			uint numBlocks = source._imageSize / 0x10;
+			uint blockWidth = (source._width + 3) >> 2;
+			uint blockHeight = (source._height + 3) >> 2;
+			byte* sourceData = source._imageData;
+			for(uint i = 0; i < numBlocks; i++, sourceData += 0x10)
+			{
+				ushort col0  = (ushort)((sourceData[0x09] << 8) | (sourceData[0x08]));
+				ushort col1  = (ushort)((sourceData[0x0B] << 8) | (sourceData[0x0A]));
+				uint   codes = (uint)((sourceData[0x0F] << 24) | (sourceData[0x0E] << 16) | (sourceData[0x0D] << 8) | sourceData[0x0C]);
+				byte   r0    = (byte)(((col0 >> 11) & 0x1F) << 3);
+				byte   r1    = (byte)(((col1 >> 11) & 0x1F) << 3);
+				byte   g0    = (byte)(((col0 >>  5) & 0x3F) << 2);
+				byte   g1    = (byte)(((col1 >>  5) & 0x3F) << 2);
+				byte   b0    = (byte)((col0 & 0x1F) << 3);
+				byte   b1    = (byte)((col1 & 0x1F) << 3);
+
+				byte   a0    = sourceData[0x00];
+				byte   a1    = sourceData[0x01];
+				ulong  aCodes= ((ulong)sourceData[0x07] << 40) | ((ulong)sourceData[0x06] << 32) | ((uint)sourceData[0x05] << 24) | ((uint)sourceData[0x04] << 16) | ((uint)sourceData[0x03] << 8) | sourceData[0x02];
+
+				//Multiply by 4 cos block size
+				uint pixelX = (i % blockWidth) << 2;
+				uint pixelY = (i / blockWidth) << 2;
+
+				for(uint j = 0; j < 16; j++)
+				{
+					uint pixelOffset = ((pixelY + (j >> 2)) * target._width + pixelX + (j & 3)) << 2;	//Multiply by 4 cos r8g8b8a8 pixel size
+					byte code = (byte)((codes >> (int)(j * 2)) & 0x03);
+					//Could potentially cause an IndexOutOfBoundsException when the target width or height is not a multiple of 4
+					if(col0 > col1) switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 0] = r0;
+							target._imageData[pixelOffset + 1] = g0;
+							target._imageData[pixelOffset + 2] = b0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 0] = r1;
+							target._imageData[pixelOffset + 1] = g1;
+							target._imageData[pixelOffset + 2] = b1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 0] = (byte)((2 * r0 + r1) / 3);
+							target._imageData[pixelOffset + 1] = (byte)((2 * g0 + g1) / 3);
+							target._imageData[pixelOffset + 2] = (byte)((2 * b0 + b1) / 3);
+							break;
+						case 3:
+							target._imageData[pixelOffset + 0] = (byte)((r0 + 2 * r1) / 3);
+							target._imageData[pixelOffset + 1] = (byte)((g0 + 2 * g1) / 3);
+							target._imageData[pixelOffset + 2] = (byte)((b0 + 2 * b1) / 3);
+							break;
+					}
+					else switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 0] = r0;
+							target._imageData[pixelOffset + 1] = g0;
+							target._imageData[pixelOffset + 2] = b0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 0] = r1;
+							target._imageData[pixelOffset + 1] = g1;
+							target._imageData[pixelOffset + 2] = b1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 0] = (byte)((r0 + r1) / 2);
+							target._imageData[pixelOffset + 1] = (byte)((g0 + g1) / 2);
+							target._imageData[pixelOffset + 2] = (byte)((b0 + b1) / 2);
+							break;
+						case 3:
+							target._imageData[pixelOffset + 0] = 0;
+							target._imageData[pixelOffset + 1] = 0;
+							target._imageData[pixelOffset + 2] = 0;
+							break;
+					}
+				}
+				for(uint j = 0; j < 16; j++)
+				{
+					uint pixelOffset = ((pixelY + (j >> 2)) * target._width + pixelX + (j & 3)) << 2;	//Multiply by 4 cos r8g8b8a8 pixel size
+					byte code = (byte)((aCodes >> (int)(j * 3)) & 0x07);
+
+					//Could potentially cause an IndexOutOfBoundsException when the target width or height is not a multiple of 4
+					if(a0 > a1) switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 3] = a0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 3] = a1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((6u*a0 +    a1) / 7u));
+							break;
+						case 3:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((5u*a0 + 2u*a1) / 7u));
+							break;
+						case 4:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((4u*a0 + 3u*a1) / 7u));
+							break;
+						case 5:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((3u*a0 + 4u*a1) / 7u));
+							break;
+						case 6:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((2u*a0 + 5u*a1) / 7u));
+							break;
+						case 7:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((   a0 + 7u*a1) / 7u));
+							break;
+					}
+					else switch(code)
+					{
+						case 0:
+							target._imageData[pixelOffset + 3] = a0;
+							break;
+						case 1:
+							target._imageData[pixelOffset + 3] = a1;
+							break;
+						case 2:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((4u*a0 +    a1) / 5u));
+							break;
+						case 3:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((3u*a0 + 2u*a1) / 5u));
+							break;
+						case 4:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((2u*a0 + 3u*a1) / 5u));
+							break;
+						case 5:
+							target._imageData[pixelOffset + 3] = unchecked((byte)((1u*a0 + 4u*a1) / 5u));
+							break;
+						case 6:
+							target._imageData[pixelOffset + 3] = 0;
+							break;
+						case 7:
+							target._imageData[pixelOffset + 3] = 0xFF;
+							break;
+					}
+				}
+			}
+		}
 #endregion Image conversion
 	}
 }
