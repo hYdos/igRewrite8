@@ -15,6 +15,7 @@ using OpenTK.Graphics.OpenGL4;
 using igLibrary.Core;
 using igCauldron3.Graphics;
 using igLibrary.Graphics;
+using System.ComponentModel;
 
 namespace igCauldron3
 {
@@ -145,6 +146,14 @@ namespace igCauldron3
 
 			//Title = e.Time.ToString();
 			SwapBuffers();
+		}
+
+
+		protected override void OnClosing(CancelEventArgs e)
+		{
+			controller.Dispose();
+
+			base.OnClosing(e);
 		}
 
 

@@ -503,6 +503,8 @@ void main()
 
 			GL.DeleteTexture(_fontTexture);
 			GL.DeleteProgram(_shader);
+
+			ImGui.SaveIniSettingsToDisk(CauldronConfig.ImGuiConfigFilePath);
 		}
 
 		public static void LabelObject(ObjectLabelIdentifier objLabelIdent, int glObject, string name)
