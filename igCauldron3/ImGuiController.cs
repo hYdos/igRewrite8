@@ -79,7 +79,14 @@ namespace igCauldron3
 				io.NativePtr->IniFilename = (byte*)newname;
 			}
 
-			ImGui.LoadIniSettingsFromDisk(CauldronConfig.ImGuiConfigFilePath);
+			if (File.Exists(CauldronConfig.ImGuiConfigFilePath))
+			{
+				ImGui.LoadIniSettingsFromDisk(CauldronConfig.ImGuiConfigFilePath);
+			}
+			else
+			{
+				ImGui.LoadIniSettingsFromDisk("defaultimgui.ini");
+			}
 
 			io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
 			io.ConfigFlags |= ImGuiConfigFlags.DockingEnable;
