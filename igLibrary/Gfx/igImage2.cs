@@ -63,7 +63,9 @@ namespace igLibrary.Gfx
 			other._colorScale = _colorScale;
 			other._colorBias = _colorBias;
 
+#if DEBUG
 			File.WriteAllBytes("dxt1.dat", _data.Buffer);
+#endif // DEBUG
 
 			fixed(byte* sourcePtr = _data.Buffer, targetPtr = other._data.Buffer)
 			{
