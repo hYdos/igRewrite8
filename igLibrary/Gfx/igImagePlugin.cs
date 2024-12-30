@@ -96,6 +96,7 @@ namespace igLibrary.Gfx
 			       r5g6b5.AppendConvertFunction(r8g8b8a8, igGfx.Convert_r5g6b5_to_r8g8b8a8);
 			           a8.AppendConvertFunction(r8g8b8a8, igGfx.Convert_a8_to_r8g8b8a8);
 			         dxt1.AppendConvertFunction(r8g8b8a8, igGfx.Convert_dxt1_to_r8g8b8a8);
+			         dxt5.AppendConvertFunction(r8g8b8a8, igGfx.Convert_dxt5_to_r8g8b8a8);
 		}
 	}
 	public class igImagePluginList : igTObjectList<igImagePlugin>{}
