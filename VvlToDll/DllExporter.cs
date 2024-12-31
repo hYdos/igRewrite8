@@ -610,7 +610,7 @@ namespace VvlToDll
 				case 0xA2: return OpCodes.Stelem_Ref;
 				case 0xA3: return OpCodes.Ldelem_Any;
 				case 0xA4: return OpCodes.Stelem_Any;
-				case 0xA5: return OpCodes.Unbox;								//unbox is ffectively a nop
+				case 0xA5: return OpCodes.Unbox_Any; //unbox.any is effectively a nop, but it skips over the inline arg so do this to be safe
 				case 0xB3: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i1");
 				case 0xB4: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.u1");
 				case 0xB5: return OpCodes.Nop;//throw GetRemovedOpCodeException("conv.ovf.i2");
