@@ -122,6 +122,7 @@ namespace VvlToDll
 			else
 			{
 				methodRef = _methodRefLookup[dnMethod];
+			}
 
 			if (methodRef != null
 			 && templateParameters != null)
@@ -218,6 +219,13 @@ namespace VvlToDll
 			{
 				if(dnMethodRef == null) continue;
 				MethodReference mr = new MethodReference(dnMethodRef._name, ImportVvlTypeRef(dnMethodRef._retType, true), ImportVvlTypeRef(dnMethodRef._declaringType));
+
+				if (!dnMethodRef.isStatic)
+				{
+					mr.CallingConvention = MethodCallingConvention.ThisCall;
+					mr.HasThis = true;
+				}
+
 				for(int i = dnMethodRef.isStatic ? 0 : 1; i < dnMethodRef._parameters._count; i++)
 				{
 					mr.Parameters.Add(new ParameterDefinition(ImportVvlTypeRef(dnMethodRef._parameters[i])));
