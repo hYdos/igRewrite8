@@ -104,31 +104,17 @@ VvlToDll -gg <base game folder> -up <update.pak> -od <output directory> -p <plat
 			igArkCore.ReadFromXmlFile(game);
 			ArkDllExport.Create(outputDir);
 			igAlchemyCore.InitializeSystems();
+			VvlPackagePrecacher.Intialize();
 			igFileContext.Singleton.Initialize(gamePath);
 			igFileContext.Singleton.InitializeUpdate(updatePath);
+			Logging.Mode = Logging.LoggingMode.Console;
 
-			VvlPackagePrecacher._Instance.Intialize();
-
-			//CClient::loadGameStartupPackages
-			//CPrecacheManager._Instance.PrecachePackage("data:/archives/languagestartup", EMemoryPoolID.MP_DEFAULT);
-			VvlPackagePrecacher._Instance.PrecachePackage($"generated/packageXmls/permanent_{igAlchemyCore.GetPlatformString(platform)}");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/essentialui");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/legal");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/gamestartup");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanentdeveloper");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/SoundBankData");
-
-			//CClient::loadDeferredPackages
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanent");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/maps/zoneinfos");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/packageXmls/permanent_2015");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_Mobile");
-			VvlPackagePrecacher._Instance.PrecachePackage("generated/UI/Domains/JuiceDomain_FrontEnd");
+			CPrecacheFileLoader.LoadInitialPackages(game, false);
 
 			for(int i = 0; i < packages.Count; i++)
 			{
 				Console.WriteLine("Loading script " + packages[i]);
-				VvlPackagePrecacher._Instance.PrecachePackage(packages[i]);
+				CPrecacheManager._Instance.PrecachePackage(packages[i], EMemoryPoolID.MP_DEFAULT);
 			}
 
 			DllExportManager.ExportAllVvls(outputDir);
