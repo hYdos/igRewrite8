@@ -225,6 +225,12 @@ namespace VvlToDll
 					mr.CallingConvention = MethodCallingConvention.ThisCall;
 					mr.HasThis = true;
 				}
+				else
+				{
+					mr.CallingConvention = MethodCallingConvention.Default;
+					mr.HasThis = false;
+					mr.ExplicitThis = false;
+				}
 
 				for(int i = dnMethodRef.isStatic ? 0 : 1; i < dnMethodRef._parameters._count; i++)
 				{
@@ -241,8 +247,13 @@ namespace VvlToDll
 				MethodDefinition md = new MethodDefinition(dnMethodDef._name, MethodAttributes.Public, ImportVvlTypeRef(dnMethodDef._retType, true));
 				
 				if(dnMethodDef.isConstructor) md.Attributes |= MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig;
-				if(dnMethodDef.isStatic)      md.Attributes |= MethodAttributes.Static;
 				if(dnMethodDef.isAbstract)    md.Attributes |= MethodAttributes.Abstract;
+				if(dnMethodDef.isStatic)
+				{
+					md.HasThis = false;
+					md.ExplicitThis = false;
+					md.Attributes |= MethodAttributes.Static | MethodAttributes.HideBySig;
+				}
 				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.RuntimeImplMethod) != 0) md.Attributes |= MethodAttributes.;
 				//if((dnMethodDef._flags & (uint)DotNetMethodSignature.FlagTypes.NoSpecializationCopyMethod) != 0) md.Attributes |= MethodAttributes.;
 
