@@ -42,6 +42,27 @@ namespace igLibrary.DotNet
 			}
 		}
 
+
+		public override igMetaField? GetFieldByName(string name)
+		{
+			igMetaField? field = base.GetFieldByName(name);
+			if (field == null && _cppFieldNames != null)
+			{
+				igStringRefList dnNames = (igStringRefList)_dotNetFieldNames!;
+				for (int i = 0; i < dnNames._count; i++)
+				{
+					if (dnNames[i] == name)
+					{
+						igStringRefList cppNames = (igStringRefList)_cppFieldNames;
+						field = base.GetFieldByName(cppNames[i]);
+						break;
+					}
+				}
+			}
+			return field;
+		}
+
+
 		public static igMetaObject? FindType(string name, DotNetRuntime runtime)
 		{
 			if(string.IsNullOrEmpty(name)) return null;

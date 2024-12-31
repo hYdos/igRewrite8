@@ -9,6 +9,7 @@
 
 using System.Reflection;
 using System.Xml;
+using igLibrary.DotNet;
 
 namespace igLibrary.Core
 {
@@ -504,6 +505,36 @@ namespace igLibrary.Core
 				{
 					error = ParseCompoundNodePass2(childNode, _compoundLookup[metaobject._name!]);
 					if (error != null) return null;
+				}
+				else if (childNode.Name == "dotnetfields"
+				      && metaobject is igDotNetMetaObject dnmo // This only applies to igDotNetMetaObject
+				      && childNode.FirstChild != null)         // If there are no children then do nothing
+				{
+					igStringRefList cppFields = new igStringRefList();
+					igStringRefList dnFields = new igStringRefList();
+
+					for (XmlNode? dnFieldNode = childNode.FirstChild; dnFieldNode != null; dnFieldNode = dnFieldNode.NextSibling)
+					{
+						if (dnFieldNode.Name != "field")
+						{
+							return new ArkCoreXmlError("\"dotnetfields\" node must have only \"field\" children");
+						}
+
+						XmlNode? cppNameAttr = dnFieldNode.Attributes!.GetNamedItem("cppName");
+						XmlNode? dnNameAttr  = dnFieldNode.Attributes!.GetNamedItem("dnName");
+
+						if (cppNameAttr == null || dnNameAttr == null)
+						{
+							return new ArkCoreXmlError("\"dotnetfields\".\"field\" node must have \"cppName\" and \"dnName\" string attributes");
+						}
+
+						cppFields.Append(cppNameAttr.Value!);
+						dnFields.Append(dnNameAttr.Value!);
+					}
+
+					dnmo._cppFieldNames = cppFields;
+					dnmo._dotNetFieldNames = dnFields;
+					dnmo._exposedFieldCount = cppFields._count;
 				}
 			}
 
