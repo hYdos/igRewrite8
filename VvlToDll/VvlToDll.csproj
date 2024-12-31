@@ -30,13 +30,13 @@
 	<!--==================-->
 
 	<ItemGroup>
-		<ArkFiles Include="../Resources/ArkCore/*.ark"/>
+		<ArkFiles Include="../Resources/ArkCore/**"/>
 	</ItemGroup>
 
 	<Target Name="Debug|Release" AfterTargets="AfterBuild">
-		<Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/ArkCore" SkipUnchangedFiles="true"/>
+		<Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/ArkCore/%(RecursiveDir)" SkipUnchangedFiles="true"/>
 	</Target>
 	<Target Name="Debug|Release" AfterTargets="Publish">
-		<Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/publish/ArkCore" SkipUnchangedFiles="true"/>
+		<Copy SourceFiles="@(ArkFiles)" DestinationFolder="$(OutDir)/publish/ArkCore/%(RecursiveDir)" SkipUnchangedFiles="true"/>
 	</Target>
 </Project>
