@@ -25,7 +25,7 @@ VvlToDll
 
 Utility for converting Vvl files to DotNet Dlls so they can be viewed in an external tool.
 
-VvlToDll -gg <base game folder> -up <update.pak> -od <output directory> -p <platform> -ge <game enum> -- <...packages>
+VvlToDll -gp <base game folder> -up <update.pak> -od <output directory> -p <platform> -ge <game enum> -- <...packages>
 - base game folder: folder containing archives folder
 - update.pak: self explanatory
 - output directory: where the dlls get dumped
