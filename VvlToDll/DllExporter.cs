@@ -111,16 +111,38 @@ namespace VvlToDll
 		}
 		public MethodReference? ImportVvlMethodRef(uint callToken)
 		{
-			DotNetMethodDefinition dnMethod = _library.LookupMethod(callToken);
+			DotNetMethodDefinition dnMethod = _library.LookupMethod(callToken, out DotNetType[]? templateParameters);
 			if(dnMethod == null) return null;
+
+			MethodReference? methodRef = null;
 			if((callToken & 1) == 0)
 			{
-				return _methodLookup[dnMethod];
+				methodRef = _methodLookup[dnMethod];
 			}
 			else
 			{
-				return _methodRefLookup[dnMethod];
+				methodRef = _methodRefLookup[dnMethod];
+
+			if (methodRef != null
+			 && templateParameters != null)
+			{
+				if (methodRef.GenericParameters.Count != templateParameters.Length)
+				{
+					for (int i = 0; i < templateParameters.Length; i++)
+					{
+						methodRef.GenericParameters.Add(new GenericParameter($"TemplateParam{i}", methodRef));
+					}
+				}
+
+				GenericInstanceMethod genericInstanceMethod = new GenericInstanceMethod(methodRef);
+				for (int i = 0; i < templateParameters.Length; i++)
+				{
+					genericInstanceMethod.GenericArguments.Add(ImportVvlTypeRef(templateParameters[i]));
+				}
+				methodRef = genericInstanceMethod;
 			}
+
+			return methodRef;
 		}
 		public FieldReference ImportVvlFieldRef(int fieldToken)
 		{
@@ -698,7 +720,22 @@ namespace VvlToDll
 					break;
 				case OperandType.InlineTok:
 				case OperandType.InlineType:
-					inst._operand = ImportVvlTypeRef(_library._referencedTypes[ilStream.ReadInt32()]);
+					uint tokenIndex = ilStream.ReadUInt32();
+					if ((tokenIndex & 0x80000000) != 0)
+					{
+						int genericIndex = unchecked((int)(tokenIndex & 0x7FFFFFFF));
+
+						for (int g = method.GenericParameters.Count; g <= genericIndex; g++)
+						{
+							method.GenericParameters.Add(new GenericParameter($"TemplateParam{g}", method));
+						}
+
+						inst._operand = method.GenericParameters[genericIndex];
+					}
+					else
+					{
+						inst._operand = ImportVvlTypeRef(_library._referencedTypes[unchecked((int)tokenIndex)]);
+					}
 					break;
 				case OperandType.InlineVar:
 					inst._operand = method.Body.Variables[ilStream.ReadUInt16()];
