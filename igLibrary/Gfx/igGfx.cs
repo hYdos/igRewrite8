@@ -782,10 +782,10 @@ namespace igLibrary.Gfx
 		{
 			for(uint i = 0; i < source._imageSize; i += 4)
 			{
-				target._imageData[i + 0] = source._imageData[i + 2];
-				target._imageData[i + 1] = source._imageData[i + 1];
-				target._imageData[i + 2] = source._imageData[i + 0];
-				target._imageData[i + 3] = source._imageData[i + 3];
+				target._imageData[i + 0] = source._imageData[i + 1];
+				target._imageData[i + 1] = source._imageData[i + 2];
+				target._imageData[i + 2] = source._imageData[i + 3];
+				target._imageData[i + 3] = source._imageData[i + 0];
 			}
 		}
 
