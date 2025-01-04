@@ -226,7 +226,14 @@ namespace igLibrary.Core
 				_stream.WriteUInt32(memoryOffset);
 				uint sectionSize = (uint)_sections[i]._sh.BaseStream.Length;
 				_stream.WriteUInt32(sectionSize);
-				_stream.WriteUInt32(_sections[i]._alignment);
+
+				uint alignment = _sections[i]._alignment;
+				if (alignment == 0)
+				{
+					Logging.Warn("The alignment of section {0} in file {1} has an alignment of 0, this is bad, forcing the alignment to 0x10 to prevent game crashes", i, _dir._path);
+					alignment = 0x10;
+				}
+				_stream.WriteUInt32(alignment);
 
 				_stream.Seek(memoryOffset);
 				_sections[i]._sh.BaseStream.Flush();
