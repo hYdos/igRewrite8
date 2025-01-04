@@ -32,7 +32,7 @@ namespace igLibrary.Core
 		public bool _implicitMemoryPool;
 		public bool _optimalCPUReadWrite;
 		public bool _optimalGPURead;
-		public byte _alignmentMultiple;
+		public uint _alignmentMultiple;
 
 		public igMemory()
 		{
@@ -146,7 +146,7 @@ namespace igLibrary.Core
 				_optimalCPUReadWrite = (flags >> 0x1F) != 0;
 				size = flags & 0x07FFFFFF;
 			}
-			_alignmentMultiple = (byte)(alignment / memType.GetAlignment(platform));
+			_alignmentMultiple = alignment / memType.GetAlignment(platform);
 			_data = new T[size / memType.GetSize(platform)];
 		}
 	}
