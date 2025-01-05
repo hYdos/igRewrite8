@@ -57,8 +57,23 @@ namespace igCauldron3
 		/// <param name="dir">The directory</param>
 		public void AddDirectory(igObjectDirectory dir)
 		{
-			_dirIndex = _dirs._count;
-			_dirs.Append(dir);
+			int index = -1;
+			for (int i = 0; i < _dirs._count; i++)
+			{
+				if (_dirs[i] == dir)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			if (index < 0)
+			{
+				index = _dirs._count;
+				_dirs.Append(dir);
+			}
+
+			_dirIndex = index;
 		}
 
 
