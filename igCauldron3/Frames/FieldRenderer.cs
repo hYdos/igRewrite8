@@ -11,6 +11,7 @@ using System.Reflection;
 using igLibrary.Core;
 using igLibrary.DotNet;
 using igLibrary.Math;
+using igLibrary.Vfx;
 using ImGuiNET;
 
 namespace igCauldron3
@@ -68,6 +69,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igTimeMetaField), RenderField_Time);
 			_renderFuncLookup.Add(typeof(igDotNetEnumMetaField), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igDotNetDynamicMetaEnum), RenderField_Enum);
+			_renderFuncLookup.Add(typeof(igRangedFloatMetaField), RenderField_RangedFloat);
 		}
 
 
@@ -511,6 +513,34 @@ namespace igCauldron3
 			RenderField_PrimitiveNumber(id, ((igTime)raw!)._elapsedDays, ElementType.kElementTypeR4, (value) => cb.Invoke(new igTime((float)value!)));
 			ImGui.SameLine();
 			ImGui.Text("days");
+		}
+		public static void RenderField_RangedFloat(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			igRangedFloat rangedFloat = (igRangedFloat)raw!;
+
+			ImGui.PushID(id);
+
+			ImGui.Text("min");
+			ImGui.SameLine();
+			RenderField_PrimitiveNumber("$min$", rangedFloat._min, ElementType.kElementTypeR4, (value) =>
+			{
+				rangedFloat._min = (float)value!;
+				cb.Invoke(rangedFloat);
+			});
+
+			ImGui.SameLine();
+			ImGui.Spacing();
+			ImGui.SameLine();
+
+			ImGui.Text("max");
+			ImGui.SameLine();
+			RenderField_PrimitiveNumber("$max$", rangedFloat._max, ElementType.kElementTypeR4, (value) =>
+			{
+				rangedFloat._max = (float)value!;
+				cb.Invoke(rangedFloat);
+			});
+
+			ImGui.PopID();
 		}
 	}
 }
