@@ -72,6 +72,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igRangedFloatMetaField), RenderField_RangedFloat);
 			_renderFuncLookup.Add(typeof(igRawRefMetaField), RenderField_RawRef);
 			_renderFuncLookup.Add(typeof(igStructMetaField), RenderField_Struct);
+			_renderFuncLookup.Add(typeof(igVfxRangedCurveMetaField), RenderField_RangedCurve);
 		}
 
 
@@ -567,6 +568,113 @@ namespace igCauldron3
 					ImGui.SameLine();
 					RenderField_PrimitiveNumber(i.ToString(), data.GetValue(i), ElementType.kElementTypeU1, (newValue) => data.SetValue(newValue, capturedIndex));
 				}
+				ImGui.TreePop();
+			}
+		}
+
+		static igCompoundMetaField? curveKeyframesField;
+		public static void RenderField_RangedCurve(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			// Idrk how this works so just expose all the fields
+			if (curveKeyframesField == null)
+			{
+				igCompoundMetaFieldInfo? fieldInfo = igArkCore.GetCompoundFieldInfo("igVfxCurveKeyframeMetaField");
+				if (fieldInfo == null)
+				{
+					ImGui.Text("Mising metadata for \"igVfxCurveKeyframeMetaField\", log a bug for this");
+					return;
+				}
+
+				curveKeyframesField = new igCompoundMetaField();
+				curveKeyframesField._compoundFieldInfo = fieldInfo;
+			}
+
+			bool changed = false;
+			igVfxRangedCurve rangedCurve = (igVfxRangedCurve)raw!;
+
+			if (ImGui.TreeNode(id, "VfxRangedCurve"))
+			{
+				for (int i = 0; i < rangedCurve._keyframes.Length; i++)
+				{
+					int capturedI = i;
+					ImGui.Text($"Keyframe {i}");
+					ImGui.SameLine();
+					RenderFieldNoLabel(i.ToString(), rangedCurve._keyframes[i], curveKeyframesField, (newKeyframe) =>
+					{
+						rangedCurve._keyframes[capturedI] = (igVfxCurveKeyframe)newKeyframe!;
+						changed = true;
+					});
+				}
+
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x3C));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x3C), rangedCurve._field_0x3C, ElementType.kElementTypeR4, (newValue) =>
+				{
+					rangedCurve._field_0x3C = (float)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x40));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x40), rangedCurve._field_0x40, ElementType.kElementTypeR4, (newValue) =>
+				{
+					rangedCurve._field_0x40 = (float)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x44));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x44), rangedCurve._field_0x44, ElementType.kElementTypeR4, (newValue) =>
+				{
+					rangedCurve._field_0x44 = (float)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x48));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x48), rangedCurve._field_0x48, ElementType.kElementTypeR4, (newValue) =>
+				{
+					rangedCurve._field_0x48 = (float)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x4C));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x4C), rangedCurve._field_0x4C, ElementType.kElementTypeU2, (newValue) =>
+				{
+					rangedCurve._field_0x4C = (ushort)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x4E));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x4E), rangedCurve._field_0x4E, ElementType.kElementTypeU1, (newValue) =>
+				{
+					rangedCurve._field_0x4E = (byte)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._flags));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._flags), rangedCurve._flags, ElementType.kElementTypeU1, (newValue) =>
+				{
+					rangedCurve._flags = (byte)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x50));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x50), rangedCurve._field_0x50, ElementType.kElementTypeU2, (newValue) =>
+				{
+					rangedCurve._field_0x50 = (ushort)newValue!;
+					changed = true;
+				});
+				ImGui.Text(nameof(igVfxRangedCurve._field_0x52));
+				ImGui.SameLine();
+				RenderField_PrimitiveNumber(nameof(igVfxRangedCurve._field_0x52), rangedCurve._field_0x52, ElementType.kElementTypeU2, (newValue) =>
+				{
+					rangedCurve._field_0x52 = (ushort)newValue!;
+					changed = true;
+				});
+
+				if (changed)
+				{
+					cb.Invoke(rangedCurve);
+				}
+
 				ImGui.TreePop();
 			}
 		}

@@ -17,7 +17,7 @@ namespace igLibrary.Vfx
 		public float _field_0x44;
 		public float _field_0x48;
 		public ushort _field_0x4C;
-		public bool _field_0x4E;
+		public byte _field_0x4E; // Most likely a boolean but better safe than sorry
 		public byte _flags;
 		public ushort _field_0x50;
 		public ushort _field_0x52;
