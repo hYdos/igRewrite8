@@ -71,6 +71,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igDotNetDynamicMetaEnum), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igRangedFloatMetaField), RenderField_RangedFloat);
 			_renderFuncLookup.Add(typeof(igRawRefMetaField), RenderField_RawRef);
+			_renderFuncLookup.Add(typeof(igStructMetaField), RenderField_Struct);
 		}
 
 
@@ -547,6 +548,27 @@ namespace igCauldron3
 		{
 			ImGui.Text("Editing \"igRawRefMetaField\" is not allowed");
 		}
-		
+		public static void RenderField_Struct(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			// Just treat structs as raw bytes
+			if (raw is not byte[] data)
+			{
+				ImGui.Text($"Oopsie doopsie something went wrong here, log a bug and mention the following: {field._parentMeta?._name}::{field._fieldName}");
+				return;
+			}
+
+			if (ImGui.TreeNode(id, "Struct Data"))
+			{
+				for(int i = 0; i < data.Length; i++)
+				{
+					int capturedIndex = i;
+
+					ImGui.Text($"Element {i}");
+					ImGui.SameLine();
+					RenderField_PrimitiveNumber(i.ToString(), data.GetValue(i), ElementType.kElementTypeU1, (newValue) => data.SetValue(newValue, capturedIndex));
+				}
+				ImGui.TreePop();
+			}
+		}
 	}
 }

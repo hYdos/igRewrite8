@@ -48,6 +48,10 @@ namespace igLibrary.Core
 			}
 			return size;
 		}
+		public override object? GetDefault(igMemoryPool pool)
+		{
+			return new byte[GetSize(IG_CORE_PLATFORM.IG_CORE_PLATFORM_DEFAULT)];
+		}
 		public override Type GetOutputType() => typeof(byte[]);
 	}
 }
