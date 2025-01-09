@@ -70,6 +70,7 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igDotNetEnumMetaField), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igDotNetDynamicMetaEnum), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igRangedFloatMetaField), RenderField_RangedFloat);
+			_renderFuncLookup.Add(typeof(igRawRefMetaField), RenderField_RawRef);
 		}
 
 
@@ -542,5 +543,10 @@ namespace igCauldron3
 
 			ImGui.PopID();
 		}
+		public static void RenderField_RawRef(string id, object? raw, igMetaField field, FieldSetCallback cb)
+		{
+			ImGui.Text("Editing \"igRawRefMetaField\" is not allowed");
+		}
+		
 	}
 }
