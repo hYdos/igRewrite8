@@ -55,7 +55,13 @@ namespace igCauldron3
 		/// </summary>
 		public override void Render()
 		{
-			ImGui.Begin("Select Handle");
+			bool windowOpen = true;
+			ImGui.Begin("Select Handle", ref windowOpen);
+
+			if (!windowOpen)
+			{
+				Close();
+			}
 
 			if(ImGui.Button("Use NullHandle"))
 			{

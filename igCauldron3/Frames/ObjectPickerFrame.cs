@@ -89,7 +89,13 @@ namespace igCauldron3
 		/// </summary>
 		public override void Render()
 		{
-			ImGui.Begin("Select Object");
+			bool windowOpen = true;
+			ImGui.Begin("Select Object", ref windowOpen);
+
+			if (!windowOpen)
+			{
+				Close();
+			}
 
 			if(ImGui.Button("Use null"))
 			{
