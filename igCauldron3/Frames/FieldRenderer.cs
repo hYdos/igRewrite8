@@ -66,6 +66,8 @@ namespace igCauldron3
 			_renderFuncLookup.Add(typeof(igEnumMetaField), RenderField_Enum);
 			_renderFuncLookup.Add(typeof(igCompoundMetaField), RenderField_Compound);
 			_renderFuncLookup.Add(typeof(igTimeMetaField), RenderField_Time);
+			_renderFuncLookup.Add(typeof(igDotNetEnumMetaField), RenderField_Enum);
+			_renderFuncLookup.Add(typeof(igDotNetDynamicMetaEnum), RenderField_Enum);
 		}
 
 
