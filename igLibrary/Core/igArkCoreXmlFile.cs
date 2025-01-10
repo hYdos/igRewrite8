@@ -670,6 +670,8 @@ namespace igLibrary.Core
 			if (error != null) return error;
 			error = ParseMetaFieldPropertyBool(node, "implicitAlignment",  out metafield._properties._implicitAlignment, true);
 			if (error != null) return error;
+			error = ParseMetaFieldPropertyByte(node, "requiredAlignment",  out metafield._properties._requiredAlignment, 0x00);
+			if (error != null) return error;
 
 			if (metafield is igRefMetaField refMetaField)
 			{
@@ -880,6 +882,23 @@ namespace igLibrary.Core
 
 
 		/// <summary>
+		/// Parses an attribute of an xml node as an unsigned byte.
+		/// </summary>
+		/// <param name="node">The xml node in question</param>
+		/// <param name="name">The name of the xml attribute</param>
+		/// <param name="output">The byte this is stored into</param>
+		/// <param name="defaultValue">The default value for if reading this errors or the attribute is missing</param>
+		/// <returns>null on success, and an ArkCoreXmlError containing a message on error</returns>
+		private ArkCoreXmlError? ParseMetaFieldPropertyByte(XmlNode node, string name, out byte output, byte defaultValue)
+		{
+			uint temp;
+			ArkCoreXmlError? error = ParseMetaFieldPropertyUInt(node, name, out temp, defaultValue);
+			output = unchecked((byte)temp);
+			return error;
+		}
+
+
+		/// <summary>
 		/// Parses an attribute of an xml node as an unsigned short.
 		/// </summary>
 		/// <param name="node">The xml node in question</param>
@@ -913,7 +932,7 @@ namespace igLibrary.Core
 			{
 				string value = attribute.Value!;
 				System.Globalization.NumberStyles numberStyles = System.Globalization.NumberStyles.None;
-				if (value[0] == '0' && value[1] == 'x')
+				if (value.Length > 2 && value[0] == '0' && value[1] == 'x')
 				{
 					numberStyles |= System.Globalization.NumberStyles.HexNumber;
 					value = value.Substring(2);

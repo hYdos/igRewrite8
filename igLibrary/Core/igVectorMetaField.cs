@@ -160,5 +160,21 @@ namespace igLibrary.Core
 		/// <param name="platform">The platform in question</param>
 		/// <returns>An unsigned integer representing how big the field is in bytes</returns>
 		public override uint GetSize(IG_CORE_PLATFORM platform) => igAlchemyCore.GetPointerSize(platform) * 3;	//May cause issues for 64 bit platforms
+
+
+		/// <summary>
+		/// The alignment of the field (in bytes) for a given platform
+		/// </summary>
+		/// <param name="platform">The platfomr in question</param>
+		/// <returns>An unsigned integer represnting the alignment of the field in bytes</returns>
+		public override uint GetAlignment(IG_CORE_PLATFORM platform)
+		{
+			if (!_properties._implicitAlignment)
+			{
+				return _properties._requiredAlignment;
+			}
+
+			return base.GetAlignment(platform);
+		}
 	}
 }

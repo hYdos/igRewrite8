@@ -70,6 +70,7 @@ namespace igLibrary.Core
 			public bool _hasPoolName;
 			public bool _mutable;
 			public bool _implicitAlignment;
+			public byte _requiredAlignment;
 
 
 			/// <summary>
@@ -87,6 +88,7 @@ namespace igLibrary.Core
 				_hasPoolName = false;
 				_mutable = false;
 				_implicitAlignment = true;
+				_requiredAlignment = 0;
 			}
 
 			//I'm so sorry
@@ -276,6 +278,7 @@ namespace igLibrary.Core
 			int size = sh.ReadInt32();
 			sh.BaseStream.Position += size;
 		}
+
 
 		/// <summary>
 		/// Reads a field from an IGZ file
