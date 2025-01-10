@@ -197,13 +197,13 @@ namespace igLibrary.Core
 		/// <summary>
 		/// Dynamically generated types for igMetaObjects
 		/// </summary>
-		private static Dictionary<string, TypeBuilder>? _dynamicTypes = new Dictionary<string, TypeBuilder>();
+		private static Dictionary<string, TypeBuilder> _dynamicTypes = new Dictionary<string, TypeBuilder>();
 
 
 		/// <summary>
 		/// Dynamically generated types for igCompoundFieldInfo
 		/// </summary>
-		private static Dictionary<string, Type>? _dynamicStructs = new Dictionary<string, Type>();
+		private static Dictionary<string, Type> _dynamicStructs = new Dictionary<string, Type>();
 
 
 
@@ -268,6 +268,13 @@ namespace igLibrary.Core
 			_metaEnums.Clear();
 			_metaFieldPlatformInfos.Clear();
 			_compoundFieldInfos.Clear();
+
+			// This doesn't fully work, the resources will remain loaded but igArkCore
+			// won't know about them at least
+			_dynamicTypes.Clear();
+			_dynamicStructs.Clear();
+			_dynamicTypeAssembly = null;
+			_dynamicTypeModule = null;
 		}
 
 
