@@ -74,6 +74,8 @@ public class MetadataTest
 	{
 		igArkCore.ReadFromXmlFile(igArkCore.EGame.EV_SkylandersImaginators);
 
+		// igFxMateriaList
+
 		igMetaObject? fxMaterialList = igArkCore.GetObjectMeta("igFxMaterialList");
 		Assert.NotNull(fxMaterialList);
 		Assert.NotNull(fxMaterialList._parent);
@@ -86,6 +88,28 @@ public class MetadataTest
 		Assert.IsType<igObjectRefMetaField>(dataField._memType);
 		igObjectRefMetaField dataMemType = (igObjectRefMetaField)dataField._memType;
 		Assert.Equal("igMaterial", dataMemType._metaObject._name);
+
+		// CGuiBehaviorSkylanderCreate
+
+		igMetaObject? skylanderCreateMeta = igArkCore.GetObjectMeta("CGuiBehaviorSkylanderCreate");
+		Assert.NotNull(skylanderCreateMeta);
+		igMetaField? tassetIconField = skylanderCreateMeta.GetFieldByName("_tassetIcon");
+		Assert.NotNull(tassetIconField);
+		Assert.IsType<igObjectRefMetaField>(tassetIconField);
+		igMetaObject? tassetMetaobject = ((igObjectRefMetaField)tassetIconField)._metaObject;
+		Assert.NotNull(tassetMetaobject);
+		Assert.Equal("igMaterial", tassetMetaobject._name);
+
+		// CCYOSClassData
+
+		igMetaObject? cyosMetaobject = igArkCore.GetObjectMeta("CCYOSClassData");
+		Assert.NotNull(cyosMetaobject);
+		igMetaField? classImageField = cyosMetaobject.GetFieldByName("_classImage");
+		Assert.NotNull(classImageField);
+		Assert.IsType<igObjectRefMetaField>(classImageField);
+		igMetaObject? classImageMetaobject = ((igObjectRefMetaField)classImageField)._metaObject;
+		Assert.NotNull(classImageMetaobject);
+		Assert.Equal("igMaterial", classImageMetaobject._name);
 
 		igArkCore.Reset();
 	}
