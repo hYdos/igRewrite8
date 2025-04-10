@@ -262,7 +262,7 @@ namespace igCauldron3
 			for(int i = 0; i < realFiles._count; i++)
 			{
 				// FIXME: VV Hardcoded
-				files.Append("app:/" + Path.GetRelativePath("E:/Rom/stt/content", realFiles[i]).Replace("\\", "/"));
+				files.Append("app:/" + Path.GetRelativePath(igFileContext.Singleton._root, realFiles[i]).Replace("\\", "/"));
 			}
 
 			List<string> allowedArchivePaths = new List<string>();
