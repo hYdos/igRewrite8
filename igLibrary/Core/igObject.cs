@@ -39,7 +39,15 @@ namespace igLibrary.Core
 					FieldInfo? field = metaFields[i]._fieldHandle;
 					if(field != null)
 					{
-						field.SetValue(this, data);
+						// FIXME: Tfb does stupid casting which breaks this tool :(. I genuinely think C# can't handle this case
+						try
+						{
+							field.SetValue(this, data);
+						}
+						catch (ArgumentException e)
+						{
+							Console.WriteLine("TFB Did a bad cast which ;(");
+						}
 					}
 #if !DEBUG
 				}

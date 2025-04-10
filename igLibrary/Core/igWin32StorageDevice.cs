@@ -55,8 +55,8 @@ namespace igLibrary.Core
 			igStringRefList? list = workItem._buffer as igStringRefList;
 
 			Debug.Assert(list != null);
-
-			string[] files = Directory.GetFiles(workItem._path);
+			
+			string[] files = Directory.GetFiles(workItem._path, "*.*", SearchOption.AllDirectories);
 
 			list.SetCapacity(list._capacity + files.Length);
 			for(int i = 0; i < files.Length; i++)
