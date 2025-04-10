@@ -22,6 +22,8 @@ namespace igLibrary.Core
 		[Obsolete("This exists for the reflection system, do not use.")] public igDataList _memory;
 		[Obsolete("This exists for the reflection system, do not use.")] public ulong _memoryUsage;
 		[Obsolete("This exists for the reflection system, do not use.")] public ulong _childMemoryUsage;
+		[Obsolete("This exists for the reflection system, do not use.")] public igStaticMetaField _readFileWorkingParentDirectory;
+		[Obsolete("This exists for the reflection system, do not use.")] public igVectorMetaField _dependenciesForInheritance;
 		public igObject _loaderData;
 		public igIGZLoader _loader;     //needs to be changed to igObjectLoader
 		[Obsolete("This exists for the reflection system, do not use.")] public FileType _sourceFileType;

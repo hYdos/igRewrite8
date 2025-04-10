@@ -43,7 +43,8 @@ namespace igCauldron3
 		/// <param name="wnd">Reference to the main window object</param>
 		public ArchiveFrame(Window wnd) : base(wnd)
 		{
-			_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
+			// FIXME: VV only. hard coded
+			//_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
 		}
 
 
@@ -250,19 +251,18 @@ namespace igCauldron3
 		private void PopulateArchiveList()
 		{
 			igArchiveList archives = igFileContext.Singleton._archiveManager._archiveList;
-
-			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, "archives"), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
-			igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList virtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			
+			// FIXME: VV Hardcoded
+			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, ""), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			// FIXME: something weird is going on here in TT
+			// igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList virtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
 
 			igStringRefList files = new igStringRefList();
-			files.SetCapacity(realFiles._capacity + virtualFiles._count);
+			files.SetCapacity(realFiles._capacity);
 			for(int i = 0; i < realFiles._count; i++)
 			{
-				files.Append("app:/archives/" + Path.GetFileName(realFiles[i]));
-			}
-			for(int i = 0; i < virtualFiles._count; i++)
-			{
-				files.Append(virtualFiles[i]);
+				// FIXME: VV Hardcoded
+				files.Append("app:/" + Path.GetRelativePath("E:/Rom/stt/content", realFiles[i]).Replace("\\", "/"));
 			}
 
 			List<string> allowedArchivePaths = new List<string>();
@@ -270,14 +270,14 @@ namespace igCauldron3
 
 			for(int i = 0; i < files._count; i++)
 			{
-				if(Path.GetExtension(files[i]) == ".pak")
+				if(Path.GetExtension(files[i]) == ".pak" || Path.GetExtension(files[i]) == ".arc" || Path.GetExtension(files[i]) == ".bld")
 				{
 					if(!archives.Any(x => Path.GetFileName(x._path).ToLower() == Path.GetFileName(files[i])))
 					{
 						allowedArchivePaths.Add(files[i]);
 						allowedArchiveNames.Add(Path.GetFileName(files[i]));
 					}
-				} 
+				}
 			}
 
 			//Not proud of this
@@ -304,12 +304,22 @@ namespace igCauldron3
 			{
 				for(int i = 0; i < fileHeaders.Count(); i++)
 				{
-					string name = fileHeaders.ElementAt(i)._logicalName;
-					if(!(name.EndsWith(".igz") || name.EndsWith(".lng"))) continue;
-					if(ImGui.Button(name))
+					string vvName = fileHeaders.ElementAt(i)._logicalName;
+					string tfbName = fileHeaders.ElementAt(i)._name;
+					if(vvName.EndsWith(".igz") || vvName.EndsWith(".lng"))
 					{
-						DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName)!);
+						if(ImGui.Button(vvName))
+						{
+							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName)!);
+						}
+					} else if (tfbName.EndsWith(".bld") || tfbName.EndsWith(".igz") || tfbName.EndsWith(".pak"))
+					{
+						if(ImGui.Button(tfbName))
+						{
+							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._name)!);
+						}
 					}
+
 				}
 				ImGui.TreePop();
 			}

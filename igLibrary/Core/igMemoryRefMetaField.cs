@@ -84,7 +84,15 @@ namespace igLibrary.Core
 					for(int i = 0; i < objects.Length; i++)
 					{
 						loader._stream.Seek((long)offset + memSize * i);
-						objects.SetValue(_memType.ReadIGZField(loader), i);
+						try
+						{
+							objects.SetValue(_memType.ReadIGZField(loader), i);
+						}
+						catch (Exception e)
+						{
+							// FIXME: BAD TFB CAST (AGAIN) ASGFWGSGDGHHG
+							Console.WriteLine("Bad TFB Cast 2: Electric Boogaloo");
+						}
 					}
 
 					memory.SetData(objects);

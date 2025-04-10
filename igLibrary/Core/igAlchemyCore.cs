@@ -26,6 +26,8 @@ namespace igLibrary.Core
 			
 			igObjectLoader.RegisterClass<igIGZObjectLoader>();
 			igObjectLoader.RegisterClass<CLngObjectLoader>();
+			igObjectLoader.RegisterClass<CPakObjectLoader>();
+			igObjectLoader.RegisterClass<CBldObjectLoader>();
 			igObjectLoader.RegisterClass<DotNet.igDotNetMetaOnlyLibraryLoader>();
 
 			igExternalReferenceSystem.Singleton._globalSet.Add("metaobject", new igMetaObjectReferenceResolver());

@@ -115,7 +115,13 @@ namespace igLibrary.Core
 		{
 			if(_vTablePointer is not TypeBuilder tb) return;
 
-			if(!_parent!._finishedFinalization) throw new TypeLoadException("Derived class being initialized before parent.");
+
+
+			if (!_parent!._finishedFinalization)
+			{
+				Console.WriteLine("Derived class being initialized before parent.");
+				_parent.CreateType2();
+			}
 			if(!_beganFinalization)
 			{
 				_beganFinalization = true;

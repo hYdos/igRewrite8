@@ -388,7 +388,9 @@ namespace igLibrary.Core
 				target = null;
 				return true;
 			}
-			throw new NotImplementedException();
+
+			Console.WriteLine("BAD SetMemoryFromString NEEDS FIXING");
+			return false;
 		}
 
 
