@@ -114,14 +114,15 @@ namespace igLibrary.Core
 		public override void CreateType2()
 		{
 			if(_vTablePointer is not TypeBuilder tb) return;
-
-
-
+			
+			// FIXME: remove this pls
 			if (!_parent!._finishedFinalization)
 			{
 				Console.WriteLine("Derived class being initialized before parent.");
 				_parent.CreateType2();
 			}
+			
+			if(!_parent!._finishedFinalization) throw new TypeLoadException("Derived class " + _name + " being initialized before parent " + _parent._name);
 			if(!_beganFinalization)
 			{
 				_beganFinalization = true;

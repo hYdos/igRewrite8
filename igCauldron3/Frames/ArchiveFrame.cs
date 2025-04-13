@@ -43,8 +43,8 @@ namespace igCauldron3
 		/// <param name="wnd">Reference to the main window object</param>
 		public ArchiveFrame(Window wnd) : base(wnd)
 		{
-			// FIXME: VV only. hard coded
-			//_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
+			if(igRegistry.GetRegistry()._engineType == EngineType.AlchemyLaboratory)
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
 		}
 
 
@@ -252,25 +252,37 @@ namespace igCauldron3
 		{
 			igArchiveList archives = igFileContext.Singleton._archiveManager._archiveList;
 			
-			// FIXME: VV Hardcoded
-			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, ""), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
-			// FIXME: something weird is going on here in TT
-			// igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList virtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			var archivesPrefix = igRegistry.GetRegistry()._engineType == EngineType.AlchemyLaboratory ? "archives" : "";
+			igFileContext.Singleton.FileList(Path.Combine(igFileContext.Singleton._root, archivesPrefix), out igStringRefList realFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+			var virtualFiles = new igStringRefList();
+			if (igFileContext.Singleton._archiveManager._patchArchives._count > 0)
+			{
+				igFileContext.Singleton.FileList(igFileContext.Singleton._archiveManager._patchArchives[0]._path, out igStringRefList addedVirtualFiles, igBlockingType.kMayBlock, igFileWorkItem.Priority.kPriorityNormal);
+				foreach (var virtualFile in addedVirtualFiles)
+				{
+					virtualFiles.Append(virtualFile);
+				}
+			}
 
 			igStringRefList files = new igStringRefList();
-			files.SetCapacity(realFiles._capacity);
+			files.SetCapacity(realFiles._capacity + virtualFiles._count);
 			for(int i = 0; i < realFiles._count; i++)
 			{
-				// FIXME: VV Hardcoded
-				files.Append("app:/" + Path.GetRelativePath(igFileContext.Singleton._root, realFiles[i]).Replace("\\", "/"));
+				if (igRegistry.GetRegistry()._engineType == EngineType.AlchemyLaboratory) files.Append("app:/archives/" + Path.GetFileName(realFiles[i]));
+				if (igRegistry.GetRegistry()._engineType == EngineType.TfbTool) files.Append("app:/" + Path.GetRelativePath(igFileContext.Singleton._root, realFiles[i]));
+			}
+			for(int i = 0; i < virtualFiles._count; i++)
+			{
+				files.Append(virtualFiles[i]);
 			}
 
 			List<string> allowedArchivePaths = new List<string>();
 			List<string> allowedArchiveNames = new List<string>();
-
+			List<string> acceptedExtensions = new List<string> { ".pak", ".arc", ".bld" };
+			
 			for(int i = 0; i < files._count; i++)
 			{
-				if(Path.GetExtension(files[i]) == ".pak" || Path.GetExtension(files[i]) == ".arc" || Path.GetExtension(files[i]) == ".bld")
+				if(acceptedExtensions.Contains(Path.GetExtension(files[i])))
 				{
 					if(!archives.Any(x => Path.GetFileName(x._path).ToLower() == Path.GetFileName(files[i])))
 					{
@@ -302,19 +314,20 @@ namespace igCauldron3
 			}
 			if(ImGui.TreeNode(archive._path))
 			{
-				for(int i = 0; i < fileHeaders.Count(); i++)
+				for(int i = 0; i < fileHeaders.Length; i++)
 				{
-					string vvName = fileHeaders.ElementAt(i)._logicalName;
-					string tfbName = fileHeaders.ElementAt(i)._name;
-					if(vvName.EndsWith(".igz") || vvName.EndsWith(".lng"))
+					string laboratoryName = fileHeaders.ElementAt(i)._logicalName;
+					string tfbToolName = fileHeaders.ElementAt(i)._name;
+					if(laboratoryName.EndsWith(".igz") || laboratoryName.EndsWith(".lng"))
 					{
-						if(ImGui.Button(vvName))
+						if(ImGui.Button(laboratoryName))
 						{
 							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._logicalName)!);
 						}
-					} else if (tfbName.EndsWith(".bld") || tfbName.EndsWith(".igz") || tfbName.EndsWith(".pak"))
+					}
+					if (tfbToolName.EndsWith(".bld") || tfbToolName.EndsWith(".igz") || tfbToolName.EndsWith(".pak"))
 					{
-						if(ImGui.Button(tfbName))
+						if(ImGui.Button(tfbToolName))
 						{
 							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._name)!);
 						}

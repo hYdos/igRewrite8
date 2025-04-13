@@ -39,16 +39,7 @@ namespace igLibrary.Core
 			bool isOffset = loader._runtimeFields._offsets.BinarySearch(baseOffset) >= 0;
 			if(isOffset)
 			{
-				try
-				{
-					// FIXME: im not familiar enough with the codebase to fix these :<
-					// FIXME: Jasleen save me 🙏
-					return loader._offsetObjectList[raw];
-				}
-				catch (Exception e)
-				{
-					return null;
-				}
+				return loader._offsetObjectList[raw];
 			}
 			bool isNamedExternal = loader._runtimeFields._namedExternals.BinarySearch(baseOffset) >= 0;
 			if(isNamedExternal)
@@ -60,10 +51,8 @@ namespace igLibrary.Core
 			{
 				return loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();
 			}
-			// FIXME: im not familiar enough with the codebase to fix these :<
-			// FIXME: Jasleen save me 🙏
 			if (raw != 0)
-				return null;//throw new InvalidDataException("Failed to read igObjectRefMetaField properly");
+				throw new InvalidDataException("Failed to read igObjectRefMetaField properly");
 			return ret;
 		}
 		public void WriteIGZFieldShallow(igIGZSaver saver, igIGZSaver.SaverSection section, igObject? obj, out ulong serializedOffset, out bool needsDeep)

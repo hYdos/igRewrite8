@@ -388,7 +388,6 @@ namespace igLibrary.Core
 				target = null;
 				return true;
 			}
-
 			throw new NotImplementedException();
 		}
 

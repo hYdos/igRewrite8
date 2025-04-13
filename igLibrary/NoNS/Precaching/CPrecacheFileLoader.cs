@@ -206,6 +206,8 @@ namespace igLibrary
 						Logging.Error("Engine type is invalid, this is bad, terminating");
 						throw new Exception("Engine type is invalid, this is bad, terminating");
 					}
+
+					igRegistry.GetRegistry()._engineType = Enum.Parse<EngineType>(line);
 					break;
 				case LoaderTask.Noop:
 					break;

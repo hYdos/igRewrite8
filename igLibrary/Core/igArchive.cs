@@ -871,35 +871,40 @@ namespace igLibrary.Core
 		/// <param name="workItem">The work item</param>
 		public override void Open(igFileWorkItem workItem)
 		{
-			// FIXME: TFB Version of hash search. it doesnt really use hashes from what ive seen? or at least not in the same way. Me when i spread misinformation:
-			foreach (var fileInfo in _files)
+			if (igRegistry.GetRegistry()._engineType == EngineType.TfbTool)
 			{
-				if (fileInfo._name.Equals(workItem._path))
+				foreach (var fileInfo in _files)
 				{
-					workItem._file._path = workItem._path;
-					workItem._file._size = fileInfo._length;
-					workItem._file._position = 0;
-					workItem._file._handle = new MemoryStream((int)workItem._file._size);
-					workItem._file._device = this;
-					Decompress(fileInfo, (MemoryStream)workItem._file._handle);
-					workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
-					return;
+					if (fileInfo._name.Equals(workItem._path))
+					{
+						workItem._file._path = workItem._path;
+						workItem._file._size = fileInfo._length;
+						workItem._file._position = 0;
+						workItem._file._handle = new MemoryStream((int)workItem._file._size);
+						workItem._file._device = this;
+						Decompress(fileInfo, (MemoryStream)workItem._file._handle);
+						workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
+						return;
+					}
 				}
 			}
-			
-			int fileId = HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, HashFilePath(workItem._path));
-			if(fileId == -1)
+
+			if (igRegistry.GetRegistry()._engineType == EngineType.AlchemyLaboratory)
 			{
-				workItem.SetStatus(igFileWorkItem.Status.kStatusInvalidPath);
-				return;
+				int fileId = HashSearch(_files, (uint)_files.Count, _archiveHeader._hashSearchDivider, _archiveHeader._hashSearchSlop, HashFilePath(workItem._path));
+				if(fileId == -1)
+				{
+					workItem.SetStatus(igFileWorkItem.Status.kStatusInvalidPath);
+					return;
+				}
+				workItem._file._path = workItem._path;
+				workItem._file._size = _files[fileId]._length;
+				workItem._file._position = 0;
+				workItem._file._handle = new MemoryStream((int)workItem._file._size);
+				workItem._file._device = this;
+				Decompress(_files[fileId], (MemoryStream)workItem._file._handle);
+				workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
 			}
-			workItem._file._path = workItem._path;
-			workItem._file._size = _files[fileId]._length;
-			workItem._file._position = 0;
-			workItem._file._handle = new MemoryStream((int)workItem._file._size);
-			workItem._file._device = this;
-			Decompress(_files[fileId], (MemoryStream)workItem._file._handle);
-			workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
 		}
 
 
