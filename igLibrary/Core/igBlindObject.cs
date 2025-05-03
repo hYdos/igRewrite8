@@ -9,6 +9,7 @@
 
 namespace igLibrary.Core
 {
+	[Obsolete]
 	public class igBlindObject : igObject
 	{
 		private igMetaObject _meta;

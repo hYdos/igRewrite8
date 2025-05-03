@@ -171,8 +171,7 @@ namespace igLibrary.Core
 			_archiveHeader._magicNumber = sh.ReadUInt32();
 			if(_archiveHeader._magicNumber == 0x4947411A)
 			{
-				if(sh._endianness == StreamHelper.Endianness.Little) sh._endianness = StreamHelper.Endianness.Big;
-				else                                                 sh._endianness = StreamHelper.Endianness.Little;
+				sh._endianness = sh._endianness == StreamHelper.Endianness.Little ? StreamHelper.Endianness.Big : StreamHelper.Endianness.Little;
 			}
 			else if(_archiveHeader._magicNumber != 0x1A414749) throw new InvalidDataException($"{filePath} is not a valid igArchive.");
 			if((sh._endianness == StreamHelper.Endianness.Little && !BitConverter.IsLittleEndian) || (sh._endianness == StreamHelper.Endianness.Big && BitConverter.IsLittleEndian)) _needsEndianSwap = true;

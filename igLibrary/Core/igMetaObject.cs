@@ -9,6 +9,7 @@
 
 using System.Reflection;
 using System.Reflection.Emit;
+using igLibrary.Tfb;
 
 namespace igLibrary.Core
 {
@@ -91,6 +92,13 @@ namespace igLibrary.Core
 				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
 				_priority = BuildPriority.Low;
 			}
+			else if(_parent._name == "ScriptObjectList")
+			{
+				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
+
+				parentType = typeof(ScriptTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
+				_priority = BuildPriority.Low;
+			}
 			else if(_parent._name == "igHashTable")
 			{
 				igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
@@ -157,7 +165,7 @@ namespace igLibrary.Core
 					_metaFields[0]._fieldHandle = parentType.GetField("_count")!;
 					_metaFields[1]._fieldHandle = parentType.GetField("_capacity")!;
 				}
-				else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList")
+				else if(_parent._name == "igObjectList" || _parent._name == "igNonRefCountedObjectList" || _parent._name == "ScriptObjectList")
 				{
 					igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
 

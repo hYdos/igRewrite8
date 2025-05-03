@@ -7,12 +7,14 @@
 */
 
 
+using System.Globalization;
 using igLibrary.Core;
 
 namespace igLibrary.Vfx
 {
 	public class igRangedQuadraticMetaField : igMetaField
 	{
+		private static readonly CultureInfo Culture = CultureInfo.CreateSpecificCulture("en-US");
 		private igRangedQuadratic data;
 
 		public override object? ReadIGZField(igIGZLoader loader)
@@ -56,18 +58,18 @@ namespace igLibrary.Vfx
 				target = null;
 				return true;
 			}
-
+			
 			var split = input.Split(',');
-			data._a1 = float.Parse(split[0]);
-			data._b1 = float.Parse(split[1]);
-			data._c1 = float.Parse(split[2]);
+			data._a1 = float.Parse(split[0], Culture);
+			data._b1 = float.Parse(split[1], Culture);
+			data._c1 = float.Parse(split[2], Culture);
 			
-			data._a1 = float.Parse(split[3]);
-			data._b1 = float.Parse(split[4]);
-			data._c1 = float.Parse(split[5]);
+			data._a2 = float.Parse(split[3], Culture);
+			data._b2 = float.Parse(split[4], Culture);
+			data._c2 = float.Parse(split[5], Culture);
 			
-			data._a1 = float.Parse(split[6]);
-			data._b1 = float.Parse(split[7]);
+			data._maxX = float.Parse(split[6], Culture);
+			data._minX = float.Parse(split[7], Culture);
 			return true;
 		}
 	}

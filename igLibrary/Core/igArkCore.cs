@@ -609,7 +609,14 @@ namespace igLibrary.Core
 			}
 			for(int i = 0; i < _pendingTypes.Count; i++)
 			{
-				_pendingTypes[i].CreateType2();
+				try
+				{
+					_pendingTypes[i].CreateType2();
+				}
+				catch (TypeLoadException e)
+				{
+					// some types are broken
+				}
 			}
 			_pendingTypes.Clear();
 		}

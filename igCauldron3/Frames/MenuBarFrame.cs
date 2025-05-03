@@ -56,7 +56,19 @@ namespace igCauldron3
 						arc.Compress(fp._path, ms);
 						ms.Close();
 						if(arc._path[1] == ':') arc.Save(arc._path);
-						else arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
+						else
+						{
+							switch(igRegistry.GetRegistry()._engineType) {
+								case EngineType.AlchemyLaboratory:
+									arc.Save($"{igFileContext.Singleton._root}/archives/{Path.GetFileName(arc._path)}");
+									break;
+								case EngineType.TfbTool:
+									arc.Save($"{igFileContext.Singleton._root}/{Path.GetFileName(arc._path)}");
+									break;
+								case EngineType.None:
+									throw new ArgumentOutOfRangeException();
+							};
+						}
 					}
 					else if(ImGui.MenuItem("New IGZ"))
 					{

@@ -123,7 +123,7 @@ namespace igLibrary.Core
 
 				switch(magic)
 				{
-					case 0x50454454:							//TDEP
+					case 0x50454454:							//TDEP touchup dependency
 						if(!_readDependancies) break;
 						_dir._dependencies.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
@@ -138,7 +138,7 @@ namespace igLibrary.Core
 							dir._dependencies.Add(dependantDir);
 						}
 						break;
-					case 0x54454D54:							//TMET
+					case 0x54454D54:							//TMET touchup metadata
 						_vtableList.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
@@ -157,7 +157,7 @@ namespace igLibrary.Core
 						}
 						igArkCore.FlushPendingTypes();
 						break;
-					case 0x52545354:							//TSTR
+					case 0x52545354:							//TSTR touchup string
 						_stringList.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
@@ -170,7 +170,7 @@ namespace igLibrary.Core
 							_stream.Seek(basePos + bits + ((_stream.BaseStream.Position - basePos - 1) & (uint)(-bits)));
 						}
 						break;
-					case 0x44495845:							//EXID
+					case 0x44495845:							//EXID external id
 						_externalList.Capacity = (int)count;
 						for(uint j = 0; j < count; j++)
 						{
@@ -210,7 +210,7 @@ namespace igLibrary.Core
 								_externalList.Add(new igHandle(depName));
 						}
 						break;
-					case 0x4D4E5845:							//EXNM
+					case 0x4D4E5845:							//EXNM external name
 						for(uint j = 0; j < count; j++)
 						{
 							igHandleName depHandleName = new igHandleName();
@@ -351,14 +351,7 @@ namespace igLibrary.Core
 						}
 
 						previousInt = (uint)(previousInt + (unpackedInt * 4) + (_version < 9 ? 4 : 0));
-						if(deserialize)
-						{
-							list.Add(DeserializeOffset(previousInt));
-						}
-						else
-						{
-							list.Add(previousInt);
-						}
+						list.Add(deserialize ? DeserializeOffset(previousInt) : previousInt);
 					}
 				}
 			}
@@ -366,8 +359,8 @@ namespace igLibrary.Core
 
 		public ulong DeserializeOffset(ulong offset)
 		{
-			if(_version <= 0x06) return (_loadedPointers[(offset >> 0x18)] + (offset & 0x00FFFFFF));
-			else                 return (_loadedPointers[(offset >> 0x1B)] + (offset & 0x00FFFFFF));
+			if(_version <= 0x06) return _loadedPointers[(offset >> 0x18)] + (offset & 0x00FFFFFF);
+			return _loadedPointers[offset >> 0x1B] + (offset & 0x00FFFFFF);
 		}
 		public igMemoryPool GetMemoryPoolFromSerializedOffset(ulong offset)
 		{
@@ -408,14 +401,7 @@ namespace igLibrary.Core
 		{
 			_stream.Seek(DeserializeOffset(offset));
 			int index = (int)ReadRawOffset();
-			igObject obj = _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset), false);
-
-			if(obj is igBlindObject blindObj)
-			{
-				blindObj.Initialize(_vtableList[index]);
-			}
-
-			return obj;
+			return _vtableList[index].ConstructInstance(GetMemoryPoolFromSerializedOffset(offset), false);
 		}
 	}
 }
