@@ -72,6 +72,7 @@ namespace igLibrary.Core
 		public List<igMetaFieldPlatformInfo> MetaFieldPlatformInfos => _metafieldLookup.Values.ToList();
 		public List<igCompoundMetaFieldInfo> Compounds => _compoundLookup.Values.ToList();
 
+		private igMetaObject? _scriptObjectMeta = null;
 
 		/// <summary>
 		/// Constructor for igArkCoreXmlFile
@@ -390,6 +391,8 @@ namespace igLibrary.Core
 		{
 			ArkCoreXmlError? error = null;
 
+			_metaobjectLookup.TryGetValue("ScriptObjectList", out _scriptObjectMeta);
+
 			for(XmlNode? metaobjectNode = _metaobjectRoot.FirstChild; metaobjectNode != null; metaobjectNode = metaobjectNode.NextSibling)
 			{
 				error = ParseMetaObjectNodePass2(metaobjectNode, _metaobjectLookup[metaobjectNode.Attributes!.GetNamedItem("refname")!.Value!]);
@@ -477,7 +480,7 @@ namespace igLibrary.Core
 						return new ArkCoreXmlError("\"objectlist\" node must have an \"elementtype\" attribute!");
 					}
 					igMemoryRefMetaField _data = (igMemoryRefMetaField)metaobject._metaFields[2].CreateFieldCopy();
-					((igObjectRefMetaField)_data._memType)._metaObject = _metaobjectLookup[elementtypeAttr.Value!];
+					((igObjectRefMetaField)_data._memType)._metaObject = metaobject.CanBeAssignedTo(_scriptObjectMeta) ? _metaobjectLookup["igObject"] : _metaobjectLookup[elementtypeAttr.Value!];
 					metaobject.ValidateAndSetField(2, _data);
 				}
 				else if (childNode.Name == "hashtable")
@@ -625,6 +628,8 @@ namespace igLibrary.Core
 
 			metafield = (igMetaField)Activator.CreateInstance(metafieldType)!;
 			metafield._parentMeta = parentMeta;
+			if (metafield._parentMeta?._name == "ScriptSetList")
+			;
 			if(metafield is igPlaceHolderMetaField placeHolder)
 			{
 				placeHolder._platformInfo = _metafieldLookup[typeAttr.Value!];
@@ -692,7 +697,7 @@ namespace igLibrary.Core
 				{
 					return new ArkCoreXmlError("{0} metafield node missing \"metaobject\" attribute", metafield.GetType().Name);
 				}
-				igMetaObject? referencedMetaObject = null;
+				igMetaObject? referencedMetaObject = _metaobjectLookup["igObject"];
 				if (!_metaobjectLookup.TryGetValue(metaobjectNode.Value!, out referencedMetaObject))
 				{
 					if (metaobjectNode.Value! == "(null)")

@@ -307,7 +307,7 @@ namespace igLibrary.Core
 		public void UnpackCompressedInts(List<ulong> list, byte[] bytes, uint count, bool deserialize = true)
 		{
 			list.Capacity = (int)count;
-			uint previousInt = 0;
+			ulong previousInt = 0;
 
 			bool shiftMoveOrMask = false;
 
@@ -350,8 +350,14 @@ namespace igLibrary.Core
 							shiftAmount += 3;
 						}
 
-						previousInt = (uint)(previousInt + (unpackedInt * 4) + (_version < 9 ? 4 : 0));
-						list.Add(deserialize ? DeserializeOffset(previousInt) : previousInt);
+						ulong previousPreviousInt = previousInt;
+						previousInt = previousInt + (unpackedInt * 4u) + (_version < 9 ? 4u : 0u);
+						ulong toAdd = deserialize ? DeserializeOffset(previousInt) : previousInt;
+						if (toAdd < previousInt)
+						;
+						if (previousInt == 616916)
+						;
+						list.Add(toAdd);
 					}
 				}
 			}
@@ -360,7 +366,7 @@ namespace igLibrary.Core
 		public ulong DeserializeOffset(ulong offset)
 		{
 			if(_version <= 0x06) return _loadedPointers[(offset >> 0x18)] + (offset & 0x00FFFFFF);
-			return _loadedPointers[offset >> 0x1B] + (offset & 0x00FFFFFF);
+			return _loadedPointers[offset >> 0x1B] + (offset & 0x07FFFFFF);
 		}
 		public igMemoryPool GetMemoryPoolFromSerializedOffset(ulong offset)
 		{

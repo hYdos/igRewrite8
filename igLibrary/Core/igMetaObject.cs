@@ -92,13 +92,13 @@ namespace igLibrary.Core
 				parentType = typeof(igTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
 				_priority = BuildPriority.Low;
 			}
-			else if(_parent._name == "ScriptObjectList")
+			/*else if(_parent._name == "ScriptObjectList")
 			{
 				igMemoryRefMetaField dataField = (igMemoryRefMetaField)_metaFields[2];
 
 				parentType = typeof(ScriptTObjectList<>).MakeGenericType(dataField._memType.GetOutputType());
 				_priority = BuildPriority.Low;
-			}
+			}*/
 			else if(_parent._name == "igHashTable")
 			{
 				igMemoryRefMetaField valuesField = (igMemoryRefMetaField)_metaFields[0];
@@ -255,6 +255,8 @@ namespace igLibrary.Core
 		public void ValidateAndSetField(int index, igMetaField field)
 		{
 			field._parentMeta = this;
+			if (_name == "ScriptSetList")
+			;
 			_metaFields[index] = field;
 		}
 		public void InheritFields()

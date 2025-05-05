@@ -23,7 +23,7 @@ namespace igLibrary.Vfx
 		{
 			section._sh.WriteBytes(((igVfxRgbCurve)value!)._data);
 		}
-		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x04;
+		public override uint GetAlignment(IG_CORE_PLATFORM platform) => 0x10;
 		public override uint GetSize(IG_CORE_PLATFORM platform) => 0x110;
 		public override Type GetOutputType() => typeof(igVfxRgbCurve);
 

@@ -21,6 +21,10 @@ namespace igLibrary.Vfx
 		public byte _flags;
 		public ushort _field_0x50;
 		public ushort _field_0x52;
+
+		// Trap team
+		public float _valueOrScale;
+		public igMemory<byte> _data;
 		public igVfxRangedCurve()
 		{
 			_keyframes = new igVfxCurveKeyframe[5];
@@ -33,6 +37,9 @@ namespace igLibrary.Vfx
 			_flags = default;
 			_field_0x50 = default;
 			_field_0x52 = default;
+
+			_valueOrScale = 0;
+			_data = default;
 		}
 	}
 }

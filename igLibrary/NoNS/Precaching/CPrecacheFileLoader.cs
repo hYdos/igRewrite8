@@ -71,9 +71,6 @@ namespace igLibrary
 		/// <param name="filePath">The filepath to load from</param>
 		public static void LoadInitScript(string filePath, bool loose)
 		{
-			PerformanceTest._stopwatch.Stop();
-			Console.WriteLine($"time was {PerformanceTest._stopwatch.ElapsedMilliseconds}");
-			
 			StreamReader precacheFile = File.OpenText(filePath);
 
 			ReadLoop(precacheFile, loose);

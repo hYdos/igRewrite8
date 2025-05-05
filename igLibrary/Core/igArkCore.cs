@@ -216,6 +216,14 @@ namespace igLibrary.Core
 
 
 
+		/// <summary>
+		/// The currently loaded game
+		/// </summary>
+		public static EGame _game { get; private set; }
+
+
+
+
 
 		/// <summary>
 		/// Output stored reflection metadata to an igArkCoreFile.
@@ -303,6 +311,8 @@ namespace igLibrary.Core
 		/// <param name="game">The game to load the metadata for</param>
 		public static void ReadFromXmlFile(EGame game)
 		{
+			_game = game;
+
 			System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
 			stopwatch.Start();

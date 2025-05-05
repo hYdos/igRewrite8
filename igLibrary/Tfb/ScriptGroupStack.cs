@@ -1,6 +1,6 @@
 namespace igLibrary.Tfb;
 
-public class ScriptGroupStack : ScriptTObjectList<tfbScriptObject>
+public class ScriptGroupStack : ScriptObjectList
 {
     public igObject _editType;
 }
