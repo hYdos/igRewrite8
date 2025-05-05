@@ -79,7 +79,15 @@ namespace igLibrary.Core
 					}
 				}
 			}
-			Logging.Warn("failed to load {0}.{1}", _namespace._string, _alias._string);
+
+			if (_namespace._string == null)
+			{
+				Logging.Warn("failed to load igHandle {0}.{1}", _namespace._hash, _alias._hash);
+			}
+			else
+			{
+				Logging.Warn("failed to load igHandle {0}.{1}", _namespace._string, _alias._string);
+			}
 			return null;
 		}
 

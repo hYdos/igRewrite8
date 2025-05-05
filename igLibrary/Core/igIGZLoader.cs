@@ -273,6 +273,7 @@ namespace igLibrary.Core
 						break;
 					case 0x53464F52:							//ROFS
 						UnpackCompressedInts(_runtimeFields._offsets, _stream.ReadBytes(length - start), count);
+						_runtimeFields._offsets.Sort(); // tfb test
 						break;
 					case 0x44495052:							//RPID
 						UnpackCompressedInts(_runtimeFields._poolIds, _stream.ReadBytes(length - start), count);

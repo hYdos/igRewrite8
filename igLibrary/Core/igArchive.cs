@@ -872,18 +872,23 @@ namespace igLibrary.Core
 		{
 			if (igRegistry.GetRegistry()._engineType == EngineType.TfbTool)
 			{
-				foreach (var fileInfo in _files)
+				string fileName = workItem._path[(workItem._path.LastIndexOf('/') + 1)..];
+				string archivePath = workItem._path[..workItem._path.LastIndexOf('/')];
+				if (archivePath == _path)
 				{
-					if (fileInfo._name.Equals(workItem._path))
+					foreach (var fileInfo in _files)
 					{
-						workItem._file._path = workItem._path;
-						workItem._file._size = fileInfo._length;
-						workItem._file._position = 0;
-						workItem._file._handle = new MemoryStream((int)workItem._file._size);
-						workItem._file._device = this;
-						Decompress(fileInfo, (MemoryStream)workItem._file._handle);
-						workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
-						return;
+						if (fileInfo._name.Equals(fileName))
+						{
+							workItem._file._path = workItem._path;
+							workItem._file._size = fileInfo._length;
+							workItem._file._position = 0;
+							workItem._file._handle = new MemoryStream((int)workItem._file._size);
+							workItem._file._device = this;
+							Decompress(fileInfo, (MemoryStream)workItem._file._handle);
+							workItem.SetStatus(igFileWorkItem.Status.kStatusComplete);
+							return;
+						}
 					}
 				}
 			}

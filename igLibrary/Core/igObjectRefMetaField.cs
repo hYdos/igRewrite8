@@ -37,6 +37,7 @@ namespace igLibrary.Core
 			ulong raw = (ulong)sizeTypeMetaField.ReadIGZField(loader)!;
 			igObject? ret = null;
 			bool isOffset = loader._runtimeFields._offsets.BinarySearch(baseOffset) >= 0;
+			
 			if(isOffset)
 			{
 				return loader._offsetObjectList[raw];

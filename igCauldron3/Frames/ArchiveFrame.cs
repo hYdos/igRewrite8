@@ -45,6 +45,15 @@ namespace igCauldron3
 		{
 			if(igRegistry.GetRegistry()._engineType == EngineType.AlchemyLaboratory)
 				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/archives/loosefiles.pak"));
+
+			if (igRegistry.GetRegistry()._engineType == EngineType.TfbTool)
+			{
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/permanent/bootstrap.bld"));
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/misc/bootstrap_lang.bld"));
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/item/legal.bld"));
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/permanent/global.bld"));
+				_looseArchives.Add(igFileContext.Singleton.LoadArchive("app:/character/init_setup.bld"));
+			}
 		}
 
 
@@ -88,25 +97,27 @@ namespace igCauldron3
 					ImGui.PushID(_allowedArchivePaths[i]);
 					bool full = ImGui.Button("Full");
 					ImGui.SameLine();
-					bool loose = ImGui.Button("Loose");
+					bool loose = false;
+					
+					if (igRegistry.GetRegistry()._engineType != EngineType.TfbTool)
+					{
+						loose = ImGui.Button("Loose");
+					}
 					ImGui.PopID();
 					ImGui.SameLine();
 					ImGui.Text(_allowedArchiveNames[i]);
 
-					if(full)
+					if(full && igRegistry.GetRegistry()._engineType != EngineType.TfbTool)
 					{
 						_isChoosingArchive = false;
 
 						igArchive loaded = igFileContext.Singleton.LoadArchive(_allowedArchivePaths[i]);
-						for(int j = 0; j < loaded._files.Count; j++)
+						foreach (var file in loaded._files.Where(file => file._logicalName.EndsWith("_pkg.igz")))
 						{
-							if(loaded._files[j]._logicalName.EndsWith("_pkg.igz"))
-							{
-								CPrecacheManager._Instance.PrecachePackage(loaded._files[j]._logicalName, EMemoryPoolID.MP_DEFAULT);
-							}
+							CPrecacheManager._Instance.PrecachePackage(file._logicalName, EMemoryPoolID.MP_DEFAULT);
 						}
 					}
-					else if(loose)
+					else if(loose || full && igRegistry.GetRegistry()._engineType == EngineType.TfbTool)
 					{
 						_isChoosingArchive = false;
 
@@ -329,7 +340,7 @@ namespace igCauldron3
 					{
 						if(ImGui.Button(tfbToolName))
 						{
-							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(fileHeaders.ElementAt(i)._name)!);
+							DirectoryManagerFrame._instance.AddDirectory(igObjectStreamManager.Singleton.Load(archive._path + "/" + fileHeaders.ElementAt(i)._name)!);
 						}
 					}
 
