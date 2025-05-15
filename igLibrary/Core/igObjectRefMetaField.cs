@@ -35,7 +35,6 @@ namespace igLibrary.Core
 			ulong baseOffset = loader._stream.Tell64();
 			igSizeTypeMetaField sizeTypeMetaField = igSizeTypeMetaField._MetaField;
 			ulong raw = (ulong)sizeTypeMetaField.ReadIGZField(loader)!;
-			igObject? ret = null;
 			bool isOffset = loader._runtimeFields._offsets.BinarySearch(baseOffset) >= 0;
 			
 			if(isOffset)
@@ -45,16 +44,49 @@ namespace igLibrary.Core
 			bool isNamedExternal = loader._runtimeFields._namedExternals.BinarySearch(baseOffset) >= 0;
 			if(isNamedExternal)
 			{
-				return loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
+				var loaderNamedExternal = loader._namedExternalList[(int)(raw & 0x7FFFFFFF)];
+				if (loaderNamedExternal == null)
+				{
+					throw new Exception("e");
+				}
+				return loaderNamedExternal;
 			}
 			bool isExid = loader._runtimeFields._externals.BinarySearch(baseOffset) >= 0;
 			if(isExid)
 			{
-				return loader._externalList[(int)(raw & 0x7FFFFFFF)].GetObjectAlias<igObject>();
+				var handle = loader._externalList[(int)(raw & 0x7FFFFFFF)];
+				var readIgzField = handle.GetObjectAlias<igObject>();
+				if (readIgzField == null)
+				{
+					// var lines = File.ReadAllLines("E:/Projects/CauldronMods/CauldronTFB/Resources/test.txt");
+					// foreach (var line in lines)
+					// {
+					// 	var hash = igHash.HashI(line);
+					// 	if (hash == handle._namespace._hash)
+					// 	{
+					// 		foreach (var line2 in lines)
+					// 		{
+					// 			var aliasHash = igHash.HashI(line2);
+					// 			if (aliasHash == handle._alias._hash)
+					// 			{
+					// 				Logging.Info("Hash missed. Namespace: {0}, Alias: {1}", line, line2);
+					// 				return null;
+					// 			}
+					// 		}
+					// 		
+					// 		Logging.Info("Hash missed. Namespace: {0}, Alias: {1}", line, handle._alias._hash);
+					// 		return null;
+					// 	}
+					// }
+					Logging.Info("Hash missed. Alias: {1}", handle._alias._hash);
+					return null;
+
+				}
+				return readIgzField;
 			}
 			if (raw != 0)
 				throw new InvalidDataException("Failed to read igObjectRefMetaField properly");
-			return ret;
+			return null;
 		}
 		public void WriteIGZFieldShallow(igIGZSaver saver, igIGZSaver.SaverSection section, igObject? obj, out ulong serializedOffset, out bool needsDeep)
 		{

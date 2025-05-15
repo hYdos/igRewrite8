@@ -72,6 +72,7 @@ namespace igLibrary.Core
 			_pools.Add("VramA", 				new igMemoryPool("VramA"));
 			_pools.Add("VramB", 				new igMemoryPool("VramB"));
 			_pools.Add("VramStaging", 			new igMemoryPool("VramStaging"));
+			_pools.Add("Text", 					new igMemoryPool("Text")); // Present in trap team, Removed afterward
 			_pools.Add("MEM1", 					_pools["Default"]);
 			_pools.Add("MEM2", 					_pools["Default"]);
 			_pools.Add("VRAMBottomUp", 			_pools["VRAM"]);
@@ -79,7 +80,11 @@ namespace igLibrary.Core
 		public igMemoryPool? GetMemoryPoolByName(string name)
 		{
 			if(_pools.ContainsKey(name)) return _pools[name];
-			else return null;
+			else
+			{
+				Logging.Warn("Pool with name {0} not found", name);
+				return null;
+			}
 		}
 	}
 }
